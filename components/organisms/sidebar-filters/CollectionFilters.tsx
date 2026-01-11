@@ -2,7 +2,6 @@
 
 import { Search } from 'lucide-react'
 import { TextInput } from '@/components/atoms/TextInput'
-import { RangeSlider } from '@/components/atoms/RangeSlider'
 import { Checkbox } from '@/components/atoms/Checkbox'
 import { FormSelect } from '@/components/atoms/FormSelect'
 import { SidebarContainer } from '../../atoms/SidebarContainer'

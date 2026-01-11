@@ -1,6 +1,5 @@
 export { Checkbox } from './Checkbox'
 export { FormSelect } from './FormSelect'
-export { RangeSlider } from './RangeSlider'
 export { Select } from './Select'
 export { TextInput } from './TextInput'
 export { SidebarContainer } from './SidebarContainer'

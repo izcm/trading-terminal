@@ -41,7 +41,7 @@ export const CollectionList = ({ collections }: CollectionListProps) => {
                 </div>
 
                 <div className="text-xs text-muted text-right">
-                  <div className="font-semibold">{col.totalSupply?.toString() || 'N/A'}</div>
+                  <div className="font-semibold">{col.totalSupply || 'N/A'}</div>
                   <div className="text-xs">items</div>
                 </div>
 

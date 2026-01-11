@@ -1,6 +1,6 @@
 'use client'
 
-import { Checkbox, RangeSlider, Select } from '@/components/atoms'
+import { Checkbox, Select } from '@/components/atoms'
 import { ChevronDown } from 'lucide-react'
 import { useState } from 'react'
 import { SidebarContainer } from '@/components/atoms'

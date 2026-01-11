@@ -13,7 +13,7 @@ import { useState } from 'react'
 interface CollectionViewProps {
   collection: Collection
   nfts: NFT[]
-  attributes: AttributeSummary
+  attributes?: AttributeSummary
 }
 
 export const CollectionView = ({ collection, nfts, attributes: traits }: CollectionViewProps) => {
@@ -24,7 +24,9 @@ export const CollectionView = ({ collection, nfts, attributes: traits }: Collect
   const contract = collection.address
   const baseUrl = `/collection/${contract}`
 
-  const traitsAsArray = Object.entries(traits)
+  // const traitsAsArray = Object.entries(traits ?? {}) 
+  const traitsAsArray = Object.entries(traits ?? {}) 
+
 
   return (
     <div className="flex flex-col gap-4">

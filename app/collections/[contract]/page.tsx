@@ -2,7 +2,6 @@ import { CollectionView } from '@/features/orderbook/ui/CollectionView'
 
 import { getCollectionMetadata, getNFTByContract, getCollectionAttributes } from '@/lib/alchemy'
 import { toCollection, toNFT } from '@/lib/alchemy'
-import { AttributeSummary } from '@/types'
 
 export default async function CollectionPage(props: { params: Promise<{ contract: string }> }) {
   const contractRaw = (await props.params).contract
