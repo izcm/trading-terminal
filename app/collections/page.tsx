@@ -6,14 +6,10 @@ import { CollectionList } from '@/components/organisms/CollectionList'
 // import { getCollectionMetadata } from '@/lib/alchemy'
 import { getDemoCollections } from '@/dev/collections'
 
-const demoCollections = [ {address: "0x2E10a0A6383a084cc7449fe58D40D3702A8E57F4" as `0x${string}`}, { address: "0x8522874371974bF1dac8dF496d372319DF943A17" as `0x${string}`} ]
-
-const mode = process.env.NEXT_PUBLIC_MODE
-
 export default async function BrowseCollectionsPage() {
   // TODO: update this to use https://www.alchemy.com/docs/reference/nft-api-endpoints/nft-api-endpoints/nft-metadata-endpoints/get-contract-metadata-batch-v-3
   
-  
+  // === NON DEMO STUFF ===
   // const alchemyCollections = (
   //   await Promise.all(
   //     demoCollections.map(async c => {

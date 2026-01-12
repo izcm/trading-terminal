@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+
 import './globals.css'
 import { Providers } from './providers/Providers'
-import { Header } from '@/components/organisms/Header'
+import AppShell from './AppShell'
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -24,21 +24,7 @@ export default function RootLayout({
           Skip Header
         </a>
         <Providers>
-          <Header />
-          <a
-            id="forward-main"
-            href="#main"
-            className="sr-only focus:not-sr-only focus:underline px-2"
-          >
-            Skip to main content
-          </a>
-          <div id="page-wrapper" className="w-full min-h-screen p-4 font-mono py-4 mt-2">
-            {/* Skip navigation link */}
-            {children}
-          </div>
-          <footer className="text-xs text-muted py-6 text-center">
-            © 2025 A2Z Blocks — Humbly built.
-          </footer>
+          <AppShell>{children}</AppShell>
         </Providers>
       </body>
     </html>
