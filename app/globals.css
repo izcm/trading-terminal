@@ -517,9 +517,10 @@ input:focus {
 .bg-muted {
   background: var(--bg-muted);
 }
+
 .card {
   border: 1px solid;
-  border-color: var(--border-soft);
+  border-color: var(--border-default);
   border-radius: 0.5rem;
 }
 

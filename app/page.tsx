@@ -28,17 +28,32 @@ export default async function Home() {
   const sales = res.data as any[]
   console.log(sales)
   return (
-    <div className="flex flex-col gap-4 w-full max-w-7xl mx-auto">
-      <div className="flex gap-4">
-        <div className="flex-1 card"></div>
-        <Link href="/collections">
-          <button className="btn btn-ghost">explore dmrkt</button>
+    <div className="flex flex-col gap-4 max-w-7xl mx-auto">
+      <div className="flex items-center">
+        <section className="flex-2 flex justify-evenly text-accent">
+          <span>
+            orders <strong>12 482</strong>
+          </span>
+
+          <span>
+            users <strong>1 203</strong>
+          </span>
+
+          <span>
+            volume <strong>842.3</strong>
+          </span>
+        </section>
+      <div className='flex-1 flex justify-end gap-4'>
+        <Link className="btn btn-secondary" href="/collections">
+          more analytics
         </Link>
-        <Link href="/collections">
-          <button className="btn btn-ghost">view more analytics</button>
+         <Link className="btn btn-primary" href="/collections">
+          explore dmrkt
         </Link>
       </div>
-      <div className="flex card">
+      </div>
+
+      <div className="flex items-center card">
         <div className="h-80 w-1/3">
           <LineChart />
         </div>
@@ -49,6 +64,7 @@ export default async function Home() {
           <LineChart />
         </div>
       </div>
+
       <div className="flex gap-4 overflow-y-hidden">
         <ul className="flex-1 card">
           {sales.map(sale => (
@@ -59,6 +75,7 @@ export default async function Home() {
             </li>
           ))}
         </ul>
+
         <ul className="flex-1 card">
           {sales.map(sale => (
             <li key={sale.orderHash}>
