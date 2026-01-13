@@ -12,7 +12,7 @@ export const NFTCard = ({ nft }: { nft: NFT }) => {
   }, [nft.image])
 
   return (
-    <div className="group border border-default rounded-lg overflow-hidden hover:-translate-y-1 transition-transform">
+    <div className="group card overflow-hidden hover:-translate-y-1 transition-transform">
       <div className="aspect-square bg-muted/10">
         <img src={src} alt={nft.name} className="w-full h-full object-cover" />
       </div>

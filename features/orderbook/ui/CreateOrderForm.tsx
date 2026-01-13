@@ -86,7 +86,7 @@ export const CreateOrderForm = () => {
       <div className="text-center text-lg font-medium">Create Order</div>
 
       {/* Form Card */}
-      <div className="border border-default rounded-lg p-8 flex flex-col gap-8">
+      <div className="card p-8 flex flex-col gap-8">
         {/* Order Type */}
         <div className="flex flex-col gap-2">
           <label className="text-sm font-medium">Order Type</label>

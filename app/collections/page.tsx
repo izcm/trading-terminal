@@ -8,7 +8,7 @@ import { getDemoCollections } from '@/dev/collections'
 
 export default async function BrowseCollectionsPage() {
   // TODO: update this to use https://www.alchemy.com/docs/reference/nft-api-endpoints/nft-api-endpoints/nft-metadata-endpoints/get-contract-metadata-batch-v-3
-  
+
   // === NON DEMO STUFF ===
   // const alchemyCollections = (
   //   await Promise.all(
@@ -27,7 +27,7 @@ export default async function BrowseCollectionsPage() {
   //   return toCollection(c)
   // })
 
-  const collections = getDemoCollections();
+  const collections = getDemoCollections()
 
   return (
     <main className="flex flex-col max-w-7xl mx-auto">

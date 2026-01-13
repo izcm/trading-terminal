@@ -10,7 +10,7 @@ interface CollectionListProps {
 
 export const CollectionList = ({ collections }: CollectionListProps) => {
   return (
-    <ul className="flex-2 flex flex-col divide-y divide-border-soft border border-default rounded-lg">
+    <ul className="flex-2 flex flex-col divide-y divide-border-soft card">
       {collections.map((col, i) => {
         return (
           <li key={i}>

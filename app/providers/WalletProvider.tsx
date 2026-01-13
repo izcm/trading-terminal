@@ -10,11 +10,7 @@ const CYBER_VOID = {
   accentForeground: 'rgba(21, 31, 73, 0.94)',
 }
 
-export default function WalletProvider({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function WalletProvider({ children }: { children: React.ReactNode }) {
   return (
     <WagmiProvider config={config}>
       <RainbowKitProvider

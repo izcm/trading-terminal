@@ -6,8 +6,8 @@ import { WagmiProvider } from 'wagmi'
 import { config } from '@/blockchain/config/wagmi'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
-const WalletProvider = dynamic(() => import("./WalletProvider"), {
-  ssr: false
+const WalletProvider = dynamic(() => import('./WalletProvider'), {
+  ssr: false,
 })
 
 const CYBER_VOID = {
@@ -24,9 +24,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <WalletProvider>
-          {children}
-        </WalletProvider>
+        <WalletProvider>{children}</WalletProvider>
       </QueryClientProvider>
     </WagmiProvider>
   )

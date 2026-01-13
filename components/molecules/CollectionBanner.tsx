@@ -2,7 +2,7 @@ import { Collection } from '@/types'
 
 export const CollectionBanner = ({ collection }: { collection: Collection }) => {
   return (
-    <div className="flex items-center border border-default rounded-lg px-4 py-2 relative overflow-hidden">
+    <div className="flex items-center card px-4 py-2 relative overflow-hidden">
       <div
         className="
           absolute inset-0 

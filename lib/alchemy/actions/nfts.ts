@@ -1,6 +1,6 @@
 import { AlchemyNFT } from '@/lib/alchemy/types/nft'
 import { ALCHEMY_API_KEY as apiKey } from '../constants'
-import { ALCHEMY_ENDPOINT_URL as endpoint } from '../constants'
+import { ALCHEMY_BASE_URL as endpoint } from '../constants'
 
 export const getNFTByContract = async (
   contract: `0x${string}`

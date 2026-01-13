@@ -24,8 +24,7 @@ export const CollectionView = ({ collection, nfts, attributes: traits }: Collect
   const contract = collection.address
   const baseUrl = `/collection/${contract}`
 
-  const traitsAsArray = Object.entries(traits ?? {}) 
-
+  const traitsAsArray = Object.entries(traits ?? {})
 
   return (
     <div className="flex flex-col gap-4">
@@ -39,7 +38,7 @@ export const CollectionView = ({ collection, nfts, attributes: traits }: Collect
         </div>
 
         <Link href={`${contract}/create-order`}>
-          <button className="btn btn-secondary px-6">Make Collection Order</button>
+          <button className="btn btn-secondary px-6">Make Collection Bid</button>
         </Link>
 
         <Link
