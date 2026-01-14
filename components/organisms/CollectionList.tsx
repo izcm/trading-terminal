@@ -10,14 +10,14 @@ interface CollectionListProps {
 
 export const CollectionList = ({ collections }: CollectionListProps) => {
   return (
-    <ul className="flex-2 flex flex-col divide-y divide-border-soft card">
+    <ul className="flex-2 list">
       {collections.map((col, i) => {
         return (
           <li key={i}>
             <Link href={`/collections/${col.address}`}>
               <div
                 role="button"
-                className="grid grid-cols-[auto_1fr_120px_100px_100px] items-center text-start gap-4 py-4 px-4 hover-lift cursor-pointer group focus:outline-none focus:bg-surface/40 focus:border-accent"
+                className="grid grid-cols-[auto_1fr_120px_100px_100px] items-center gap-4 group"
               >
                 <div className="w-10 h-10 rounded-lg overflow-hidden border border-border-soft flex-shrink-0">
                   <img

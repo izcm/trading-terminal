@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { Search, ChartArea } from 'lucide-react'
 
 import { NFTGallery, Sidebar } from '@/components/organisms'
-import { TextInput } from '@/components/atoms'
+import { SidebarContainer, TextInput } from '@/components/atoms'
 
 import { AttributeSummary, Collection, NFT } from '@/types'
 import { CollectionBanner } from '@/components/molecules/CollectionBanner'
@@ -38,25 +38,33 @@ export const CollectionView = ({ collection, nfts, attributes: traits }: Collect
         </div>
 
         <Link href={`${contract}/create-order`}>
-          <button className="btn btn-secondary px-6">Make Collection Bid</button>
+          <button className="btn btn-primary px-6">make collection bid</button>
         </Link>
 
         <Link
           href={`/collection/${contract}/analytics`}
           className="
-            flex items-center gap-2
-            text-accent px-4 hover:text-accent/80 transition-colors
-            border border-soft p-2 rounded-lg
+            btn btn-secondary
           "
         >
-          <ChartArea /> View Analytics
+          <ChartArea /> view analytics
         </Link>
       </div>
 
+      {/* SIDEBAR */}
       <div className="flex gap-4">
-        <Sidebar traits={traitsAsArray} filters={filters} setFilters={setFilters} />
+        <aside
+          className="w-[400px] sticky top-2 overflow-scroll scrollbar-hide"
+          style={{ height: 'calc(100vh - 16px)' }}
+        >
+          <div className="flex flex-col gap-4 h-full">
+            {/* LATEST ACTIVITY */}
+            <div className="card h-80"></div>
+            <div className="card flex-1"></div>
+          </div>
+        </aside>
 
-        {/* Gallery target */}
+        {/* NFT GALLERY */}
         <main id="main" tabIndex={-1} className="w-full">
           <NFTGallery nfts={nfts} baseUrl={baseUrl} />
         </main>

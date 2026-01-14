@@ -62,7 +62,7 @@
   --border-soft: rgba(130, 151, 255, 0.39);
 
   --accent: #6d75ff;
-  --accent-weak: rgba(109, 117, 255, 0.24);
+  --accent-weak: rgba(109, 117, 255, 0.6);
   --accent-pink: #ff69b4;
   --accent-mango: #ffb347;
   --accent-green: #42ff9a;
@@ -522,6 +522,43 @@ input:focus {
   border: 1px solid;
   border-color: var(--border-default);
   border-radius: 0.5rem;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid;
+  border-color: var(--border-default);
+  border-radius: 0.5rem;
+  --divide-color: var(--border-soft);
+}
+
+.list > li {
+  outline: none;
+}
+
+.list > li > a > div[role='button'],
+.list > li > div[role='button'] {
+  cursor: pointer;
+  padding: 1rem;
+  text-align: start;
+  transition: all 0.2s;
+}
+
+.list > li > a > div[role='button']:hover,
+.list > li > div[role='button']:hover {
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--accent) 10%, transparent) 0%,
+    color-mix(in oklab, var(--accent) 5%, transparent) 100%
+  );
+}
+
+.list > li > a > div[role='button']:focus,
+.list > li > div[role='button']:focus {
+  outline: none;
+  background: color-mix(in oklab, var(--bg-surface) 100%, transparent);
+  border-color: var(--accent);
 }
 
 /* -------------------------------------------------

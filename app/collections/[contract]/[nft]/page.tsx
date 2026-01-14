@@ -1,7 +1,5 @@
 'use client'
 
-import { useParams } from 'next/navigation'
-
 export default function CollectionPage({ params }: { params: { address: string } }) {
   const { address } = params
 

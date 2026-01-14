@@ -28,20 +28,7 @@ export const Header = () => {
 
       {/* Right side - nav + wallet */}
       <div className="flex items-center gap-5">
-        <nav className="hidden sm:flex items-center gap-4">
-          <Link
-            href="/nft-gallery"
-            className="text-sm text-muted hover:text-primary transition-colors"
-          >
-            Gallery
-          </Link>
-          <Link
-            href="/approve-listing"
-            className="text-sm text-muted hover:text-primary transition-colors"
-          >
-            List
-          </Link>
-        </nav>
+        <nav className="hidden sm:flex items-center gap-4"></nav>
 
         {/* Wallet connect */}
         <ConnectButton />
