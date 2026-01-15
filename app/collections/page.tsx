@@ -31,7 +31,7 @@ export default async function BrowseCollectionsPage() {
 
   return (
     <main className="flex flex-col max-w-7xl mx-auto">
-      <div className="flex flex-row gap-8">
+      <div className="flex flex-row gap-4">
         <CollectionFilters />
         <CollectionList collections={collections} />
       </div>
