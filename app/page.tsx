@@ -7,7 +7,7 @@ import { getSales } from '@/lib/dmrkt-indexer/actions/sales'
 import type { Sale } from '@/data/types/sale'
 
 import { HomeCharts } from '@/components/organisms/HomeCharts'
-import { formatTs, tsMonthName } from '@/lib/utils/format'
+import { formatTsUTC, tsMonthNameUTC } from '@/lib/utils/time'
 
 // https://nextjs.org/docs/app/getting-started/error-handling
 

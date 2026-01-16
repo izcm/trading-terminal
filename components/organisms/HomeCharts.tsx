@@ -6,15 +6,14 @@ import { use, useEffect, useMemo, useState } from 'react'
 
 import { formatEther } from 'viem'
 
-import { LineChart } from '@/components/charts/LineChart'
+import { LineChart, BarChart } from '@/components/chartjs'
 
-import { tsMonthName, formatTs } from '@/lib/utils/format'
+import { tsMonthNameUTC, formatTsUTC, timeKey } from '@/lib/utils/time'
 import { months } from '@/data/constants/months'
 
 import type { Sale } from '@/data/types/sale'
 import type { Result } from '@/data/types/core/result'
 import type { PaginatedSales } from '@/lib/dmrkt-indexer/actions/sales'
-import { INSPECT_MAX_BYTES } from 'buffer'
 
 const mod = (n: number, m: number) => ((n % m) + m) % m
 
@@ -45,23 +44,21 @@ export const HomeCharts = ({ initialData }: { initialData: Promise<Result<Pagina
     fetchMore()
   }, [nextCursor])
 
-  const now = new Date(Date.now()).getMonth()
-  const window = [mod(now - 2, months.length), mod(now - 1, months.length), now]
-
-  const byEpoch = useMemo(() => {
+  const bucket = (sales: Sale[], unit: 'day' | 'month' | 'week') => {
     const map = new Map<string, number>()
 
-    window.forEach(epoch => {
-      const count = sales.filter(sale => {
-        const d = new Date(sale.timestamp)
-        return d.getMonth() === epoch // todo: make this generic eg. work with weeks, days, hour etc
-      }).length
+    for (const sale of sales) {
+      const key = timeKey(sale.timestamp, unit)
 
-      map.set(months[epoch], count)
-    })
+      map.set(key, (map.get(key) ?? 0) + 1)
+    }
 
     return map
-  }, [sales, window])
+  }
+
+  const byEpoch = useMemo(() => {
+    return bucket(sales, 'week')
+  }, [sales])
 
   return (
     <div className="flex flex-col gap-4">
@@ -70,11 +67,11 @@ export const HomeCharts = ({ initialData }: { initialData: Promise<Result<Pagina
           <LineChart labels={Array.from(byEpoch.keys())} data={Array.from(byEpoch.values())} />
         </div>
         <div className="h-80 w-1/3 card">
-          <LineChart labels={Array.from(byEpoch.keys())} data={Array.from(byEpoch.values())} />
+          <BarChart labels={Array.from(byEpoch.keys())} data={Array.from(byEpoch.values())} />
         </div>
-        <div className="h-80 w-1/3 card">
+        {/* <div className="h-80 w-1/3 card">
           <LineChart labels={Array.from(byEpoch.keys())} data={Array.from(byEpoch.values())} />
-        </div>
+        </div> */}
       </div>
 
       <div className="flex gap-4 h-150 overflow-y-hidden">
@@ -83,7 +80,7 @@ export const HomeCharts = ({ initialData }: { initialData: Promise<Result<Pagina
             <li key={sale.txHash} className="border-b border-soft">
               <Link href="/collections" className="focus-visible:ring-accent rounded-lg">
                 <div role="button" className="flex justify-between text-muted">
-                  <span>{formatTs(sale.timestamp)}</span>
+                  <span>{formatTsUTC(sale.timestamp)}</span>
                   <span>{formatEther(BigInt(sale.price))} ETH</span>
                 </div>
               </Link>
