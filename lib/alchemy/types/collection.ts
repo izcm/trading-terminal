@@ -1,4 +1,4 @@
-import { Collection } from '@/types'
+import { Collection } from '@/data/types'
 
 export type AlchemyCollection = {
   address: string

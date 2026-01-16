@@ -1,4 +1,6 @@
-export const formatTs = (ts: bigint | number) => {
+import { months } from '@/data/constants/months'
+
+export const formatTs = (ts: number) => {
   const date = new Date(Number(ts))
 
   const yy = String(date.getFullYear()).slice(-2)
@@ -8,4 +10,8 @@ export const formatTs = (ts: bigint | number) => {
   const min = String(date.getMinutes()).padStart(2, '0')
 
   return `${yy}.${mm}.${dd} ${hh}:${min}`
+}
+
+export const tsMonthName = (ts: number) => {
+  return months[new Date(ts).getMonth()]
 }

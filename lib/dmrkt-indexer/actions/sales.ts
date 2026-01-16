@@ -1,19 +1,29 @@
-import { Result } from '@/types/core/result'
+import { Result } from '@/data/types/core/result'
 
-import type { Sale, Settlement } from '@/types/sale'
-import { normalizeSettlement } from '@/types/sale'
+import type { Sale, Settlement } from '@/data/types/sale'
+import { settlementToSale } from '@/data/types/sale'
 
 import { DMRKT_INDEXER_BASE_URL as baseUrl } from '../constants'
 
-export const getSales = async (): Promise<Result<Sale[]>> => {
-  const url = `${baseUrl}/api/settlements`
+export type PaginatedSales = {
+  items: Sale[]
+  nextCursor: string | null
+}
+
+export const getSales = async (query = 'limit=50'): Promise<Result<PaginatedSales>> => {
+  const url = `${baseUrl}/api/settlements?${query}`
 
   try {
     const res = await fetch(url)
     const data = await res.json()
 
-    const sales = data.map((item: Settlement) => normalizeSettlement(item))
-    return { ok: true, data: sales }
+    return {
+      ok: true,
+      data: {
+        items: data.items.map((item: Settlement) => settlementToSale(item)),
+        nextCursor: data.nextCursor,
+      },
+    }
   } catch (err) {
     return { ok: false, error: `Error getting sales: ${err}` }
   }

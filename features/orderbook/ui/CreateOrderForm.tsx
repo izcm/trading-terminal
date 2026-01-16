@@ -8,7 +8,7 @@ import { parseEther } from 'viem'
 // local
 import { domain, fields } from '@/features/orderbook/eip712'
 import { createOrder } from '../actions/create-order'
-import { FormSelect } from '@/components/atoms/FormSelect'
+import { FormSelect } from '@/components/molecules/FormSelect'
 
 import { DURATIONS } from '../constants'
 

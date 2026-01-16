@@ -23,7 +23,7 @@ import { formatTs, tsMonthName } from '@/lib/utils/format'
 // }
 
 export default async function Home() {
-  const res = getSales()
+  const res = getSales('limit=25')
 
   return (
     <div className="flex flex-col gap-4 max-w-7xl mx-auto">

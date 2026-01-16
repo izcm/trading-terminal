@@ -1,4 +1,4 @@
-import { NFT } from '@/types/nft'
+import { NFT } from '@/data/types/nft'
 
 export type AlchemyNFTResponse = {
   nfts: AlchemyNFT[]

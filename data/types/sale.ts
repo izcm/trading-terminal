@@ -3,7 +3,7 @@
 export type Sale = {
   orderHash: string
   collection: `0x${string}`
-  tokenId: BigInt
+  tokenId: string
   seller: `0x${string}`
   buyer: `0x${string}`
   currency: `0x${string}`
@@ -31,11 +31,11 @@ export type Settlement = {
   }
 }
 
-export const normalizeSettlement = (s: Settlement): Sale => {
+export const settlementToSale = (s: Settlement): Sale => {
   return {
     orderHash: s.orderHash,
     collection: s.collection,
-    tokenId: BigInt(s.tokenId),
+    tokenId: s.tokenId,
     seller: s.seller,
     buyer: s.buyer,
     currency: s.currency,

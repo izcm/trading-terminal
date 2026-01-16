@@ -3,7 +3,7 @@
 import { Search } from 'lucide-react'
 import { TextInput } from '@/components/atoms/TextInput'
 import { Checkbox } from '@/components/atoms/Checkbox'
-import { FormSelect } from '@/components/atoms/FormSelect'
+import { FormSelect } from '@/components/molecules/FormSelect'
 import { SidebarContainer } from '../../atoms/SidebarContainer'
 
 export function CollectionFilters() {

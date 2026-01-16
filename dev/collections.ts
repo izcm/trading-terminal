@@ -1,4 +1,4 @@
-import type { Collection } from '@/types'
+import type { Collection } from '@/data/types'
 
 export const getDemoCollections = (): Collection[] => {
   return DEMO_COLLECTIONS
