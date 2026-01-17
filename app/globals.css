@@ -520,28 +520,23 @@ input:focus {
 }
 
 .list {
-  display: flex;
-  flex-direction: column;
   border: 1px solid;
   border-color: var(--border-default);
   border-radius: 0.5rem;
   --divide-color: var(--border-soft);
 }
 
-.list > li {
-  outline: none;
-}
-
-.list > li > a {
+.interactive-row {
   cursor: pointer;
   padding: 1rem;
   text-align: start;
-  transition: all 0.2s;
   display: flex;
-  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s ease;
 }
 
-.list > li > a:hover {
+.interactive-row:hover {
   background: linear-gradient(
     135deg,
     color-mix(in oklab, var(--accent) 10%, transparent) 0%,
@@ -549,10 +544,16 @@ input:focus {
   );
 }
 
-.list > li > a:focus {
+.interactive-row:focus-visible {
   outline: none;
   background: color-mix(in oklab, var(--bg-surface) 100%, transparent);
   border-color: var(--accent);
+}
+
+/* applied to list rows that apply filters to page */
+.filter-row[data-active='true'] {
+  border-left: 2px solid var(--accent);
+  background: color-mix(in oklab, var(--accent) 12%, transparent);
 }
 
 /* -------------------------------------------------

@@ -5,8 +5,8 @@ export type Collection = {
   address: `0x${string}`
   name: string
   symbol: string
-  totalSupply: string
-  tokenType: string
+  totalSupply?: string
+  tokenType?: string
   description?: string
   imageUrl?: string
   bannerImageUrl?: string

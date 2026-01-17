@@ -1,13 +1,20 @@
+// all of this is just placeholder stuff
+// since the demo is on a local anvil fork
+
 import type { Collection } from '@/data/types'
 
-export const getDemoCollections = (): Collection[] => {
+export const getCollections = (): Collection[] => {
   return DEMO_COLLECTIONS
+}
+
+export const getCollection = (addr: `0x${string}`) => {
+  return DEMO_COLLECTIONS.find(col => col.address === addr)
 }
 
 // TODO: addresses are already deterministic, but make this less "hardcoded" vibe
 const DEMO_COLLECTIONS: Collection[] = [
   {
-    address: '0x87a97BC3a0EC7952F4F2C8d22eD5c0A56811fd10',
+    address: '0xC0Bd89573eDD265D3d9E0073f6D1e21e9Df5E1DA',
     name: 'DMrktSeal',
     symbol: 'DSEAL',
     totalSupply: '100',
@@ -21,7 +28,7 @@ const DEMO_COLLECTIONS: Collection[] = [
     },
   },
   {
-    address: '0x685009Edc4Df588555d7e7Ed4854c450b423DD97',
+    address: '0x6FE69253967982531bDe0C06476e7fe427f3F56c',
     name: 'DMrktGremlin',
     symbol: 'DGREM',
     totalSupply: '100',

@@ -4,21 +4,21 @@ import Link from 'next/link'
 import 'chart.js/auto'
 
 import { use, useEffect, useMemo, useState } from 'react'
-
 import { formatEther } from 'viem'
 
-import { LineChart, BarChart, DoghnutChart } from '@/components/chartjs'
+import { BaseChart } from '@/components/chartjs/BaseChart'
+import { createDataset } from '../chartjs/ChartProps'
 
-import { tsMonthNameUTC, formatTsUTC, timeKey } from '@/lib/utils/time'
-import { months } from '@/data/constants/months'
+import { formatTsUTC } from '@/lib/utils/time'
+
+import { aggregateSales, topNBy } from '@/lib/utils/analytics/sales'
+import { weiToChartNumber } from '@/lib/utils/chart'
 
 import type { Sale } from '@/data/types/sale'
 import type { Result } from '@/data/types/core/result'
 import type { PaginatedSales } from '@/lib/dmrkt-indexer/actions/sales'
-import { aggregateSales } from '@/lib/utils/analytics/sales'
-import { weiToChartNumber } from '@/lib/utils/chart'
 
-const mod = (n: number, m: number) => ((n % m) + m) % m
+import { getCollection } from '@/dev/collections'
 
 export const HomeCharts = ({ initialData }: { initialData: Promise<Result<PaginatedSales>> }) => {
   const initial = use(initialData)
@@ -29,6 +29,22 @@ export const HomeCharts = ({ initialData }: { initialData: Promise<Result<Pagina
 
   const [sales, setSales] = useState<Sale[]>(initial.data.items)
   const [nextCursor, setNextCursor] = useState<string | null>(initial.data.nextCursor)
+  const [filters, setFilters] = useState<{
+    collection: `0x${string}` | null
+    epoch: string | null
+  }>({
+    collection: null,
+    epoch: null,
+  })
+
+  const handleFilters = (filter: 'collection', value: any) => {
+    if (filters[filter] === value) value = null
+
+    setFilters(prev => ({
+      ...prev,
+      [filter]: value,
+    }))
+  }
 
   useEffect(() => {
     if (!nextCursor) return
@@ -47,18 +63,6 @@ export const HomeCharts = ({ initialData }: { initialData: Promise<Result<Pagina
     fetchMore()
   }, [nextCursor])
 
-  const bucket = (sales: Sale[], unit: 'day' | 'month' | 'week') => {
-    const map = new Map<string, number>()
-
-    for (const sale of sales) {
-      const key = timeKey(sale.timestamp, unit)
-
-      map.set(key, (map.get(key) ?? 0) + 1)
-    }
-
-    return map
-  }
-
   const analytics = useMemo(() => {
     return aggregateSales(sales, 'week')
   }, [sales])
@@ -66,30 +70,62 @@ export const HomeCharts = ({ initialData }: { initialData: Promise<Result<Pagina
   const epochLabels = Array.from(analytics.byEpoch.keys())
   const epochData = Array.from(analytics.byEpoch.entries())
 
-  const total = epochData.map(([, v]) => weiToChartNumber(v.volume))
+  const topCollections = topNBy(analytics.byCollection, 'volume', 3)
+  const topCollectionsMeta: Record<string, { name: string; symbol: string }> = Object.fromEntries(
+    topCollections.map(([k]) => {
+      const meta = getCollection(k as `0x${string}`) // tmp will do rpc call + useeffect
+      return [k, { name: meta!.name, symbol: meta!.symbol }] // tmp... will fix error handling
+    })
+  )
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-4">
         <div className="h-80 w-1/3 card">
-          <LineChart labels={epochLabels} data={epochData.map(([, v]) => v.count)} />
-        </div>
-        <div className="h-80 w-1/3 card">
-          <BarChart
+          <BaseChart
+            type={'line'}
             labels={epochLabels}
-            data={epochData.map(([, v]) => weiToChartNumber(v.volume))}
+            datasets={[
+              createDataset(
+                'bar',
+                epochData.map(([, v]) => v.count)
+              ),
+            ]}
           />
         </div>
-        <ul className="h-80 w-1/3 card list"></ul>
+        <div className="h-80 w-1/3 card">
+          <BaseChart
+            type={'bar'}
+            labels={epochLabels}
+            datasets={[
+              createDataset(
+                'line',
+                epochData.map(([, v]) => weiToChartNumber(v.volume))
+              ),
+            ]}
+          />
+        </div>
+        <ul className="h-80 w-1/3 card">
+          {topCollections.map(([k, v], i) => (
+            <li
+              key={k}
+              className="interactive-row filter-row"
+              data-active={filters.collection === k}
+              onClick={() => handleFilters('collection', k)}
+            >
+              # {i + 1} | {topCollectionsMeta[k].name} | {topCollectionsMeta[k].symbol} | {v.volume}
+            </li>
+          ))}
+        </ul>
       </div>
 
       <div className="flex gap-4 h-150 overflow-y-hidden">
-        <ul className="flex-1 card list overflow-y-auto no-scrollbar">
+        <ul className="flex-1 card overflow-y-auto no-scrollbar">
           {sales.map(sale => (
-            <li key={sale.txHash} className="border-b border-soft">
+            <li key={sale.txHash} className="interactive-row">
               <Link
                 href="/collections"
-                className="flex justify-between text-muted focus-visible:ring-accent rounded-lg"
+                className="flex justify-between w-full text-muted focus-visible:ring-accent rounded-lg"
               >
                 <span>{formatTsUTC(sale.timestamp)}</span>
                 <span>{formatEther(BigInt(sale.price))} ETH</span>
@@ -97,7 +133,23 @@ export const HomeCharts = ({ initialData }: { initialData: Promise<Result<Pagina
             </li>
           ))}
         </ul>
-        <ul className="flex-1 card list">
+        <div className="h-80 w-1/3 card">
+          <BaseChart
+            type={'bar'}
+            labels={epochLabels}
+            datasets={[
+              createDataset(
+                'bar',
+                epochData.map(([, v]) => weiToChartNumber(v.volume))
+              ),
+              createDataset(
+                'line',
+                epochData.map(([, v]) => weiToChartNumber(v.volume))
+              ),
+            ]}
+          />
+        </div>
+        {/* <ul className="flex-1 card list">
           {sales.map(sale => (
             <li key={`c-${sale.orderHash}`}>
               <Link href={`./`} className="focus-visible:ring-accent rounded-lg">
@@ -105,7 +157,7 @@ export const HomeCharts = ({ initialData }: { initialData: Promise<Result<Pagina
               </Link>
             </li>
           ))}
-        </ul>
+        </ul> */}
       </div>
     </div>
   )

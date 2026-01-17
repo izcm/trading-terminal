@@ -4,7 +4,7 @@ import { CollectionList } from '@/components/organisms/CollectionList'
 // import { toCollection } from '@/lib/alchemy/types/collection'
 
 // import { getCollectionMetadata } from '@/lib/alchemy'
-import { getDemoCollections } from '@/dev/collections'
+import { getCollections } from '@/dev/collections'
 
 export default async function BrowseCollectionsPage() {
   // TODO: update this to use https://www.alchemy.com/docs/reference/nft-api-endpoints/nft-api-endpoints/nft-metadata-endpoints/get-contract-metadata-batch-v-3
@@ -27,7 +27,7 @@ export default async function BrowseCollectionsPage() {
   //   return toCollection(c)
   // })
 
-  const collections = getDemoCollections()
+  const collections = getCollections()
 
   return (
     <main className="flex flex-col max-w-7xl mx-auto">

@@ -30,3 +30,18 @@ export const aggregateSales = (sales: Sale[], unit: 'day' | 'month' | 'week') =>
     byCollection,
   }
 }
+
+export const topNBy = (map: Map<string, SalesAnalytics>, key: keyof SalesAnalytics, n: number) => {
+  return Array.from(map)
+    .sort(([, a], [, b]) => {
+      const av = a[key]
+      const bv = b[key]
+
+      if (typeof av === 'bigint' && typeof bv === 'bigint') {
+        return Number(av > bv) - Number(av < bv)
+      }
+
+      return Number(av) - Number(bv)
+    })
+    .slice(0, n)
+}
