@@ -1,12 +1,12 @@
-const purpleBars = [
-  'rgba(109, 117, 255, 0.4)',
-  'rgba(109, 117, 255, 0.6)',
-  'rgba(109, 117, 255, 0.8)',
+const purpleShades = [
+  'rgba(99, 107, 255, 0.32)', // cooler, more blue-leaning
+  'rgba(109, 117, 255, 0.24)', // your base purple
+  'rgba(125, 110, 255, 0.16)', // warmer, slightly magenta
 ]
 
 const defaultLook = {
-  color: '#6d75ff',
-  borderWidth: 1.6,
+  color: '#6d75ff96',
+  borderWidth: 2,
   borderRadius: 4,
   tension: 0.3,
 }
@@ -29,22 +29,19 @@ export const barDataset = {
   borderRadius: defaultLook.borderRadius,
 }
 
+export const doghnutDataset = {
+  backgroundColor: purpleShades,
+  borderColor: 'transparent',
+}
+
 export const defaultOptions = {
   maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      display: false,
+    },
+  },
   layout: {
     padding: 20,
-  },
-  scales: {
-    y: {
-      min: 0,
-      grid: {
-        lineWidth: 0.2,
-      },
-    },
-    x: {
-      grid: {
-        lineWidth: 0.2,
-      },
-    },
   },
 }

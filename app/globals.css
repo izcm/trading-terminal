@@ -532,16 +532,16 @@ input:focus {
   outline: none;
 }
 
-.list > li > a > div[role='button'],
-.list > li > div[role='button'] {
+.list > li > a {
   cursor: pointer;
   padding: 1rem;
   text-align: start;
   transition: all 0.2s;
+  display: flex;
+  width: 100%;
 }
 
-.list > li > a > div[role='button']:hover,
-.list > li > div[role='button']:hover {
+.list > li > a:hover {
   background: linear-gradient(
     135deg,
     color-mix(in oklab, var(--accent) 10%, transparent) 0%,
@@ -549,8 +549,7 @@ input:focus {
   );
 }
 
-.list > li > a > div[role='button']:focus,
-.list > li > div[role='button']:focus {
+.list > li > a:focus {
   outline: none;
   background: color-mix(in oklab, var(--bg-surface) 100%, transparent);
   border-color: var(--accent);

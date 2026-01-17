@@ -1,12 +1,13 @@
 'use client'
 
 import Link from 'next/link'
+import 'chart.js/auto'
 
 import { use, useEffect, useMemo, useState } from 'react'
 
 import { formatEther } from 'viem'
 
-import { LineChart, BarChart } from '@/components/chartjs'
+import { LineChart, BarChart, DoghnutChart } from '@/components/chartjs'
 
 import { tsMonthNameUTC, formatTsUTC, timeKey } from '@/lib/utils/time'
 import { months } from '@/data/constants/months'
@@ -14,6 +15,8 @@ import { months } from '@/data/constants/months'
 import type { Sale } from '@/data/types/sale'
 import type { Result } from '@/data/types/core/result'
 import type { PaginatedSales } from '@/lib/dmrkt-indexer/actions/sales'
+import { aggregateSales } from '@/lib/utils/analytics/sales'
+import { weiToChartNumber } from '@/lib/utils/chart'
 
 const mod = (n: number, m: number) => ((n % m) + m) % m
 
@@ -56,33 +59,40 @@ export const HomeCharts = ({ initialData }: { initialData: Promise<Result<Pagina
     return map
   }
 
-  const byEpoch = useMemo(() => {
-    return bucket(sales, 'week')
+  const analytics = useMemo(() => {
+    return aggregateSales(sales, 'week')
   }, [sales])
+
+  const epochLabels = Array.from(analytics.byEpoch.keys())
+  const epochData = Array.from(analytics.byEpoch.entries())
+
+  const total = epochData.map(([, v]) => weiToChartNumber(v.volume))
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-4">
         <div className="h-80 w-1/3 card">
-          <LineChart labels={Array.from(byEpoch.keys())} data={Array.from(byEpoch.values())} />
+          <LineChart labels={epochLabels} data={epochData.map(([, v]) => v.count)} />
         </div>
         <div className="h-80 w-1/3 card">
-          <BarChart labels={Array.from(byEpoch.keys())} data={Array.from(byEpoch.values())} />
+          <BarChart
+            labels={epochLabels}
+            data={epochData.map(([, v]) => weiToChartNumber(v.volume))}
+          />
         </div>
-        {/* <div className="h-80 w-1/3 card">
-          <LineChart labels={Array.from(byEpoch.keys())} data={Array.from(byEpoch.values())} />
-        </div> */}
+        <ul className="h-80 w-1/3 card list"></ul>
       </div>
 
       <div className="flex gap-4 h-150 overflow-y-hidden">
         <ul className="flex-1 card list overflow-y-auto no-scrollbar">
           {sales.map(sale => (
             <li key={sale.txHash} className="border-b border-soft">
-              <Link href="/collections" className="focus-visible:ring-accent rounded-lg">
-                <div role="button" className="flex justify-between text-muted">
-                  <span>{formatTsUTC(sale.timestamp)}</span>
-                  <span>{formatEther(BigInt(sale.price))} ETH</span>
-                </div>
+              <Link
+                href="/collections"
+                className="flex justify-between text-muted focus-visible:ring-accent rounded-lg"
+              >
+                <span>{formatTsUTC(sale.timestamp)}</span>
+                <span>{formatEther(BigInt(sale.price))} ETH</span>
               </Link>
             </li>
           ))}
