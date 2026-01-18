@@ -26,7 +26,7 @@ export default async function Home() {
   const res = getSales('limit=25')
 
   return (
-    <div className="flex flex-col gap-4 max-w-7xl mx-auto">
+    <main className="flex flex-col gap-4 max-w-7xl mx-auto">
       <div className="flex items-center">
         <section className="flex-2 flex justify-evenly text-accent">
           <span>
@@ -52,6 +52,6 @@ export default async function Home() {
       </div>
 
       <HomeCharts initialData={res} />
-    </div>
+    </main>
   )
 }

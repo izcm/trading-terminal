@@ -133,7 +133,7 @@ export const HomeCharts = ({ initialData }: { initialData: Promise<Result<Pagina
         </ul>
       </div>
 
-      <div className="flex gap-4 h-150 overflow-y-hidden">
+      <div className="flex gap-4 yoverflow-y-hidden">
         <ul className="flex-1 card overflow-y-auto no-scrollbar">
           {sales.map(sale => (
             <li key={sale.txHash} className="interactive-row">
