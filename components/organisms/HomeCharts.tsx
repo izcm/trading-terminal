@@ -70,9 +70,14 @@ export const HomeCharts = ({ initialData }: { initialData: Promise<Result<Pagina
   const epochLabels = Array.from(analytics.byEpoch.keys())
   const epochData = Array.from(analytics.byEpoch.entries())
 
-  const topCollections = topNBy(analytics.byCollection, 'volume', 3)
+  const topCollectionsList = topNBy(analytics.byCollection, 'volume', 3)
+  const topCollectionsByKey = useMemo(
+    () => Object.fromEntries(topCollectionsList),
+    [topCollectionsList]
+  )
+
   const topCollectionsMeta: Record<string, { name: string; symbol: string }> = Object.fromEntries(
-    topCollections.map(([k]) => {
+    topCollectionsList.map(([k]) => {
       const meta = getCollection(k as `0x${string}`) // tmp will do rpc call + useeffect
       return [k, { name: meta!.name, symbol: meta!.symbol }] // tmp... will fix error handling
     })
@@ -80,40 +85,49 @@ export const HomeCharts = ({ initialData }: { initialData: Promise<Result<Pagina
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center gap-4">
-        <div className="h-80 w-1/3 card">
-          <BaseChart
-            type={'line'}
-            labels={epochLabels}
-            datasets={[
-              createDataset(
-                'bar',
-                epochData.map(([, v]) => v.count)
-              ),
-            ]}
-          />
+      <div className="flex gap-4 h-80">
+        <div className="basis-2/3 flex gap-4">
+          <div className="w-1/2 card">
+            <BaseChart
+              type={'line'}
+              labels={epochLabels}
+              datasets={[
+                createDataset(
+                  'line',
+                  epochData.map(([, v]) => v.count)
+                ),
+              ]}
+            />
+          </div>
+          <div className="w-1/2 card">
+            <BaseChart
+              type={'bar'}
+              labels={epochLabels}
+              datasets={[
+                createDataset(
+                  'bar',
+                  epochData.map(([, v]) => weiToChartNumber(v.volume))
+                ),
+              ]}
+            />
+          </div>
         </div>
-        <div className="h-80 w-1/3 card">
-          <BaseChart
-            type={'bar'}
-            labels={epochLabels}
-            datasets={[
-              createDataset(
-                'line',
-                epochData.map(([, v]) => weiToChartNumber(v.volume))
-              ),
-            ]}
-          />
-        </div>
-        <ul className="h-80 w-1/3 card">
-          {topCollections.map(([k, v], i) => (
+        <ul className="basis-1/3 card">
+          {topCollectionsList.map(([k, v], i) => (
             <li
               key={k}
-              className="interactive-row filter-row"
+              className="interactive-row filter-row flex items-center gap-3 text-muted"
               data-active={filters.collection === k}
               onClick={() => handleFilters('collection', k)}
             >
-              # {i + 1} | {topCollectionsMeta[k].name} | {topCollectionsMeta[k].symbol} | {v.volume}
+              {/* rank */}
+              <span className="text-sm">#{i + 1}</span>
+
+              {/* symbol */}
+              <span>{topCollectionsMeta[k].symbol}</span>
+
+              <span className="text-sm">floor ---</span>
+              <span className="text-sm">{formatEther(topCollectionsByKey[k].volume)} ETH</span>
             </li>
           ))}
         </ul>
@@ -133,31 +147,35 @@ export const HomeCharts = ({ initialData }: { initialData: Promise<Result<Pagina
             </li>
           ))}
         </ul>
-        <div className="h-80 w-1/3 card">
-          <BaseChart
-            type={'bar'}
-            labels={epochLabels}
-            datasets={[
-              createDataset(
-                'bar',
-                epochData.map(([, v]) => weiToChartNumber(v.volume))
-              ),
-              createDataset(
-                'line',
-                epochData.map(([, v]) => weiToChartNumber(v.volume))
-              ),
-            ]}
-          />
+
+        {/* TOP ACTORS */}
+        <div className="w-2/5 flex flex-col card">
+          <span className="text-xs text-muted my-2">B = buy volume · S = sell volume</span>
+          <ul>
+            {topCollectionsList.map(([k, v], i) => (
+              <li
+                key={k}
+                className="interactive-row filter-row flex items-center gap-3 text-muted"
+                data-active={filters.collection === k}
+              >
+                <span className="w-6 text-sm">#{i + 1}</span>
+
+                {/* address */}
+                <div className="flex-1 truncate font-medium">0x123abc</div>
+
+                <span className="flex items-center gap-1 text-sm text-muted">
+                  <span className="text-xs opacity-60">B</span>
+                  {formatEther(v.volume)}
+                </span>
+
+                <span className="flex items-center gap-1 text-sm text-muted">
+                  <span className="text-xs opacity-60">S</span>
+                  {formatEther(v.volume)}
+                </span>
+              </li>
+            ))}
+          </ul>
         </div>
-        {/* <ul className="flex-1 card list">
-          {sales.map(sale => (
-            <li key={`c-${sale.orderHash}`}>
-              <Link href={`./`} className="focus-visible:ring-accent rounded-lg">
-                {sale.txHash}
-              </Link>
-            </li>
-          ))}
-        </ul> */}
       </div>
     </div>
   )
