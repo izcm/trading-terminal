@@ -37,7 +37,7 @@ export default async function BrowseCollectionsPage() {
         {/* ORDERBOOK LATEST ORDERS */}
         <div className="flex-1 flex card">latest active orders</div>
         {/* COLLECTION LIST */}
-        <div className="flex-1 flex list">collections</div>
+        <div className="flex-1 flex card list">collections</div>
       </section>
 
       <section className="basis-1/3 flex flex-col gap-4">

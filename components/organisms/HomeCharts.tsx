@@ -11,14 +11,15 @@ import { createDataset } from '../chartjs/ChartProps'
 
 import { formatTsUTC } from '@/lib/utils/time'
 
-import { aggregateSales, topNBy } from '@/lib/utils/analytics/sales'
-import { weiToChartNumber } from '@/lib/utils/chart'
+import { aggregateSales, floor, topNBy } from '@/lib/utils/analytics/sales'
+import { formatEth2, weiToChartNumber } from '@/lib/utils/price'
 
 import type { Sale } from '@/data/types/sale'
 import type { Result } from '@/data/types/core/result'
 import type { PaginatedSales } from '@/lib/dmrkt-indexer/actions/sales'
 
 import { getCollection } from '@/dev/collections'
+import { stringifyCookie } from 'next/dist/compiled/@edge-runtime/cookies'
 
 export const HomeCharts = ({ initialData }: { initialData: Promise<Result<PaginatedSales>> }) => {
   const initial = use(initialData)
@@ -70,7 +71,7 @@ export const HomeCharts = ({ initialData }: { initialData: Promise<Result<Pagina
   const epochLabels = Array.from(analytics.byEpoch.keys())
   const epochData = Array.from(analytics.byEpoch.entries())
 
-  const topCollectionsList = topNBy(analytics.byCollection, 'volume', 3)
+  const topCollectionsList = topNBy(analytics.byCollection, a => a.volume, 3)
   const topCollectionsByKey = useMemo(
     () => Object.fromEntries(topCollectionsList),
     [topCollectionsList]
@@ -82,6 +83,8 @@ export const HomeCharts = ({ initialData }: { initialData: Promise<Result<Pagina
       return [k, { name: meta!.name, symbol: meta!.symbol }] // tmp... will fix error handling
     })
   )
+
+  const topActors = topNBy(analytics.byActor, a => a.buy.volume + a.sell.volume, 10)
 
   return (
     <div className="flex flex-col gap-4">
@@ -113,10 +116,11 @@ export const HomeCharts = ({ initialData }: { initialData: Promise<Result<Pagina
           </div>
         </div>
         <ul className="basis-1/3 card">
+          <span className="text-xs text-muted my-2">F = floor price · V = volume</span>
           {topCollectionsList.map(([k, v], i) => (
             <li
               key={k}
-              className="interactive-row filter-row flex items-center gap-3 text-muted"
+              className={`interactive-row filter-row flex items-center gap-3 text-muted`}
               data-active={filters.collection === k}
               onClick={() => handleFilters('collection', k)}
             >
@@ -126,14 +130,21 @@ export const HomeCharts = ({ initialData }: { initialData: Promise<Result<Pagina
               {/* symbol */}
               <span>{topCollectionsMeta[k].symbol}</span>
 
-              <span className="text-sm">floor ---</span>
-              <span className="text-sm">{formatEther(topCollectionsByKey[k].volume)} ETH</span>
+              <div className="flex items-center gap-2">
+                <span className="sub-text">F</span>
+                <span>{formatEth2(floor(sales, 'collection', k))} ETH</span>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="sub-text">V</span>
+                <span>{formatEth2(floor(sales, 'collection', k))} ETH</span>
+              </div>
             </li>
           ))}
         </ul>
       </div>
 
-      <div className="flex gap-4 yoverflow-y-hidden">
+      <div className="flex gap-4 h-150 overflow-y-hidden">
         <ul className="flex-1 card overflow-y-auto no-scrollbar">
           {sales.map(sale => (
             <li key={sale.txHash} className="interactive-row">
@@ -142,7 +153,7 @@ export const HomeCharts = ({ initialData }: { initialData: Promise<Result<Pagina
                 className="flex justify-between w-full text-muted focus-visible:ring-accent rounded-lg"
               >
                 <span>{formatTsUTC(sale.timestamp)}</span>
-                <span>{formatEther(BigInt(sale.price))} ETH</span>
+                <span>{formatEth2(BigInt(sale.price))} ETH</span>
               </Link>
             </li>
           ))}
@@ -152,26 +163,25 @@ export const HomeCharts = ({ initialData }: { initialData: Promise<Result<Pagina
         <div className="w-2/5 flex flex-col card">
           <span className="text-xs text-muted my-2">B = buy volume · S = sell volume</span>
           <ul>
-            {topCollectionsList.map(([k, v], i) => (
+            {topActors.map(([k, a], i) => (
               <li
                 key={k}
-                className="interactive-row filter-row flex items-center gap-3 text-muted"
+                className="interactive-row filter-row flex justify-evenly text-muted"
                 data-active={filters.collection === k}
               >
-                <span className="w-6 text-sm">#{i + 1}</span>
+                <span className="text-sm">#{i + 1}</span>
 
-                {/* address */}
-                <div className="flex-1 truncate font-medium">0x123abc</div>
+                <span className="">{k.slice(0, 4)}</span>
 
-                <span className="flex items-center gap-1 text-sm text-muted">
-                  <span className="text-xs opacity-60">B</span>
-                  {formatEther(v.volume)}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="sub-text">B</span>
+                  <span>{formatEth2(a.buy.volume)} ETH</span>
+                </div>
 
-                <span className="flex items-center gap-1 text-sm text-muted">
-                  <span className="text-xs opacity-60">S</span>
-                  {formatEther(v.volume)}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="sub-text">S</span>
+                  <span>{formatEth2(a.sell.volume)} ETH</span>
+                </div>
               </li>
             ))}
           </ul>

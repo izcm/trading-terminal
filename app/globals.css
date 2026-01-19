@@ -519,12 +519,6 @@ input:focus {
   border-radius: 0.5rem;
 }
 
-.list {
-  border: 1px solid;
-  border-color: var(--border-default);
-  border-radius: 0.5rem;
-}
-
 .interactive-row {
   cursor: pointer;
   padding: 1rem;
@@ -547,6 +541,12 @@ input:focus {
   outline: none;
   background: color-mix(in oklab, var(--bg-surface) 100%, transparent);
   border-color: var(--accent);
+}
+
+.sub-text {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  opacity: 0.6;
 }
 
 /* applied to list rows that apply filters to page */
