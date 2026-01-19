@@ -4,22 +4,21 @@ import Link from 'next/link'
 import 'chart.js/auto'
 
 import { use, useEffect, useMemo, useState } from 'react'
-import { formatEther } from 'viem'
+
+import { getCollection } from '@/dev/collections'
 
 import { BaseChart } from '@/components/chartjs/BaseChart'
 import { createDataset } from '../chartjs/ChartProps'
 
-import { formatTsUTC } from '@/lib/utils/time'
-
 import { aggregateSales, floor, topNBy } from '@/lib/utils/analytics/sales'
-import { formatEth2, weiToChartNumber } from '@/lib/utils/price'
+
+import { formatTsUTC } from '@/lib/utils/format/time'
+import { formatEth2, weiToChartNumber } from '@/lib/utils/format/bigint'
 
 import type { Sale } from '@/data/types/sale'
 import type { Result } from '@/data/types/core/result'
 import type { PaginatedSales } from '@/lib/dmrkt-indexer/actions/sales'
-
-import { getCollection } from '@/dev/collections'
-import { stringifyCookie } from 'next/dist/compiled/@edge-runtime/cookies'
+import { addrDisplay } from '@/lib/utils/format/address'
 
 export const HomeCharts = ({ initialData }: { initialData: Promise<Result<PaginatedSales>> }) => {
   const initial = use(initialData)
@@ -88,7 +87,7 @@ export const HomeCharts = ({ initialData }: { initialData: Promise<Result<Pagina
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex gap-4 h-80">
+      <div className="flex gap-4 h-72">
         <div className="basis-2/3 flex gap-4">
           <div className="w-1/2 card">
             <BaseChart
@@ -116,7 +115,9 @@ export const HomeCharts = ({ initialData }: { initialData: Promise<Result<Pagina
           </div>
         </div>
         <ul className="basis-1/3 card">
-          <span className="text-xs text-muted my-2">F = floor price · V = volume</span>
+          <span className="text-xs text-muted my-2">
+            Top Collections · F = floor price · V = volume
+          </span>
           {topCollectionsList.map(([k, v], i) => (
             <li
               key={k}
@@ -131,13 +132,13 @@ export const HomeCharts = ({ initialData }: { initialData: Promise<Result<Pagina
               <span>{topCollectionsMeta[k].symbol}</span>
 
               <div className="flex items-center gap-2">
-                <span className="sub-text">F</span>
-                <span>{formatEth2(floor(sales, 'collection', k))} ETH</span>
+                <span className="text-xs text-stat/70">F</span>
+                <span>{formatEth2(floor(sales, 'collection', k as `0x${string}`))} ETH</span>
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="sub-text">V</span>
-                <span>{formatEth2(floor(sales, 'collection', k))} ETH</span>
+                <span className="text-xs text-stat/70">V</span>
+                <span>{formatEth2(topCollectionsByKey[k].volume)} ETH</span>
               </div>
             </li>
           ))}
@@ -150,9 +151,21 @@ export const HomeCharts = ({ initialData }: { initialData: Promise<Result<Pagina
             <li key={sale.txHash} className="interactive-row">
               <Link
                 href="/collections"
-                className="flex justify-between w-full text-muted focus-visible:ring-accent rounded-lg"
+                className="flex justify-between w-full text-muted rounded-lg"
               >
                 <span>{formatTsUTC(sale.timestamp)}</span>
+                <span>{topCollectionsMeta[sale.collection].symbol}</span>
+
+                {/* ACTORS */}
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-stat/70">Buyer</span>
+                  <span>{addrDisplay(sale.buyer)}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-stat/70">Seller</span>
+                  <span>{addrDisplay(sale.seller)}</span>
+                </div>
+
                 <span>{formatEth2(BigInt(sale.price))} ETH</span>
               </Link>
             </li>
@@ -161,7 +174,9 @@ export const HomeCharts = ({ initialData }: { initialData: Promise<Result<Pagina
 
         {/* TOP ACTORS */}
         <div className="w-2/5 flex flex-col card">
-          <span className="text-xs text-muted my-2">B = buy volume · S = sell volume</span>
+          <span className="text-xs text-muted my-2">
+            Top Actors · B = buy volume · S = sell volume
+          </span>
           <ul>
             {topActors.map(([k, a], i) => (
               <li
@@ -171,15 +186,15 @@ export const HomeCharts = ({ initialData }: { initialData: Promise<Result<Pagina
               >
                 <span className="text-sm">#{i + 1}</span>
 
-                <span className="">{k.slice(0, 4)}</span>
+                <span className="">{addrDisplay(k as `0x${string}`)}</span>
 
                 <div className="flex items-center gap-2">
-                  <span className="sub-text">B</span>
+                  <span className="text-xs text-stat/70">B</span>
                   <span>{formatEth2(a.buy.volume)} ETH</span>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <span className="sub-text">S</span>
+                  <span className="text-xs text-stat/70">S</span>
                   <span>{formatEth2(a.sell.volume)} ETH</span>
                 </div>
               </li>

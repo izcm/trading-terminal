@@ -1,5 +1,5 @@
 import type { Sale } from '@/data/types'
-import { timeKey } from '../time'
+import { timeKey } from '../format/time'
 import { ScatterController } from 'chart.js'
 import { projectHmrEvents } from 'next/dist/build/swc/generated-native'
 import { ACTION_REFRESH } from 'next/dist/next-devtools/dev-overlay/shared'
@@ -58,11 +58,16 @@ export const aggregateSales = (sales: Sale[], unit: 'day' | 'month' | 'week') =>
   }
 }
 
-export const floor = <T>(sales: Sale[], key: keyof Sale, value: T) => {
+export const floor = <K extends keyof Sale>(sales: Sale[], key: K, value: Sale[K]) => {
   const filtered = sales.filter(sale => sale[key] === value)
-  const min = filtered.reduce((min, curr) => (curr.price < min.price ? curr : min)).price
+  if (!filtered.length) return 0n
 
-  return BigInt(min)
+  const minWei = filtered.reduce((min, curr) => {
+    const p = BigInt(curr.price)
+    return p < min ? p : min
+  }, BigInt(filtered[0].price))
+
+  return minWei
 }
 
 export const topNBy = <T>(map: Map<string, T>, pick: (value: T) => number | bigint, n: number) => {
@@ -72,10 +77,10 @@ export const topNBy = <T>(map: Map<string, T>, pick: (value: T) => number | bigi
       const bv = pick(b)
 
       if (typeof a === 'bigint' && typeof b === 'bigint') {
-        return Number(av > bv)
+        return Number(bv > av) - Number(bv < av)
       }
 
-      return Number(av) - Number(bv)
+      return Number(bv) - Number(av)
     })
     .slice(0, n)
 }

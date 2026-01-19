@@ -9,7 +9,9 @@
   --color-primary: var(--bg-primary);
   --color-secondary: var(--bg-secondary);
   --color-surface: var(--bg-surface);
-  --color-muted: var(--bg-muted);
+  --color-muted: var(--text-muted);
+
+  --color-stat: var(--accent-stat);
 
   --color-text: var(--text-primary);
   --color-text-muted: var(--text-muted);
@@ -44,8 +46,44 @@
   --text-h2: clamp(1.25rem, 1.1rem + 0.8vw, 1.875rem);
 }
 
+:root[data-theme='infra-dark'] {
+  color-scheme: dark;
+
+  /* CORE BACKGROUNDS — neutral, professional */
+  --bg-primary: #080c12; /* main canvas */
+  --bg-secondary: #0f1620; /* panels */
+  --bg-surface: #121a24; /* cards */
+  --bg-muted: rgba(140, 180, 255, 0.06);
+
+  /* TEXT — calm, readable */
+  --text-primary: rgba(230, 235, 245, 0.94);
+  --text-muted: rgba(170, 185, 210, 0.65);
+
+  /* BORDERS — subtle structure */
+  --border-default: rgba(140, 180, 255, 0.18);
+  --border-soft: rgba(140, 180, 255, 0.1);
+
+  /* ACCENT — infrastructure blue */
+  --accent: #4682cc;
+  --accent-weak: rgba(59, 130, 246, 0.25);
+
+  /* SECONDARY — activity / focus */
+  --accent-stat: #6fdcff;
+
+  /* STATUS (used sparingly) */
+  --accent-green: #5fd6a8;
+  --accent-amber: #e8c77a;
+  --accent-red: #f28b82;
+
+  /* NO DEFAULT GLOW */
+  --panel-shadow: none;
+
+  /* HERO GRADIENT — extremely subtle */
+  --bg-hero: linear-gradient(180deg, #0b0f14 0%, #0f1620 100%);
+}
+
 /* -------------------------------------------------
-   CYBER VOID THEME (default)
+   CYBER VOID THEME
 ---------------------------------------------------*/
 :root[data-theme='cyber-void'] {
   color-scheme: dark;
@@ -55,8 +93,8 @@
   --bg-surface: #06071a;
   --bg-muted: rgba(140, 160, 255, 0.09);
 
-  --text-primary: rgba(245, 247, 255, 0.94);
-  --text-muted: rgba(210, 220, 255, 0.72);
+  --text-primary: rgba(196, 198, 207, 0.94);
+  --text-muted: rgba(188, 200, 242, 0.72);
 
   --border-default: rgba(130, 151, 255, 0.479);
   --border-soft: rgba(130, 151, 255, 0.39);
@@ -81,120 +119,6 @@
     #080d3a 65%,
     #0e144f 85%,
     #04081a 100%
-  );
-}
-
-/* -------------------------------------------------
-   LIGHT THEME 
----------------------------------------------------*/
-:root[data-theme='light-cosmic'] {
-  color-scheme: light;
-
-  --bg-primary: #dfe1ff;
-  --bg-secondary: #e8e9ff;
-  --bg-surface: #f5f5ff;
-
-  --bg-muted: rgba(94, 107, 255, 0.06);
-
-  --text-primary: #1a1440;
-  --text-muted: rgba(26, 20, 64, 0.6);
-
-  --border-default: rgba(94, 107, 255, 0.2);
-  --border-soft: rgba(94, 107, 255, 0.12);
-
-  --accent: #5e6bff;
-  --accent-weak: rgba(80, 100, 255, 0.18);
-
-  --accent-pink: #ff69b4;
-  --accent-mango: #ffb347;
-  --accent-green: #42ff9a;
-
-  --panel-shadow: 0 0 30px rgba(94, 107, 255, 0.18);
-
-  --bg-hero: linear-gradient(
-    135deg,
-    #ffffff 0%,
-    #f4f5ff 20%,
-    #eceeff 40%,
-    #e0e3ff 60%,
-    #d7daff 80%,
-    #e3e5ff 100%
-  );
-}
-
-/* -------------------------------------------------
-   LIGHT THEME (optional)
----------------------------------------------------*/
-:root[data-theme='dark-cosmic'] {
-  color-scheme: dark;
-
-  --bg-primary: #08071a; /* near-black indigo core */
-  --bg-secondary: #0d0b2a; /* subtle purple hue */
-  --bg-surface: #0a0921; /* panels & cards */
-  --bg-muted: rgba(94, 107, 255, 0.08); /* faint nebula mist */
-
-  --text-primary: rgba(255, 255, 255, 0.94);
-  --text-muted: rgba(210, 220, 255, 0.62);
-
-  --border-default: rgba(120, 140, 255, 0.16);
-  --border-soft: rgba(120, 140, 255, 0.1);
-
-  --accent: #6d75ff; /* your core glow */
-  --accent-weak: rgba(109, 117, 255, 0.14);
-  --accent-cyan: #4dd9ff; /* optional subtle companion accent */
-
-  --accent-pink: #ff69b4;
-  --accent-mango: #ffb347;
-  --accent-green: #42ff9a;
-
-  --panel-shadow: 0 0 60px rgba(80, 100, 255, 0.18), 0 0 120px rgba(77, 217, 255, 0.08);
-
-  --bg-hero: linear-gradient(
-    135deg,
-    #01030a 0%,
-    #05081a 20%,
-    #080b2c 45%,
-    #0c1045 70%,
-    #05081f 100%
-  );
-}
-
-:root[data-theme='cyber-glacial'] {
-  color-scheme: dark;
-
-  /* CORE VOID (darker + colder) */
-  --bg-primary: #01040d;
-  --bg-secondary: #061226;
-  --bg-surface: #08182c;
-  --bg-muted: rgba(120, 200, 255, 0.08);
-
-  /* TEXT — frost, not neon white */
-  --text-primary: rgba(225, 245, 255, 0.94);
-  --text-muted: rgba(175, 215, 240, 0.68);
-
-  /* ACCENTS = ICE 🔵 */
-  --accent: #3bc9ff; /* main */
-  --accent-weak: rgba(59, 201, 255, 0.24);
-  --accent-blue: #67e8ff; /* glow companion */
-
-  /* BORDERS — cold, steel */
-  --border-default: rgba(59, 201, 255, 0.28);
-  --border-soft: rgba(59, 201, 255, 0.14);
-
-  /* PANEL / VOID GLOW ❄️ */
-  --panel-shadow:
-    0 0 22px rgba(59, 201, 255, 0.22), 0 0 70px rgba(59, 201, 255, 0.12),
-    0 0 160px rgba(59, 201, 255, 0.08);
-
-  /* HERO GRADIENT — midnight → arctic ocean */
-  --bg-hero: linear-gradient(
-    140deg,
-    #000508 0%,
-    #00111c 22%,
-    #001f32 45%,
-    #022d48 68%,
-    #023757 85%,
-    #08182c 100%
   );
 }
 
@@ -541,12 +465,6 @@ input:focus {
   outline: none;
   background: color-mix(in oklab, var(--bg-surface) 100%, transparent);
   border-color: var(--accent);
-}
-
-.sub-text {
-  color: var(--text-muted);
-  font-size: 0.8rem;
-  opacity: 0.6;
 }
 
 /* applied to list rows that apply filters to page */

@@ -16,7 +16,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" data-theme="cyber-void" suppressHydrationWarning>
+    <html lang="en" data-theme="infra-dark" suppressHydrationWarning>
       <body suppressHydrationWarning>
         <a
           href="#forward-main"
