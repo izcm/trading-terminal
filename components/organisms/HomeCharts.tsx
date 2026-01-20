@@ -19,6 +19,7 @@ import type { Sale } from '@/data/types/sale'
 import type { Result } from '@/data/types/core/result'
 import type { PaginatedSales } from '@/lib/dmrkt-indexer/actions/sales'
 import { addrDisplay } from '@/lib/utils/format/address'
+import { Stat } from '../molecules/Stat'
 
 export const HomeCharts = ({ initialData }: { initialData: Promise<Result<PaginatedSales>> }) => {
   const initial = use(initialData)
@@ -125,21 +126,17 @@ export const HomeCharts = ({ initialData }: { initialData: Promise<Result<Pagina
               data-active={filters.collection === k}
               onClick={() => handleFilters('collection', k)}
             >
-              {/* rank */}
               <span className="text-sm">#{i + 1}</span>
 
-              {/* symbol */}
               <span>{topCollectionsMeta[k].symbol}</span>
 
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-stat/70">F</span>
-                <span>{formatEth2(floor(sales, 'collection', k as `0x${string}`))} ETH</span>
-              </div>
+              <Stat
+                value={floor(sales, 'collection', k as `0x${string}`)}
+                label="F"
+                format={formatEth2}
+              />
 
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-stat/70">V</span>
-                <span>{formatEth2(topCollectionsByKey[k].volume)} ETH</span>
-              </div>
+              <Stat value={topCollectionsByKey[k].volume} label="V" format={formatEth2} />
             </li>
           ))}
         </ul>
@@ -154,17 +151,12 @@ export const HomeCharts = ({ initialData }: { initialData: Promise<Result<Pagina
                 className="flex justify-between w-full text-muted rounded-lg"
               >
                 <span>{formatTsUTC(sale.timestamp)}</span>
+
                 <span>{topCollectionsMeta[sale.collection].symbol}</span>
 
                 {/* ACTORS */}
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-stat/70">Buyer</span>
-                  <span>{addrDisplay(sale.buyer)}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-stat/70">Seller</span>
-                  <span>{addrDisplay(sale.seller)}</span>
-                </div>
+                <Stat value={sale.buyer} label="buyer" format={addrDisplay} />
+                <Stat value={sale.seller} label="seller" format={addrDisplay} />
 
                 <span>{formatEth2(BigInt(sale.price))} ETH</span>
               </Link>
@@ -188,15 +180,8 @@ export const HomeCharts = ({ initialData }: { initialData: Promise<Result<Pagina
 
                 <span className="">{addrDisplay(k as `0x${string}`)}</span>
 
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-stat/70">B</span>
-                  <span>{formatEth2(a.buy.volume)} ETH</span>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-stat/70">S</span>
-                  <span>{formatEth2(a.sell.volume)} ETH</span>
-                </div>
+                <Stat value={a.buy.volume} label="B" format={formatEth2} />
+                <Stat value={a.sell.volume} label="S" format={formatEth2} />
               </li>
             ))}
           </ul>

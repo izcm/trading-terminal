@@ -50,7 +50,7 @@
   color-scheme: dark;
 
   /* CORE BACKGROUNDS — neutral, professional */
-  --bg-primary: #080c12; /* main canvas */
+  --bg-primary: #040609; /* main canvas */
   --bg-secondary: #0f1620; /* panels */
   --bg-surface: #121a24; /* cards */
   --bg-muted: rgba(140, 180, 255, 0.06);
