@@ -6,7 +6,7 @@ import { Search, ChartArea } from 'lucide-react'
 import { NFTGallery, Sidebar } from '@/components/organisms'
 import { SidebarContainer, TextInput } from '@/components/atoms'
 
-import { AttributeSummary, Collection, NFT } from '@/data/types'
+import { AttributeSummary, Collection, NFT } from '@/domain/types'
 import { CollectionBanner } from '@/components/molecules/CollectionBanner'
 import { useState } from 'react'
 

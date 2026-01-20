@@ -1,4 +1,4 @@
-import { months } from '@/data/constants/months'
+import { months } from '@/domain/constants/months'
 
 export const formatTsUTC = (ts: number) => {
   const d = new Date(ts)

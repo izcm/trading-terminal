@@ -1,4 +1,4 @@
-import type { Sale } from '@/data/types'
+import type { Sale } from '@/domain/types'
 import { timeKey } from '@/lib/utils/format/time'
 
 export type SalesAnalytics = {

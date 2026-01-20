@@ -1,4 +1,4 @@
-import { Collection } from '@/data/types'
+import { Collection } from '@/domain/types'
 
 export const CollectionBanner = ({ collection }: { collection: Collection }) => {
   return (

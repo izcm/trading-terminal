@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 
-import { Collection } from '@/data/types'
+import { Collection } from '@/domain/types'
 
 interface CollectionListProps {
   collections: Collection[]

@@ -13,8 +13,8 @@ import { aggregateSales, floor } from '@/features/analytics/sales'
 
 import { formatEth2, weiToChartNumber, formatTsUTC, Hex32, addrDisplay } from '@/lib/utils/format'
 
-import { Sale } from '@/data/types/sale'
-import { Result } from '@/data/types/core/result'
+import { Sale } from '@/domain/types/sale'
+import { Result } from '@/lib/utils/result'
 import { PaginatedSales } from '@/lib/dmrkt-indexer/actions/sales'
 
 import { Stat, Modal } from '../molecules'

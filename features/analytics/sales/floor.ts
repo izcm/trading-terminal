@@ -1,4 +1,4 @@
-import type { Sale } from '@/data/types'
+import type { Sale } from '@/domain/types'
 
 export const floor = <K extends keyof Sale>(sales: Sale[], key: K, value: Sale[K]) => {
   const filtered = sales.filter(sale => sale[key] === value)

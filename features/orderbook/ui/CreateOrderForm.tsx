@@ -10,7 +10,7 @@ import { domain, fields } from '@/features/orderbook/eip712'
 import { createOrder } from '../actions/create-order'
 import { FormSelect } from '@/components/molecules/FormSelect'
 
-import { DURATIONS } from '../../../data/constants/durations'
+import { DURATIONS } from '../../../domain/constants/durations'
 
 const collectionAddr = '0x0000000000000000000000000000000000000000' as `0x${string}`
 const tokenAddr = '0x0000000000000000000000000000000000000000' as `0x${string}`

@@ -1,7 +1,7 @@
 import { AlchemyCollection } from '../types/collection'
-import { AttributeSummary } from '@/data/types'
+import { AttributeSummary } from '@/domain/types'
 
-import { Result } from '@/data/types/core/result'
+import { Result } from '@/lib/utils/result'
 
 import { ALCHEMY_API_KEY as apiKey } from '../constants'
 import { ALCHEMY_BASE_URL as baseUrl } from '../constants'

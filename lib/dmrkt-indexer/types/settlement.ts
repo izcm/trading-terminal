@@ -1,5 +1,5 @@
 import { Hex32 } from '@/lib/utils/format/hex32'
-import { Sale } from '@/data/types'
+import { Sale } from '@/domain/types'
 
 export type Settlement = {
   orderHash: string

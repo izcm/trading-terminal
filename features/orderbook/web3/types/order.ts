@@ -12,14 +12,3 @@ export type Order = {
   end: bigint
   nonce: bigint
 }
-
-export type Signature = {
-  v: number
-  r: `0x${string}`
-  s: `0x${string}`
-}
-
-export type Fill = {
-  actor: `0x${string}`
-  tokenId: bigint
-}

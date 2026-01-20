@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { NFT } from '@/data/types/nft'
+import { NFT } from '@/domain/types/nft'
 import { resolveImage } from '@/lib/utils/image'
 
 export const NFTCard = ({ nft }: { nft: NFT }) => {

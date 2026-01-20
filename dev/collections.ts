@@ -1,7 +1,7 @@
 // all of this is just placeholder stuff
 // since the demo is on a local anvil fork
 
-import type { Collection } from '@/data/types'
+import type { Collection } from '@/domain/types'
 import type { Hex32 } from '@/lib/utils/format/hex32'
 
 export const getCollections = (): Collection[] => {
