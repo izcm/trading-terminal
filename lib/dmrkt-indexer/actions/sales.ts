@@ -1,7 +1,9 @@
 import { Result } from '@/data/types/core/result'
 
-import type { Sale, Settlement } from '@/data/types/sale'
-import { settlementToSale } from '@/data/types/sale'
+import { settlementToSale } from '../types/settlement'
+
+import type { Settlement } from '../types/settlement'
+import type { Sale } from '@/data/types/sale'
 
 import { DMRKT_INDEXER_BASE_URL as baseUrl } from '../constants'
 

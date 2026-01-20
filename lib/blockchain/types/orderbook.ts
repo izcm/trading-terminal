@@ -1,11 +1,13 @@
+import type { Hex32 } from '@/lib/utils/format/hex32'
+
 export type Order = {
   side: number
-  actor: `0x${string}`
+  actor: Hex32
   isCollectionBid: boolean
-  collection: `0x${string}`
+  collection: Hex32
   tokenId: bigint
   price: bigint
-  currency: `0x${string}`
+  currency: Hex32
   start: bigint
   end: bigint
   nonce: bigint

@@ -23,7 +23,7 @@ export const Header = () => {
           transition-colors font-mono
         "
       >
-        d|mrkt
+        d | mrkt
       </Link>
 
       {/* Right side - nav + wallet */}

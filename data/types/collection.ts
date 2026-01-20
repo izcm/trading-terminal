@@ -1,8 +1,10 @@
 // Local Collection type - provider agnostic
+import type { Hex32 } from '@/lib/utils/format/hex32'
+
 export type AttributeSummary = Record<string, Record<string, number>>
 
 export type Collection = {
-  address: `0x${string}`
+  address: Hex32
   name: string
   symbol: string
   totalSupply?: string

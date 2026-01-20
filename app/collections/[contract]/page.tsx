@@ -3,10 +3,11 @@ import { CollectionView } from '@/features/orderbook/ui/CollectionView'
 import { getCollectionMetadata, getNFTByContract, getCollectionAttributes } from '@/lib/alchemy'
 import { toCollection, toNFT } from '@/lib/alchemy'
 import { NFT } from '@/data/types'
+import type { Hex32 } from '@/lib/utils/format/hex32'
 
 export default async function CollectionPage(props: { params: Promise<{ contract: string }> }) {
   const contractRaw = (await props.params).contract
-  const contract = contractRaw as `0x${string}`
+  const contract = contractRaw as Hex32
 
   const attributesRes = await getCollectionAttributes(contract)
   const collectionRes = await getCollectionMetadata(contract)

@@ -1,47 +1,14 @@
-// TODO: settlement type should be imported from /packages repo (exported from indexer repo)
+import type { Hex32 } from '@/lib/utils/format/hex32'
 
 export type Sale = {
   orderHash: string
-  collection: `0x${string}`
+  collection: Hex32
   tokenId: string
-  seller: `0x${string}`
-  buyer: `0x${string}`
-  currency: `0x${string}`
+  seller: Hex32
+  buyer: Hex32
+  currency: Hex32
   price: string
-  txHash: string
+  txHash: Hex32
   timestamp: number
   blocknumber: number
-}
-
-export type Settlement = {
-  orderHash: string
-  collection: `0x${string}`
-  tokenId: string
-  seller: `0x${string}`
-  buyer: `0x${string}`
-  currency: `0x${string}`
-  priceWei: string
-  txHash: string
-
-  // metadata
-  block: {
-    number: number
-    timestamp: number
-    logIndex: number
-  }
-}
-
-export const settlementToSale = (s: Settlement): Sale => {
-  return {
-    orderHash: s.orderHash,
-    collection: s.collection,
-    tokenId: s.tokenId,
-    seller: s.seller,
-    buyer: s.buyer,
-    currency: s.currency,
-    price: s.priceWei,
-    txHash: s.txHash,
-    timestamp: s.block.timestamp * 1000,
-    blocknumber: s.block.number,
-  }
 }

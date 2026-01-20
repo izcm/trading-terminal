@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 import { getSales } from '@/lib/dmrkt-indexer/actions/sales'
 
-import { HomeAnalytics } from '@/components/organisms/HomeCharts'
+import { HomeAnalytics } from '@/components/organisms'
 
 // https://nextjs.org/docs/app/getting-started/error-handling
 

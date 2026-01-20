@@ -307,33 +307,6 @@ input:focus {
   background: color-mix(in oklab, var(--bg-surface) 60%, transparent);
 }
 
-.list-cyber li::before {
-  content: '•';
-  color: var(--accent);
-  font-weight: bold;
-  margin-right: 0.5rem;
-  text-shadow: 0 0 6px var(--accent);
-}
-
-.list-glow li::before {
-  content: '✦';
-  margin-right: 0.5rem;
-  color: var(--accent);
-  animation: pulseGlow 2.4s ease-in-out infinite;
-}
-
-.not-list-cyber li::before {
-  content: none !important;
-}
-
-.list-sub {
-  content: none !important;
-  list-style: none;
-  padding-left: 1.2rem;
-  opacity: 0.8;
-  font-size: 0.9em;
-}
-
 /* hack */
 .list-sub li::marker {
   content: '› ';

@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ArrowLeftRight, Plus, RefreshCcw } from 'lucide-react'
+import { ArrowLeftRight, Plus, LayoutGrid } from 'lucide-react'
 
 import { CollectionFilters } from '@/components/organisms/sidebar-filters/CollectionFilters'
 import { CollectionList } from '@/components/organisms/CollectionList'
@@ -9,54 +9,42 @@ import { Sidebar } from '@/components/organisms'
 import { SidebarContainer } from '@/components/atoms'
 
 export default async function BrowseCollectionsPage() {
-  // TODO: update this to use https://www.alchemy.com/docs/reference/nft-api-endpoints/nft-api-endpoints/nft-metadata-endpoints/get-contract-metadata-batch-v-3
-
-  // === NON DEMO STUFF ===
-  // const alchemyCollections = (
-  //   await Promise.all(
-  //     demoCollections.map(async c => {
-  //       const res = await getCollectionMetadata(c.address)
-  //       return res.ok ? res.data : null
-  //     })
-  //   )
-  // ).filter(c => c !== null)
-
-  // if (alchemyCollections.length == 0) {
-  //   return <div>Error fetching collections...</div>
-  // }
-
-  // const collections = alchemyCollections.map(c => {
-  //   return toCollection(c)
-  // })
-
   const collections = getCollections()
 
   return (
-    <main className="flex gap-4 max-w-7xl mx-auto h-screen">
-      <section className="basis-2/3 flex flex-col gap-4">
-        {/* ORDERBOOK LATEST ORDERS */}
-        <div className="flex-1 flex card">latest active orders</div>
-        {/* COLLECTION LIST */}
-        <div className="flex-1 flex card list">collections</div>
-      </section>
-
-      <section className="basis-1/3 flex flex-col gap-4">
-        <Link className="btn btn-primary" href="/create-order">
-          <Plus /> create order
-        </Link>
-        <Link className="btn btn-secondary" href="/create-order">
-          <ArrowLeftRight /> amm mode
-        </Link>
-        {/* SUBS */}
-        <div className="rounded-xl card h-60">
-          d|subs
-          <p>
-            (subscription service for users to watch sales of favourite nfts [not limited to dmrkt
-            nfts])
-          </p>
+    <main className="flex flex-col gap-4 max-w-7xl mx-auto h-screen">
+      {/* TOP SECTION - NAV + TABS */}
+      <section className="flex justify-between items-center">
+        <h1 className="flex-1">d | feed</h1>
+        <div className="flex gap-4">
+          <Link className="btn btn-primary" href="/create-order">
+            <Plus /> create order
+          </Link>
+          <Link className="btn btn-secondary" href="/create-order">
+            <ArrowLeftRight /> amm mode
+          </Link>
         </div>
-        <div className="flex-1 rounded-xl card"></div>
       </section>
+      <div className="flex-1 flex flex-col gap-4">
+        {/* COLLECTION LIST */}
+        <section className="h-80 flex gap-4">
+          <ul className="flex-2 card list">
+            <li>
+              MAKE A COLLECTION LIST HERE RANKED MOST ORDERS ACTIVE ONCLICK FILTER HAVE ROUTER PUSH
+              URL PARAM AND LATEST ACTIVE ORDERS LIST UNDERNEATH SHOWS ORDERS BY COLLECTION
+            </li>
+          </ul>
+          <ul className="flex-1 card list">
+            <li>
+              MAKE A CAROSEL HERE WITH NFT COLLECTION BANNER IMAGE AND NAME IF URL PARAMS ARE SET
+              SHOW THE ACTIVE COLLECTION ALSO HAVE A BUTTON 'BROWSE COLLECTON'
+            </li>
+          </ul>
+        </section>
+
+        {/* ORDERBOOK LATEST ORDERS */}
+        <section className="flex-1 flex card">latest active orders</section>
+      </div>
     </main>
   )
 }

@@ -2,12 +2,13 @@
 // since the demo is on a local anvil fork
 
 import type { Collection } from '@/data/types'
+import type { Hex32 } from '@/lib/utils/format/hex32'
 
 export const getCollections = (): Collection[] => {
   return DEMO_COLLECTIONS
 }
 
-export const getCollection = (addr: `0x${string}`) => {
+export const getCollection = (addr: Hex32) => {
   return DEMO_COLLECTIONS.find(col => col.address === addr)
 }
 
