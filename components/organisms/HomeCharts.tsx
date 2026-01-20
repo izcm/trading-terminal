@@ -4,6 +4,7 @@ import Link from 'next/link'
 import 'chart.js/auto'
 
 import { use, useEffect, useMemo, useState } from 'react'
+import { LayoutGrid, ChartArea, Receipt } from 'lucide-react'
 
 import { getCollection } from '@/dev/collections'
 
@@ -15,13 +16,18 @@ import { aggregateSales, floor, topNBy } from '@/lib/utils/analytics/sales'
 import { formatTsUTC } from '@/lib/utils/format/time'
 import { formatEth2, weiToChartNumber } from '@/lib/utils/format/bigint'
 
-import type { Sale } from '@/data/types/sale'
-import type { Result } from '@/data/types/core/result'
-import type { PaginatedSales } from '@/lib/dmrkt-indexer/actions/sales'
 import { addrDisplay } from '@/lib/utils/format/address'
 import { Stat } from '../molecules/Stat'
 
-export const HomeCharts = ({ initialData }: { initialData: Promise<Result<PaginatedSales>> }) => {
+import type { Sale } from '@/data/types/sale'
+import type { Result } from '@/data/types/core/result'
+import type { PaginatedSales } from '@/lib/dmrkt-indexer/actions/sales'
+
+export const HomeAnalytics = ({
+  initialData,
+}: {
+  initialData: Promise<Result<PaginatedSales>>
+}) => {
   const initial = use(initialData)
 
   if (!initial.ok) {
@@ -32,13 +38,15 @@ export const HomeCharts = ({ initialData }: { initialData: Promise<Result<Pagina
   const [nextCursor, setNextCursor] = useState<string | null>(initial.data.nextCursor)
   const [filters, setFilters] = useState<{
     collection: `0x${string}` | null
+    actor: `0x${string}` | null
     epoch: string | null
   }>({
     collection: null,
+    actor: null,
     epoch: null,
   })
 
-  const handleFilters = (filter: 'collection', value: any) => {
+  const handleFilters = (filter: keyof typeof filters, value: any) => {
     if (filters[filter] === value) value = null
 
     setFilters(prev => ({
@@ -46,6 +54,24 @@ export const HomeCharts = ({ initialData }: { initialData: Promise<Result<Pagina
       [filter]: value,
     }))
   }
+
+  const applyFilters = (sales: Sale[], f: typeof filters) => {
+    return sales.filter(sale => {
+      if (f.collection && sale.collection !== f.collection) {
+        return false
+      }
+
+      if (f.actor && sale.buyer !== f.actor && sale.seller !== f.actor) {
+        return false
+      }
+
+      return true
+    })
+  }
+
+  const filteredSales = useMemo(() => {
+    return applyFilters(sales, filters)
+  }, [filters])
 
   useEffect(() => {
     if (!nextCursor) return
@@ -65,8 +91,8 @@ export const HomeCharts = ({ initialData }: { initialData: Promise<Result<Pagina
   }, [nextCursor])
 
   const analytics = useMemo(() => {
-    return aggregateSales(sales, 'week')
-  }, [sales])
+    return aggregateSales(filteredSales, 'week')
+  }, [filteredSales])
 
   const epochLabels = Array.from(analytics.byEpoch.keys())
   const epochData = Array.from(analytics.byEpoch.entries())
@@ -88,6 +114,29 @@ export const HomeCharts = ({ initialData }: { initialData: Promise<Result<Pagina
 
   return (
     <div className="flex flex-col gap-4">
+      <div className="flex items-center">
+        <section className="flex-2 flex justify-evenly text-stat/70">
+          <span>
+            sales <strong>{sales.length}</strong>
+          </span>
+
+          <span>
+            users <strong>{Array.from(analytics.byActor).length}</strong>
+          </span>
+
+          <span>
+            volume <strong>842.3</strong>
+          </span>
+        </section>
+        <div className="flex-1 flex justify-end gap-4">
+          <Link className="btn btn-primary" href="/collections">
+            <LayoutGrid /> explore dmrkt
+          </Link>
+          <Link className="btn btn-secondary" href="./">
+            <ChartArea /> more analytics
+          </Link>
+        </div>
+      </div>
       <div className="flex gap-4 h-72">
         <div className="basis-2/3 flex gap-4">
           <div className="w-1/2 card">
@@ -115,6 +164,7 @@ export const HomeCharts = ({ initialData }: { initialData: Promise<Result<Pagina
             />
           </div>
         </div>
+
         <ul className="basis-1/3 card">
           <span className="text-xs text-muted my-2">
             Top Collections · F = floor price · V = volume
@@ -131,7 +181,7 @@ export const HomeCharts = ({ initialData }: { initialData: Promise<Result<Pagina
               <span>{topCollectionsMeta[k].symbol}</span>
 
               <Stat
-                value={floor(sales, 'collection', k as `0x${string}`)}
+                value={floor(filteredSales, 'collection', k as `0x${string}`)}
                 label="F"
                 format={formatEth2}
               />
@@ -144,7 +194,7 @@ export const HomeCharts = ({ initialData }: { initialData: Promise<Result<Pagina
 
       <div className="flex gap-4 h-150 overflow-y-hidden">
         <ul className="flex-1 card overflow-y-auto no-scrollbar">
-          {sales.map(sale => (
+          {filteredSales.map(sale => (
             <li key={sale.txHash} className="interactive-row">
               <Link
                 href="/collections"
@@ -174,7 +224,8 @@ export const HomeCharts = ({ initialData }: { initialData: Promise<Result<Pagina
               <li
                 key={k}
                 className="interactive-row filter-row flex justify-evenly text-muted"
-                data-active={filters.collection === k}
+                data-active={filters.actor === k}
+                onClick={() => handleFilters('actor', k)}
               >
                 <span className="text-sm">#{i + 1}</span>
 

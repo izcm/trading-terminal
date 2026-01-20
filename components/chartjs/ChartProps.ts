@@ -7,7 +7,7 @@ const purpleShades = [
 ]
 
 const defaultLook = {
-  color: '#38bff89b',
+  color: '#6f8cf6b9',
   borderWidth: 2,
   borderRadius: 4,
   tension: 0.3,
