@@ -2,13 +2,13 @@
 // since the demo is on a local anvil fork
 
 import type { Collection } from '@/domain/types'
-import type { Hex32 } from '@/lib/utils/format/hex32'
+import type { Hex } from 'viem'
 
 export const getCollections = (): Collection[] => {
   return DEMO_COLLECTIONS
 }
 
-export const getCollection = (addr: Hex32) => {
+export const getCollection = (addr: Hex) => {
   return DEMO_COLLECTIONS.find(col => col.address === addr)
 }
 

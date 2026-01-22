@@ -1,9 +1,9 @@
 import { AlchemyNFT, toNFT as alchemyNFTToNFT } from '@/lib/alchemy/types/nft'
-import type { Hex32 } from '@/lib/utils/format/hex32'
+import type { Hex } from 'viem'
 
 // Local NFT type - provider agnostic
 export type NFT = {
-  contract: Hex32
+  contract: Hex
   tokenId: string
   name: string
   description?: string

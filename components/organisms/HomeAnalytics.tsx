@@ -11,7 +11,8 @@ import { getCollection } from '@/dev/collections'
 import { topNBy } from '@/lib/utils/analytics/topN'
 import { aggregateSales, floor } from '@/features/analytics/sales'
 
-import { formatEth2, weiToChartNumber, formatTsUTC, Hex32, addrDisplay } from '@/lib/utils/format'
+import { formatEth2, weiToChartNumber, formatTsUTC, addrDisplay } from '@/lib/utils/format'
+import type { Hex } from 'viem'
 
 import { Sale } from '@/domain/types/sale'
 import { Result } from '@/lib/utils/result'
@@ -35,8 +36,8 @@ export const HomeAnalytics = ({
   const [sales, setSales] = useState<Sale[]>(initial.data.items)
   const [nextCursor, setNextCursor] = useState<string | null>(initial.data.nextCursor)
   const [filters, setFilters] = useState<{
-    collection: Hex32 | null
-    actor: Hex32 | null
+    collection: Hex | null
+    actor: Hex | null
     epoch: string | null
   }>({
     collection: null,
@@ -45,7 +46,7 @@ export const HomeAnalytics = ({
   })
 
   // tx onclick opens receipt-modal
-  const [showReceipt, setShowReceipt] = useState<{ show: boolean; tx: Hex32 | null }>()
+  const [showReceipt, setShowReceipt] = useState<{ show: boolean; tx: Hex | null }>()
 
   const handleFilters = (filter: keyof typeof filters, value: any) => {
     if (filters[filter] === value) value = null

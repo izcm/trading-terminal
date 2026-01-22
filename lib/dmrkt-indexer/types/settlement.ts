@@ -1,15 +1,15 @@
-import { Hex32 } from '@/lib/utils/format/hex32'
+import { Hex } from 'viem'
 import { Sale } from '@/domain/types'
 
 export type Settlement = {
   orderHash: string
-  collection: Hex32
+  collection: Hex
   tokenId: string
-  seller: Hex32
-  buyer: Hex32
-  currency: Hex32
+  seller: Hex
+  buyer: Hex
+  currency: Hex
   priceWei: string
-  txHash: Hex32
+  txHash: Hex
 
   // metadata
   block: {

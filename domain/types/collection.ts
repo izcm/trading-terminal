@@ -1,10 +1,10 @@
 // Local Collection type - provider agnostic
-import type { Hex32 } from '@/lib/utils/format/hex32'
+import type { Hex } from 'viem'
 
 export type AttributeSummary = Record<string, Record<string, number>>
 
 export type Collection = {
-  address: Hex32
+  address: Hex
   name: string
   symbol: string
   totalSupply?: string

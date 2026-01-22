@@ -3,4 +3,3 @@ export { CollectionItemFilters as Sidebar } from './sidebar-filters/CollectionIt
 export * from './CollectionList'
 export * from './NFTGallery'
 export * from './HomeAnalytics'
-export * from './Receipt'

@@ -1,14 +1,14 @@
-import type { Hex32 } from '@/lib/utils/format/hex32'
+import type { Hex } from 'viem'
 
 export type Sale = {
   orderHash: string
-  collection: Hex32
+  collection: Hex
   tokenId: string
-  seller: Hex32
-  buyer: Hex32
-  currency: Hex32
+  seller: Hex
+  buyer: Hex
+  currency: Hex
   price: string
-  txHash: Hex32
+  txHash: Hex
   timestamp: number
   blocknumber: number
 }

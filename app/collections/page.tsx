@@ -15,13 +15,16 @@ export default async function BrowseCollectionsPage() {
     <main className="flex flex-col gap-4 max-w-7xl mx-auto h-screen">
       {/* TOP SECTION - NAV + TABS */}
       <section className="flex justify-between items-center">
+        <Link className="btn btn-ghost" href="/create-order">
+          <ArrowLeftRight /> amm mode
+        </Link>
         <h1 className="flex-1">d | feed</h1>
         <div className="flex gap-4">
           <Link className="btn btn-primary" href="/create-order">
             <Plus /> create order
           </Link>
           <Link className="btn btn-secondary" href="/create-order">
-            <ArrowLeftRight /> amm mode
+            <LayoutGrid /> browse collections
           </Link>
         </div>
       </section>

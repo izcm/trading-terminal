@@ -1,13 +1,13 @@
-import type { Hex32 } from '@/lib/utils/format/hex32'
+import type { Hex } from 'viem'
 
 export type Order = {
   side: number
-  actor: Hex32
+  actor: Hex
   isCollectionBid: boolean
-  collection: Hex32
+  collection: Hex
   tokenId: bigint
   price: bigint
-  currency: Hex32
+  currency: Hex
   start: bigint
   end: bigint
   nonce: bigint

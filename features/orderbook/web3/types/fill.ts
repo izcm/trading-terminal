@@ -1,6 +1,6 @@
-import type { Hex32 } from '@/lib/utils/format/hex32'
+import type { Hex } from 'viem'
 
 export type Fill = {
-  actor: Hex32
+  actor: Hex
   tokenId: bigint
 }

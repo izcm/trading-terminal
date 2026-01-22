@@ -1,6 +1,6 @@
-import type { Hex32 } from '@/lib/utils/format/hex32'
+import type { Hex } from 'viem'
 
-export const Stat = <T extends bigint | Hex32>({
+export const Stat = <T extends bigint | Hex>({
   value,
   label,
   format,

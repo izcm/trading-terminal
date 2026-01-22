@@ -1,3 +1,3 @@
 export * from './bigint'
-export * from './hex32'
+export * from './hex'
 export * from './time'
