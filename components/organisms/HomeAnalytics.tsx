@@ -107,7 +107,7 @@ export const HomeAnalytics = ({
 
   const topCollectionsMeta: Record<string, { name: string; symbol: string }> = Object.fromEntries(
     topCollectionsList.map(([k]) => {
-      const meta = getCollection(k as `0x${string}`) // tmp will do rpc call + useeffect
+      const meta = getCollection(k as Hex) // tmp will do rpc call + useeffect
       return [k, { name: meta!.name, symbol: meta!.symbol }] // tmp... will fix error handling
     })
   )
@@ -199,23 +199,26 @@ export const HomeAnalytics = ({
 
         <div className="flex gap-4 h-150 overflow-y-hidden">
           <ul className="flex-1 card overflow-y-auto no-scrollbar">
-            {filteredSales.map(sale => (
-              <li
-                key={sale.txHash}
-                className="interactive-row text-muted"
-                onClick={() => setShowReceipt({ show: true, tx: sale.txHash })}
-              >
-                <span>{formatTsUTC(sale.timestamp)}</span>
+            {filteredSales.map(sale => {
+              const { block, tx } = sale.execution
+              return (
+                <li
+                  key={sale.execution.tx.hash}
+                  className="interactive-row text-muted"
+                  onClick={() => setShowReceipt({ show: true, tx: tx.hash })}
+                >
+                  <span>{formatTsUTC(block.timestamp)}</span>
 
-                <span>{topCollectionsMeta[sale.collection].symbol}</span>
+                  <span>{topCollectionsMeta[sale.collection].symbol}</span>
 
-                {/* ACTORS */}
-                <Stat value={sale.buyer} label="buyer" format={addrDisplay} />
-                <Stat value={sale.seller} label="seller" format={addrDisplay} />
+                  {/* ACTORS */}
+                  <Stat value={sale.buyer} label="buyer" format={addrDisplay} />
+                  <Stat value={sale.seller} label="seller" format={addrDisplay} />
 
-                <span>{formatEth2(BigInt(sale.price))} ETH</span>
-              </li>
-            ))}
+                  <span>{formatEth2(BigInt(sale.price))} ETH</span>
+                </li>
+              )
+            })}
           </ul>
 
           {/* TOP ACTORS */}

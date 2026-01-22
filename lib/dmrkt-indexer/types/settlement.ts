@@ -1,25 +1,45 @@
 import { Hex } from 'viem'
 import { Sale } from '@/domain/types'
 
-export type Settlement = {
-  orderHash: string
+export type SettlementDoc = {
+  _id: string
+
+  orderHash: Hex
   collection: Hex
   tokenId: string
+
   seller: Hex
   buyer: Hex
   currency: Hex
   priceWei: string
-  txHash: Hex
 
-  // metadata
-  block: {
-    number: number
-    timestamp: number
+  execution: {
+    chainId: number
     logIndex: number
+    txHash: Hex
+
+    block: {
+      number: number
+      timestamp: number
+    }
+
+    txContext: {
+      index: number
+      gasUsed: string
+      effectiveGasPrice: string
+      functionSelector: Hex
+      functionName: string
+      contractAddress: Hex
+    }
+  }
+
+  orderMeta: {
+    side: 'ASK' | 'BID' | 'COLLECTION_BID'
+    signer: Hex
   }
 }
 
-export const settlementToSale = (s: Settlement): Sale => {
+export const settlementDocToSale = (s: SettlementDoc): Sale => {
   return {
     orderHash: s.orderHash,
     collection: s.collection,
@@ -28,8 +48,30 @@ export const settlementToSale = (s: Settlement): Sale => {
     buyer: s.buyer,
     currency: s.currency,
     price: s.priceWei,
-    txHash: s.txHash,
-    timestamp: s.block.timestamp * 1000,
-    blocknumber: s.block.number,
+
+    order: {
+      side: s.orderMeta.side,
+      signer: s.orderMeta.signer,
+    },
+
+    execution: {
+      chainId: s.execution.chainId,
+      logIndex: s.execution.logIndex,
+
+      block: {
+        timestamp: s.execution.block.timestamp * 1000,
+        number: s.execution.block.number,
+      },
+
+      tx: {
+        hash: s.execution.txHash,
+        index: s.execution.txContext.index,
+        gasUsed: s.execution.txContext.gasUsed,
+        function: {
+          selector: s.execution.txContext.functionSelector,
+          name: s.execution.txContext.functionName,
+        },
+      },
+    },
   }
 }

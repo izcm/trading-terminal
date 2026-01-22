@@ -1,8 +1,8 @@
 import { Result } from '@/lib/utils/result'
 
-import { settlementToSale } from '../types/settlement'
+import { settlementDocToSale } from '../types/settlement'
 
-import type { Settlement } from '../types/settlement'
+import type { SettlementDoc } from '../types/settlement'
 import type { Sale } from '@/domain/types/sale'
 
 import { DMRKT_INDEXER_BASE_URL as baseUrl } from '../constants'
@@ -22,7 +22,7 @@ export const getSales = async (query = 'limit=50'): Promise<Result<PaginatedSale
     return {
       ok: true,
       data: {
-        items: data.items.map((item: Settlement) => settlementToSale(item)),
+        items: data.items.map((item: SettlementDoc) => settlementDocToSale(item)),
         nextCursor: data.nextCursor,
       },
     }

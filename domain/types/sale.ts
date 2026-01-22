@@ -8,7 +8,31 @@ export type Sale = {
   buyer: Hex
   currency: Hex
   price: string
-  txHash: Hex
-  timestamp: number
-  blocknumber: number
+
+  order: {
+    side: 'ASK' | 'BID' | 'COLLECTION_BID'
+    signer: Hex
+  }
+
+  execution: Execution
+}
+
+type Execution = {
+  chainId: number
+  logIndex: number
+  block: {
+    timestamp: number
+    number: number
+  }
+  tx: Tx
+}
+
+type Tx = {
+  hash: Hex
+  index: number
+  gasUsed: string
+  function: {
+    selector: Hex
+    name: string
+  }
 }

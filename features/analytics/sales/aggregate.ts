@@ -17,7 +17,9 @@ export const aggregateSales = (sales: Sale[], unit: 'day' | 'month' | 'week') =>
   const byActor = new Map<string, ActorAnalytics>()
 
   for (const sale of sales) {
-    const tKey = timeKey(sale.timestamp, unit)
+    const { block } = sale.execution
+
+    const tKey = timeKey(block.timestamp, unit)
     const cKey = sale.collection
     const aKeys = { buyer: sale.buyer, seller: sale.seller }
 
