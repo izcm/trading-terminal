@@ -23,7 +23,7 @@ export type SettlementDoc = {
       timestamp: number
     }
 
-    txContext: {
+    txContext?: {
       index: number
       gasUsed: string
       effectiveGasPrice: string
@@ -33,7 +33,7 @@ export type SettlementDoc = {
     }
   }
 
-  orderMeta: {
+  orderMeta?: {
     side: 'ASK' | 'BID' | 'COLLECTION_BID'
     signer: Hex
   }
@@ -49,10 +49,12 @@ export const settlementDocToSale = (s: SettlementDoc): Sale => {
     currency: s.currency,
     price: s.priceWei,
 
-    order: {
-      side: s.orderMeta.side,
-      signer: s.orderMeta.signer,
-    },
+    order: s.orderMeta
+      ? {
+          side: s.orderMeta.side,
+          signer: s.orderMeta.signer,
+        }
+      : undefined,
 
     execution: {
       chainId: s.execution.chainId,
@@ -65,12 +67,17 @@ export const settlementDocToSale = (s: SettlementDoc): Sale => {
 
       tx: {
         hash: s.execution.txHash,
-        index: s.execution.txContext.index,
-        gasUsed: s.execution.txContext.gasUsed,
-        function: {
-          selector: s.execution.txContext.functionSelector,
-          name: s.execution.txContext.functionName,
-        },
+
+        ctx: s.execution.txContext
+          ? {
+              index: s.execution.txContext.index,
+              gasUsed: s.execution.txContext.gasUsed,
+              function: {
+                selector: s.execution.txContext.functionSelector,
+                name: s.execution.txContext.functionName,
+              },
+            }
+          : undefined,
       },
     },
   }

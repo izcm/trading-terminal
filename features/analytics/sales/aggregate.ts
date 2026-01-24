@@ -1,58 +1,83 @@
 import type { Sale } from '@/domain/types'
 import { timeKey } from '@/lib/utils/format/time'
+import { Hex } from 'viem'
 
-export type SalesAnalytics = {
+export type Metrics = {
   count: number
   volume: bigint
 }
 
-export type ActorAnalytics = {
-  buy: SalesAnalytics
-  sell: SalesAnalytics
+export type ActorMetrics = {
+  buy: Metrics
+  sell: Metrics
+}
+
+const createMetrics = (): Metrics => ({
+  count: 0,
+  volume: 0n,
+})
+
+const applySale = (m: Metrics, sale: Sale) => {
+  m.count += 1
+  m.volume += BigInt(sale.price)
+}
+
+type Dimension<T> = (sale: Sale) => T | null
+
+const epochKey =
+  (unit: 'day' | 'week' | 'month'): Dimension<string> =>
+  sale =>
+    timeKey(sale.execution.block.timestamp, unit)
+
+const collectionKey: Dimension<Hex> = sale => sale.collection
+const buyerKey: Dimension<Hex> = sale => sale.buyer
+const sellerKey: Dimension<Hex> = sale => sale.seller
+
+const mergeActors = (buys: Map<string, Metrics>, sells: Map<string, Metrics>) => {
+  const out = new Map<string, ActorMetrics>()
+
+  for (const [addr, m] of buys) {
+    out.set(addr, {
+      buy: { ...m },
+      sell: { count: 0, volume: 0n },
+    })
+  }
+
+  for (const [addr, m] of sells) {
+    const a = out.get(addr) ?? { buy: { count: 0, volume: 0n }, sell: { count: 0, volume: 0n } }
+
+    a.sell = { ...m }
+    out.set(addr, a)
+  }
+
+  return out
+}
+
+const aggregateBy = <K>(sales: Sale[], dimension: Dimension<K>) => {
+  const map = new Map<K, Metrics>()
+
+  for (const sale of sales) {
+    const key = dimension(sale)
+    if (!key) continue
+
+    const metrics = map.get(key) ?? createMetrics()
+    applySale(metrics, sale)
+    map.set(key, metrics)
+  }
+
+  return map
 }
 
 export const aggregateSales = (sales: Sale[], unit: 'day' | 'month' | 'week') => {
-  const byEpoch = new Map<string, SalesAnalytics>()
-  const byCollection = new Map<string, SalesAnalytics>()
-  const byActor = new Map<string, ActorAnalytics>()
+  const byEpoch = aggregateBy(sales, epochKey(unit))
+  const byCollection = aggregateBy(sales, collectionKey)
 
-  for (const sale of sales) {
-    const { block } = sale.execution
-
-    const tKey = timeKey(block.timestamp, unit)
-    const cKey = sale.collection
-    const aKeys = { buyer: sale.buyer, seller: sale.seller }
-
-    const epoch = byEpoch.get(tKey) ?? { count: 0, volume: 0n }
-    epoch.count += 1
-    epoch.volume += BigInt(sale.price) // TODO: if any other currency than weth is whitelisted => bugs
-    byEpoch.set(tKey, epoch)
-
-    const col = byCollection.get(cKey) ?? { count: 0, volume: 0n }
-    col.count += 1
-    col.volume += BigInt(sale.price)
-    byCollection.set(cKey, col)
-
-    const bActor = byActor.get(aKeys.buyer) ?? {
-      buy: { count: 0, volume: 0n },
-      sell: { count: 0, volume: 0n },
-    }
-    bActor.buy.count += 1
-    bActor.buy.volume += BigInt(sale.price)
-    byActor.set(aKeys.buyer, bActor)
-
-    const sActor = byActor.get(aKeys.seller) ?? {
-      buy: { count: 0, volume: 0n },
-      sell: { count: 0, volume: 0n },
-    }
-    sActor.sell.count += 1
-    sActor.sell.volume += BigInt(sale.price)
-    byActor.set(aKeys.seller, sActor)
-  }
+  const buys = aggregateBy(sales, buyerKey)
+  const sells = aggregateBy(sales, sellerKey)
 
   return {
     byEpoch,
     byCollection,
-    byActor,
+    byActor: mergeActors(buys, sells),
   }
 }

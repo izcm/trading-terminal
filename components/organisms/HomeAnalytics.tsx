@@ -1,6 +1,8 @@
 'use client'
 
 import Link from 'next/link'
+import { Hex } from 'viem'
+
 import 'chart.js/auto'
 
 import { use, useEffect, useMemo, useState } from 'react'
@@ -11,8 +13,7 @@ import { getCollection } from '@/dev/collections'
 import { topNBy } from '@/lib/utils/analytics/topN'
 import { aggregateSales, floor } from '@/features/analytics/sales'
 
-import { formatEth2, weiToChartNumber, formatTsUTC, addrDisplay } from '@/lib/utils/format'
-import type { Hex } from 'viem'
+import { formatEth2, weiToChartNumber, formatTsUTC, addrDisplay, timeKey } from '@/lib/utils/format'
 
 import { Sale } from '@/domain/types/sale'
 import { Result } from '@/lib/utils/result'
@@ -22,6 +23,16 @@ import { Stat, Modal } from '../molecules'
 import { BaseChart } from '../chartjs/BaseChart'
 import { createDataset } from '../chartjs/ChartProps'
 
+// LINE: ratio = ASK_volume / (ASK_volume + BID_volume) over time
+
+// LINE: Cumulative volume over time
+// always goes up → very line-coded
+// shows growth / traction
+// investors love this shape
+// zero confusion with bars
+
+// stacked bar charts:
+// https://www.chartjs.org/docs/latest/samples/bar/stacked.html
 export const HomeAnalytics = ({
   initialData,
 }: {
@@ -47,6 +58,23 @@ export const HomeAnalytics = ({
 
   // tx onclick opens receipt-modal
   const [showReceipt, setShowReceipt] = useState<{ show: boolean; tx: Hex | null }>()
+
+  useEffect(() => {
+    if (!nextCursor) return
+
+    const fetchMore = async () => {
+      const res = await fetch(`/api/sales?limit=10&cursor=${nextCursor}`)
+
+      const page: Result<PaginatedSales> = await res.json()
+
+      if (page.ok) {
+        setSales(prev => [...prev, ...page.data.items])
+        setNextCursor(page.data.nextCursor)
+      }
+    }
+
+    fetchMore()
+  }, [nextCursor])
 
   const handleFilters = (filter: keyof typeof filters, value: any) => {
     if (filters[filter] === value) value = null
@@ -74,23 +102,6 @@ export const HomeAnalytics = ({
   const filteredSales = useMemo(() => {
     return applyFilters(sales, filters)
   }, [filters, sales])
-
-  useEffect(() => {
-    if (!nextCursor) return
-
-    const fetchMore = async () => {
-      const res = await fetch(`/api/sales?limit=10&cursor=${nextCursor}`)
-
-      const page: Result<PaginatedSales> = await res.json()
-
-      if (page.ok) {
-        setSales(prev => [...prev, ...page.data.items])
-        setNextCursor(page.data.nextCursor)
-      }
-    }
-
-    fetchMore()
-  }, [nextCursor])
 
   const analytics = useMemo(() => {
     return aggregateSales(filteredSales, 'week')
@@ -151,7 +162,8 @@ export const HomeAnalytics = ({
                 datasets={[
                   createDataset(
                     'line',
-                    epochData.map(([, v]) => v.count)
+                    epochData.map(([, v]) => v.count),
+                    '#d15db8ff'
                   ),
                 ]}
               />
@@ -163,7 +175,13 @@ export const HomeAnalytics = ({
                 datasets={[
                   createDataset(
                     'bar',
-                    epochData.map(([, v]) => weiToChartNumber(v.volume))
+                    epochData.map(([, v]) => weiToChartNumber(v.volume)),
+                    '#ff4fd9a4'
+                  ),
+                  createDataset(
+                    'bar',
+                    epochData.map(([, v]) => weiToChartNumber(v.volume)),
+                    '#2bff79ab'
                   ),
                 ]}
               />

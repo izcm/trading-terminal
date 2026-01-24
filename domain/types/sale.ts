@@ -9,7 +9,7 @@ export type Sale = {
   currency: Hex
   price: string
 
-  order: {
+  order?: {
     side: 'ASK' | 'BID' | 'COLLECTION_BID'
     signer: Hex
   }
@@ -29,10 +29,12 @@ type Execution = {
 
 type Tx = {
   hash: Hex
-  index: number
-  gasUsed: string
-  function: {
-    selector: Hex
-    name: string
+  ctx?: {
+    index: number
+    gasUsed: string
+    function: {
+      selector: Hex
+      name: string
+    }
   }
 }

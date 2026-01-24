@@ -8,7 +8,7 @@ const purpleShades = [
 
 const defaultLook = {
   color: '#6f8cf6b9',
-  borderWidth: 2,
+  borderWidth: 1.6,
   borderRadius: 4,
   tension: 0.3,
 }
@@ -29,6 +29,16 @@ export const defaultOptions = {
   layout: {
     padding: 20,
   },
+
+  responsive: true,
+  scales: {
+    x: {
+      stacked: true,
+    },
+    y: {
+      stacked: true,
+    },
+  },
 }
 
 type DatasetPresetMap = {
@@ -40,10 +50,12 @@ type DatasetPresetMap = {
 export function createDataset(
   type: keyof DatasetPresetMap,
   data: number[],
+  borderColor?: string,
   label?: string
 ): ChartDataset<keyof DatasetPresetMap, number[]> {
   return {
-    ...datasetPresets[type],
+    ...(datasetPresets[type] as any),
+    borderColor: borderColor ?? datasetPresets[type].borderColor,
     data,
     label,
   }
