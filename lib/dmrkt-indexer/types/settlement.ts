@@ -33,6 +33,7 @@ export type SettlementDoc = {
     }
   }
 
+  metaStatus: 'PENDING' | 'DONE' | 'FAILED'
   orderMeta?: {
     side: 'ASK' | 'BID' | 'COLLECTION_BID'
     signer: Hex
@@ -80,5 +81,7 @@ export const settlementDocToSale = (s: SettlementDoc): Sale => {
           : undefined,
       },
     },
+
+    metaStatus: s.metaStatus,
   }
 }

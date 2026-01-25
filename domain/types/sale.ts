@@ -14,6 +14,7 @@ export type Sale = {
     signer: Hex
   }
 
+  metaStatus: 'PENDING' | 'DONE' | 'FAILED'
   execution: Execution
 }
 

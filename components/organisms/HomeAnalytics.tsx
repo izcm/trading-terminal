@@ -6,7 +6,7 @@ import { Hex } from 'viem'
 import 'chart.js/auto'
 
 import { use, useEffect, useMemo, useState } from 'react'
-import { LayoutGrid, ChartArea, Receipt } from 'lucide-react'
+import { LayoutGrid, ChartArea, Receipt, Divide } from 'lucide-react'
 
 import { getCollection } from '@/dev/collections'
 
@@ -29,6 +29,7 @@ import { PaginatedSales } from '@/lib/dmrkt-indexer/actions/sales'
 import { Stat, Modal } from '../molecules'
 import { BaseChart } from '../chartjs/BaseChart'
 import { createDataset } from '../chartjs/ChartProps'
+import { SaleReceipt } from './SaleReceipt'
 
 // LINE: ratio = ASK_volume / (ASK_volume + BID_volume) over time
 
@@ -40,6 +41,9 @@ import { createDataset } from '../chartjs/ChartProps'
 
 // stacked bar charts:
 // https://www.chartjs.org/docs/latest/samples/bar/stacked.html
+
+type ShowReceiptState = { show: false } | { show: true; sale: Sale }
+
 export const HomeAnalytics = ({
   initialData,
 }: {
@@ -67,7 +71,7 @@ export const HomeAnalytics = ({
   const timeUnit: TimeUnit = 'week'
 
   // tx onclick opens receipt-modal
-  const [showReceipt, setShowReceipt] = useState<{ show: boolean; tx: Hex | null }>()
+  const [showReceipt, setShowReceipt] = useState<ShowReceiptState>({ show: false })
 
   useEffect(() => {
     if (!nextCursor) return
@@ -117,16 +121,15 @@ export const HomeAnalytics = ({
     return aggregateSales(filteredSales, timeUnit)
   }, [filteredSales, timeUnit])
 
-  const epochKeys = Array.from(analytics.byEpoch.keys())
-  const epochData = Array.from(analytics.byEpoch.entries())
+  const epochKeys = useMemo(() => Array.from(analytics.byEpoch.keys()), [filteredSales])
 
   const cumulativeVolume = useMemo(() => {
     let sum = 0
-    return epochData.map(([, v]) => {
+    return Array.from(analytics.byEpoch.entries()).map(([, v]) => {
       sum += weiToChartNumber(v.volume)
       return sum
     })
-  }, [epochData])
+  }, [analytics])
 
   const topCollectionsList = topNBy(analytics.byCollection, a => a.volume, 3)
   const topCollectionsByKey = useMemo(
@@ -141,10 +144,6 @@ export const HomeAnalytics = ({
     })
   )
 
-  const topActors = topNBy(analytics.byActor, a => a.buy.volume + a.sell.volume, 10)
-
-  const totalVolume = filteredSales.reduce((sum, sale) => sum + BigInt(sale.price), 0n)
-
   const sideByEpoch = (side: 'ASK' | 'BID', epoch: string, unit: TimeUnit) => {
     const items = filteredSales.filter(
       sale =>
@@ -155,6 +154,25 @@ export const HomeAnalytics = ({
 
     return items.reduce((sum, sale) => sum + BigInt(sale.price), 0n)
   }
+
+  const volumeBarDatasets = useMemo(() => {
+    return [
+      createDataset(
+        'bar',
+        epochKeys.map(epoch => weiToChartNumber(sideByEpoch('ASK', epoch, timeUnit))),
+        '#ff69b4b9'
+      ),
+      createDataset(
+        'bar',
+        epochKeys.map(epoch => weiToChartNumber(sideByEpoch('BID', epoch, timeUnit))),
+        '#42ff9ab2'
+      ),
+    ]
+  }, [epochKeys, filteredSales])
+
+  const topActors = topNBy(analytics.byActor, a => a.buy.volume + a.sell.volume, 10)
+
+  const totalVolume = filteredSales.reduce((sum, sale) => sum + BigInt(sale.price), 0n)
 
   return (
     <>
@@ -192,22 +210,7 @@ export const HomeAnalytics = ({
               />
             </div>
             <div className="w-1/2 card">
-              <BaseChart
-                type={'bar'}
-                labels={epochKeys}
-                datasets={[
-                  createDataset(
-                    'bar',
-                    epochKeys.map(epoch => weiToChartNumber(sideByEpoch('ASK', epoch, timeUnit))),
-                    '#ff69b4b9'
-                  ),
-                  createDataset(
-                    'bar',
-                    epochKeys.map(epoch => weiToChartNumber(sideByEpoch('BID', epoch, timeUnit))),
-                    '#42ff9ab2'
-                  ),
-                ]}
-              />
+              <BaseChart type={'bar'} labels={epochKeys} datasets={volumeBarDatasets} />
             </div>
           </div>
 
@@ -246,10 +249,16 @@ export const HomeAnalytics = ({
                 <li
                   key={sale.execution.tx.hash}
                   className="interactive-row text-muted"
-                  onClick={() => setShowReceipt({ show: true, tx: tx.hash })}
+                  onClick={() => setShowReceipt({ show: true, sale: sale })}
                 >
-                  <div className="flex gap-4 text-xs">
-                    <span className={sale.order?.side === 'ASK' ? 'text-pink/70' : 'text-green/70'}>
+                  <div className="flex gap-4 items-center">
+                    <span
+                      className={
+                        sale.order?.side === 'ASK'
+                          ? 'text-pink/70 text-xs'
+                          : 'text-green/70 text-xs'
+                      }
+                    >
                       {sale.order?.side.slice(0, 1)}
                     </span>
                     <span>{formatTsUTC(block.timestamp)}</span>
@@ -292,13 +301,10 @@ export const HomeAnalytics = ({
           </div>
         </div>
       </div>
-      {showReceipt && (
+      {showReceipt.show && (
         <div className="fixed z-[999]">
-          <Modal
-            isOpen={showReceipt.show}
-            onClose={() => setShowReceipt({ show: false, tx: null })}
-          >
-            {showReceipt.tx}
+          <Modal isOpen={showReceipt.show} onClose={() => setShowReceipt({ show: false })}>
+            <SaleReceipt sale={showReceipt.sale} />
           </Modal>
         </div>
       )}
