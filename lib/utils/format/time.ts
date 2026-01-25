@@ -1,5 +1,7 @@
 import { months } from '@/domain/constants/months'
 
+export type TimeUnit = 'hour' | 'day' | 'month' | 'week'
+
 export const formatTsUTC = (ts: number) => {
   const d = new Date(ts)
 

@@ -1,5 +1,5 @@
 import type { Sale } from '@/domain/types'
-import { timeKey } from '@/lib/utils/format/time'
+import { timeKey, TimeUnit } from '@/lib/utils/format/time'
 import { Hex } from 'viem'
 
 export type Metrics = {
@@ -24,8 +24,16 @@ const applySale = (m: Metrics, sale: Sale) => {
 
 type Dimension<T> = (sale: Sale) => T | null
 
+type SideGroup = 'ASK' | 'BID'
+
+const sideKey: Dimension<SideGroup> = sale => {
+  const side = sale.order?.side
+  if (!side) return null
+  return side === 'ASK' ? 'ASK' : 'BID'
+}
+
 const epochKey =
-  (unit: 'day' | 'week' | 'month'): Dimension<string> =>
+  (unit: TimeUnit): Dimension<string> =>
   sale =>
     timeKey(sale.execution.block.timestamp, unit)
 
@@ -68,9 +76,10 @@ const aggregateBy = <K>(sales: Sale[], dimension: Dimension<K>) => {
   return map
 }
 
-export const aggregateSales = (sales: Sale[], unit: 'day' | 'month' | 'week') => {
+export const aggregateSales = (sales: Sale[], unit: TimeUnit) => {
   const byEpoch = aggregateBy(sales, epochKey(unit))
   const byCollection = aggregateBy(sales, collectionKey)
+  const bySide = aggregateBy(sales, sideKey)
 
   const buys = aggregateBy(sales, buyerKey)
   const sells = aggregateBy(sales, sellerKey)
@@ -78,6 +87,7 @@ export const aggregateSales = (sales: Sale[], unit: 'day' | 'month' | 'week') =>
   return {
     byEpoch,
     byCollection,
+    bySide,
     byActor: mergeActors(buys, sells),
   }
 }

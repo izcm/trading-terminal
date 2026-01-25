@@ -13,7 +13,14 @@ import { getCollection } from '@/dev/collections'
 import { topNBy } from '@/lib/utils/analytics/topN'
 import { aggregateSales, floor } from '@/features/analytics/sales'
 
-import { formatEth2, weiToChartNumber, formatTsUTC, addrDisplay, timeKey } from '@/lib/utils/format'
+import {
+  formatEth2,
+  weiToChartNumber,
+  formatTsUTC,
+  addrDisplay,
+  timeKey,
+  TimeUnit,
+} from '@/lib/utils/format'
 
 import { Sale } from '@/domain/types/sale'
 import { Result } from '@/lib/utils/result'
@@ -56,6 +63,9 @@ export const HomeAnalytics = ({
     epoch: null,
   })
 
+  // add timeUnit variable
+  const timeUnit: TimeUnit = 'week'
+
   // tx onclick opens receipt-modal
   const [showReceipt, setShowReceipt] = useState<{ show: boolean; tx: Hex | null }>()
 
@@ -63,7 +73,7 @@ export const HomeAnalytics = ({
     if (!nextCursor) return
 
     const fetchMore = async () => {
-      const res = await fetch(`/api/sales?limit=10&cursor=${nextCursor}`)
+      const res = await fetch(`/api/sales?limit=100&cursor=${nextCursor}`)
 
       const page: Result<PaginatedSales> = await res.json()
 
@@ -104,11 +114,19 @@ export const HomeAnalytics = ({
   }, [filters, sales])
 
   const analytics = useMemo(() => {
-    return aggregateSales(filteredSales, 'week')
-  }, [filteredSales])
+    return aggregateSales(filteredSales, timeUnit)
+  }, [filteredSales, timeUnit])
 
-  const epochLabels = Array.from(analytics.byEpoch.keys())
+  const epochKeys = Array.from(analytics.byEpoch.keys())
   const epochData = Array.from(analytics.byEpoch.entries())
+
+  const cumulativeVolume = useMemo(() => {
+    let sum = 0
+    return epochData.map(([, v]) => {
+      sum += weiToChartNumber(v.volume)
+      return sum
+    })
+  }, [epochData])
 
   const topCollectionsList = topNBy(analytics.byCollection, a => a.volume, 3)
   const topCollectionsByKey = useMemo(
@@ -126,6 +144,17 @@ export const HomeAnalytics = ({
   const topActors = topNBy(analytics.byActor, a => a.buy.volume + a.sell.volume, 10)
 
   const totalVolume = filteredSales.reduce((sum, sale) => sum + BigInt(sale.price), 0n)
+
+  const sideByEpoch = (side: 'ASK' | 'BID', epoch: string, unit: TimeUnit) => {
+    const items = filteredSales.filter(
+      sale =>
+        timeKey(sale.execution.block.timestamp, unit) === epoch &&
+        sale.order &&
+        sale.order?.side === side
+    )
+
+    return items.reduce((sum, sale) => sum + BigInt(sale.price), 0n)
+  }
 
   return (
     <>
@@ -158,30 +187,24 @@ export const HomeAnalytics = ({
             <div className="w-1/2 card">
               <BaseChart
                 type={'line'}
-                labels={epochLabels}
-                datasets={[
-                  createDataset(
-                    'line',
-                    epochData.map(([, v]) => v.count),
-                    '#d15db8ff'
-                  ),
-                ]}
+                labels={epochKeys}
+                datasets={[createDataset('line', cumulativeVolume)]}
               />
             </div>
             <div className="w-1/2 card">
               <BaseChart
                 type={'bar'}
-                labels={epochLabels}
+                labels={epochKeys}
                 datasets={[
                   createDataset(
                     'bar',
-                    epochData.map(([, v]) => weiToChartNumber(v.volume)),
-                    '#ff4fd9a4'
+                    epochKeys.map(epoch => weiToChartNumber(sideByEpoch('ASK', epoch, timeUnit))),
+                    '#ff69b4b9'
                   ),
                   createDataset(
                     'bar',
-                    epochData.map(([, v]) => weiToChartNumber(v.volume)),
-                    '#2bff79ab'
+                    epochKeys.map(epoch => weiToChartNumber(sideByEpoch('BID', epoch, timeUnit))),
+                    '#42ff9ab2'
                   ),
                 ]}
               />
@@ -225,7 +248,12 @@ export const HomeAnalytics = ({
                   className="interactive-row text-muted"
                   onClick={() => setShowReceipt({ show: true, tx: tx.hash })}
                 >
-                  <span>{formatTsUTC(block.timestamp)}</span>
+                  <div className="flex gap-4 text-xs">
+                    <span className={sale.order?.side === 'ASK' ? 'text-pink/70' : 'text-green/70'}>
+                      {sale.order?.side.slice(0, 1)}
+                    </span>
+                    <span>{formatTsUTC(block.timestamp)}</span>
+                  </div>
 
                   <span>{topCollectionsMeta[sale.collection].symbol}</span>
 

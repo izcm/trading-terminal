@@ -30,7 +30,6 @@ export const defaultOptions = {
     padding: 20,
   },
 
-  responsive: true,
   scales: {
     x: {
       stacked: true,
