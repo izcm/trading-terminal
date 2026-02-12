@@ -1,3 +1,3 @@
-export * from './collection'
+export * from './nft-collection'
 export * from './nft'
 export * from './sale'

@@ -24,7 +24,7 @@ export const Modal = ({ isOpen, onClose, children }: ModalProps) => {
       className="
         fixed inset-0 z-50 flex items-center justify-center
         bg-black/50 backdrop-blur-sm 
-        animate-fadeIn
+        animate-fadeIn fixed z-[999]
       "
       onClick={onClose}
     >
@@ -35,7 +35,7 @@ export const Modal = ({ isOpen, onClose, children }: ModalProps) => {
           rounded-lg
           max-w-[90%] 
           min-w-[400px]
-          shadow-lg
+          shadow-lg p-2
         "
         onClick={e => e.stopPropagation()}
       >

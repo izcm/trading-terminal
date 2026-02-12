@@ -11,6 +11,7 @@ const inlineSvgToBlobUrl = (src: string): string => {
   return URL.createObjectURL(blob)
 }
 
+// ❗ TODO: SANITIZE FOR XSS @resvg/resvg-js
 export const resolveImage = async (src: string): Promise<string> => {
   if (!src) return ''
 

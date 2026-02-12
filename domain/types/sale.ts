@@ -1,11 +1,17 @@
 import type { Hex } from 'viem'
 
+export const saleKey = (chainId: number, orderHash: Hex) => `${chainId}:${orderHash}` as const
+
 export type Sale = {
+  chainId: number
   orderHash: string
+
   collection: Hex
   tokenId: string
+
   seller: Hex
   buyer: Hex
+
   currency: Hex
   price: string
 
@@ -19,7 +25,6 @@ export type Sale = {
 }
 
 type Execution = {
-  chainId: number
   logIndex: number
   block: {
     timestamp: number

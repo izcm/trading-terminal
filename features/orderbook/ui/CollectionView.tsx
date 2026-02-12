@@ -6,12 +6,12 @@ import { Search, ChartArea } from 'lucide-react'
 import { NFTGallery, Sidebar } from '@/components/organisms'
 import { SidebarContainer, TextInput } from '@/components/atoms'
 
-import { AttributeSummary, Collection, NFT } from '@/domain/types'
+import { AttributeSummary, NFTCollection, NFT } from '@/domain/types'
 import { CollectionBanner } from '@/components/molecules/CollectionBanner'
 import { useState } from 'react'
 
 interface CollectionViewProps {
-  collection: Collection
+  collection: NFTCollection
   nfts: NFT[]
   attributes?: AttributeSummary
 }

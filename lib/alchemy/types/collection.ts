@@ -1,4 +1,4 @@
-import { Collection } from '@/domain/types'
+import { NFTCollection } from '@/domain/types'
 
 export type AlchemyCollection = {
   address: string
@@ -27,7 +27,7 @@ export type AlchemyCollection = {
 }
 
 // Convert Alchemy Collection to local Collection type
-export const toCollection = (alchemy: AlchemyCollection): Collection => {
+export const toCollection = (alchemy: AlchemyCollection): NFTCollection => {
   const os = alchemy.openSeaMetadata
 
   // Try all available image sources in order of preference

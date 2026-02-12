@@ -1,0 +1,36 @@
+<svg width="600" height="600" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- soft glow -->
+    <radialGradient id="g" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#7c5cff" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#7c5cff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- background -->
+  <rect width="600" height="600" rx="64" fill="#0b0b10"/>
+
+  <!-- glow halo -->
+  <circle cx="300" cy="300" r="220" fill="url(#g)"/>
+
+  <!-- subtle frame
+  <rect x="24" y="24" width="552" height="552" rx="48"
+        stroke="#7c5cff" stroke-opacity="0.25" stroke-width="2" fill="none"/> -->
+
+  <!-- core mark (slightly bigger) -->
+  <rect x="230" y="230" width="140" height="140" fill="#7c5cff"/>
+  <rect x="265" y="265" width="70" height="70" fill="#0b0b10"/>
+
+  <!-- label -->
+  <text
+    x="300"
+    y="505"
+    text-anchor="middle"
+    fill="#7c5cff"
+    font-family="monospace"
+    font-size="34"
+    letter-spacing="2"
+  >
+    dmrkt
+  </text>
+</svg>

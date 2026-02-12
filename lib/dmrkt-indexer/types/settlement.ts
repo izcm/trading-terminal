@@ -4,17 +4,19 @@ import { Sale } from '@/domain/types'
 export type SettlementDoc = {
   _id: string
 
+  chainId: number
   orderHash: Hex
+
   collection: Hex
   tokenId: string
 
   seller: Hex
   buyer: Hex
+
   currency: Hex
-  priceWei: string
+  price: string
 
   execution: {
-    chainId: number
     logIndex: number
     txHash: Hex
 
@@ -34,7 +36,7 @@ export type SettlementDoc = {
   }
 
   metaStatus: 'PENDING' | 'DONE' | 'FAILED'
-  orderMeta?: {
+  orderAttributes?: {
     side: 'ASK' | 'BID' | 'COLLECTION_BID'
     signer: Hex
   }
@@ -42,23 +44,26 @@ export type SettlementDoc = {
 
 export const settlementDocToSale = (s: SettlementDoc): Sale => {
   return {
+    chainId: s.chainId,
     orderHash: s.orderHash,
+
     collection: s.collection,
     tokenId: s.tokenId,
+
     seller: s.seller,
     buyer: s.buyer,
-    currency: s.currency,
-    price: s.priceWei,
 
-    order: s.orderMeta
+    currency: s.currency,
+    price: s.price,
+
+    order: s.orderAttributes
       ? {
-          side: s.orderMeta.side,
-          signer: s.orderMeta.signer,
+          side: s.orderAttributes.side,
+          signer: s.orderAttributes.signer,
         }
       : undefined,
 
     execution: {
-      chainId: s.execution.chainId,
       logIndex: s.execution.logIndex,
 
       block: {

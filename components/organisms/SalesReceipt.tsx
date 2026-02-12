@@ -5,9 +5,9 @@ type Props = {
   sale: Sale
 }
 
-export const SaleReceipt = ({ sale }: Props) => {
+export const SalesReceipt = ({ sale }: Props) => {
   return (
-    <div className="w-full max-w-md rounded-lg bg-surface border border-default p-4">
+    <div>
       {/* Header */}
       <div className="flex items-start justify-between border-b border-default pb-3">
         <div className="flex flex-col gap-1 text-left">
@@ -33,13 +33,16 @@ export const SaleReceipt = ({ sale }: Props) => {
         <section className="flex flex-col gap-2">
           <span className="font-medium">Execution</span>
 
-          <Row label="Chain" value={sale.execution.chainId} />
+          <Row label="Chain" value={sale.chainId} />
           <Row label="Block" value={sale.execution.block.number} />
           <Row label="Timestamp" value={sale.execution.block.timestamp} />
           <Row label="Tx" value={sale.execution.tx.hash} mono />
 
           {sale.execution.tx.ctx?.function && (
-            <Row label="Function" value={sale.execution.tx.ctx.function.name} />
+            <Row
+              label="Function"
+              value={`${sale.execution.tx.ctx.function.name}::${sale.execution.tx.ctx?.function.selector}`}
+            />
           )}
         </section>
       </div>

@@ -6,30 +6,20 @@ import { Hex } from 'viem'
 import 'chart.js/auto'
 
 import { use, useEffect, useMemo, useState } from 'react'
-import { LayoutGrid, ChartArea, Receipt, Divide } from 'lucide-react'
-
-import { getCollection } from '@/dev/collections'
+import { LayoutGrid, ChartArea } from 'lucide-react'
 
 import { topNBy } from '@/lib/utils/analytics/topN'
 import { aggregateSales, floor } from '@/features/analytics/sales'
 
-import {
-  formatEth2,
-  weiToChartNumber,
-  formatTsUTC,
-  addrDisplay,
-  timeKey,
-  TimeUnit,
-} from '@/lib/utils/format'
+import { formatEth2, formatTsUTC, addrDisplay, timeKey, TimeUnit } from '@/lib/utils/format'
 
 import { Sale } from '@/domain/types/sale'
 import { Result } from '@/lib/utils/result'
 import { PaginatedSales } from '@/lib/dmrkt-indexer/actions/sales'
 
-import { Stat, Modal } from '../molecules'
-import { BaseChart } from '../chartjs/BaseChart'
-import { createDataset } from '../chartjs/ChartProps'
-import { SaleReceipt } from './SaleReceipt'
+import { Stat, Modal } from '../../molecules'
+import { SalesReceipt } from '../SalesReceipt'
+import { HomeCharts } from './HomeCharts'
 
 // LINE: ratio = ASK_volume / (ASK_volume + BID_volume) over time
 
@@ -121,54 +111,11 @@ export const HomeAnalytics = ({
     return aggregateSales(filteredSales, timeUnit)
   }, [filteredSales, timeUnit])
 
-  const epochKeys = useMemo(() => Array.from(analytics.byEpoch.keys()), [filteredSales])
-
-  const cumulativeVolume = useMemo(() => {
-    let sum = 0
-    return Array.from(analytics.byEpoch.entries()).map(([, v]) => {
-      sum += weiToChartNumber(v.volume)
-      return sum
-    })
-  }, [analytics])
-
   const topCollectionsList = topNBy(analytics.byCollection, a => a.volume, 3)
   const topCollectionsByKey = useMemo(
     () => Object.fromEntries(topCollectionsList),
     [topCollectionsList]
   )
-
-  const topCollectionsMeta: Record<string, { name: string; symbol: string }> = Object.fromEntries(
-    topCollectionsList.map(([k]) => {
-      const meta = getCollection(k as Hex) // tmp will do rpc call + useeffect
-      return [k, { name: meta!.name, symbol: meta!.symbol }] // tmp... will fix error handling
-    })
-  )
-
-  const sideByEpoch = (side: 'ASK' | 'BID', epoch: string, unit: TimeUnit) => {
-    const items = filteredSales.filter(
-      sale =>
-        timeKey(sale.execution.block.timestamp, unit) === epoch &&
-        sale.order &&
-        sale.order?.side === side
-    )
-
-    return items.reduce((sum, sale) => sum + BigInt(sale.price), 0n)
-  }
-
-  const volumeBarDatasets = useMemo(() => {
-    return [
-      createDataset(
-        'bar',
-        epochKeys.map(epoch => weiToChartNumber(sideByEpoch('ASK', epoch, timeUnit))),
-        '#ff69b4b9'
-      ),
-      createDataset(
-        'bar',
-        epochKeys.map(epoch => weiToChartNumber(sideByEpoch('BID', epoch, timeUnit))),
-        '#42ff9ab2'
-      ),
-    ]
-  }, [epochKeys, filteredSales])
 
   const topActors = topNBy(analytics.byActor, a => a.buy.volume + a.sell.volume, 10)
 
@@ -192,7 +139,7 @@ export const HomeAnalytics = ({
             </span>
           </section>
           <div className="flex-1 flex justify-end gap-4">
-            <Link className="btn btn-primary" href="/collections">
+            <Link className="btn btn-primary" href="/browse">
               <LayoutGrid /> explore dmrkt
             </Link>
             <Link className="btn btn-secondary" href="./">
@@ -202,16 +149,7 @@ export const HomeAnalytics = ({
         </div>
         <div className="flex gap-4 h-72">
           <div className="basis-2/3 flex gap-4">
-            <div className="w-1/2 card">
-              <BaseChart
-                type={'line'}
-                labels={epochKeys}
-                datasets={[createDataset('line', cumulativeVolume)]}
-              />
-            </div>
-            <div className="w-1/2 card">
-              <BaseChart type={'bar'} labels={epochKeys} datasets={volumeBarDatasets} />
-            </div>
+            <HomeCharts analytics={analytics} sales={filteredSales} timeUnit={timeUnit} />
           </div>
 
           <ul className="basis-1/3 card">
@@ -221,13 +159,13 @@ export const HomeAnalytics = ({
             {topCollectionsList.map(([k, v], i) => (
               <li
                 key={k}
-                className="interactive-row filter-row flex text-muted"
+                className="interactive-row p-4 filter-row flex text-muted"
                 data-active={filters.collection === k}
                 onClick={() => handleFilters('collection', k)}
               >
                 <span className="text-sm">#{i + 1}</span>
 
-                <span>{topCollectionsMeta[k].symbol}</span>
+                <span>SYMBOL</span>
 
                 <Stat
                   value={floor(filteredSales, 'collection', k as `0x${string}`)}
@@ -248,29 +186,30 @@ export const HomeAnalytics = ({
               return (
                 <li
                   key={sale.execution.tx.hash}
-                  className="interactive-row text-muted"
                   onClick={() => setShowReceipt({ show: true, sale: sale })}
                 >
-                  <div className="flex gap-4 items-center">
-                    <span
-                      className={
-                        sale.order?.side === 'ASK'
-                          ? 'text-pink/70 text-xs'
-                          : 'text-green/70 text-xs'
-                      }
-                    >
-                      {sale.order?.side.slice(0, 1)}
-                    </span>
-                    <span>{formatTsUTC(block.timestamp)}</span>
-                  </div>
+                  <button className="interactive-row p-4 text-muted w-full">
+                    <div className="flex gap-4 items-center">
+                      <span
+                        className={
+                          sale.order?.side === 'ASK'
+                            ? 'text-pink/80 text-xs'
+                            : 'text-green/80 text-xs'
+                        }
+                      >
+                        {sale.order?.side.slice(0, 1)}
+                      </span>
+                      <span>{formatTsUTC(block.timestamp)}</span>
+                    </div>
 
-                  <span>{topCollectionsMeta[sale.collection].symbol}</span>
+                    <span>SYMBOL</span>
 
-                  {/* ACTORS */}
-                  <Stat value={sale.buyer} label="buyer" format={addrDisplay} />
-                  <Stat value={sale.seller} label="seller" format={addrDisplay} />
+                    {/* ACTORS */}
+                    <Stat value={sale.buyer} label="buyer" format={addrDisplay} />
+                    <Stat value={sale.seller} label="seller" format={addrDisplay} />
 
-                  <span>{formatEth2(BigInt(sale.price))} ETH</span>
+                    <span>{formatEth2(BigInt(sale.price))} ETH</span>
+                  </button>
                 </li>
               )
             })}
@@ -285,7 +224,7 @@ export const HomeAnalytics = ({
               {topActors.map(([k, a], i) => (
                 <li
                   key={k}
-                  className="interactive-row filter-row text-muted"
+                  className="interactive-row p-4 filter-row text-muted"
                   data-active={filters.actor === k}
                   onClick={() => handleFilters('actor', k)}
                 >
@@ -302,11 +241,15 @@ export const HomeAnalytics = ({
         </div>
       </div>
       {showReceipt.show && (
-        <div className="fixed z-[999]">
-          <Modal isOpen={showReceipt.show} onClose={() => setShowReceipt({ show: false })}>
-            <SaleReceipt sale={showReceipt.sale} />
-          </Modal>
-        </div>
+        <Modal isOpen={showReceipt.show} onClose={() => setShowReceipt({ show: false })}>
+          <div className="p-4 flex flex-col gap-4">
+            <SalesReceipt sale={showReceipt.sale} />
+            <div className="border-t border-default mt-4" />
+            <button className="btn btn-secondary" onClick={() => setShowReceipt({ show: false })}>
+              close
+            </button>
+          </div>
+        </Modal>
       )}
     </>
   )

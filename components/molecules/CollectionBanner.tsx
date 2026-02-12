@@ -1,6 +1,6 @@
-import { Collection } from '@/domain/types'
+import { NFTCollection } from '@/domain/types'
 
-export const CollectionBanner = ({ collection }: { collection: Collection }) => {
+export const CollectionBanner = ({ collection }: { collection: NFTCollection }) => {
   return (
     <div className="flex items-center card px-4 py-2 relative overflow-hidden">
       <div
