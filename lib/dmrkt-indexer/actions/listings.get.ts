@@ -1,6 +1,6 @@
-import { Result } from '@/lib/utils/result'
+import { Result } from '@/lib/utils/http'
 
-import { OrderRecord, orderRecordToListing } from '@/features/orderbook/web3/types/order'
+import { OrderRecord } from '@/features/orderbook/web3/types/order'
 import { Listing } from '@/domain/types/listing'
 
 import { DMRKT_INDEXER_BASE_URL as baseUrl } from '../constants'
@@ -10,7 +10,7 @@ export type PaginatedListings = {
   nextCursor: string | null
 }
 export async function getListings(query = 'limit=50'): Promise<Result<PaginatedListings>> {
-  const url = `${baseUrl}/api/orders?${query}`
+  const url = `${baseUrl}/api/orders?${query}&include=collection`
 
   try {
     const res = await fetch(url)
@@ -19,7 +19,7 @@ export async function getListings(query = 'limit=50'): Promise<Result<PaginatedL
     return {
       ok: true,
       data: {
-        items: data.items.map((item: OrderRecord) => orderRecordToListing(item)),
+        items: data.items,
         nextCursor: data.nextCursor,
       },
     }

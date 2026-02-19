@@ -2,36 +2,45 @@
 
 import Link from 'next/link'
 import { ArrowLeftRight, Plus } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { use, useEffect, useState } from 'react'
 
 import { TopCollections } from '@/components/organisms/Lists/TopCollections'
-import { Modal } from '@/components/molecules'
-import { getListings } from '@/lib/dmrkt-indexer/actions/listings.get'
+import { Modal, ListingRow } from '@/components/molecules'
+import { getListings, PaginatedListings } from '@/lib/dmrkt-indexer/actions/listings.get'
 
 import { CreateOrderForm } from '@/features/orderbook/ui/CreateOrderForm'
 import { TopNFTCollection } from '@/domain/types'
 import { Listing } from '@/domain/types/listing'
-import { ListingList } from '../Lists/ListingList'
+import { Result } from '@/lib/utils/http'
 
 type Props = {
   collections: TopNFTCollection[]
+  initialListings: Promise<Result<PaginatedListings>>
 }
 
-export const BrowseMarket = ({ collections }: Props) => {
+export const BrowseMarket = ({ collections, initialListings }: Props) => {
+  const initial = use(initialListings)
+
+  if (!initial.ok) {
+    return <div className="card">failed to load sales 💀</div>
+  }
+
   const [showNewForm, setShowNewForm] = useState(false)
-  const [listings, setListings] = useState<Listing[]>([])
+  const [listings, setListings] = useState<Listing[]>(initial.data.items)
 
   useEffect(() => {
-    // const nextCursor = null
+    //if(!nextCursor) return
 
     const fetchMore = async () => {
       const res = await getListings('limit=50&status=active')
 
-      if (res.ok) setListings(res.data.items)
+      if (res.ok) {
+        setListings(res.data.items)
+      }
     }
 
     fetchMore() // todo: implement endless scroll
-  })
+  }, [])
 
   return (
     <main className="flex flex-col gap-4 max-w-7xl mx-auto h-screen">
@@ -47,14 +56,18 @@ export const BrowseMarket = ({ collections }: Props) => {
         </button>
       </section>
 
-      <div className="flex-1 flex gap-4">
+      <div className="flex-1 flex gap-4 h-150 ">
         <div className="flex-1 flex flex-col gap-4">
           <div className="card">
             <TopCollections collections={collections} />
           </div>
 
-          <div className="flex-1 flex card">
-            <ListingList listings={listings} />
+          <div className="flex card overflow-y-scroll no-scrollbar">
+            <ul className="w-full">
+              {listings.map(item => (
+                <ListingRow key={item.id} listing={item} />
+              ))}
+            </ul>
           </div>
         </div>
 

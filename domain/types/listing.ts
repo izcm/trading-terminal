@@ -1,30 +1,24 @@
 import { Order } from '@/features/orderbook/web3/types/order'
-import { Hex } from 'viem'
-
-export type OrderStatus = 'active' | 'filled' | 'cancelled' | 'expired'
-
-export type OrderType = 'ask' | 'bid'
+import { NFTCollection } from './nft-collection'
 
 export type Listing = {
-  chainId: number
-  orderHash: Hex
+  id: string
 
-  type: OrderType
+  type: 'ask' | 'bid'
 
-  collection: {
-    name: string
-    symbol: string
-  }
+  collectionAddress: string
   tokenId: string
 
   price: string
-  currency: Hex
+  currency: string
 
-  start: string
-  end: string
+  actor: string
 
-  actor: Hex
-  nonce: string
+  start: number // unix ms
+  end: number // unix ms
 
+  collectionData?: NFTCollection | null
+
+  // raw order for contract interaction
   rawOrder: Order
 }

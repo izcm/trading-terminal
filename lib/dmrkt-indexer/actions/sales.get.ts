@@ -1,4 +1,4 @@
-import { Result } from '@/lib/utils/result'
+import { Result } from '@/lib/utils/http'
 
 import { settlementDocToSale } from '../types/settlement'
 

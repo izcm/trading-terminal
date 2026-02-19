@@ -14,7 +14,7 @@ import { aggregateSales, floor } from '@/features/analytics/sales'
 import { formatEth2, formatTsUTC, addrDisplay, timeKey, TimeUnit } from '@/lib/utils/format'
 
 import { Sale } from '@/domain/types/sale'
-import { Result } from '@/lib/utils/result'
+import { Result } from '@/lib/utils/http'
 import { PaginatedSales } from '@/lib/dmrkt-indexer/actions/sales.get'
 
 import { Stat, Modal } from '../../molecules'
@@ -238,6 +238,7 @@ export const HomeAnalytics = ({
           </div>
         </div>
       </div>
+
       {showReceipt.show && (
         <Modal isOpen={showReceipt.show} onClose={() => setShowReceipt({ show: false })}>
           <div className="p-4 flex flex-col gap-4">
