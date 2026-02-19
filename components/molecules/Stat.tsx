@@ -1,18 +1,22 @@
 import type { Hex } from 'viem'
 
-export const Stat = <T extends bigint | Hex>({
+export const Stat = <T extends bigint | Hex | number>({
   value,
   label,
-  format,
+  fmtFn,
 }: {
   value: T
   label: string
-  format: (value: T) => string
+  fmtFn?: (value: T) => string
 }) => {
+  const fmt = fmtFn ?? ((v: T) => String(v))
+
+  const out = fmt(value)
+
   return (
     <div className="flex items-center gap-2">
-      <span className="text-xs text-stat/70">{label}</span>
-      <span>{format(value) === '0.00' ? '----' : format(value)}</span>
+      <span className="text-xs text-accent">{label}</span>
+      <span>{out === '0.00' ? '----' : out}</span>
       {typeof value === 'bigint' && <span>ETH</span>}
     </div>
   )

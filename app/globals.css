@@ -12,6 +12,8 @@
   --color-muted: var(--text-muted);
 
   --color-stat: var(--accent-stat);
+  --color-ask: var(--accent-ask);
+  --color-bid: var(--accent-bid);
 
   --color-text: var(--text-primary);
   --color-text-muted: var(--text-muted);
@@ -22,17 +24,8 @@
   --color-accent: var(--accent);
   --color-accent-weak: var(--accent-weak);
 
-  /* RAW PALETTE */
-  --color-pink: #ff5f9c;
-  --color-green: #37ee7b;
-  --color-mango: #ff9a3c;
-
   --color-nebula: #05060d;
   --color-obsidian-indigo: #0b0f1e;
-  --color-vanta-twilight: #08051a;
-  --color-cryo-nebula: #030611;
-  --color-absolute-ice: #02040c;
-  --color-frozen-void: #01030a;
 
   /* Typography scale (subtle, premium) */
   --font-sans:
@@ -49,36 +42,24 @@
 :root[data-theme='infra-dark'] {
   color-scheme: dark;
 
-  /* CORE BACKGROUNDS — neutral, professional */
   --bg-primary: #040609; /* main canvas */
   --bg-secondary: #0f1620; /* panels */
   --bg-surface: #121a24; /* cards */
   --bg-muted: rgba(140, 180, 255, 0.06);
 
-  /* TEXT — calm, readable */
   --text-primary: rgba(230, 235, 245, 0.94);
   --text-muted: rgba(170, 185, 210, 0.65);
 
-  /* BORDERS — subtle structure */
   --border-default: rgba(140, 180, 255, 0.18);
   --border-soft: rgba(140, 180, 255, 0.1);
 
-  /* ACCENT — infrastructure blue */
   --accent: #4682cc;
   --accent-weak: rgba(59, 130, 246, 0.25);
 
-  /* SECONDARY — activity / focus */
   --accent-stat: #6fdcff;
 
-  /* STATUS (used sparingly) */
-  --accent-green: #5fd6a8;
-  --accent-amber: #e8c77a;
-  --accent-red: #f28b82;
-
-  /* NO DEFAULT GLOW */
   --panel-shadow: none;
 
-  /* HERO GRADIENT — extremely subtle */
   --bg-hero: linear-gradient(180deg, #0b0f14 0%, #0f1620 100%);
 }
 
@@ -99,14 +80,12 @@
   --border-default: rgba(130, 151, 255, 0.479);
   --border-soft: rgba(130, 151, 255, 0.39);
 
-  --accent: #6d75ff;
+  --accent: #6e75fa;
   --accent-weak: rgba(109, 117, 255, 0.6);
 
   --accent-stat: #60d7ff;
-
-  --accent-pink: #ff69b4;
-  --accent-mango: #ffb347;
-  --accent-green: #42ff9a;
+  --accent-bid: #60d7ff;
+  --accent-ask: #e37dec;
 
   /* 🌌 gradient / panel glow */
   --panel-shadow:
@@ -419,16 +398,25 @@ input:focus {
   border-radius: 0.5rem;
 }
 
-.interactive-row {
+.base-row,
+.stat-row {
   cursor: pointer;
   text-align: start;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  transition: all 0.2s ease;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
-.interactive-row:hover {
+.stat-row {
+  padding: 1rem;
+  justify-content: space-between;
+}
+
+.stat-row:hover,
+.base-row:hover {
   background: linear-gradient(
     135deg,
     color-mix(in oklab, var(--accent) 10%, transparent) 0%,

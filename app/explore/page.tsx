@@ -1,7 +1,7 @@
 import { DMRKT_INDEXER_BASE_URL as baseUrl } from '@/lib/dmrkt-indexer/constants'
-import { BrowseCollections } from '@/components/organisms/BrowseMarket/BrowseMarket'
+import { BrowseMarket } from '@/components/organisms/ExploreMarket/ExploreMarket'
 
-export default async function BrowseCollectionsPage() {
+export default async function ExplorePage() {
   const res = await fetch(`${baseUrl}/api/nft-collections/top?chainId=31337&limit=3`, {
     cache: 'no-store',
   })
@@ -10,5 +10,5 @@ export default async function BrowseCollectionsPage() {
 
   const collections = await res.json()
 
-  return <BrowseCollections collections={collections} />
+  return <BrowseMarket collections={collections} />
 }

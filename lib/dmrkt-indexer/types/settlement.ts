@@ -37,7 +37,7 @@ export type SettlementDoc = {
 
   metaStatus: 'PENDING' | 'DONE' | 'FAILED'
   orderAttributes?: {
-    side: 'ASK' | 'BID' | 'COLLECTION_BID'
+    type: 'ASK' | 'BID' | 'COLLECTION_BID'
     signer: Hex
   }
 }
@@ -58,7 +58,7 @@ export const settlementDocToSale = (s: SettlementDoc): Sale => {
 
     order: s.orderAttributes
       ? {
-          side: s.orderAttributes.side,
+          side: s.orderAttributes.type,
           signer: s.orderAttributes.signer,
         }
       : undefined,

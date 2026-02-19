@@ -12,7 +12,7 @@ export type PaginatedSales = {
   nextCursor: string | null
 }
 
-export const getSales = async (query = 'limit=50'): Promise<Result<PaginatedSales>> => {
+export async function getSales(query = 'limit=50'): Promise<Result<PaginatedSales>> {
   const url = `${baseUrl}/api/settlements?${query}`
 
   try {

@@ -5,7 +5,7 @@ import { Sale } from '@/domain/types'
 import { aggregateSales } from '@/features/analytics/sales'
 import { timeKey, TimeUnit, weiToChartNumber } from '@/lib/utils/format'
 
-import { createDataset } from '@/components/chartjs/ChartProps'
+import { createDataset } from '@/components/chartjs/props'
 import { BaseChart } from '@/components/chartjs/BaseChart'
 
 type AnalyticsChartProps = {
@@ -41,12 +41,12 @@ export const HomeCharts = ({ analytics, sales, timeUnit }: AnalyticsChartProps) 
       createDataset(
         'bar',
         epochKeys.map(epoch => weiToChartNumber(sideByEpoch('ASK', epoch, timeUnit))),
-        '#ff69b4b9'
+        '#e37dec9d'
       ),
       createDataset(
         'bar',
         epochKeys.map(epoch => weiToChartNumber(sideByEpoch('BID', epoch, timeUnit))),
-        '#42ff9ab2'
+        '#57bddfcb'
       ),
     ]
   }, [epochKeys, sales])

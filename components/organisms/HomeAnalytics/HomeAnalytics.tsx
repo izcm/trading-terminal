@@ -15,7 +15,7 @@ import { formatEth2, formatTsUTC, addrDisplay, timeKey, TimeUnit } from '@/lib/u
 
 import { Sale } from '@/domain/types/sale'
 import { Result } from '@/lib/utils/result'
-import { PaginatedSales } from '@/lib/dmrkt-indexer/actions/sales'
+import { PaginatedSales } from '@/lib/dmrkt-indexer/actions/sales.get'
 
 import { Stat, Modal } from '../../molecules'
 import { SalesReceipt } from '../SalesReceipt'
@@ -125,7 +125,7 @@ export const HomeAnalytics = ({
     <>
       <div className="flex flex-col gap-4">
         <div className="flex items-center">
-          <section className="flex-2 flex justify-evenly text-stat/70">
+          <section className="flex-2 flex justify-evenly text-muted">
             <span>
               sales <strong>{filteredSales.length}</strong>
             </span>
@@ -139,7 +139,7 @@ export const HomeAnalytics = ({
             </span>
           </section>
           <div className="flex-1 flex justify-end gap-4">
-            <Link className="btn btn-primary" href="/browse">
+            <Link className="btn btn-primary" href="/explore">
               <LayoutGrid /> explore dmrkt
             </Link>
             <Link className="btn btn-secondary" href="./">
@@ -159,7 +159,7 @@ export const HomeAnalytics = ({
             {topCollectionsList.map(([k, v], i) => (
               <li
                 key={k}
-                className="interactive-row p-4 filter-row flex text-muted"
+                className="stat-row filter-row flex text-muted"
                 data-active={filters.collection === k}
                 onClick={() => handleFilters('collection', k)}
               >
@@ -170,10 +170,10 @@ export const HomeAnalytics = ({
                 <Stat
                   value={floor(filteredSales, 'collection', k as `0x${string}`)}
                   label="F"
-                  format={formatEth2}
+                  fmtFn={formatEth2}
                 />
 
-                <Stat value={topCollectionsByKey[k].volume} label="V" format={formatEth2} />
+                <Stat value={topCollectionsByKey[k].volume} label="V" fmtFn={formatEth2} />
               </li>
             ))}
           </ul>
@@ -188,13 +188,11 @@ export const HomeAnalytics = ({
                   key={sale.execution.tx.hash}
                   onClick={() => setShowReceipt({ show: true, sale: sale })}
                 >
-                  <button className="interactive-row p-4 text-muted w-full">
+                  <button className="stat-row text-muted w-full">
                     <div className="flex gap-4 items-center">
                       <span
                         className={
-                          sale.order?.side === 'ASK'
-                            ? 'text-pink/80 text-xs'
-                            : 'text-green/80 text-xs'
+                          sale.order?.side === 'ASK' ? 'text-ask/70 text-xs' : 'text-bid/70 text-xs'
                         }
                       >
                         {sale.order?.side.slice(0, 1)}
@@ -205,8 +203,8 @@ export const HomeAnalytics = ({
                     <span>SYMBOL</span>
 
                     {/* ACTORS */}
-                    <Stat value={sale.buyer} label="buyer" format={addrDisplay} />
-                    <Stat value={sale.seller} label="seller" format={addrDisplay} />
+                    <Stat value={sale.buyer} label="buyer" fmtFn={addrDisplay} />
+                    <Stat value={sale.seller} label="seller" fmtFn={addrDisplay} />
 
                     <span>{formatEth2(BigInt(sale.price))} ETH</span>
                   </button>
@@ -224,7 +222,7 @@ export const HomeAnalytics = ({
               {topActors.map(([k, a], i) => (
                 <li
                   key={k}
-                  className="interactive-row p-4 filter-row text-muted"
+                  className="stat-row filter-row text-muted"
                   data-active={filters.actor === k}
                   onClick={() => handleFilters('actor', k)}
                 >
@@ -232,8 +230,8 @@ export const HomeAnalytics = ({
 
                   <span className="">{addrDisplay(k as `0x${string}`)}</span>
 
-                  <Stat value={a.buy.volume} label="B" format={formatEth2} />
-                  <Stat value={a.sell.volume} label="S" format={formatEth2} />
+                  <Stat value={a.buy.volume} label="B" fmtFn={formatEth2} />
+                  <Stat value={a.sell.volume} label="S" fmtFn={formatEth2} />
                 </li>
               ))}
             </ul>
