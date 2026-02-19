@@ -10,7 +10,7 @@ interface NFTGalleryProps {
   baseUrl: string
 }
 
-export const NFTGallery = ({ nfts, baseUrl }: NFTGalleryProps) => {
+export function NFTGallery({ nfts, baseUrl }: NFTGalleryProps) {
   return (
     <ul
       className="

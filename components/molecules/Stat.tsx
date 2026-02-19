@@ -1,6 +1,6 @@
 import type { Hex } from 'viem'
 
-export const Stat = <T extends bigint | Hex | number>({
+export function Stat<T extends bigint | Hex | number>({
   value,
   label,
   fmtFn,
@@ -8,7 +8,7 @@ export const Stat = <T extends bigint | Hex | number>({
   value: T
   label: string
   fmtFn?: (value: T) => string
-}) => {
+}) {
   const fmt = fmtFn ?? ((v: T) => String(v))
 
   const out = fmt(value)

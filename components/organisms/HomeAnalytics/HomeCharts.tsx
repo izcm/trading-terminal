@@ -14,7 +14,7 @@ type AnalyticsChartProps = {
   timeUnit: TimeUnit
 }
 
-export const HomeCharts = ({ analytics, sales, timeUnit }: AnalyticsChartProps) => {
+export function HomeCharts({ analytics, sales, timeUnit }: AnalyticsChartProps) {
   const epochKeys = useMemo(() => Array.from(analytics.byEpoch.keys()), [sales])
 
   const cumulativeVolume = useMemo(() => {

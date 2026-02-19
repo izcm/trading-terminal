@@ -5,7 +5,7 @@ type Props = {
   sale: Sale
 }
 
-export const SalesReceipt = ({ sale }: Props) => {
+export function SalesReceipt({ sale }: Props) {
   return (
     <div>
       {/* Header */}
@@ -50,9 +50,11 @@ export const SalesReceipt = ({ sale }: Props) => {
   )
 }
 
-const Row = ({ label, value, mono }: { label: string; value: string | number; mono?: boolean }) => (
-  <div className="flex justify-between gap-4">
-    <span className="text-muted">{label}</span>
-    <span className={`max-w-[220px] truncate ${mono ? 'font-mono text-xs' : ''}`}>{value}</span>
-  </div>
-)
+function Row({ label, value, mono }: { label: string; value: string | number; mono?: boolean }) {
+  return (
+    <div className="flex justify-between gap-4">
+      <span className="text-muted">{label}</span>
+      <span className={`max-w-[220px] truncate ${mono ? 'font-mono text-xs' : ''}`}>{value}</span>
+    </div>
+  )
+}

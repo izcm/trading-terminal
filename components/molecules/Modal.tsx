@@ -7,7 +7,7 @@ type ModalProps = {
   children: ReactNode
 }
 
-export const Modal = ({ isOpen, onClose, children }: ModalProps) => {
+export function Modal({ isOpen, onClose, children }: ModalProps) {
   // Close on ESC key
   useEffect(() => {
     const handler = (e: KeyboardEvent) => e.key === 'Escape' && onClose()

@@ -9,7 +9,7 @@ interface CollectionListProps {
   collections: TopNFTCollection[]
 }
 
-export const TopCollections = ({ collections }: CollectionListProps) => {
+export function TopCollections({ collections }: CollectionListProps) {
   return (
     <ul className="overflow-y-auto no-scrollbar">
       {collections.map((col, i) => {

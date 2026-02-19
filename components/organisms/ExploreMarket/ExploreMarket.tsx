@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { ChartArea, Plus, CreditCard } from 'lucide-react'
+import { LayoutGrid, ChartArea, Plus, CreditCard } from 'lucide-react'
 import { use, useEffect, useState } from 'react'
 
 import { TopCollections } from '@/components/organisms/Lists/TopCollections'
@@ -18,7 +18,7 @@ type Props = {
   initialListings: Promise<Result<PaginatedListings>>
 }
 
-export const BrowseMarket = ({ collections, initialListings }: Props) => {
+export function BrowseMarket({ collections, initialListings }: Props) {
   const initial = use(initialListings)
 
   if (!initial.ok) {
@@ -27,6 +27,7 @@ export const BrowseMarket = ({ collections, initialListings }: Props) => {
 
   const [showNewForm, setShowNewForm] = useState(false)
   const [listings, setListings] = useState<Listing[]>(initial.data.items)
+  const [selected, setSelected] = useState<Listing | null>(null)
 
   useEffect(() => {
     const fetchMore = async () => {
@@ -37,17 +38,13 @@ export const BrowseMarket = ({ collections, initialListings }: Props) => {
   }, [])
 
   return (
-    <main className="h-screen overflow-hidden flex flex-col max-w-7xl mx-auto">
+    <div className="h-screen overflow-hidden flex flex-col max-w-7xl mx-auto">
       {/* ---------- HEADER ---------- */}
-      <section className="flex justify-between items-center gap-4 shrink-0 py-4">
-        <Link className="btn btn-ghost" href="./">
-          <ChartArea /> sales analytics
-        </Link>
-
+      <section className="flex justify-between items-center gap-4 py-4">
         <h1 className="flex-1 text-center">d | feed</h1>
 
         <button className="btn btn-accent" onClick={() => setShowNewForm(true)}>
-          <Plus /> create order
+          <Plus /> new order
         </button>
       </section>
 
@@ -69,7 +66,7 @@ export const BrowseMarket = ({ collections, initialListings }: Props) => {
         </div>
 
         {/* RIGHT PANEL */}
-        <aside className="basis-1/4 flex flex-col gap-4 shrink-0">
+        <aside className="basis-1/4 flex flex-col gap-4">
           {/* preview */}
           <div className="h-60 card grid place-items-center shrink-0">
             <img src={`/avatars/bot.svg`} className="w-1/2 object-contain" alt="user avatar" />
@@ -94,6 +91,6 @@ export const BrowseMarket = ({ collections, initialListings }: Props) => {
           </div>
         </Modal>
       )}
-    </main>
+    </div>
   )
 }

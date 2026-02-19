@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 
-export const Header = () => {
+export function Header() {
   return (
     <header
       className="

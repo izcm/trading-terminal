@@ -18,12 +18,12 @@ export default function RootLayout({
   return (
     <html lang="en" data-theme="cyber-void" suppressHydrationWarning>
       <body suppressHydrationWarning>
-        <a
+        {/* <a
           href="#forward-main"
           className="sr-only focus:not-sr-only focus:underline absolute top-2 left-2 z-50"
         >
           Skip Header
-        </a>
+        </a> */}
         <Providers>
           <AppShell>{children}</AppShell>
         </Providers>

@@ -6,12 +6,9 @@ type SidebarContainerProps = {
   children: ReactNode
 }
 
-export const SidebarContainer = ({ children }: SidebarContainerProps) => {
+export function SidebarContainer({ children }: SidebarContainerProps) {
   return (
-    <aside
-      className="w-[320px] sticky top-2 p-4 card overflow-scroll scrollbar-hide"
-      style={{ height: 'calc(100vh - 16px)' }}
-    >
+    <aside className="h-full w-[250px] flex flex-col shrink-0 border-r border-soft bg-surface/16">
       {children}
     </aside>
   )

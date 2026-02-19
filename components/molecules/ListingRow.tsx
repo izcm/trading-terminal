@@ -3,7 +3,7 @@
 import { Listing } from '@/domain/types/listing'
 import { formatEth2 } from '@/lib/utils/format'
 
-export const ListingRow = ({ listing }: { listing: Listing }) => {
+export function ListingRow({ listing }: { listing: Listing }) {
   const isAsk = listing.type === 'ask'
   const collection = listing.collectionData ?? { name: 'unknown', symbol: 'unknown' }
 

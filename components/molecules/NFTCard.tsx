@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { NFT } from '@/domain/types/nft'
 import { resolveImage } from '@/lib/utils/image'
 
-export const NFTCard = ({ nft }: { nft: NFT }) => {
+export function NFTCard({ nft }: { nft: NFT }) {
   const [src, setSrc] = useState<string>(nft.image)
 
   useEffect(() => {

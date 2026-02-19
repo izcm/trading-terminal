@@ -34,11 +34,7 @@ import { HomeCharts } from './HomeCharts'
 
 type ShowReceiptState = { show: false } | { show: true; sale: Sale }
 
-export const HomeAnalytics = ({
-  initialData,
-}: {
-  initialData: Promise<Result<PaginatedSales>>
-}) => {
+export function HomeAnalytics({ initialData }: { initialData: Promise<Result<PaginatedSales>> }) {
   const initial = use(initialData)
 
   if (!initial.ok) {
