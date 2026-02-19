@@ -41,8 +41,7 @@ export function BrowseMarket({ collections, initialListings }: Props) {
     <div className="h-screen overflow-hidden flex flex-col max-w-7xl mx-auto">
       {/* ---------- HEADER ---------- */}
       <section className="flex justify-between items-center gap-4 py-4">
-        <h1 className="flex-1 text-center">d | feed</h1>
-
+        <div>only 4u / all</div>
         <button className="btn btn-accent" onClick={() => setShowNewForm(true)}>
           <Plus /> new order
         </button>

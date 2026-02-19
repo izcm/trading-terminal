@@ -1,15 +1,20 @@
 import { ReactNode } from 'react'
 
-export function NavItem({ active, children }: { active: boolean; children: ReactNode }) {
+type NavItemProps = {
+  active?: boolean
+  children: ReactNode
+}
+
+export function NavItem({ active = false, children }: NavItemProps) {
   return (
     <div
       className={`
-        flex items-center gap-3 px-3 py-2 text-sm cursor-pointer
-        transition-colors
+        group flex gap-3 items-center px-3 py-4 text-sm cursor-pointer
+        transition-colors border-l-2
         ${
           active
-            ? 'text-base-content border-l-2 border-primary bg-base-200/40'
-            : 'text-base-content/60 hover:text-base-content hover:bg-base-200/20'
+            ? 'border-accent bg-secondary'
+            : 'text-muted border-transparent hover:text-text hover:bg-secondary/70'
         }
       `}
     >
