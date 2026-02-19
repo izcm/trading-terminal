@@ -142,9 +142,6 @@ export const HomeAnalytics = ({
             <Link className="btn btn-primary" href="/explore">
               <LayoutGrid /> explore dmrkt
             </Link>
-            <Link className="btn btn-secondary" href="./">
-              <ChartArea /> more analytics
-            </Link>
           </div>
         </div>
         <div className="flex gap-4 h-72">
