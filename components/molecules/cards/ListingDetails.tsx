@@ -3,15 +3,62 @@
 'use client'
 
 import { Listing } from '@/domain/types/listing'
-import { shortAddr } from '@/lib/utils/format'
+import { formatTsUTC, shortAddr } from '@/lib/utils/format'
 
 type Props = {
   listing: Listing | null
 }
 
-const formatTime = (unix: number) => {
-  const d = new Date(unix)
-  return d.toLocaleString()
+type DetailField = {
+  label: string
+  getValue: (listing: Listing) => string
+  className?: string
+}
+
+const DETAIL_FIELDS: DetailField[] = [
+  {
+    label: 'token id',
+    getValue: listing => `#${listing.tokenId}`,
+    className: 'font-mono',
+  },
+  {
+    label: 'price',
+    getValue: listing => `${Number(listing.price) / 1e18} WETH`,
+    className: 'font-semibold',
+  },
+  {
+    label: 'seller',
+    getValue: listing => shortAddr(listing.actor),
+    className: 'font-mono',
+  },
+]
+
+const TIMING_FIELDS: DetailField[] = [
+  {
+    label: 'starts',
+    getValue: listing => formatTsUTC(listing.start),
+  },
+  {
+    label: 'expires',
+    getValue: listing => formatTsUTC(listing.end),
+  },
+]
+
+function DetailRow({
+  label,
+  value,
+  className,
+}: {
+  label: string
+  value: string
+  className?: string
+}) {
+  return (
+    <div className="flex justify-between">
+      <span className="text-zinc-500">{label}</span>
+      <span className={className}>{value}</span>
+    </div>
+  )
 }
 
 export function ListingDetails({ listing }: Props) {
@@ -28,7 +75,7 @@ export function ListingDetails({ listing }: Props) {
       tabIndex={-1} // important later for keyboard focus
     >
       {/* title */}
-      <div className="flex justify-between">
+      <div className="flex justify-between text-start">
         <div className="flex flex-col">
           <span className="text-xs">collection</span>
           <span className="font-medium">{collection}</span>
@@ -42,37 +89,26 @@ export function ListingDetails({ listing }: Props) {
         </span>
       </div>
 
-      {/* token */}
-      <div className="flex justify-between">
-        <span className="text-zinc-500">token id</span>
-        <span className="font-mono">#{listing.tokenId}</span>
-      </div>
-
-      {/* price */}
-      <div className="flex justify-between text-base">
-        <span className="text-zinc-500">price</span>
-        <span className="font-semibold">
-          {Number(listing.price) / 1e18} {listing.currency}
-        </span>
-      </div>
-
-      {/* seller */}
-      <div className="flex justify-between">
-        <span className="text-zinc-500">seller</span>
-        <span className="font-mono">{shortAddr(listing.actor)}</span>
-      </div>
+      {/* details */}
+      {DETAIL_FIELDS.map(field => (
+        <DetailRow
+          key={field.label}
+          label={field.label}
+          value={field.getValue(listing)}
+          className={field.className}
+        />
+      ))}
 
       {/* timing */}
       <div className="pt-2 border-t border-white/5 flex flex-col gap-1">
-        <div className="flex justify-between">
-          <span className="text-zinc-500">starts</span>
-          <span>{formatTime(listing.start)}</span>
-        </div>
-
-        <div className="flex justify-between">
-          <span className="text-zinc-500">expires</span>
-          <span>{formatTime(listing.end)}</span>
-        </div>
+        {TIMING_FIELDS.map(field => (
+          <DetailRow
+            key={field.label}
+            label={field.label}
+            value={field.getValue(listing)}
+            className={field.className}
+          />
+        ))}
       </div>
     </div>
   )

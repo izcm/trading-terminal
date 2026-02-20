@@ -1,17 +1,20 @@
 'use client'
 
 import Link from 'next/link'
-import { LayoutGrid, ChartArea, Plus, CreditCard } from 'lucide-react'
 import { use, useEffect, useState } from 'react'
+import { Plus, CreditCard } from 'lucide-react'
 
 import { TopCollections } from '@/components/organisms/Feed/TopCollections'
 import { Modal, ListingRow, ListingDetails } from '@/components/molecules'
-import { getListings, PaginatedListings } from '@/lib/dmrkt-indexer/actions/listings.get'
 
-import { CreateOrderForm } from '@/features/orderbook/ui/CreateOrderForm'
 import { TopNFTCollection } from '@/domain/types'
 import { Listing } from '@/domain/types/listing'
+
+import { getListings, PaginatedListings } from '@/lib/dmrkt-indexer/actions/listings.get'
 import { Result } from '@/lib/utils/http'
+import { useTokenURI } from '@/lib/blockchain/hooks/erc721.use'
+import { CreateOrderForm } from '@/features/orderbook/ui/CreateOrderForm'
+import { getImageFromTokenURI, resolveImage } from '@/lib/utils/image'
 
 type Props = {
   collections: TopNFTCollection[]
@@ -25,9 +28,28 @@ export function Feed({ collections, initialListings }: Props) {
     return <div className="card">failed to load sales 💀</div>
   }
 
-  const [showNewForm, setShowNewForm] = useState(false)
   const [listings, setListings] = useState<Listing[]>(initial.data.items)
-  const [selected, setSelected] = useState<Listing | null>(null)
+  const [selected, setSelected] = useState<Listing>(initial.data.items[0])
+
+  const [showNewForm, setShowNewForm] = useState(false)
+
+  const { data: tokenURI, isLoading } = useTokenURI({
+    chainId: selected.chainId,
+    address: selected.collectionData!.address,
+    tokenId: BigInt(selected.tokenId),
+  })
+
+  const [src, setSrc] = useState<string>('/placeholders/token-waiting.svg')
+
+  useEffect(() => {
+    if (!tokenURI) return
+
+    const preview = async () => {
+      const image = getImageFromTokenURI(tokenURI)
+      setSrc(image)
+    }
+    preview()
+  }, [tokenURI])
 
   useEffect(() => {
     const fetchMore = async () => {
@@ -47,7 +69,7 @@ export function Feed({ collections, initialListings }: Props) {
         </button>
       </section>
 
-      <div className="flex gap-4 overflow-hidden">
+      <div className="h-full flex gap-4 overflow-hidden">
         {/* LEFT COLUMN (feed side) */}
         <div className="flex-1 flex flex-col gap-4">
           {/* collections */}
@@ -67,8 +89,8 @@ export function Feed({ collections, initialListings }: Props) {
         {/* RIGHT PANEL */}
         <aside className="w-1/4 flex flex-col gap-4">
           {/* preview */}
-          <div className="h-60 card grid place-items-center shrink-0">
-            <img src={`/avatars/bot.svg`} className="w-1/2 object-contain" alt="user avatar" />
+          <div className="h-64 card shrink-0 flex justify-center overflow-hidden">
+            <img src={src} className="w-full object-cover" alt="token preview" />
           </div>
 
           <button className="btn btn-primary my-1">

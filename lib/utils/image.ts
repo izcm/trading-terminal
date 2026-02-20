@@ -21,3 +21,18 @@ export const resolveImage = async (src: string): Promise<string> => {
   // EVERYTHING ELSE: DO NOT FETCH
   return src
 }
+
+export const getImageFromTokenURI = (tokenUri: string): string => {
+  if (!tokenUri) return ''
+
+  // remove: data:application/json;base64,
+  const base64 = tokenUri.split(',')[1]
+
+  // decode base64 → json string
+  const json = atob(base64)
+
+  // parse json
+  const metadata = JSON.parse(json)
+
+  return metadata.image
+}

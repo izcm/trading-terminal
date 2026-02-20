@@ -4,6 +4,7 @@ import { NFTCollection } from './nft-collection'
 
 export type Listing = {
   id: string
+  chainId: number
 
   type: 'ask' | 'bid'
 

@@ -3,28 +3,25 @@
 import Link from 'next/link'
 import { Search, ChartArea } from 'lucide-react'
 
-import { NFTGallery, Sidebar } from '@/components/organisms'
-import { SidebarContainer, TextInput } from '@/components/atoms'
+import { NFTGallery } from '@/components/organisms'
+import { TextInput } from '@/components/atoms'
 
-import { AttributeSummary, NFTCollection, NFT } from '@/domain/types'
+import { NFTCollection, NFT } from '@/domain/types'
 import { NFTCollectionBanner } from '@/components/molecules/NFTCollectionBanner'
 import { useState } from 'react'
 
 interface CollectionViewProps {
   collection: NFTCollection
   nfts: NFT[]
-  attributes?: AttributeSummary
 }
 
-export const CollectionView = ({ collection, nfts, attributes: traits }: CollectionViewProps) => {
+export const CollectionView = ({ collection, nfts }: CollectionViewProps) => {
   const [filters, setFilters] = useState({
     traits: {},
   })
 
   const contract = collection.address
   const baseUrl = `/collection/${contract}`
-
-  const traitsAsArray = Object.entries(traits ?? {})
 
   return (
     <div className="flex flex-col gap-4">

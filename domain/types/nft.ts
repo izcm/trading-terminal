@@ -1,4 +1,3 @@
-import { AlchemyNFT, toNFT as alchemyNFTToNFT } from '@/lib/alchemy/types/nft'
 import type { Hex } from 'viem'
 
 // Local NFT type - provider agnostic
@@ -23,11 +22,11 @@ enum Provider {
 }
 
 const converters = {
-  [Provider.ALCHEMY]: (arg: AlchemyNFT) => alchemyNFTToNFT(arg),
+  // [Provider.ALCHEMY]: (arg: AlchemyNFT) => alchemyNFTToNFT(arg),
   // [Provider.MORALIS]: (arg: MoralisNFT) => moralisToNFT(arg),
 }
 
-export const toNFT = (provider: Provider, arg: any) => {
-  const fn = converters[provider]
-  return fn(arg)
-}
+// export const toNFT = (provider: Provider, arg: any) => {
+//   const fn = converters[provider]
+//   return fn(arg)
+// }
