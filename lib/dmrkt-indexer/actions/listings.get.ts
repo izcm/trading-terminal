@@ -1,6 +1,6 @@
 import { Result } from '@/lib/utils/http'
 
-import { OrderRecord } from '@/features/orderbook/web3/types/order'
+import { OrderRecord } from '@/lib/blockchain/orderbook/types/order'
 import { Listing } from '@/domain/types/listing'
 
 import { DMRKT_INDEXER_BASE_URL as baseUrl } from '../constants'

@@ -67,7 +67,7 @@ export function ListingDetails({ listing }: Props) {
     return <div className="card h-full p-4 text-sm">select a listing ✨</div>
   }
 
-  const collection = listing.collectionData?.name ?? 'unknown collection'
+  const collection = listing.collectionMeta?.name ?? 'unknown collection'
 
   return (
     <div

@@ -13,7 +13,7 @@ export default async function Home() {
 
   const collections = await res.json()
 
-  const listings = getListings()
+  const listings = getListings('limit=20&status=active')
 
   return <Feed collections={collections} initialListings={listings} />
 }

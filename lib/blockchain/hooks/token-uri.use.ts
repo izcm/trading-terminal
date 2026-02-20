@@ -14,8 +14,8 @@ export function useTokenURI({ chainId, address, tokenId }: QueryKey) {
     functionName: 'tokenURI',
     args: [tokenId],
     chainId,
-    // query: {
-    //   staleTime: Infinity,
-    // },
+    query: {
+      staleTime: Infinity,
+    },
   })
 }

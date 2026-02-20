@@ -13,7 +13,7 @@ export function ListingRow({
   selected?: boolean
 }) {
   const isAsk = listing.type === 'ask'
-  const collection = listing.collectionData ?? { name: 'unknown', symbol: 'unknown' }
+  const collection = listing.collectionMeta ?? { name: 'unknown', symbol: 'unknown' }
 
   return (
     <li>

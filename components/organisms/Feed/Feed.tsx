@@ -10,15 +10,25 @@ import { Modal, ListingRow, ListingDetails } from '@/components/molecules'
 import { TopNFTCollection } from '@/domain/types'
 import { Listing } from '@/domain/types/listing'
 
-import { getListings, PaginatedListings } from '@/lib/dmrkt-indexer/actions/listings.get'
 import { Result } from '@/lib/utils/http'
-import { useTokenURI } from '@/lib/blockchain/hooks/erc721.use'
+import { getListings, PaginatedListings } from '@/lib/dmrkt-indexer/actions/listings.get'
 import { CreateOrderForm } from '@/features/orderbook/ui/CreateOrderForm'
 import { getImageFromTokenURI, resolveImage } from '@/lib/utils/image'
+
+import { useTokenURI } from '@/lib/blockchain/hooks/token-uri.use'
+import { useOrderValidation } from '@/lib/blockchain/orderbook/hooks/validate-order.use'
 
 type Props = {
   collections: TopNFTCollection[]
   initialListings: Promise<Result<PaginatedListings>>
+}
+
+type OrderUIState = {
+  previewSrc: string
+  isFillable: boolean
+  validating: boolean
+  txPending: boolean
+  error?: string
 }
 
 export function Feed({ collections, initialListings }: Props) {
@@ -28,6 +38,8 @@ export function Feed({ collections, initialListings }: Props) {
     return <div className="card">failed to load sales 💀</div>
   }
 
+  const [nextCursor, setNextCursor] = useState<string | null>(initial.data.nextCursor)
+
   const [listings, setListings] = useState<Listing[]>(initial.data.items)
   const [selected, setSelected] = useState<Listing>(initial.data.items[0])
 
@@ -35,26 +47,39 @@ export function Feed({ collections, initialListings }: Props) {
 
   const { data: tokenURI, isLoading } = useTokenURI({
     chainId: selected.chainId,
-    address: selected.collectionData!.address,
+    address: selected.collectionMeta!.address,
     tokenId: BigInt(selected.tokenId),
   })
 
-  const [src, setSrc] = useState<string>('/placeholders/token-waiting.svg')
+  const [previewSrc, setPreviewSrc] = useState<string>('/placeholders/token-waiting.svg')
+  const validation = useOrderValidation(selected)
+
+  const safeStringify = (obj: unknown) =>
+    JSON.stringify(obj, (_, value) => (typeof value === 'bigint' ? value.toString() : value), 2)
+
+  console.log(safeStringify(validation.error))
 
   useEffect(() => {
     if (!tokenURI) return
 
     const preview = async () => {
       const image = getImageFromTokenURI(tokenURI)
-      setSrc(image)
+      setPreviewSrc(image)
     }
     preview()
   }, [tokenURI])
 
   useEffect(() => {
+    if (!nextCursor) return
+
     const fetchMore = async () => {
       const res = await getListings('limit=50&status=active')
-      if (res.ok) setListings(res.data.items)
+      if (res.ok) {
+        const { nextCursor, items } = res.data
+
+        setNextCursor(nextCursor)
+        setListings(prev => [...prev, ...items])
+      }
     }
     fetchMore()
   }, [])
@@ -90,12 +115,18 @@ export function Feed({ collections, initialListings }: Props) {
         <aside className="w-1/4 flex flex-col gap-4">
           {/* preview */}
           <div className="h-64 card shrink-0 flex justify-center overflow-hidden">
-            <img src={src} className="w-full object-cover" alt="token preview" />
+            <img src={previewSrc} className="w-full object-cover" alt="token preview" />
           </div>
-
-          <button className="btn btn-primary my-1">
-            <CreditCard /> buy now
-          </button>
+          <div className="flex flex-col gap-2 my-1">
+            <button
+              disabled={!validation.isFillable}
+              onClick={() => alert('hello')}
+              className="btn btn-primary w-full"
+            >
+              <CreditCard /> buy now
+            </button>
+            <span className="text-xs text-muted">your wallet will ask you to confirm</span>
+          </div>
 
           {/* details area */}
           <ListingDetails listing={selected} />

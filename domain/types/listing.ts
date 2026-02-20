@@ -1,5 +1,5 @@
 import { Hex } from 'viem'
-import { Order } from '@/features/orderbook/web3/types/order'
+import { Order } from '@/lib/blockchain/orderbook/types/order'
 import { NFTCollection } from './nft-collection'
 
 export type Listing = {
@@ -8,7 +8,7 @@ export type Listing = {
 
   type: 'ask' | 'bid'
 
-  collectionAddress: Hex
+  collection: Hex
   tokenId: string
 
   price: string
@@ -19,7 +19,7 @@ export type Listing = {
   start: number // unix ms
   end: number // unix ms
 
-  collectionData?: NFTCollection | null
+  collectionMeta?: NFTCollection | null
 
   // raw order for contract interaction
   rawOrder: Order
