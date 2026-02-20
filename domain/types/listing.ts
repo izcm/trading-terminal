@@ -1,3 +1,4 @@
+import { Hex } from 'viem'
 import { Order } from '@/features/orderbook/web3/types/order'
 import { NFTCollection } from './nft-collection'
 
@@ -6,13 +7,13 @@ export type Listing = {
 
   type: 'ask' | 'bid'
 
-  collectionAddress: string
+  collectionAddress: Hex
   tokenId: string
 
   price: string
-  currency: string
+  currency: Hex
 
-  actor: string
+  actor: Hex
 
   start: number // unix ms
   end: number // unix ms

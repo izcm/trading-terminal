@@ -5,8 +5,7 @@ import Link from 'next/link'
 
 import { Newspaper, LayoutGrid, ChartArea } from 'lucide-react'
 import { Providers } from './providers/Providers'
-import { SidebarContainer } from '@/components/atoms'
-import { NavItem } from '@/components/molecules/NavItem'
+import { SidebarContainer, NavItem } from '@/components/molecules'
 
 const Header = dynamic(() => import('@/components/organisms/Header').then(m => m.Header), {
   ssr: false,
@@ -21,19 +20,19 @@ const navItems = [
   {
     title: 'analytics',
     icon: ChartArea,
-    href: '/',
+    href: '/analytics',
   },
   {
     title: 'collections',
     icon: LayoutGrid,
-    href: '/collections',
+    href: '/explore',
   },
 ]
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div>
-      <div id="page-wrapper" className="flex items-center h-screen gap-4 font-mono">
+      <div id="page-wrapper" className="flex items-center h-screen font-mono">
         <SidebarContainer>
           {/* ---- BRAND / TITLE ---- */}
           <div className="px-3 py-4 text-start border-b border-soft">
@@ -47,10 +46,13 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               const Icon = item.icon
 
               return (
-                <NavItem key={item.href} active={false}>
-                  <Icon size={16} />
-                  <Link href={item.href}>{item.title}</Link>
-                </NavItem>
+                <Link key={item.href} href={item.href}>
+                  <NavItem>
+                    {' '}
+                    <Icon size={16} />
+                    {item.title}
+                  </NavItem>
+                </Link>
               )
             })}
           </div>
@@ -64,7 +66,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           </div>
         </SidebarContainer>
 
-        <main className="flex-1 p-4 my-4 mx-auto">
+        <main className="flex-1 mx-auto p-4 h-screen max-w-7xl">
           {/* Skip navigation link */}
           {children}
         </main>

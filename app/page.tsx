@@ -1,28 +1,19 @@
-import Link from 'next/link'
-
-import { getSales } from '@/lib/dmrkt-indexer/actions/sales.get'
-
-import { HomeAnalytics } from '@/components/organisms'
+import { DMRKT_INDEXER_BASE_URL as baseUrl } from '@/lib/dmrkt-indexer/constants'
+import { Feed } from '@/components/organisms/Feed/Feed'
+import { getListings } from '@/lib/dmrkt-indexer/actions/listings.get'
 
 // https://nextjs.org/docs/app/getting-started/error-handling
 
-// // SalesSection.tsx (Server Component)
-// export async function SalesSection() {
-//   const result = await getSales()
-
-//   if (!result.ok) {
-//     return <InlineError />
-//   }
-
-//   return <SalesList sales={result.data} />
-// }
-
 export default async function Home() {
-  const res = getSales('limit=25')
+  const res = await fetch(`${baseUrl}/api/nft-collections/top?chainId=31337&limit=3`, {
+    cache: 'no-store',
+  })
 
-  return (
-    <main className="flex flex-col gap-4 max-w-7xl mx-auto">
-      <HomeAnalytics initialData={res} />
-    </main>
-  )
+  if (!res.ok) throw new Error('failed to fetch collections')
+
+  const collections = await res.json()
+
+  const listings = getListings()
+
+  return <Feed collections={collections} initialListings={listings} />
 }

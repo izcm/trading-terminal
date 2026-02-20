@@ -1,4 +1,4 @@
 // DO NOT export header (RainbowKit)
-export * from './Lists/CollectionList'
+export * from './Explore/CollectionList'
 export * from './NFTGallery'
-export * from './HomeAnalytics/HomeAnalytics'
+export * from './Analytics/Analytics'

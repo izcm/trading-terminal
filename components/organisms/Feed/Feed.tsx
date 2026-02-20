@@ -4,8 +4,8 @@ import Link from 'next/link'
 import { LayoutGrid, ChartArea, Plus, CreditCard } from 'lucide-react'
 import { use, useEffect, useState } from 'react'
 
-import { TopCollections } from '@/components/organisms/Lists/TopCollections'
-import { Modal, ListingRow } from '@/components/molecules'
+import { TopCollections } from '@/components/organisms/Feed/TopCollections'
+import { Modal, ListingRow, ListingDetails } from '@/components/molecules'
 import { getListings, PaginatedListings } from '@/lib/dmrkt-indexer/actions/listings.get'
 
 import { CreateOrderForm } from '@/features/orderbook/ui/CreateOrderForm'
@@ -18,7 +18,7 @@ type Props = {
   initialListings: Promise<Result<PaginatedListings>>
 }
 
-export function BrowseMarket({ collections, initialListings }: Props) {
+export function Feed({ collections, initialListings }: Props) {
   const initial = use(initialListings)
 
   if (!initial.ok) {
@@ -38,34 +38,34 @@ export function BrowseMarket({ collections, initialListings }: Props) {
   }, [])
 
   return (
-    <div className="h-screen overflow-hidden flex flex-col max-w-7xl mx-auto">
+    <div className="h-full flex flex-col gap-4">
       {/* ---------- HEADER ---------- */}
-      <section className="flex justify-between items-center gap-4 py-4">
+      <section className="flex justify-between items-center">
         <div>only 4u / all</div>
-        <button className="btn btn-accent" onClick={() => setShowNewForm(true)}>
-          <Plus /> new order
+        <button className="btn btn-secondary" onClick={() => setShowNewForm(true)}>
+          <Plus /> create order
         </button>
       </section>
 
       <div className="flex gap-4 overflow-hidden">
         {/* LEFT COLUMN (feed side) */}
-        <div className="flex-1 flex flex-col gap-4 min-h-0">
+        <div className="flex-1 flex flex-col gap-4">
           {/* collections */}
           <div className="card shrink-0">
             <TopCollections collections={collections} />
           </div>
 
-          <div className="card flex-1 overflow-y-auto no-scrollbar mi">
+          <div className="card flex-1 overflow-y-auto no-scrollbar">
             <ul className="w-full">
               {listings.map(item => (
-                <ListingRow key={item.id} listing={item} />
+                <ListingRow key={item.id} listing={item} onSelect={setSelected} />
               ))}
             </ul>
           </div>
         </div>
 
         {/* RIGHT PANEL */}
-        <aside className="basis-1/4 flex flex-col gap-4">
+        <aside className="w-1/4 flex flex-col gap-4">
           {/* preview */}
           <div className="h-60 card grid place-items-center shrink-0">
             <img src={`/avatars/bot.svg`} className="w-1/2 object-contain" alt="user avatar" />
@@ -76,9 +76,7 @@ export function BrowseMarket({ collections, initialListings }: Props) {
           </button>
 
           {/* details area */}
-          <div className="card flex-1 overflow-y-auto">
-            Put user recent order history / subscriptions here
-          </div>
+          <ListingDetails listing={selected} />
         </aside>
       </div>
 

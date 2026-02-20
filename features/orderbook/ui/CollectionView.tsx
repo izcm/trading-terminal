@@ -7,7 +7,7 @@ import { NFTGallery, Sidebar } from '@/components/organisms'
 import { SidebarContainer, TextInput } from '@/components/atoms'
 
 import { AttributeSummary, NFTCollection, NFT } from '@/domain/types'
-import { CollectionBanner } from '@/components/molecules/CollectionBanner'
+import { NFTCollectionBanner } from '@/components/molecules/NFTCollectionBanner'
 import { useState } from 'react'
 
 interface CollectionViewProps {
@@ -28,7 +28,7 @@ export const CollectionView = ({ collection, nfts, attributes: traits }: Collect
 
   return (
     <div className="flex flex-col gap-4">
-      <CollectionBanner collection={collection} />
+      <NFTCollectionBanner collection={collection} />
 
       {/* SEARCH INPUT AND LINKS */}
       <div className="flex gap-4">

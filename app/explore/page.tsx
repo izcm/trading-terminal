@@ -1,5 +1,5 @@
 import { DMRKT_INDEXER_BASE_URL as baseUrl } from '@/lib/dmrkt-indexer/constants'
-import { BrowseMarket } from '@/components/organisms/ExploreMarket/ExploreMarket'
+import { Feed } from '@/components/organisms/Feed/Feed'
 import { getListings } from '@/lib/dmrkt-indexer/actions/listings.get'
 
 export default async function ExplorePage() {
@@ -13,5 +13,5 @@ export default async function ExplorePage() {
 
   const listings = getListings()
 
-  return <BrowseMarket collections={collections} initialListings={listings} />
+  return <Feed collections={collections} initialListings={listings} />
 }
