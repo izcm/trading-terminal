@@ -7,7 +7,7 @@ import { ListingRow, TopCollectionRow } from '@/components/molecules'
 import { TopNFTCollection, Listing } from '@/domain/types'
 import { Result } from '@/lib/utils/http'
 import { getListings, PaginatedListings } from '@/lib/dmrkt-indexer/actions/listings.get'
-import { CreateOrderForm } from '@/features/orderbook/ui/CreateOrderForm'
+import { CreateOrderForm } from '@/components/organisms/CreateOrderForm'
 import { TradePanel } from './tradepanel/TradePanel'
 import { Modal } from '@/components/atoms'
 

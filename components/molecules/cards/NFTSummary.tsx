@@ -11,9 +11,9 @@ type Props = {
 
 export function NFTSummary({ image, name, attributes }: Props) {
   return (
-    <div className="flex flex-col gap-4 justify-center overflow-hidden">
-      <img src={image} className="card object-cover bg-black/25" alt="token preview" />
-      <div>attributes here</div>
+    <div className="shrink-0 flex justify-center overflow-hidden bg-black/25">
+      {/* preview */}
+      <img src={image} alt="token preview" className="w-full h-full object-cover" />
     </div>
   )
 }

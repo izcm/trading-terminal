@@ -3,10 +3,10 @@ import { CreditCard, Layers } from 'lucide-react'
 
 import { ListingDetails } from './ListingDetails'
 import { Listing } from '@/domain/types/listing'
-import { useTokenURI, useOrderValidation } from '@/lib/blockchain'
+import { useTokenURI, useFillOrder } from '@/lib/blockchain'
 import { getImageFromTokenURI } from '@/lib/utils/image'
 import { Modal } from '@/components/atoms'
-import { NFTSelectForm } from '@/components/molecules/form/NFTSelectForm'
+import { NFTSelectForm } from '@/components/molecules'
 
 type Props = {
   listing: Listing | null
@@ -22,7 +22,8 @@ export function TradePanel({ listing }: Props) {
   const [showNFTSelectModal, setShowNFTSelectModal] = useState<boolean>(false)
 
   // chain interaction stuff
-  const validation = useOrderValidation(listing)
+  const { simulation, execution } = useFillOrder(listing)
+
   const { data: tokenURI, isLoading } = useTokenURI({
     chainId: listing.chainId,
     address: listing.collectionMeta!.address,
@@ -57,7 +58,7 @@ export function TradePanel({ listing }: Props) {
       </div>
       <div className="flex flex-col gap-2 my-1">
         <button
-          disabled={!validation.isFillable && !listing.isCollectionBid}
+          disabled={!simulation.isFillable && !listing.isCollectionBid}
           onClick={handlePrimaryAction}
           className="btn btn-primary w-full"
         >
@@ -85,14 +86,14 @@ export function TradePanel({ listing }: Props) {
       {/* MODAL */}
 
       <Modal isOpen={showNFTSelectModal} onClose={() => setShowNFTSelectModal(false)}>
-        <div className="flex flex-col gap-4 max-w-[400px]">
+        <div className="flex flex-col gap-2 w-[300px] max-w-[600px]">
           <NFTSelectForm
             chainId={listing.chainId}
             address={listing.collection}
             onConfirm={() => alert('hello')}
           />
           <button className="btn btn-secondary" onClick={() => setShowNFTSelectModal(false)}>
-            close
+            cancel
           </button>
         </div>
       </Modal>
