@@ -19,7 +19,7 @@ export function TopCollections({ collections }: CollectionListProps) {
           <li key={`${col.chainId}:${col.address}`} className="base-row justify-between gap-4 p-2">
             <div className="w-40 flex items-center gap-4">
               <img
-                src={col.imageUrl || `/${col.symbol}.svg`}
+                src={col.imageUrl || `native-collections/${col.symbol}.svg`}
                 className="w-12 object-cover"
                 alt="collection image"
               />

@@ -1,5 +1,3 @@
-// molecules/ListingDetails.tsx
-
 'use client'
 
 import { Listing } from '@/domain/types/listing'
@@ -18,7 +16,7 @@ type DetailField = {
 const DETAIL_FIELDS: DetailField[] = [
   {
     label: 'token id',
-    getValue: listing => `#${listing.tokenId}`,
+    getValue: listing => (listing.isCollectionBid ? 'any' : `#${listing.tokenId}`),
     className: 'font-mono',
   },
   {

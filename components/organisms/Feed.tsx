@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { use, useEffect, useState } from 'react'
 import { Plus, CreditCard } from 'lucide-react'
 
-import { TopCollections } from '@/components/organisms/Feed/TopCollections'
+import { TopCollections } from '@/components/organisms/Explore/TopCollections'
 import { Modal, ListingRow, ListingDetails } from '@/components/molecules'
 
 import { TopNFTCollection } from '@/domain/types'
@@ -17,6 +17,7 @@ import { getImageFromTokenURI, resolveImage } from '@/lib/utils/image'
 
 import { useTokenURI } from '@/lib/blockchain/hooks/token-uri.use'
 import { useOrderValidation } from '@/lib/blockchain/orderbook/hooks/validate-order.use'
+import { TradePanel } from './TradePanel/TradePanel'
 
 type Props = {
   collections: TopNFTCollection[]
@@ -45,30 +46,6 @@ export function Feed({ collections, initialListings }: Props) {
 
   const [showNewForm, setShowNewForm] = useState(false)
 
-  const { data: tokenURI, isLoading } = useTokenURI({
-    chainId: selected.chainId,
-    address: selected.collectionMeta!.address,
-    tokenId: BigInt(selected.tokenId),
-  })
-
-  const [previewSrc, setPreviewSrc] = useState<string>('/placeholders/token-waiting.svg')
-  const validation = useOrderValidation(selected)
-
-  const safeStringify = (obj: unknown) =>
-    JSON.stringify(obj, (_, value) => (typeof value === 'bigint' ? value.toString() : value), 2)
-
-  console.log(safeStringify(validation.error))
-
-  useEffect(() => {
-    if (!tokenURI) return
-
-    const preview = async () => {
-      const image = getImageFromTokenURI(tokenURI)
-      setPreviewSrc(image)
-    }
-    preview()
-  }, [tokenURI])
-
   useEffect(() => {
     if (!nextCursor) return
 
@@ -82,7 +59,7 @@ export function Feed({ collections, initialListings }: Props) {
       }
     }
     fetchMore()
-  }, [])
+  }, [nextCursor])
 
   return (
     <div className="h-full flex flex-col gap-4">
@@ -113,23 +90,7 @@ export function Feed({ collections, initialListings }: Props) {
 
         {/* RIGHT PANEL */}
         <aside className="w-1/4 flex flex-col gap-4">
-          {/* preview */}
-          <div className="h-64 card shrink-0 flex justify-center overflow-hidden">
-            <img src={previewSrc} className="w-full object-cover" alt="token preview" />
-          </div>
-          <div className="flex flex-col gap-2 my-1">
-            <button
-              disabled={!validation.isFillable}
-              onClick={() => alert('hello')}
-              className="btn btn-primary w-full"
-            >
-              <CreditCard /> buy now
-            </button>
-            <span className="text-xs text-muted">your wallet will ask you to confirm</span>
-          </div>
-
-          {/* details area */}
-          <ListingDetails listing={selected} />
+          <TradePanel listing={selected} />
         </aside>
       </div>
 

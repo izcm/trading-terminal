@@ -1,5 +1,10 @@
 import type { Hex } from 'viem'
 
+export type Fill = {
+  actor: Hex
+  tokenId: bigint
+}
+
 export type OrderRecord = {
   chainId: number
   orderHash: Hex

@@ -6,7 +6,7 @@ import { useAccount, useSignTypedData } from 'wagmi'
 import { parseEther } from 'viem'
 
 // local
-import { domain, fields } from '@/features/orderbook/web3/eip712'
+import { domain, fields } from '@/lib/blockchain/orderbook/eip712/dmrkt-domain'
 import { createOrder } from '../../../lib/blockchain/orderbook/actions/create-order'
 import { FormSelect } from '@/components/molecules/FormSelect'
 
