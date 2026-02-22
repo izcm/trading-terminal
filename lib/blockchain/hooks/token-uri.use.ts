@@ -7,14 +7,17 @@ type QueryKey = {
   tokenId: bigint
 }
 
-export function useTokenURI({ chainId, address, tokenId }: QueryKey) {
+export function useTokenURI(params?: QueryKey) {
+  const enabled = params !== undefined
+
   return useReadContract({
     abi,
-    address,
+    address: params?.address,
     functionName: 'tokenURI',
-    args: [tokenId],
-    chainId,
+    args: enabled ? [params!.tokenId] : undefined,
+    chainId: params?.chainId,
     query: {
+      enabled,
       staleTime: Infinity,
     },
   })

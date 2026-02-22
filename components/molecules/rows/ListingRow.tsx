@@ -27,7 +27,6 @@ export function ListingRow({
         `}
         aria-selected={selected}
       >
-        {/* side indicator */}
         {/* Type Badge */}
         <div className="w-12 flex justify-center">
           <span
@@ -39,7 +38,7 @@ export function ListingRow({
 
         {/* token info */}
         <div className="flex-1 flex flex-col min-w-0">
-          <span className="text-sm font-semibold truncate flex items-center gap-1">
+          <span className="font-semibold flex items-center gap-1">
             {collection.symbol}{' '}
             {isCb ? (
               <>
@@ -83,7 +82,7 @@ export function ListingRow({
 
         {/* price */}
         <div className="flex flex-col items-end leading-tight">
-          <span className="font-semibold">{formatEth2(BigInt(listing.price))} ETH</span>
+          <span className="text-sm font-semibold">{formatEth2(BigInt(listing.price))} ETH</span>
           <span className="text-xs text-muted">
             {listing.currency.slice(0, 6)}...{listing.currency.slice(-4)}
           </span>

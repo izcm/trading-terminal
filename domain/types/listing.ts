@@ -1,5 +1,5 @@
 import { Hex } from 'viem'
-import { Order } from '@/lib/blockchain/orderbook/eip712/types'
+import { Order } from '@/lib/blockchain'
 import { NFTCollection } from './nft-collection'
 
 export type Listing = {

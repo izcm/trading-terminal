@@ -6,7 +6,7 @@ import { useMemo } from 'react'
 import { useAccount, useSimulateContract } from 'wagmi'
 import { Abi, Hex } from 'viem'
 import { Listing } from '@/domain/types/listing'
-import { toOrder712 } from '@/lib/blockchain/orderbook/eip712/types'
+import { toOrder712 } from '../eip712/types'
 
 const orderbookAbi = json.abi as Abi
 

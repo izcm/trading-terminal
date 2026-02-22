@@ -23,20 +23,17 @@ export function Modal({ isOpen, onClose, children }: ModalProps) {
     <div
       className="
         fixed inset-0 z-50 flex items-center justify-center
-        bg-black/50 backdrop-blur-sm 
+        bg-black/50 backdrop-blur-sm
         animate-fadeIn fixed z-[999]
       "
       onClick={onClose}
     >
       <div
         className="
-          bg-[var(--bg-surface)] 
+          bg-surface
           border border-[var(--border-default)]
           rounded-lg
-          max-w-[90%] 
-          min-w-[400px]
-          shadow-lg p-2
-        "
+          shadow-lg p-4"
         onClick={e => e.stopPropagation()}
       >
         {children}

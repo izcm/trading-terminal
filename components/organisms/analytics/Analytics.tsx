@@ -1,36 +1,19 @@
 'use client'
 
-import Link from 'next/link'
 import { Hex } from 'viem'
+import { use, useEffect, useMemo, useState } from 'react'
 
 import 'chart.js/auto'
-
-import { use, useEffect, useMemo, useState } from 'react'
-import { LayoutGrid, ChartArea } from 'lucide-react'
-
 import { topNBy } from '@/lib/utils/analytics/topN'
 import { aggregateSales, floor } from '@/features/analytics/sales'
-
-import { formatEth2, formatTsUTC, shortAddr, timeKey, TimeUnit } from '@/lib/utils/format'
-
+import { formatEth2, shortAddr, TimeUnit } from '@/lib/utils/format'
 import { Sale } from '@/domain/types/sale'
 import { Result } from '@/lib/utils/http'
 import { PaginatedSales } from '@/lib/dmrkt-indexer/actions/sales.get'
-
-import { Stat, Modal } from '../../molecules'
+import { Stat, SettlementRow } from '@/components/molecules'
 import { SalesReceipt } from '../SalesReceipt'
 import { HomeCharts } from './Charts'
-
-// LINE: ratio = ASK_volume / (ASK_volume + BID_volume) over time
-
-// LINE: Cumulative volume over time
-// always goes up → very line-coded
-// shows growth / traction
-// investors love this shape
-// zero confusion with bars
-
-// stacked bar charts:
-// https://www.chartjs.org/docs/latest/samples/bar/stacked.html
+import { Modal } from '@/components/atoms'
 
 type ShowReceiptState = { show: false } | { show: true; sale: Sale }
 
@@ -132,8 +115,10 @@ export function SalesAnalytics({ initialData }: { initialData: Promise<Result<Pa
           volume <strong>{formatEth2(totalVolume)}</strong>
         </span>
       </div>
-      <div className="flex gap-4 h-140">
-        <HomeCharts analytics={analytics} sales={filteredSales} timeUnit={timeUnit} />
+      <div className="flex gap-4">
+        <div className="h-[260px] flex w-full gap-4">
+          <HomeCharts analytics={analytics} sales={filteredSales} timeUnit={timeUnit} />
+        </div>
 
         <ul className="basis-1/3 card">
           <span className="text-xs text-muted my-2">
@@ -161,38 +146,15 @@ export function SalesAnalytics({ initialData }: { initialData: Promise<Result<Pa
           ))}
         </ul>
       </div>
-
-      <div className="flex gap-4 overflow-hidden">
+      <div className="flex-1 flex gap-4 overflow-hidden">
         <ul className="flex-1 card overflow-y-auto no-scrollbar">
-          {filteredSales.map(sale => {
-            const { block, tx } = sale.execution
-            return (
-              <li
-                key={sale.execution.tx.hash}
-                onClick={() => setShowReceipt({ show: true, sale: sale })}
-              >
-                <button className="stat-row text-muted w-full">
-                  <div className="flex gap-4 items-center">
-                    <span
-                      className={
-                        sale.order?.side === 'ASK' ? 'text-ask/70 text-xs' : 'text-bid/70 text-xs'
-                      }
-                    >
-                      {sale.order?.side.slice(0, 1)}
-                    </span>
-                    <span>{formatTsUTC(block.timestamp)}</span>
-                  </div>
-
-                  <span>SYMBOL</span>
-
-                  <Stat value={sale.buyer} label="buyer" fmtFn={shortAddr} />
-                  <Stat value={sale.seller} label="seller" fmtFn={shortAddr} />
-
-                  <span>{formatEth2(BigInt(sale.price))} ETH</span>
-                </button>
-              </li>
-            )
-          })}
+          {filteredSales.map(sale => (
+            <SettlementRow
+              key={sale.execution.tx.hash}
+              sale={sale}
+              onSelect={sale => setShowReceipt({ show: true, sale })}
+            />
+          ))}
         </ul>
 
         <div className="w-1/3 flex flex-col card">
@@ -218,7 +180,6 @@ export function SalesAnalytics({ initialData }: { initialData: Promise<Result<Pa
           </ul>
         </div>
       </div>
-
       {showReceipt.show && (
         <Modal isOpen={showReceipt.show} onClose={() => setShowReceipt({ show: false })}>
           <div className="p-4 flex flex-col gap-4">

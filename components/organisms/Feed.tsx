@@ -1,23 +1,15 @@
 'use client'
 
-import Link from 'next/link'
 import { use, useEffect, useState } from 'react'
-import { Plus, CreditCard } from 'lucide-react'
+import { Plus } from 'lucide-react'
 
-import { TopCollections } from '@/components/organisms/Explore/TopCollections'
-import { Modal, ListingRow, ListingDetails } from '@/components/molecules'
-
-import { TopNFTCollection } from '@/domain/types'
-import { Listing } from '@/domain/types/listing'
-
+import { ListingRow, TopCollectionRow } from '@/components/molecules'
+import { TopNFTCollection, Listing } from '@/domain/types'
 import { Result } from '@/lib/utils/http'
 import { getListings, PaginatedListings } from '@/lib/dmrkt-indexer/actions/listings.get'
 import { CreateOrderForm } from '@/features/orderbook/ui/CreateOrderForm'
-import { getImageFromTokenURI, resolveImage } from '@/lib/utils/image'
-
-import { useTokenURI } from '@/lib/blockchain/hooks/token-uri.use'
-import { useOrderValidation } from '@/lib/blockchain/orderbook/hooks/validate-order.use'
-import { TradePanel } from './TradePanel/TradePanel'
+import { TradePanel } from './tradepanel/TradePanel'
+import { Modal } from '@/components/atoms'
 
 type Props = {
   collections: TopNFTCollection[]
@@ -76,7 +68,14 @@ export function Feed({ collections, initialListings }: Props) {
         <div className="flex-1 flex flex-col gap-4">
           {/* collections */}
           <div className="card shrink-0">
-            <TopCollections collections={collections} />
+            <ul className="overflow-y-auto no-scrollbar">
+              {collections.map(collection => (
+                <TopCollectionRow
+                  key={`${collection.chainId}:${collection.address}`}
+                  collection={collection}
+                />
+              ))}
+            </ul>
           </div>
 
           <div className="card flex-1 overflow-y-auto no-scrollbar">
@@ -89,9 +88,9 @@ export function Feed({ collections, initialListings }: Props) {
         </div>
 
         {/* RIGHT PANEL */}
-        <aside className="w-1/4 flex flex-col gap-4">
+        <div className="basis-1/4">
           <TradePanel listing={selected} />
-        </aside>
+        </div>
       </div>
 
       {/* MODAL */}

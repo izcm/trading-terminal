@@ -1,6 +1,4 @@
 import { Result } from '@/lib/utils/http'
-
-import { OrderRecord } from '@/lib/blockchain/orderbook/eip712/types'
 import { Listing } from '@/domain/types/listing'
 
 import { DMRKT_INDEXER_BASE_URL as baseUrl } from '../constants'
