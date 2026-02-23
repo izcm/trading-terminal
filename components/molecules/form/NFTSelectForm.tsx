@@ -9,8 +9,10 @@ import { shortAddr } from '@/lib/utils/format'
 
 type Props = {
   chainId: number
-  address: Hex
-  symbol?: string
+  collection: {
+    address: Hex
+    symbol?: string
+  }
   validation: {
     canConfirm: boolean
     checking: boolean
@@ -20,17 +22,12 @@ type Props = {
   onConfirm: () => void
 }
 
-export function NFTSelectForm({
-  chainId,
-  address,
-  symbol,
-  validation,
-  onValidate,
-  onConfirm,
-}: Props) {
+export function NFTSelectForm({ chainId, collection, validation, onValidate, onConfirm }: Props) {
   const [tokenIdInput, setTokenIdInput] = useState('')
   const [tokenId, setTokenId] = useState<bigint | null>(null)
   const [preview, setPreview] = useState<string>('/placeholders/token-waiting.svg')
+
+  const { address, symbol } = collection
 
   const title = 'token id in ' + (symbol !== undefined ? symbol : shortAddr(address))
 

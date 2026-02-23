@@ -92,8 +92,7 @@ export function TradePanel({ listing }: Props) {
         <div className="flex flex-col gap-2 w-[300px] max-w-[600px]">
           <NFTSelectForm
             chainId={listing.chainId}
-            address={listing.collection}
-            symbol={listing.collectionMeta?.symbol}
+            collection={{ address: listing.collection, symbol: listing.collectionMeta?.symbol }}
             validation={{
               canConfirm: simulation.isFillable,
               checking: simulation.checking,

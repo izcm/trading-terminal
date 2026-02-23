@@ -46,7 +46,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               const Icon = item.icon
 
               return (
-                <Link key={item.href} href={item.href}>
+                <Link key={item.href} href={item.href} className="block">
                   <NavItem>
                     {' '}
                     <Icon size={16} />

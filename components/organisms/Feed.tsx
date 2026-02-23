@@ -32,6 +32,7 @@ export function Feed({ collections, initialListings }: Props) {
   }
 
   const [nextCursor, setNextCursor] = useState<string | null>(initial.data.nextCursor)
+  const [activeIndex, setActiveIndex] = useState(0)
 
   const [listings, setListings] = useState<Listing[]>(initial.data.items)
   const [selected, setSelected] = useState<Listing>(initial.data.items[0])
@@ -78,13 +79,11 @@ export function Feed({ collections, initialListings }: Props) {
             </ul>
           </div>
 
-          <div className="card flex-1 overflow-y-auto no-scrollbar">
-            <ul className="w-full">
-              {listings.map(item => (
-                <ListingRow key={item.id} listing={item} onSelect={setSelected} />
-              ))}
-            </ul>
-          </div>
+          <ul className="card flex-1 overflow-y-auto no-scrollbar">
+            {listings.map(item => (
+              <ListingRow key={item.id} listing={item} onSelect={setSelected} />
+            ))}
+          </ul>
         </div>
 
         {/* RIGHT PANEL */}
