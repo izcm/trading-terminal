@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
 type ModalProps = {
   isOpen: boolean
@@ -8,14 +8,42 @@ type ModalProps = {
 }
 
 export function Modal({ isOpen, onClose, children }: ModalProps) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const lastFocusedRef = useRef<HTMLElement>(null)
+
   // Close on ESC key
   useEffect(() => {
+    if (!isOpen) return
+
+    lastFocusedRef.current = document.activeElement as HTMLElement | null
+
     const handler = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
-    if (isOpen) {
-      document.addEventListener('keydown', handler)
-      return () => document.removeEventListener('keydown', handler)
+
+    document.addEventListener('keydown', handler)
+    return () => {
+      document.removeEventListener('keydown', handler)
+      lastFocusedRef.current?.focus()
     }
   }, [onClose, isOpen])
+
+  useEffect(() => {
+    if (!isOpen) return
+    lastFocusedRef.current = document.activeElement as HTMLElement | null
+  }, [isOpen])
+
+  // focus on first elegible item in modal
+  useEffect(() => {
+    if (!isOpen) return
+
+    const el = containerRef.current
+    if (!el) return
+
+    const focusable = el.querySelector<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    )
+
+    focusable?.focus()
+  }, [isOpen])
 
   if (!isOpen) return null
 
@@ -29,9 +57,10 @@ export function Modal({ isOpen, onClose, children }: ModalProps) {
       onClick={onClose}
     >
       <div
+        ref={containerRef}
         className="
           bg-surface
-          border border-[var(--border-default)]
+          border border-default
           rounded-lg
           shadow-lg p-4"
         onClick={e => e.stopPropagation()}

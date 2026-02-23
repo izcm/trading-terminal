@@ -68,7 +68,6 @@ export function Feed({ collections, initialListings }: Props) {
         {/* LEFT COLUMN (feed side) */}
         <div className="flex-1 flex flex-col gap-4">
           {/* collections */}
-
           <ul className="card shrink-0 overflow-y-auto no-scrollbar">
             {collections.map(collection => (
               <TopCollectionRow
