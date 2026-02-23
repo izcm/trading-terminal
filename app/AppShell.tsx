@@ -36,8 +36,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         <SidebarContainer>
           {/* ---- BRAND / TITLE ---- */}
           <div className="px-3 py-4 text-start border-b border-soft">
-            <div className="text-sm text-muted">d | mrkt</div>
-            <div className="text-xs text-muted/70">market client</div>
+            <div className="text-muted">d | mrkt</div>
+            <div className="text-sm text-muted/70">market client</div>
           </div>
 
           {/* ---- NAVIGATION ---- */}
@@ -49,7 +49,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 <Link key={item.href} href={item.href} className="block">
                   <NavItem>
                     {' '}
-                    <Icon size={16} />
+                    <Icon size={20} />
                     {item.title}
                   </NavItem>
                 </Link>

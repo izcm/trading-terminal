@@ -5,8 +5,8 @@ type ArrowListProps<T> = {
   getId: (item: T) => string
   selectedId: string | null
   onSelect: (item: T) => void
-  children: (args: { item: T; isSelected: boolean; onSelect: (item: T) => void }) => ReactNode
-  className: string
+  children: (args: { item: T; isSelected: boolean; onSelect: () => void }) => ReactNode
+  className?: string
 }
 
 export function ArrowList<T>({
@@ -15,13 +15,16 @@ export function ArrowList<T>({
   selectedId,
   onSelect,
   children,
-  className = 'card flex-1 overflow-y-auto no-scrollbar',
+  className = '',
 }: ArrowListProps<T>) {
+  const base = 'card overflow-y-auto no-scrollbar'
   return (
     <ul
-      className={className}
+      className={`${base} ${className}`}
       tabIndex={0}
       onKeyDown={e => {
+        if (!items.length) return
+
         if (e.key === 'Home') {
           e.preventDefault()
           onSelect(items[0])
@@ -48,7 +51,7 @@ export function ArrowList<T>({
       }}
     >
       {items.map(item => {
-        const isSelected = getId(item) === selectedId
+        const isSelected = selectedId !== null && getId(item) === selectedId
 
         return children({ item, isSelected, onSelect: () => onSelect(item) })
       })}

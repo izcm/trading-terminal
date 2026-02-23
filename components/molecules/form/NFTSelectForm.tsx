@@ -69,9 +69,7 @@ export function NFTSelectForm({ chainId, collection, validation, onValidate, onC
         </button>
       </div>
 
-      <NFTSummary
-        image={tokenURI ? getImageFromTokenURI(tokenURI) : '/placeholders/token-waiting.svg'}
-      />
+      <NFTSummary image={tokenURI && getImageFromTokenURI(tokenURI)} />
 
       <button disabled={!tokenId} onClick={() => alert('hello')} className="btn btn-primary w-full">
         fill order

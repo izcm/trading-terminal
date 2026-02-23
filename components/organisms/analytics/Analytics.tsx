@@ -13,7 +13,7 @@ import { PaginatedSales } from '@/lib/dmrkt-indexer/actions/sales.get'
 import { Stat, SettlementRow } from '@/components/molecules'
 import { SalesReceipt } from '../SalesReceipt'
 import { HomeCharts } from './Charts'
-import { Modal } from '@/components/atoms'
+import { ArrowList, ArrowRow, Modal } from '@/components/atoms'
 
 type ShowReceiptState = { show: false } | { show: true; sale: Sale }
 
@@ -41,6 +41,7 @@ export function SalesAnalytics({ initialData }: { initialData: Promise<Result<Pa
 
   // tx onclick opens receipt-modal
   const [showReceipt, setShowReceipt] = useState<ShowReceiptState>({ show: false })
+  const [selectedSale, setSelectedSale] = useState<Sale | null>(initial.data.items[0] ?? null)
 
   useEffect(() => {
     if (!nextCursor) return
@@ -86,6 +87,26 @@ export function SalesAnalytics({ initialData }: { initialData: Promise<Result<Pa
     return applyFilters(sales, filters)
   }, [filters, sales])
 
+  useEffect(() => {
+    if (!filteredSales.length) {
+      setSelectedSale(null)
+      return
+    }
+
+    if (!selectedSale) {
+      setSelectedSale(filteredSales[0])
+      return
+    }
+
+    const stillVisible = filteredSales.some(
+      sale => sale.execution.tx.hash === selectedSale.execution.tx.hash
+    )
+
+    if (!stillVisible) {
+      setSelectedSale(filteredSales[0])
+    }
+  }, [filteredSales, selectedSale])
+
   const analytics = useMemo(() => {
     return aggregateSales(filteredSales, timeUnit)
   }, [filteredSales, timeUnit])
@@ -115,53 +136,63 @@ export function SalesAnalytics({ initialData }: { initialData: Promise<Result<Pa
           volume <strong>{formatEth2(totalVolume)}</strong>
         </span>
       </div>
-      <div className="flex gap-4">
-        <div className="h-[260px] flex w-full gap-4">
-          <HomeCharts analytics={analytics} sales={filteredSales} timeUnit={timeUnit} />
-        </div>
 
-        <ul className="basis-1/3 card">
-          <span className="text-xs text-muted my-2">
-            Top Collections · F = floor price · V = volume
-          </span>
-          {topCollectionsList.map(([k, v], i) => (
-            <li
-              key={k}
-              className="stat-row filter-row flex text-muted"
-              data-active={filters.collection === k}
-              onClick={() => handleFilters('collection', k)}
-            >
-              <span className="text-sm">#{i + 1}</span>
-
-              <span>SYMBOL</span>
-
-              <Stat
-                value={floor(filteredSales, 'collection', k as `0x${string}`)}
-                label="F"
-                fmtFn={formatEth2}
-              />
-
-              <Stat value={topCollectionsByKey[k].volume} label="V" fmtFn={formatEth2} />
-            </li>
-          ))}
-        </ul>
+      <div className="h-[260px] flex w-full gap-4">
+        <HomeCharts analytics={analytics} sales={filteredSales} timeUnit={timeUnit} />
       </div>
       <div className="flex-1 flex gap-4 overflow-hidden">
-        <ul className="flex-1 card overflow-y-auto no-scrollbar">
-          {filteredSales.map(sale => (
-            <SettlementRow
-              key={sale.execution.tx.hash}
-              sale={sale}
-              onSelect={sale => setShowReceipt({ show: true, sale })}
-            />
-          ))}
-        </ul>
+        <ArrowList
+          items={filteredSales}
+          getId={sale => sale.execution.tx.hash}
+          selectedId={selectedSale?.execution.tx.hash ?? null}
+          onSelect={setSelectedSale}
+          className="flex-1"
+        >
+          {({ item, isSelected, onSelect: selectRow }) => (
+            <ArrowRow
+              key={item.execution.tx.hash}
+              isSelected={isSelected}
+              onSelect={() => {
+                selectRow()
+                setShowReceipt({ show: true, sale: item })
+              }}
+            >
+              <SettlementRow sale={item} />
+            </ArrowRow>
+          )}
+        </ArrowList>
 
-        <div className="w-1/3 flex flex-col card">
-          <span className="text-xs text-muted my-2">
-            Top Actors · B = buy volume · S = sell volume
-          </span>
-          <ul>
+        <div className="w-1/3 flex flex-col gap-4">
+          <ul className="basis-1/2 card">
+            <span className="text-xs text-muted my-2">
+              Top Collections · F = floor price · V = volume
+            </span>
+            {topCollectionsList.map(([k, v], i) => (
+              <li
+                key={k}
+                className="stat-row filter-row flex text-muted"
+                data-active={filters.collection === k}
+                onClick={() => handleFilters('collection', k)}
+              >
+                <span className="text-sm">#{i + 1}</span>
+
+                <span>SYMBOL</span>
+
+                <Stat
+                  value={floor(filteredSales, 'collection', k as `0x${string}`)}
+                  label="F"
+                  fmtFn={formatEth2}
+                />
+
+                <Stat value={topCollectionsByKey[k].volume} label="V" fmtFn={formatEth2} />
+              </li>
+            ))}
+          </ul>
+
+          <ul className="basis-1/2 card">
+            <span className="text-xs text-muted my-2">
+              Top Actors · B = buy volume · S = sell volume
+            </span>
             {topActors.map(([k, a], i) => (
               <li
                 key={k}

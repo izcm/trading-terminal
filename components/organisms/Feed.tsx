@@ -9,7 +9,7 @@ import { Result } from '@/lib/utils/http'
 import { getListings, PaginatedListings } from '@/lib/dmrkt-indexer/actions/listings.get'
 import { CreateOrderForm } from '@/components/organisms/CreateOrderForm'
 import { TradePanel } from './tradepanel/TradePanel'
-import { Modal } from '@/components/atoms'
+import { ArrowList, ArrowRow, Modal } from '@/components/atoms'
 
 type Props = {
   collections: TopNFTCollection[]
@@ -68,53 +68,37 @@ export function Feed({ collections, initialListings }: Props) {
         {/* LEFT COLUMN (feed side) */}
         <div className="flex-1 flex flex-col gap-4">
           {/* collections */}
-          <ul className="card shrink-0 overflow-y-auto no-scrollbar">
-            {collections.map(collection => (
-              <TopCollectionRow
-                key={`${collection.chainId}:${collection.address}`}
-                collection={collection}
-              />
-            ))}
-          </ul>
 
-          <ul
-            className="card flex-1 overflow-y-auto no-scrollbar"
-            tabIndex={0}
-            onKeyDown={e => {
-              if (e.key === 'Home') {
-                e.preventDefault()
-                setSelected(listings[0])
-                return
-              }
-
-              if (e.key === 'End') {
-                e.preventDefault()
-                setSelected(listings[listings.length - 1])
-                return
-              }
-
-              if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return
-              e.preventDefault()
-
-              const index = listings.findIndex(l => l.id === selected.id)
-              if (index === -1) return
-
-              let next = index
-              if (e.key === 'ArrowDown') next = Math.min(index + 1, listings.length - 1)
-              if (e.key === 'ArrowUp') next = Math.max(index - 1, 0)
-
-              setSelected(listings[next])
-            }}
+          <ArrowList
+            items={collections}
+            getId={c => `${c.chainId}:${c.address}`}
+            selectedId={selected.id}
+            onSelect={() => alert('hello')}
           >
-            {listings.map(item => (
-              <ListingRow
-                key={item.id}
-                listing={item}
-                onSelect={setSelected}
-                selected={selected.id === item.id}
-              />
-            ))}
-          </ul>
+            {({ item, isSelected, onSelect }) => (
+              <ArrowRow
+                key={`${item.chainId}:${item.address}`}
+                isSelected={isSelected}
+                onSelect={onSelect}
+              >
+                <TopCollectionRow collection={item} />
+              </ArrowRow>
+            )}
+          </ArrowList>
+
+          <ArrowList
+            items={listings}
+            getId={l => l.id}
+            selectedId={selected.id}
+            onSelect={setSelected}
+            className="card flex-1 overflow-y-auto no-scrollbar"
+          >
+            {({ item, isSelected, onSelect }) => (
+              <ArrowRow key={item.id} isSelected={isSelected} onSelect={onSelect}>
+                <ListingRow listing={item} />
+              </ArrowRow>
+            )}
+          </ArrowList>
         </div>
 
         {/* RIGHT PANEL */}

@@ -9,7 +9,7 @@ export function NavItem({ active = false, children }: NavItemProps) {
   return (
     <div
       className={`
-        group flex gap-3 items-center px-3 py-4 text-sm cursor-pointer
+        group flex gap-3 items-center px-3 py-4 cursor-pointer
         transition-colors border-l-2 block
         ${
           active

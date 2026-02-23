@@ -11,7 +11,7 @@ export function TopCollectionRow({ collection }: Props) {
   const { activeAskCount, activeBidCount, activeCbCount, totalActive } = collection.summary
 
   return (
-    <li className="base-row justify-between gap-4 p-2">
+    <>
       <div className="w-40 flex items-center gap-4">
         <img
           src={collection.imageUrl || `placeholders/native-collections/${collection.symbol}.svg`}
@@ -34,6 +34,6 @@ export function TopCollectionRow({ collection }: Props) {
       <div className="w-20">
         <Stat value={totalActive} label={'total'} />
       </div>
-    </li>
+    </>
   )
 }

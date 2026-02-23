@@ -1,36 +1,31 @@
 import { ReactNode, useEffect, useRef } from 'react'
 
 type ArrowRowProps = {
-  selected: boolean
+  isSelected: boolean
   onSelect: () => void
   children: ReactNode
-  className: string
+  className?: string
 }
 
-export function ArrowRow({
-  selected,
-  onSelect,
-  children,
-  className = `
-        w-full base-row gap-4 p-2 rounded-md transition 
-        ${selected ? 'bg-white/5' : 'hover:bg-white/5'}
-    `,
-}: ArrowRowProps) {
+export function ArrowRow({ isSelected, onSelect, children, className = '' }: ArrowRowProps) {
   const ref = useRef<HTMLLIElement>(null)
 
   useEffect(() => {
-    if (selected) {
+    if (isSelected) {
       ref.current?.focus()
     }
-  }, [selected])
+  }, [isSelected])
+
+  const base = 'w-full base-row gap-4 p-2 rounded-md transition'
+  const interactive = isSelected ? 'bg-white/5' : 'hover:bg-white/5'
 
   return (
     <li
       ref={ref}
-      tabIndex={selected ? 0 : -1}
+      tabIndex={isSelected ? 0 : -1}
       onClick={onSelect}
-      aria-selected={selected}
-      className={className}
+      aria-selected={isSelected}
+      className={`${base} ${interactive} ${className}`}
     >
       {children}
     </li>

@@ -1,41 +1,16 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
 import { Listing } from '@/domain/types/listing'
 import { formatEth2 } from '@/lib/utils/format'
 
-export function ListingRow({
-  listing,
-  onSelect,
-  selected,
-}: {
-  listing: Listing
-  onSelect: (l: Listing) => void
-  selected?: boolean
-}) {
-  const ref = useRef<HTMLLIElement>(null)
-
-  useEffect(() => {
-    if (selected) {
-      ref.current?.focus()
-    }
-  }, [selected])
-
+export function ListingRow({ listing }: { listing: Listing }) {
   const isAsk = listing.type === 'ask'
   const isCb = !isAsk && listing.isCollectionBid
 
   const collection = listing.collectionMeta ?? { name: 'unknown', symbol: 'unknown' }
 
   return (
-    <li
-      ref={ref}
-      onClick={() => onSelect(listing)}
-      className={`w-full base-row gap-4 p-2 rounded-md transition
-          ${selected ? 'bg-white/5' : 'hover:bg-white/5'}
-        `}
-      tabIndex={selected ? 0 : -1}
-      aria-selected={selected}
-    >
+    <>
       {/* Type Badge */}
       <div className="w-12 flex justify-center">
         <span
@@ -96,6 +71,6 @@ export function ListingRow({
           {listing.currency.slice(0, 6)}...{listing.currency.slice(-4)}
         </span>
       </div>
-    </li>
+    </>
   )
 }
