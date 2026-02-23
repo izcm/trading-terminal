@@ -14,7 +14,7 @@ export function TopCollectionRow({ collection }: Props) {
     <li className="base-row justify-between gap-4 p-2">
       <div className="w-40 flex items-center gap-4">
         <img
-          src={collection.imageUrl || `native-collections/${collection.symbol}.svg`}
+          src={collection.imageUrl || `placeholders/native-collections/${collection.symbol}.svg`}
           className="w-12 object-cover"
           alt="collection image"
         />

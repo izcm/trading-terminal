@@ -5,17 +5,6 @@ export type Fill = {
   tokenId: bigint
 }
 
-export type OrderRecord = {
-  chainId: number
-  orderHash: Hex
-
-  order: Order
-  status: string
-
-  updatedAt: number
-  createdAt: number
-}
-
 export type Order = OrderCore & {
   signature: {
     v: number
@@ -32,8 +21,8 @@ type OrderCore = {
   tokenId: string
   price: string
   currency: Hex
-  start: string
-  end: string
+  start: number
+  end: number
   nonce: string
 }
 

@@ -6,7 +6,7 @@ import { useAccount, useSignTypedData } from 'wagmi'
 import { parseEther } from 'viem'
 
 // local
-import { domain, fields, createOrder } from '@/lib/blockchain'
+import { domain, fields } from '@/lib/blockchain'
 import { FormSelect } from '@/components/molecules/form/FormSelect'
 
 import { DURATIONS } from '../../domain/constants/durations'
@@ -54,7 +54,7 @@ export const CreateOrderForm = () => {
         message: order,
       })
 
-      const res = await createOrder({ ...order, signature: sig })
+      // const res = await createOrder({ ...order, signature: sig })
     } catch (err) {
       console.error('createOrder error:', err)
       throw err // rethrow so you see it in client console too

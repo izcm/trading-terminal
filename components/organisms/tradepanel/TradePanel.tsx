@@ -19,10 +19,13 @@ export function TradePanel({ listing }: Props) {
 
   // UI elements
   const [previewSrc, setPreviewSrc] = useState<string>('/placeholders/token-waiting.svg')
+
+  // collection bid feature
   const [showNFTSelectModal, setShowNFTSelectModal] = useState<boolean>(false)
+  const [cbTokenId, setCbTokenId] = useState<bigint | undefined>(undefined)
 
   // chain interaction stuff
-  const { simulation, execution } = useFillOrder(listing)
+  const { simulation, execution } = useFillOrder(listing.rawOrder, cbTokenId)
 
   const { data: tokenURI, isLoading } = useTokenURI({
     chainId: listing.chainId,
@@ -76,7 +79,7 @@ export function TradePanel({ listing }: Props) {
         <span className="text-xs text-muted">
           {listing.isCollectionBid
             ? 'choose nft to sell into this bid'
-            : 'your wallet will ask you to confirm'}
+            : 'wallet will ask you to confirm'}
         </span>
       </div>
 
@@ -90,7 +93,17 @@ export function TradePanel({ listing }: Props) {
           <NFTSelectForm
             chainId={listing.chainId}
             address={listing.collection}
-            onConfirm={() => alert('hello')}
+            symbol={listing.collectionMeta?.symbol}
+            validation={{
+              canConfirm: simulation.isFillable,
+              checking: simulation.checking,
+              error: simulation.error,
+            }}
+            onValidate={(tid: bigint) => setCbTokenId(tid)}
+            onConfirm={() => {
+              execution.fill()
+              setShowNFTSelectModal(false)
+            }}
           />
           <button className="btn btn-secondary" onClick={() => setShowNFTSelectModal(false)}>
             cancel
