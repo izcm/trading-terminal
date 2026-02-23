@@ -19,7 +19,14 @@ const safeStringify = (obj: unknown) =>
 // 4. **dapp pending transaction UI**
 // 5. **wagmi useWaitForTransactionReceipt**
 
-export function useFillOrder(listing?: Listing) {
+/**
+ *
+ * @param listing the listing being validated
+ * @param tokenIdFill tokenId to pass when listing is a collection_bid
+ * @returns validation and execution state
+ */
+
+export function useFillOrder(listing?: Listing, tokenIdFill?: bigint) {
   const { address } = useAccount()
 
   const enabled = !!listing && !!address
