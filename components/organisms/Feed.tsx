@@ -68,20 +68,52 @@ export function Feed({ collections, initialListings }: Props) {
         {/* LEFT COLUMN (feed side) */}
         <div className="flex-1 flex flex-col gap-4">
           {/* collections */}
-          <div className="card shrink-0">
-            <ul className="overflow-y-auto no-scrollbar">
-              {collections.map(collection => (
-                <TopCollectionRow
-                  key={`${collection.chainId}:${collection.address}`}
-                  collection={collection}
-                />
-              ))}
-            </ul>
-          </div>
 
-          <ul className="card flex-1 overflow-y-auto no-scrollbar">
+          <ul className="card shrink-0 overflow-y-auto no-scrollbar">
+            {collections.map(collection => (
+              <TopCollectionRow
+                key={`${collection.chainId}:${collection.address}`}
+                collection={collection}
+              />
+            ))}
+          </ul>
+
+          <ul
+            className="card flex-1 overflow-y-auto no-scrollbar"
+            tabIndex={0}
+            onKeyDown={e => {
+              if (e.key === 'Home') {
+                e.preventDefault()
+                setSelected(listings[0])
+                return
+              }
+
+              if (e.key === 'End') {
+                e.preventDefault()
+                setSelected(listings[listings.length - 1])
+                return
+              }
+
+              if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return
+              e.preventDefault()
+
+              const index = listings.findIndex(l => l.id === selected.id)
+              if (index === -1) return
+
+              let next = index
+              if (e.key === 'ArrowDown') next = Math.min(index + 1, listings.length - 1)
+              if (e.key === 'ArrowUp') next = Math.max(index - 1, 0)
+
+              setSelected(listings[next])
+            }}
+          >
             {listings.map(item => (
-              <ListingRow key={item.id} listing={item} onSelect={setSelected} />
+              <ListingRow
+                key={item.id}
+                listing={item}
+                onSelect={setSelected}
+                selected={selected.id === item.id}
+              />
             ))}
           </ul>
         </div>

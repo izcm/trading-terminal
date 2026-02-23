@@ -25,7 +25,6 @@ type Props = {
 export function NFTSelectForm({ chainId, collection, validation, onValidate, onConfirm }: Props) {
   const [tokenIdInput, setTokenIdInput] = useState('')
   const [tokenId, setTokenId] = useState<bigint | null>(null)
-  const [preview, setPreview] = useState<string>('/placeholders/token-waiting.svg')
 
   const { address, symbol } = collection
 
@@ -41,12 +40,12 @@ export function NFTSelectForm({ chainId, collection, validation, onValidate, onC
       : undefined
   )
 
-  useEffect(() => {
-    if (!tokenURI) return
-    setPreview(getImageFromTokenURI(tokenURI))
-  }, [tokenURI])
-
   const saneInput = (input: string) => /^\d+$/.test(input)
+
+  //   const inputError =
+  //   tokenIdInput.length === 0 ? '' : saneInput(tokenIdInput) ? '' : 'digits only'
+
+  // const uiError = inputError || validation.error
 
   const handleValidate = (tidStr: string) => {
     if (!saneInput(tidStr)) return // sanity check
@@ -70,7 +69,9 @@ export function NFTSelectForm({ chainId, collection, validation, onValidate, onC
         </button>
       </div>
 
-      <NFTSummary image={preview} />
+      <NFTSummary
+        image={tokenURI ? getImageFromTokenURI(tokenURI) : '/placeholders/token-waiting.svg'}
+      />
 
       <button disabled={!tokenId} onClick={() => alert('hello')} className="btn btn-primary w-full">
         fill order

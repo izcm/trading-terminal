@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useRef } from 'react'
 import { Listing } from '@/domain/types/listing'
 import { formatEth2 } from '@/lib/utils/format'
 
@@ -12,6 +13,14 @@ export function ListingRow({
   onSelect: (l: Listing) => void
   selected?: boolean
 }) {
+  const ref = useRef<HTMLLIElement>(null)
+
+  useEffect(() => {
+    if (selected) {
+      ref.current?.focus()
+    }
+  }, [selected])
+
   const isAsk = listing.type === 'ask'
   const isCb = !isAsk && listing.isCollectionBid
 
@@ -19,12 +28,12 @@ export function ListingRow({
 
   return (
     <li
+      ref={ref}
       onClick={() => onSelect(listing)}
       className={`w-full base-row gap-4 p-2 rounded-md transition
           ${selected ? 'bg-white/5' : 'hover:bg-white/5'}
         `}
-      tabIndex={-1}
-      // aria-selected={selected}
+      tabIndex={selected ? 0 : -1}
     >
       {/* Type Badge */}
       <div className="w-12 flex justify-center">
