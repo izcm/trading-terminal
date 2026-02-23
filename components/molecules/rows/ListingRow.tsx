@@ -34,6 +34,7 @@ export function ListingRow({
           ${selected ? 'bg-white/5' : 'hover:bg-white/5'}
         `}
       tabIndex={selected ? 0 : -1}
+      aria-selected={selected}
     >
       {/* Type Badge */}
       <div className="w-12 flex justify-center">
