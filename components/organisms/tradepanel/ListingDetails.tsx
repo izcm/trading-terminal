@@ -1,15 +1,15 @@
 'use client'
 
-import { Listing } from '@/domain/types/listing'
+import { ListingDTO } from '@/lib/dmrkt-indexer/types/listing'
 import { formatTsUTC, shortAddr } from '@/lib/utils/format'
 
 type Props = {
-  listing: Listing | null
+  listing: ListingDTO | null
 }
 
 type DetailField = {
   label: string
-  getValue: (listing: Listing) => string
+  getValue: (listing: ListingDTO) => string
   className?: string
 }
 
@@ -21,7 +21,7 @@ const DETAIL_FIELDS: DetailField[] = [
   },
   {
     label: 'price',
-    getValue: listing => `${Number(listing.price) / 1e18} WETH`,
+    getValue: listing => `${Number(listing.price) / 1e18} ETH`,
     className: 'font-semibold',
   },
   {

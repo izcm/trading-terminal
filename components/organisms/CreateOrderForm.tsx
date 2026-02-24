@@ -6,7 +6,7 @@ import { useAccount, useSignTypedData } from 'wagmi'
 import { parseEther } from 'viem'
 
 // local
-import { domain, fields } from '@/lib/blockchain'
+import { domain, orderFields } from '@/protocol/eip712'
 import { FormSelect } from '@/components/molecules/form/FormSelect'
 
 import { DURATIONS } from '../../domain/constants/durations'
@@ -27,6 +27,8 @@ export const CreateOrderForm = () => {
   })
 
   const handleSumbitOrder = async () => {
+    if (!account) return
+
     const now = Math.floor(Date.now() / 1000)
 
     const order = {
@@ -43,7 +45,7 @@ export const CreateOrderForm = () => {
     }
 
     const types = {
-      Order: fields,
+      Order: orderFields,
     }
 
     try {
@@ -168,7 +170,11 @@ export const CreateOrderForm = () => {
       </div>
 
       {/* Sign Button */}
-      <button onClick={handleSumbitOrder} className="btn btn-primary mt-4 rounded px-4 py-2">
+      <button
+        disabled={!isConnected}
+        onClick={handleSumbitOrder}
+        className="btn btn-primary mt-4 rounded px-4 py-2"
+      >
         SIGN ORDER
       </button>
     </div>

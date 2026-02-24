@@ -13,5 +13,5 @@ export default async function ExplorePage() {
 
   const listings = getListings()
 
-  return <Feed collections={collections} initialListings={listings} />
+  return <Feed collections={collections} initialData={listings} />
 }

@@ -11,13 +11,14 @@ type Props = {
 export function SettlementRow({ sale }: Props) {
   const { block } = sale.execution
 
+  const labelBaseStyle = 'text-xs'
   return (
     <>
-      <div className="flex gap-4 items-center text-muted w-full">
+      <div className="flex gap-4 items-center text-muted">
         <span
-          className={sale.order?.side === 'ASK' ? 'text-ask/70 text-xs' : 'text-bid/70 text-xs'}
+          className={`${sale.order?.side === 'ASK' ? 'text-ask/70' : 'text-bid/70'} ${labelBaseStyle}`}
         >
-          {sale.order?.side.slice(0, 1)}
+          {sale.order?.side}
         </span>
         <span>{formatTsUTC(block.timestamp)}</span>
       </div>

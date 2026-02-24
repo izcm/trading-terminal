@@ -2,38 +2,37 @@ import { useEffect, useState } from 'react'
 import { CreditCard, Layers } from 'lucide-react'
 
 import { ListingDetails } from './ListingDetails'
-import { Listing } from '@/domain/types/listing'
+import { ListingDTO } from '@/lib/dmrkt-indexer/types/listing'
 import { useTokenURI, useFillOrder } from '@/lib/blockchain'
 import { getImageFromTokenURI } from '@/lib/utils/image'
 import { Modal } from '@/components/atoms'
 import { NFTSelectForm } from '@/components/molecules'
 
 type Props = {
-  listing: Listing | null
+  listing: ListingDTO | null
 }
 
 export function TradePanel({ listing }: Props) {
-  if (!listing) {
-    return <div>No listing</div>
-  }
-
   // UI elements
   const [previewSrc, setPreviewSrc] = useState<string>('/placeholders/token-waiting.svg')
 
   // collection bid feature
   const [showNFTSelectModal, setShowNFTSelectModal] = useState<boolean>(false)
-  const [cbTokenId, setCbTokenId] = useState<bigint | undefined>(undefined)
+  const [tokenIdCb, setTokenIdCb] = useState<bigint | undefined>(undefined)
 
   // chain interaction stuff
-  const { simulation, execution } = useFillOrder(listing.rawOrder, cbTokenId)
+  const { simulation, execution } = useFillOrder(listing?.rawOrder, tokenIdCb)
 
-  const { data: tokenURI, isLoading } = useTokenURI({
-    chainId: listing.chainId,
-    address: listing.collectionMeta!.address,
-    tokenId: BigInt(listing.tokenId),
-  })
+  const { data: tokenURI, isLoading } = useTokenURI(
+    listing
+      ? {
+          chainId: listing.chainId,
+          address: listing.collectionMeta!.address,
+          tokenId: BigInt(listing.tokenId),
+        }
+      : undefined
+  )
 
-  // effect on
   useEffect(() => {
     if (!tokenURI) return
 
@@ -50,9 +49,14 @@ export function TradePanel({ listing }: Props) {
     if (listing.isCollectionBid) {
       setShowNFTSelectModal(true)
     } else {
-      // execute fill
+      execution.fill()
     }
   }
+
+  if (!listing) {
+    return <div>No listing</div>
+  }
+
   return (
     <div className="flex flex-col gap-3 h-full">
       {/* preview */}
@@ -87,7 +91,6 @@ export function TradePanel({ listing }: Props) {
       <ListingDetails listing={listing} />
 
       {/* MODAL */}
-
       <Modal isOpen={showNFTSelectModal} onClose={() => setShowNFTSelectModal(false)}>
         <div className="flex flex-col gap-2 w-[300px] max-w-[600px]">
           <NFTSelectForm
@@ -98,7 +101,7 @@ export function TradePanel({ listing }: Props) {
               checking: simulation.checking,
               error: simulation.error,
             }}
-            onValidate={(tid: bigint) => setCbTokenId(tid)}
+            onValidate={(tid: bigint) => setTokenIdCb(tid)}
             onConfirm={() => {
               execution.fill()
               setShowNFTSelectModal(false)

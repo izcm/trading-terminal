@@ -4,7 +4,7 @@ import { use, useEffect, useState } from 'react'
 import { Plus } from 'lucide-react'
 
 import { ListingRow, TopCollectionRow } from '@/components/molecules'
-import { TopNFTCollection, Listing } from '@/domain/types'
+import { TopNFTCollection, ListingDTO } from '@/domain/types'
 import { Result } from '@/lib/utils/http'
 import { getListings, PaginatedListings } from '@/lib/dmrkt-indexer/actions/listings.get'
 import { CreateOrderForm } from '@/components/organisms/CreateOrderForm'
@@ -13,7 +13,7 @@ import { ArrowList, ArrowRow, Modal } from '@/components/atoms'
 
 type Props = {
   collections: TopNFTCollection[]
-  initialListings: Promise<Result<PaginatedListings>>
+  initialData: Promise<Result<PaginatedListings>>
 }
 
 type OrderUIState = {
@@ -24,18 +24,15 @@ type OrderUIState = {
   error?: string
 }
 
-export function Feed({ collections, initialListings }: Props) {
-  const initial = use(initialListings)
+export function Feed({ collections, initialData }: Props) {
+  const initial = use(initialData)
 
-  if (!initial.ok) {
-    return <div className="card">failed to load sales 💀</div>
-  }
+  const data = initial.ok ? initial.data : { items: [], nextCursor: null }
 
-  const [nextCursor, setNextCursor] = useState<string | null>(initial.data.nextCursor)
-  const [activeIndex, setActiveIndex] = useState(0)
+  const [nextCursor, setNextCursor] = useState<string | null>(data.nextCursor)
 
-  const [listings, setListings] = useState<Listing[]>(initial.data.items)
-  const [selected, setSelected] = useState<Listing>(initial.data.items[0])
+  const [listings, setListings] = useState<ListingDTO[]>(data.items)
+  const [selected, setSelected] = useState<ListingDTO>(data.items[0])
 
   const [showNewForm, setShowNewForm] = useState(false)
 
@@ -43,7 +40,7 @@ export function Feed({ collections, initialListings }: Props) {
     if (!nextCursor) return
 
     const fetchMore = async () => {
-      const res = await getListings('limit=50&status=active')
+      const res = await getListings('limit=50')
       if (res.ok) {
         const { nextCursor, items } = res.data
 
@@ -51,8 +48,13 @@ export function Feed({ collections, initialListings }: Props) {
         setListings(prev => [...prev, ...items])
       }
     }
+
     fetchMore()
   }, [nextCursor])
+
+  if (!initial.ok) {
+    return <div className="card">failed to load sales 💀</div>
+  }
 
   return (
     <div className="h-full flex flex-col gap-4">
@@ -74,12 +76,14 @@ export function Feed({ collections, initialListings }: Props) {
             getId={c => `${c.chainId}:${c.address}`}
             selectedId={selected.id}
             onSelect={() => alert('hello')}
+            className="shrink-0"
           >
             {({ item, isSelected, onSelect }) => (
               <ArrowRow
                 key={`${item.chainId}:${item.address}`}
                 isSelected={isSelected}
                 onSelect={onSelect}
+                className="p-1"
               >
                 <TopCollectionRow collection={item} />
               </ArrowRow>
@@ -91,10 +95,14 @@ export function Feed({ collections, initialListings }: Props) {
             getId={l => l.id}
             selectedId={selected.id}
             onSelect={setSelected}
-            className="card flex-1 overflow-y-auto no-scrollbar"
           >
             {({ item, isSelected, onSelect }) => (
-              <ArrowRow key={item.id} isSelected={isSelected} onSelect={onSelect}>
+              <ArrowRow
+                key={item.id}
+                isSelected={isSelected}
+                onSelect={onSelect}
+                className="gap-4 p-2"
+              >
                 <ListingRow listing={item} />
               </ArrowRow>
             )}

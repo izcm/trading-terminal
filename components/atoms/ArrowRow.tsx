@@ -16,7 +16,7 @@ export function ArrowRow({ isSelected, onSelect, children, className = '' }: Arr
     }
   }, [isSelected])
 
-  const base = 'w-full base-row gap-4 p-2 rounded-md transition'
+  const base = 'w-full base-row rounded-md transition'
   const interactive = isSelected ? 'bg-white/5' : 'hover:bg-white/5'
 
   return (

@@ -20,12 +20,10 @@ type ShowReceiptState = { show: false } | { show: true; sale: Sale }
 export function SalesAnalytics({ initialData }: { initialData: Promise<Result<PaginatedSales>> }) {
   const initial = use(initialData)
 
-  if (!initial.ok) {
-    return <div className="card">failed to load sales 💀</div>
-  }
+  const data = initial.ok ? initial.data : { items: [], nextCursor: null }
 
-  const [sales, setSales] = useState<Sale[]>(initial.data.items)
-  const [nextCursor, setNextCursor] = useState<string | null>(initial.data.nextCursor)
+  const [sales, setSales] = useState<Sale[]>(data.items)
+  const [nextCursor, setNextCursor] = useState<string | null>(data.nextCursor)
   const [filters, setFilters] = useState<{
     collection: Hex | null
     actor: Hex | null
@@ -41,7 +39,7 @@ export function SalesAnalytics({ initialData }: { initialData: Promise<Result<Pa
 
   // tx onclick opens receipt-modal
   const [showReceipt, setShowReceipt] = useState<ShowReceiptState>({ show: false })
-  const [selectedSale, setSelectedSale] = useState<Sale | null>(initial.data.items[0] ?? null)
+  const [selectedSale, setSelectedSale] = useState<Sale | null>(data.items[0] ?? null)
 
   useEffect(() => {
     if (!nextCursor) return
@@ -121,6 +119,10 @@ export function SalesAnalytics({ initialData }: { initialData: Promise<Result<Pa
 
   const totalVolume = filteredSales.reduce((sum, sale) => sum + BigInt(sale.price), 0n)
 
+  if (!initial.ok) {
+    return <div className="card">failed to load sales 💀</div>
+  }
+
   return (
     <div className="h-full flex flex-col gap-4">
       <div className="flex items-center justify-evenly">
@@ -156,6 +158,7 @@ export function SalesAnalytics({ initialData }: { initialData: Promise<Result<Pa
                 selectRow()
                 setShowReceipt({ show: true, sale: item })
               }}
+              className="flex justify-between px-4 min-h-14"
             >
               <SettlementRow sale={item} />
             </ArrowRow>

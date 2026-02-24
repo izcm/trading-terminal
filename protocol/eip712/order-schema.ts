@@ -1,13 +1,4 @@
-const contract_addr = process.env.ORDERBOOK_CONTRACT_ADDR
-
-export const domain = {
-  name: 'dmrkt',
-  version: '0',
-  chainId: 31337,
-  verifyingContract: contract_addr as `0x${string}`,
-}
-
-export const fields = [
+export const orderFields = [
   { name: 'side', type: 'uint8' },
   { name: 'actor', type: 'address' },
   { name: 'isCollectionBid', type: 'bool' },
@@ -18,4 +9,8 @@ export const fields = [
   { name: 'start', type: 'uint64' },
   { name: 'end', type: 'uint64' },
   { name: 'nonce', type: 'uint256' },
-]
+] as const
+
+export const eip712Types = {
+  Order: orderFields,
+} as const

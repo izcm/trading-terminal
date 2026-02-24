@@ -1,11 +1,9 @@
 import { Result } from '@/lib/utils/http'
 
-import { settlementDocToSale } from '../types/settlement'
-
-import type { SettlementDoc } from '../types/settlement'
-import type { Sale } from '@/domain/types/sale'
-
+import { SettlementDoc, settlementDocToSale } from '../types/settlement'
 import { DMRKT_INDEXER_BASE_URL as baseUrl } from '../constants'
+
+import type { Sale } from '@/domain/types/sale'
 
 export type PaginatedSales = {
   items: Sale[]

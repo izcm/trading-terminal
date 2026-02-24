@@ -1,10 +1,10 @@
 import { Result } from '@/lib/utils/http'
-import { Listing } from '@/domain/types/listing'
+import { ListingDTO } from '@/lib/dmrkt-indexer/types/listing'
 
 import { DMRKT_INDEXER_BASE_URL as baseUrl } from '../constants'
 
 export type PaginatedListings = {
-  items: Listing[]
+  items: ListingDTO[]
   nextCursor: string | null
 }
 export async function getListings(query = 'limit=50'): Promise<Result<PaginatedListings>> {

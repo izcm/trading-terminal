@@ -16,7 +16,7 @@ type Props = {
   validation: {
     canConfirm: boolean
     checking: boolean
-    error: string
+    error: string | undefined
   }
   onValidate: (tokenId: bigint) => void
   onConfirm: () => void
@@ -42,10 +42,9 @@ export function NFTSelectForm({ chainId, collection, validation, onValidate, onC
 
   const saneInput = (input: string) => /^\d+$/.test(input)
 
-  //   const inputError =
-  //   tokenIdInput.length === 0 ? '' : saneInput(tokenIdInput) ? '' : 'digits only'
+  const inputError = tokenIdInput.length === 0 ? '' : saneInput(tokenIdInput) ? '' : 'digits only'
 
-  // const uiError = inputError || validation.error
+  const uiError = inputError || validation.error
 
   const handleValidate = (tidStr: string) => {
     if (!saneInput(tidStr)) return // sanity check
@@ -68,6 +67,8 @@ export function NFTSelectForm({ chainId, collection, validation, onValidate, onC
           check
         </button>
       </div>
+      <span>{uiError}</span>
+      <span>{validation.checking}</span>
 
       <NFTSummary image={tokenURI && getImageFromTokenURI(tokenURI)} />
 

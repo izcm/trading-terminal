@@ -1,9 +1,9 @@
 'use client'
 
-import { Listing } from '@/domain/types/listing'
-import { formatEth2 } from '@/lib/utils/format'
+import { ListingDTO } from '@/lib/dmrkt-indexer/types/listing'
+import { formatEth2, shortAddr } from '@/lib/utils/format'
 
-export function ListingRow({ listing }: { listing: Listing }) {
+export function ListingRow({ listing }: { listing: ListingDTO }) {
   const isAsk = listing.type === 'ask'
   const isCb = !isAsk && listing.isCollectionBid
 
@@ -59,17 +59,13 @@ export function ListingRow({ listing }: { listing: Listing }) {
           )}
         </span>
 
-        <span className="text-xs text-muted">
-          {listing.actor.slice(0, 6)}...{listing.actor.slice(-4)}
-        </span>
+        <span className="text-xs text-muted">{shortAddr(listing.actor)}</span>
       </div>
 
       {/* price */}
       <div className="flex flex-col items-end leading-tight">
         <span className="text-sm font-semibold">{formatEth2(BigInt(listing.price))} ETH</span>
-        <span className="text-xs text-muted">
-          {listing.currency.slice(0, 6)}...{listing.currency.slice(-4)}
-        </span>
+        <span className="text-xs text-muted">{shortAddr(listing.currency)}</span>
       </div>
     </>
   )
