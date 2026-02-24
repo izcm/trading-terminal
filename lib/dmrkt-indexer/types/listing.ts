@@ -1,7 +1,6 @@
-import { Hex } from 'viem'
-import { Order } from '@/protocol/eip712'
-import { NFTCollection } from './nft-collection'
-
+import type { Hex } from 'viem'
+import type { Order } from '@/protocol/eip712'
+import type { NFTCollection } from './nft-collection'
 export type ListingDTO = {
   id: string
   chainId: number

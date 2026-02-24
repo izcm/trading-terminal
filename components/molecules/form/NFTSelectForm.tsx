@@ -1,4 +1,4 @@
-import { Hex } from 'viem'
+import type { Hex } from 'viem'
 import { useEffect, useState } from 'react'
 
 import { TextInput } from '@/components/atoms'

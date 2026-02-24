@@ -1,10 +1,12 @@
 import { useMemo } from 'react'
-import { Abi, Hex, ContractFunctionExecutionError, ContractFunctionRevertedError } from 'viem'
+import { ContractFunctionExecutionError, ContractFunctionRevertedError } from 'viem'
+import type { Abi, Hex } from 'viem'
 import { useAccount, useSimulateContract, useWriteContract } from 'wagmi'
 import json from '@a2zb/packages/abis/dmrkt/OrderEngine.json'
 
 import { ORDERBOOK_ERROR_MESSAGES as ERRORS } from '../error/errors'
-import { Order, toOrder712 } from '@/protocol/eip712'
+import { toOrder712 } from '@/protocol/eip712'
+import type { Order } from '@/protocol/eip712'
 import { ozErc721Errors } from '../../abis/oz-erc721'
 
 const settleAbi = [...(json.abi as Abi), ...ozErc721Errors] as Abi

@@ -5,7 +5,7 @@ import { Search, ChartArea } from 'lucide-react'
 
 import { NFTGallery } from '@/components/organisms/browse/NFTGallery'
 import { TextInput } from '@/components/atoms'
-import { NFTCollection, NFT } from '@/domain/types'
+import type { NFTCollection, NFT } from '@/domain/types'
 import { NFTCollectionBanner } from '@/components/molecules/cards/CollectionBanner'
 
 interface CollectionViewProps {

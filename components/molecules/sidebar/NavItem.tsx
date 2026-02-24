@@ -1,5 +1,4 @@
-import { ReactNode } from 'react'
-
+import type { ReactNode } from 'react'
 type NavItemProps = {
   active?: boolean
   children: ReactNode

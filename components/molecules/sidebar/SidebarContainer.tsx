@@ -1,7 +1,6 @@
 'use client'
 
-import { ReactNode } from 'react'
-
+import type { ReactNode } from 'react'
 type SidebarContainerProps = {
   children: ReactNode
 }

@@ -1,6 +1,5 @@
-import { Hex } from 'viem'
-import { Sale } from '@/domain/types'
-
+import type { Hex } from 'viem'
+import type { Sale } from '@/domain/types'
 export type SettlementDoc = {
   _id: string
 

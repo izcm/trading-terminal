@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { CreditCard, Layers } from 'lucide-react'
 
 import { ListingDetails } from './ListingDetails'
-import { ListingDTO } from '@/lib/dmrkt-indexer/types/listing'
+import type { ListingDTO } from '@/lib/dmrkt-indexer/types/listing'
 import { useTokenURI, useFillOrder } from '@/lib/blockchain'
 import { getImageFromTokenURI } from '@/lib/utils/image'
 import { Modal } from '@/components/atoms'

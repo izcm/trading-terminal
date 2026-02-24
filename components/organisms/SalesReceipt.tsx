@@ -1,4 +1,4 @@
-import { Sale } from '@/domain/types'
+import type { Sale } from '@/domain/types'
 import { formatEth2 } from '@/lib/utils/format'
 
 type Props = {

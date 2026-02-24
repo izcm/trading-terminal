@@ -1,5 +1,5 @@
-import { ReactNode, useEffect, useRef } from 'react'
-
+import { useEffect, useRef } from 'react'
+import type { ReactNode } from 'react'
 type ArrowRowProps = {
   isSelected: boolean
   onSelect: () => void

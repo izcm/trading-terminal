@@ -1,6 +1,6 @@
 'use client'
 
-import { ListingDTO } from '@/lib/dmrkt-indexer/types/listing'
+import type { ListingDTO } from '@/lib/dmrkt-indexer/types/listing'
 import { formatTsUTC, shortAddr } from '@/lib/utils/format'
 
 type Props = {

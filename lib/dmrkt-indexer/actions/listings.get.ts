@@ -1,6 +1,5 @@
-import { Result } from '@/lib/utils/http'
-import { ListingDTO } from '@/lib/dmrkt-indexer/types/listing'
-
+import type { Result } from '@/lib/utils/http'
+import type { ListingDTO } from '@/lib/dmrkt-indexer/types/listing'
 import { DMRKT_INDEXER_BASE_URL as baseUrl } from '../constants'
 
 export type PaginatedListings = {

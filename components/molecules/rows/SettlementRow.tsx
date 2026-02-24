@@ -1,6 +1,6 @@
 'use client'
 
-import { Sale } from '@/domain/types/sale'
+import type { Sale } from '@/domain/types/sale'
 import { formatEth2, formatTsUTC, shortAddr } from '@/lib/utils/format'
 import { Stat } from '../Stat'
 

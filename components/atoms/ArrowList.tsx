@@ -1,5 +1,4 @@
-import { ReactNode } from 'react'
-
+import type { ReactNode } from 'react'
 type ArrowListProps<T> = {
   items: T[]
   getId: (item: T) => string

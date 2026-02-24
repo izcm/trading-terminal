@@ -1,6 +1,6 @@
 'use client'
 
-import { ListingDTO } from '@/lib/dmrkt-indexer/types/listing'
+import type { ListingDTO } from '@/lib/dmrkt-indexer/types/listing'
 import { formatEth2, shortAddr } from '@/lib/utils/format'
 
 export function ListingRow({ listing }: { listing: ListingDTO }) {
