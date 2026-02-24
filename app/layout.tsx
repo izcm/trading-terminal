@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 
 import './globals.css'
 
-import { Providers } from './providers/Providers'
 import AppShell from './AppShell'
+import { Providers } from './providers/Providers'
 
 export const metadata: Metadata = {
   title: 'Create Next App',

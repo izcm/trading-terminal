@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react'
 import { CreditCard, Layers } from 'lucide-react'
+import { useEffect, useState } from 'react'
 
-import { ListingDetails } from './ListingDetails'
-import type { ListingDTO } from '@/lib/dmrkt-indexer/types/listing'
-import { useTokenURI, useFillOrder } from '@/lib/blockchain'
-import { getImageFromTokenURI } from '@/lib/utils/image'
 import { Modal } from '@/components/atoms'
 import { NFTSelectForm } from '@/components/molecules'
+import { useFillOrder, useTokenURI } from '@/lib/blockchain'
+import type { ListingDTO } from '@/lib/dmrkt-indexer/types/listing'
+import { getImageFromTokenURI } from '@/lib/utils/image'
+import { ListingDetails } from './ListingDetails'
 
 type Props = {
   listing: ListingDTO | null

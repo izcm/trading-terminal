@@ -2,9 +2,9 @@
 
 import dynamic from 'next/dynamic'
 
-import { WagmiProvider } from 'wagmi'
 import { config } from '@/blockchain/config/wagmi'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { WagmiProvider } from 'wagmi'
 
 const WalletProvider = dynamic(() => import('./WalletProvider'), {
   ssr: false,

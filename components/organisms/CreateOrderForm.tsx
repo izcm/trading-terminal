@@ -6,8 +6,8 @@ import { useAccount, useSignTypedData } from 'wagmi'
 import { parseEther } from 'viem'
 
 // local
-import { domain, orderFields } from '@/protocol/eip712'
 import { FormSelect } from '@/components/molecules/form/FormSelect'
+import { domain, orderFields } from '@/protocol/eip712'
 
 import { DURATIONS } from '../../domain/constants/durations'
 

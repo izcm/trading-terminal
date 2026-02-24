@@ -1,11 +1,11 @@
+import { useState } from 'react'
 import type { Hex } from 'viem'
-import { useEffect, useState } from 'react'
 
 import { TextInput } from '@/components/atoms'
 import { useTokenURI } from '@/lib/blockchain'
+import { shortAddr } from '@/lib/utils/format'
 import { getImageFromTokenURI } from '@/lib/utils/image'
 import { NFTSummary } from '../cards/NFTSummary'
-import { shortAddr } from '@/lib/utils/format'
 
 type Props = {
   chainId: number

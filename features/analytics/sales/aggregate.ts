@@ -1,6 +1,6 @@
 import type { Sale } from '@/domain/types'
-import { timeKey } from '@/lib/utils/format/time'
 import type { TimeUnit } from '@/lib/utils/format/time'
+import { timeKey } from '@/lib/utils/format/time'
 import type { Hex } from 'viem'
 export type Metrics = {
   count: number

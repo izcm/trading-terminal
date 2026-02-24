@@ -3,9 +3,8 @@
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 
-import { Newspaper, LayoutGrid, ChartArea } from 'lucide-react'
-import { Providers } from './providers/Providers'
-import { SidebarContainer, NavItem } from '@/components/molecules'
+import { NavItem, SidebarContainer } from '@/components/molecules'
+import { ChartArea, LayoutGrid, Newspaper } from 'lucide-react'
 
 const Header = dynamic(() => import('@/components/organisms/Header').then(m => m.Header), {
   ssr: false,

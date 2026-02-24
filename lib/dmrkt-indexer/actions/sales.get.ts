@@ -1,7 +1,7 @@
 import type { Result } from '@/lib/utils/http'
-import { settlementDocToSale } from '../types/settlement'
-import type { SettlementDoc } from '../types/settlement'
 import { DMRKT_INDEXER_BASE_URL as baseUrl } from '../constants'
+import type { SettlementDoc } from '../types/settlement'
+import { settlementDocToSale } from '../types/settlement'
 
 import type { Sale } from '@/domain/types/sale'
 

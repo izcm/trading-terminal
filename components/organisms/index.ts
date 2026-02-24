@@ -1,2 +1,2 @@
 // DO NOT export header (RainbowKit)
-export * from './analytics/Analytics'
+export * from './analytics/Analytics';

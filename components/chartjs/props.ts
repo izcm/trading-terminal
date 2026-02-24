@@ -1,4 +1,4 @@
-import type { ChartData, ChartDataset } from 'chart.js'
+import type { ChartDataset } from 'chart.js'
 const purpleShades = [
   'rgba(99, 107, 255, 0.32)',
   'rgba(109, 117, 255, 0.24)',

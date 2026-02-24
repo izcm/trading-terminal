@@ -1,6 +1,6 @@
-import { DMRKT_INDEXER_BASE_URL as baseUrl } from '@/lib/dmrkt-indexer/constants'
 import { Feed } from '@/components/organisms/Feed'
 import { getListings } from '@/lib/dmrkt-indexer/actions/listings.get'
+import { DMRKT_INDEXER_BASE_URL as baseUrl } from '@/lib/dmrkt-indexer/constants'
 
 export default async function ExplorePage() {
   const res = await fetch(`${baseUrl}/api/nft-collections/top?chainId=31337&limit=3`, {

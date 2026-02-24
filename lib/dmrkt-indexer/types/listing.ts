@@ -1,5 +1,5 @@
-import type { Hex } from 'viem'
 import type { Order } from '@/protocol/eip712'
+import type { Hex } from 'viem'
 import type { NFTCollection } from './nft-collection'
 export type ListingDTO = {
   id: string

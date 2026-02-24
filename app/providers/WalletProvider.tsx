@@ -1,9 +1,9 @@
 'use client'
 
-import { WagmiProvider } from 'wagmi'
-import { RainbowKitProvider, midnightTheme } from '@rainbow-me/rainbowkit'
 import { config } from '@/blockchain/config/wagmi'
+import { midnightTheme, RainbowKitProvider } from '@rainbow-me/rainbowkit'
 import '@rainbow-me/rainbowkit/styles.css'
+import { WagmiProvider } from 'wagmi'
 
 const CYBER_VOID = {
   accent: '#6d75ff',

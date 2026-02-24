@@ -1,12 +1,12 @@
 'use client'
-import { useState } from 'react'
+import { ChartArea, Search } from 'lucide-react'
 import Link from 'next/link'
-import { Search, ChartArea } from 'lucide-react'
+import { useState } from 'react'
 
-import { NFTGallery } from '@/components/organisms/browse/NFTGallery'
 import { TextInput } from '@/components/atoms'
-import type { NFTCollection, NFT } from '@/domain/types'
 import { NFTCollectionBanner } from '@/components/molecules/cards/CollectionBanner'
+import { NFTGallery } from '@/components/organisms/browse/NFTGallery'
+import type { NFT, NFTCollection } from '@/domain/types'
 
 interface CollectionViewProps {
   collection: NFTCollection

@@ -1,4 +1,3 @@
-import Link from 'next/link'
 
 import { getSales } from '@/lib/dmrkt-indexer/actions/sales.get'
 

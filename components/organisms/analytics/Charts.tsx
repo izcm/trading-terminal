@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 
+import { BaseChart } from '@/components/chartjs/BaseChart'
+import { createDataset } from '@/components/chartjs/props'
 import type { Sale } from '@/domain/types'
 import type { aggregateSales } from '@/features/analytics/sales'
-import { timeKey, weiToChartNumber } from '@/lib/utils/format'
 import type { TimeUnit } from '@/lib/utils/format'
-import { createDataset } from '@/components/chartjs/props'
-import { BaseChart } from '@/components/chartjs/BaseChart'
+import { timeKey, weiToChartNumber } from '@/lib/utils/format'
 
 type AnalyticsChartProps = {
   analytics: ReturnType<typeof aggregateSales>
