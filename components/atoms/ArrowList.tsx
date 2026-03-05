@@ -1,8 +1,9 @@
 import type { ReactNode } from 'react'
+
 type ArrowListProps<T> = {
   items: T[]
   getId: (item: T) => string
-  selectedId: string | null
+  selectedId: string | undefined
   onSelect: (item: T) => void
   children: (args: { item: T; isSelected: boolean; onSelect: () => void }) => ReactNode
   className?: string
@@ -39,7 +40,8 @@ export function ArrowList<T>({
         if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return
         e.preventDefault()
 
-        const index = items.findIndex(it => getId(it) === selectedId)
+        const index = selectedId === undefined ? 0 : items.findIndex(it => getId(it) === selectedId)
+
         if (index === -1) return
 
         let next = index

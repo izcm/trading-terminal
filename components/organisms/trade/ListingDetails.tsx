@@ -1,15 +1,15 @@
 'use client'
 
-import type { ListingDTO } from '@/lib/dmrkt-indexer/types/listing'
+import type { Listing } from '@/lib/dmrkt-indexer/types/listing'
 import { formatTsUTC, shortAddr } from '@/lib/utils/format'
 
 type Props = {
-  listing: ListingDTO | null
+  listing: Listing | null
 }
 
 type DetailField = {
   label: string
-  getValue: (listing: ListingDTO) => string
+  getValue: (listing: Listing) => string
   className?: string
 }
 
@@ -65,7 +65,7 @@ export function ListingDetails({ listing }: Props) {
     return <div className="card h-full p-4 text-sm">select a listing ✨</div>
   }
 
-  const collection = listing.collectionMeta?.name ?? 'unknown collection'
+  const collection = listing.nftCollection?.name ?? 'unknown collection'
 
   return (
     <div

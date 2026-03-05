@@ -1,13 +1,13 @@
 'use client'
 
-import type { ListingDTO } from '@/lib/dmrkt-indexer/types/listing'
+import type { Listing } from '@/lib/dmrkt-indexer/types/listing'
 import { formatEth2, shortAddr } from '@/lib/utils/format'
 
-export function ListingRow({ listing }: { listing: ListingDTO }) {
+export function ListingRow({ listing }: { listing: Listing }) {
   const isAsk = listing.type === 'ask'
   const isCb = !isAsk && listing.isCollectionBid
 
-  const collection = listing.collectionMeta ?? { name: 'unknown', symbol: 'unknown' }
+  const collection = listing.nftCollection ?? { name: 'unknown', symbol: 'unknown' }
 
   return (
     <>

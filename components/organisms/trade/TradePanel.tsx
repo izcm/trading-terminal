@@ -4,12 +4,12 @@ import { useEffect, useState } from 'react'
 import { Modal } from '@/components/atoms'
 import { NFTSelectForm } from '@/components/molecules'
 import { useFillOrder, useTokenURI } from '@/lib/blockchain'
-import type { ListingDTO } from '@/lib/dmrkt-indexer/types/listing'
+import type { Listing } from '@/lib/dmrkt-indexer/types/listing'
 import { getImageFromTokenURI } from '@/lib/utils/image'
 import { ListingDetails } from './ListingDetails'
 
 type Props = {
-  listing: ListingDTO | null
+  listing: Listing | null
 }
 
 export function TradePanel({ listing }: Props) {
@@ -27,7 +27,7 @@ export function TradePanel({ listing }: Props) {
     listing
       ? {
           chainId: listing.chainId,
-          address: listing.collectionMeta!.address,
+          address: listing.nftCollection!.address,
           tokenId: BigInt(listing.tokenId),
         }
       : undefined
@@ -95,7 +95,7 @@ export function TradePanel({ listing }: Props) {
         <div className="flex flex-col gap-2 w-[300px] max-w-[600px]">
           <NFTSelectForm
             chainId={listing.chainId}
-            collection={{ address: listing.collection, symbol: listing.collectionMeta?.symbol }}
+            collection={{ address: listing.collection, symbol: listing.nftCollection?.symbol }}
             validation={{
               canConfirm: simulation.isFillable,
               checking: simulation.checking,

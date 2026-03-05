@@ -8,8 +8,7 @@ import { parseEther } from 'viem'
 // local
 import { FormSelect } from '@/components/molecules/form/FormSelect'
 import { domain, orderFields } from '@/protocol/eip712'
-
-import { DURATIONS } from '../../domain/constants/durations'
+import { DURATIONS } from '@/domain/constants/durations'
 
 const collectionAddr = '0x0000000000000000000000000000000000000000' as `0x${string}`
 const tokenAddr = '0x0000000000000000000000000000000000000000' as `0x${string}`

@@ -1,4 +1,4 @@
-import type { Result } from '@/lib/utils/http'
+import type { Result } from '@/lib/utils/result'
 import { DMRKT_INDEXER_BASE_URL as baseUrl } from '../constants'
 import type { SettlementDoc } from '../types/settlement'
 import { settlementDocToSale } from '../types/settlement'

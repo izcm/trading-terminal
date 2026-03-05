@@ -1,22 +1,24 @@
-import type { ListingDTO } from '@/lib/dmrkt-indexer/types/listing'
-import type { Result } from '@/lib/utils/http'
+import type { Listing } from '@/lib/dmrkt-indexer/types/listing'
+import type { Result } from '@/lib/utils/result'
 import { DMRKT_INDEXER_BASE_URL as baseUrl } from '../constants'
 
 export type PaginatedListings = {
-  items: ListingDTO[]
+  items: Listing[]
   nextCursor: string | null
 }
 export async function getListings(query = 'limit=50'): Promise<Result<PaginatedListings>> {
-  const url = `${baseUrl}/api/orders?${query}&include=collection`
+  const url = `${baseUrl}/api/orders?${query}&include=nftCollection`
 
   try {
     const res = await fetch(url)
     const data = await res.json()
 
+    const withId = (data.items as Listing[]).map(i => ({ ...i, id: `${i.chainId}:${i.orderHash}` }))
+
     return {
       ok: true,
       data: {
-        items: data.items,
+        items: withId,
         nextCursor: data.nextCursor,
       },
     }

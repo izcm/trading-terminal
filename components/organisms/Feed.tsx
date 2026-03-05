@@ -1,20 +1,22 @@
 'use client'
 
 import { Plus } from 'lucide-react'
-import { use, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
+
+import { getListings } from '@/lib/dmrkt-indexer/actions/listings.get'
+
+import { Listing, TopNFTCollection } from '@/domain/types'
+
+import { CreateOrderForm } from './trade/CreateOrderForm'
+import { TradePanel } from './trade/TradePanel'
 
 import { ArrowList, ArrowRow, Modal } from '@/components/atoms'
 import { ListingRow, TopCollectionRow } from '@/components/molecules'
-import { CreateOrderForm } from '@/components/organisms/CreateOrderForm'
-import type { ListingDTO, TopNFTCollection } from '@/domain/types'
-import type { PaginatedListings } from '@/lib/dmrkt-indexer/actions/listings.get'
-import { getListings } from '@/lib/dmrkt-indexer/actions/listings.get'
-import type { Result } from '@/lib/utils/http'
-import { TradePanel } from './tradepanel/TradePanel'
 
 type Props = {
   collections: TopNFTCollection[]
-  initialData: Promise<Result<PaginatedListings>>
+  initialListings: Listing[]
+  initialCursor: string | null
 }
 
 type OrderUIState = {
@@ -25,23 +27,23 @@ type OrderUIState = {
   error?: string
 }
 
-export function Feed({ collections, initialData }: Props) {
-  const initial = use(initialData)
+export function Feed({ collections, initialListings, initialCursor }: Props) {
+  const [nextCursor, setNextCursor] = useState<string | null>(initialCursor)
 
-  const data = initial.ok ? initial.data : { items: [], nextCursor: null }
-
-  const [nextCursor, setNextCursor] = useState<string | null>(data.nextCursor)
-
-  const [listings, setListings] = useState<ListingDTO[]>(data.items)
-  const [selected, setSelected] = useState<ListingDTO>(data.items[0])
+  const [listings, setListings] = useState<Listing[]>([])
+  const [selected, setSelected] = useState<Listing | null>(
+    initialListings.length ? initialListings[0] : null
+  )
 
   const [showNewForm, setShowNewForm] = useState(false)
 
+  // todo: make this on scroll...
   useEffect(() => {
     if (!nextCursor) return
 
     const fetchMore = async () => {
       const res = await getListings('limit=50')
+
       if (res.ok) {
         const { nextCursor, items } = res.data
 
@@ -52,10 +54,6 @@ export function Feed({ collections, initialData }: Props) {
 
     fetchMore()
   }, [nextCursor])
-
-  if (!initial.ok) {
-    return <div className="card">failed to load sales 💀</div>
-  }
 
   return (
     <div className="h-full flex flex-col gap-4">
@@ -75,7 +73,7 @@ export function Feed({ collections, initialData }: Props) {
           <ArrowList
             items={collections}
             getId={c => `${c.chainId}:${c.address}`}
-            selectedId={selected.id}
+            selectedId={undefined}
             onSelect={() => alert('hello')}
             className="shrink-0"
           >
@@ -93,8 +91,8 @@ export function Feed({ collections, initialData }: Props) {
 
           <ArrowList
             items={listings}
-            getId={l => l.id}
-            selectedId={selected.id}
+            getId={l => `${l.id}`}
+            selectedId={selected?.id}
             onSelect={setSelected}
           >
             {({ item, isSelected, onSelect }) => (
