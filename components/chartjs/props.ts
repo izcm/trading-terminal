@@ -19,7 +19,6 @@ export type CoreChartProps = {
 }
 
 export const defaultOptions = {
-  maintainAspectRatio: false,
   responsive: true,
 
   plugins: {

@@ -17,9 +17,9 @@ const navItems = [
     href: '/',
   },
   {
-    title: 'analytics',
+    title: 'chain activity',
     icon: ChartArea,
-    href: '/analytics',
+    href: '/chain-activity',
   },
   {
     title: 'collections',

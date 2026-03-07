@@ -2,9 +2,12 @@ import { useMemo } from 'react'
 
 import { BaseChart } from '@/components/chartjs/BaseChart'
 import { createDataset } from '@/components/chartjs/props'
-import type { Sale } from '@/domain'
+
+import type { Sale } from '@/domain/sale'
+
 import type { aggregateSales } from '@/features/analytics/sales'
 import type { TimeUnit } from '@/lib/utils/format'
+
 import { timeKey, weiToChartNumber } from '@/lib/utils/format'
 
 type AnalyticsChartProps = {
@@ -13,7 +16,7 @@ type AnalyticsChartProps = {
   timeUnit: TimeUnit
 }
 
-export function HomeCharts({ analytics, sales, timeUnit }: AnalyticsChartProps) {
+export function Chart({ analytics, sales, timeUnit }: AnalyticsChartProps) {
   const epochKeys = useMemo(() => Array.from(analytics.byEpoch.keys()), [sales])
 
   const cumulativeVolume = useMemo(() => {
@@ -41,17 +44,17 @@ export function HomeCharts({ analytics, sales, timeUnit }: AnalyticsChartProps) 
   }, [epochKeys, sales])
 
   return (
+    // <div className="flex w-full gap-4 h-[250px]">
+    //   <div className="basis-1/2 card">
+    //     <BaseChart
+    //       type={'line'}
+    //       labels={epochKeys}
+    //       datasets={[createDataset('line', cumulativeVolume)]}
+    //     />
+    //   </div>
     <>
-      <div className="basis-1/2 card">
-        <BaseChart
-          type={'line'}
-          labels={epochKeys}
-          datasets={[createDataset('line', cumulativeVolume)]}
-        />
-      </div>
-      <div className="basis-1/2 card">
-        <BaseChart type={'bar'} labels={epochKeys} datasets={volumeBarDatasets} />
-      </div>
+      <BaseChart type={'bar'} labels={epochKeys} datasets={volumeBarDatasets} />
     </>
+    // </div>
   )
 }

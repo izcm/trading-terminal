@@ -5,7 +5,9 @@ import { useEffect, useState } from 'react'
 
 import { getListings } from '@/lib/dmrkt-indexer/actions/listings.get'
 
-import { Listing, TopNFTCollection } from '@/domain'
+// todo: make some new object do decouple from indexer
+import { Listing } from '@/lib/dmrkt-indexer/types/listing'
+import { TopNFTCollection } from '@/lib/dmrkt-indexer/types/nft-collection'
 
 import { CreateOrderForm } from './trade/CreateOrderForm'
 import { TradePanel } from './trade/TradePanel'
@@ -68,18 +70,13 @@ export function Feed({ collections, initialListings, initialCursor }: Props) {
           {/* collections */}
           <ArrowList
             items={collections}
-            getId={c => `${c.chainId}:${c.address}`}
+            getId={c => c.id}
             selectedId={undefined}
             onSelect={() => alert('hello')}
             className="shrink-0"
           >
             {({ item, isSelected, onSelect }) => (
-              <ArrowRow
-                key={`${item.chainId}:${item.address}`}
-                isSelected={isSelected}
-                onSelect={onSelect}
-                className="p-1"
-              >
+              <ArrowRow key={item.id} isSelected={isSelected} onSelect={onSelect} className="p-1">
                 <TopCollectionRow collection={item} />
               </ArrowRow>
             )}
@@ -87,7 +84,7 @@ export function Feed({ collections, initialListings, initialCursor }: Props) {
 
           <ArrowList
             items={listings}
-            getId={l => `${l.id}`}
+            getId={l => l.id}
             selectedId={selected?.id}
             onSelect={setSelected}
           >

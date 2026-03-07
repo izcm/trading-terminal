@@ -1,47 +1,26 @@
+import { useState } from 'react'
 import { CreditCard, Layers } from 'lucide-react'
-import { useEffect, useState } from 'react'
+
+import { useFillOrder } from '@/lib/blockchain'
+import type { Listing } from '@/lib/dmrkt-indexer/types/listing'
 
 import { Modal } from '@/components/atoms'
 import { NFTSelectForm } from '@/components/molecules'
-import { useFillOrder, useTokenURI } from '@/lib/blockchain'
-import type { Listing } from '@/lib/dmrkt-indexer/types/listing'
-import { getImageFromTokenURI } from '@/lib/utils/image'
+
 import { ListingDetails } from './ListingDetails'
+import { NFTSummary } from '../shared/NFTSummary'
 
 type Props = {
   listing: Listing | null
 }
 
 export function TradePanel({ listing }: Props) {
-  // UI elements
-  const [previewSrc, setPreviewSrc] = useState<string>('/placeholders/token-waiting.svg')
-
   // collection bid feature
   const [showNFTSelectModal, setShowNFTSelectModal] = useState<boolean>(false)
   const [tokenIdCb, setTokenIdCb] = useState<bigint | undefined>(undefined)
 
   // chain interaction stuff
   const { simulation, execution } = useFillOrder(listing?.rawOrder, tokenIdCb)
-
-  const { data: tokenURI, isLoading } = useTokenURI(
-    listing
-      ? {
-          chainId: listing.chainId,
-          address: listing.nftCollection!.address,
-          tokenId: BigInt(listing.tokenId),
-        }
-      : undefined
-  )
-
-  useEffect(() => {
-    if (!tokenURI) return
-
-    const preview = async () => {
-      const image = getImageFromTokenURI(tokenURI)
-      setPreviewSrc(image)
-    }
-    preview()
-  }, [tokenURI])
 
   const handlePrimaryAction = () => {
     if (!listing) return
@@ -60,8 +39,12 @@ export function TradePanel({ listing }: Props) {
   return (
     <div className="flex flex-col gap-3 h-full">
       {/* preview */}
-      <div className="card shrink-0 flex justify-center overflow-hidden">
-        <img src={previewSrc} className="w-full object-cover" alt="token preview" />
+      <div className="h-1/3 card">
+        <NFTSummary
+          chainId={listing.chainId}
+          address={listing.collection}
+          tokenId={listing.tokenId}
+        />
       </div>
       <div className="flex flex-col gap-2 my-1">
         <button

@@ -24,8 +24,7 @@
       "@/app/*": ["app/*"],
       "@/utils/*": ["lib/utils/*"],
       "@/blockchain/*": ["lib/blockchain/*"],
-      "@/mongodb/*": ["lib/mongodb/*"],
-      "@/data/*": ["domain/*"]
+      "@/domain/*": ["domain/*"]
     }
   },
   "include": [

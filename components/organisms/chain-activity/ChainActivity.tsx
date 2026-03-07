@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import 'chart.js/auto'
 
@@ -8,17 +8,17 @@ import type { Sale } from '@/domain/sale'
 import { aggregateSales, floor } from '@/features/analytics/sales'
 
 import { formatEth2, shortAddr, type TimeUnit } from '@/lib/utils/format'
-import { topNBy } from '@/lib/utils/analytics/topN'
 
 import { ArrowList, ArrowRow, Modal } from '@/components/atoms'
 import { SettlementRow, Stat } from '@/components/molecules'
 
 import { SalesReceipt } from '../SalesReceipt'
-import { HomeCharts } from './Charts'
+import { Chart } from './Charts'
+import { NFTSummary } from '../shared/NFTSummary'
 
 type ShowReceiptState = { show: false } | { show: true; sale: Sale }
 
-export function SalesAnalytics({
+export function ChainActivity({
   initialSales,
   initialCursor,
 }: {
@@ -27,6 +27,10 @@ export function SalesAnalytics({
 }) {
   const [sales, setSales] = useState<Sale[]>(initialSales)
   const [nextCursor, setNextCursor] = useState<string | null>(initialCursor)
+
+  const [selected, setSelected] = useState<Sale | null>(
+    initialSales.length ? initialSales[0] : null
+  )
 
   const [filters, setFilters] = useState<{
     collection: string | null
@@ -40,18 +44,6 @@ export function SalesAnalytics({
 
   // add timeUnit variable
   const timeUnit: TimeUnit = 'week'
-
-  // tx onclick opens receipt-modal
-  const [showReceipt, setShowReceipt] = useState<ShowReceiptState>({ show: false })
-
-  const handleFilters = (filter: keyof typeof filters, value: any) => {
-    if (filters[filter] === value) value = null
-
-    setFilters(prev => ({
-      ...prev,
-      [filter]: value,
-    }))
-  }
 
   const applyFilters = (sales: Sale[], f: typeof filters) => {
     return sales.filter(sale => {
@@ -75,15 +67,11 @@ export function SalesAnalytics({
     return aggregateSales(filteredSales, timeUnit)
   }, [filteredSales, timeUnit])
 
-  const topCollectionsList = topNBy(analytics.byCollection, a => a.volume, 3)
-  const topCollectionsByKey = useMemo(
-    () => Object.fromEntries(topCollectionsList),
-    [topCollectionsList]
-  )
-
-  const topActors = topNBy(analytics.byActor, a => a.buy.volume + a.sell.volume, 10)
-
   const totalVolume = filteredSales.reduce((sum, sale) => sum + BigInt(sale.price), 0n)
+
+  if (!selected) {
+    return <div>No listing</div>
+  }
 
   return (
     <div className="h-full flex flex-col gap-4">
@@ -103,18 +91,16 @@ export function SalesAnalytics({
 
       <div className="h-full flex gap-4 overflow-hidden">
         <div className="flex-1 flex flex-col gap-4">
-          <div className="flex gap-4 h-[200px]">
-            <HomeCharts analytics={analytics} sales={filteredSales} timeUnit={timeUnit} />
+          <div className="card h-[210px]">
+            <Chart analytics={analytics} sales={filteredSales} timeUnit={timeUnit} />
           </div>
 
           <div className="flex gap-4 overflow-hidden">
             <ArrowList
               items={filteredSales}
               getId={sale => sale.id}
-              selectedId={undefined}
-              onSelect={sale => {
-                setShowReceipt({ show: true, sale })
-              }}
+              selectedId={selected?.id}
+              onSelect={setSelected}
               className="flex-1"
             >
               {({ item, isSelected, onSelect }) => (
@@ -130,22 +116,21 @@ export function SalesAnalytics({
             </ArrowList>
           </div>
         </div>
-        <div className="basis-1/4 h-full card">
-          <div>Right Panel Content</div>
+        <div className="flex flex-col gap-4 basis-1/4 h-full">
+          <div className="h-1/3 card">
+            {selected && (
+              <NFTSummary
+                chainId={selected?.chainId}
+                address={selected?.collection}
+                tokenId={selected?.tokenId}
+              />
+            )}
+          </div>
+          <div className="h-full card">
+            <SalesReceipt sale={selected} />
+          </div>
         </div>
       </div>
-
-      {showReceipt.show && (
-        <Modal isOpen={showReceipt.show} onClose={() => setShowReceipt({ show: false })}>
-          <div className="p-2 flex flex-col gap-4">
-            <SalesReceipt sale={showReceipt.sale} />
-            <div className="border-t border-default mt-4" />
-            <button className="btn btn-secondary" onClick={() => setShowReceipt({ show: false })}>
-              close
-            </button>
-          </div>
-        </Modal>
-      )}
     </div>
   )
 }

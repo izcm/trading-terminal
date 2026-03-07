@@ -1,3 +1,6 @@
+import { NFTCollection } from '@/lib/dmrkt-indexer/types/nft-collection'
+import { Listing } from '@/lib/dmrkt-indexer/types/listing'
+
 import type { Hex } from './shared/eth'
 
 export const saleKey = (chainId: number, orderHash: string) => `${chainId}:${orderHash}` as const
@@ -28,5 +31,6 @@ export type Sale = {
   // Transaction details
   logIndex: number
 
-  nftCollection?: any | null
+  nftCollection?: NFTCollection | null
+  listing?: Listing | null
 }

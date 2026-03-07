@@ -1,4 +1,4 @@
-import type { Sale } from '@/domain'
+import type { Sale } from '@/domain/sale'
 import { formatEth2 } from '@/lib/utils/format'
 
 type Props = {
@@ -8,15 +8,6 @@ type Props = {
 export function SalesReceipt({ sale }: Props) {
   return (
     <div>
-      {/* Header */}
-      <div className="flex items-start justify-between border-b border-default pb-3">
-        <div className="flex flex-col gap-1 text-left">
-          <span className="text-xs text-stat/80">SALE</span>
-
-          <span className="text-lg font-semibold">{formatEth2(BigInt(sale.price))} ETH</span>
-        </div>
-      </div>
-
       {/* Body */}
       <div className="mt-4 flex flex-col gap-5 text-sm text-left">
         {/* Parties */}

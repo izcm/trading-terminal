@@ -4,7 +4,7 @@ import { DMRKT_INDEXER_BASE_URL as baseUrl } from '@/lib/dmrkt-indexer/constants
 
 // https://nextjs.org/docs/app/getting-started/error-handling
 
-export default async function Home() {
+export default async function FeedPage() {
   const res = await fetch(`${baseUrl}/api/nft-collections/top?chainId=31337&limit=3`, {
     cache: 'no-store',
   })
@@ -13,7 +13,7 @@ export default async function Home() {
 
   const collections = await res.json()
 
-  const listingRes = await getListings('limit=20&status=active')
+  const listingRes = await getListings('limit=100&status=active')
 
   const initialData = listingRes.ok
     ? { items: listingRes.data.items, cursor: listingRes.data.nextCursor }

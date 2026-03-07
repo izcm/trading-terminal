@@ -5,7 +5,7 @@ import { TextInput } from '@/components/atoms'
 import { useTokenURI } from '@/lib/blockchain'
 import { shortAddr } from '@/lib/utils/format'
 import { getImageFromTokenURI } from '@/lib/utils/image'
-import { NFTSummary } from '../cards/NFTSummary'
+import { NFTSummary } from '@/components/organisms/shared/NFTSummary'
 
 type Props = {
   chainId: number
@@ -30,20 +30,9 @@ export function NFTSelectForm({ chainId, collection, validation, onValidate, onC
 
   const title = 'token id in ' + (symbol !== undefined ? symbol : shortAddr(address))
 
-  const { data: tokenURI } = useTokenURI(
-    tokenId
-      ? {
-          chainId,
-          address,
-          tokenId,
-        }
-      : undefined
-  )
-
   const saneInput = (input: string) => /^\d+$/.test(input)
 
   const inputError = tokenIdInput.length === 0 ? '' : saneInput(tokenIdInput) ? '' : 'digits only'
-
   const uiError = inputError || validation.error
 
   const handleValidate = (tidStr: string) => {
@@ -70,7 +59,7 @@ export function NFTSelectForm({ chainId, collection, validation, onValidate, onC
       <span>{uiError}</span>
       <span>{validation.checking}</span>
 
-      <NFTSummary image={tokenURI && getImageFromTokenURI(tokenURI)} />
+      <NFTSummary chainId={chainId} address={collection.address} tokenId={tokenId?.toString()} />
 
       <button disabled={!tokenId} onClick={() => alert('hello')} className="btn btn-primary w-full">
         fill order
