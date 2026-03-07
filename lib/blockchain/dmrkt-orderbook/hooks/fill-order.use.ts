@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
-import type { Abi, Hex } from 'viem'
+import type { Hex } from '@/domain/shared/eth'
+import type { Abi } from 'viem'
 import { ContractFunctionExecutionError, ContractFunctionRevertedError } from 'viem'
 import { useAccount, useSimulateContract, useWriteContract } from 'wagmi'
 

@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 
 import { getListings } from '@/lib/dmrkt-indexer/actions/listings.get'
 
-import { Listing, TopNFTCollection } from '@/domain/types'
+import { Listing, TopNFTCollection } from '@/domain'
 
 import { CreateOrderForm } from './trade/CreateOrderForm'
 import { TradePanel } from './trade/TradePanel'
@@ -30,19 +30,19 @@ type OrderUIState = {
 export function Feed({ collections, initialListings, initialCursor }: Props) {
   const [nextCursor, setNextCursor] = useState<string | null>(initialCursor)
 
-  const [listings, setListings] = useState<Listing[]>([])
+  const [listings, setListings] = useState<Listing[]>(initialListings)
   const [selected, setSelected] = useState<Listing | null>(
     initialListings.length ? initialListings[0] : null
   )
 
   const [showNewForm, setShowNewForm] = useState(false)
 
-  // todo: make this on scroll...
+  // todo: make this on scroll
   useEffect(() => {
     if (!nextCursor) return
 
     const fetchMore = async () => {
-      const res = await getListings('limit=50')
+      const res = await getListings(`limit=50&status=active&cursor=${nextCursor}`)
 
       if (res.ok) {
         const { nextCursor, items } = res.data
@@ -58,18 +58,14 @@ export function Feed({ collections, initialListings, initialCursor }: Props) {
   return (
     <div className="h-full flex flex-col gap-4">
       {/* ---------- HEADER ---------- */}
-      <section className="flex justify-between items-center">
-        <div>only 4u / all</div>
-        <button className="btn btn-secondary" onClick={() => setShowNewForm(true)}>
-          <Plus /> create order
-        </button>
-      </section>
+      <button className="btn btn-secondary self-end" onClick={() => setShowNewForm(true)}>
+        <Plus /> create order
+      </button>
 
       <div className="h-full flex gap-4 overflow-hidden">
         {/* LEFT COLUMN (feed side) */}
         <div className="flex-1 flex flex-col gap-4">
           {/* collections */}
-
           <ArrowList
             items={collections}
             getId={c => `${c.chainId}:${c.address}`}

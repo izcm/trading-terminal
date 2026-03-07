@@ -1,4 +1,4 @@
-import type { NFTCollection } from '@/domain/types'
+import type { NFTCollection } from '@/domain'
 export function NFTCollectionBanner({ collection }: { collection: NFTCollection }) {
   return (
     <div className="flex items-center card px-4 py-2 relative overflow-hidden">

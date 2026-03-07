@@ -1,33 +1,36 @@
 'use client'
 
-import { use, useEffect, useMemo, useState } from 'react'
-import type { Hex } from 'viem'
+import { useEffect, useMemo, useState } from 'react'
+
+import 'chart.js/auto'
+
+import type { Sale } from '@/domain/sale'
+import { aggregateSales, floor } from '@/features/analytics/sales'
+
+import { formatEth2, shortAddr, type TimeUnit } from '@/lib/utils/format'
+import { topNBy } from '@/lib/utils/analytics/topN'
 
 import { ArrowList, ArrowRow, Modal } from '@/components/atoms'
 import { SettlementRow, Stat } from '@/components/molecules'
-import type { Sale } from '@/domain/types/sale'
-import { aggregateSales, floor } from '@/features/analytics/sales'
-import type { PaginatedSales } from '@/lib/dmrkt-indexer/actions/sales.get'
-import { topNBy } from '@/lib/utils/analytics/topN'
-import type { TimeUnit } from '@/lib/utils/format'
-import { formatEth2, shortAddr } from '@/lib/utils/format'
-import type { Result } from '@/lib/utils/result'
-import 'chart.js/auto'
+
 import { SalesReceipt } from '../SalesReceipt'
 import { HomeCharts } from './Charts'
 
 type ShowReceiptState = { show: false } | { show: true; sale: Sale }
 
-export function SalesAnalytics({ initialData }: { initialData: Promise<Result<PaginatedSales>> }) {
-  const initial = use(initialData)
+export function SalesAnalytics({
+  initialSales,
+  initialCursor,
+}: {
+  initialSales: Sale[]
+  initialCursor: string | null
+}) {
+  const [sales, setSales] = useState<Sale[]>(initialSales)
+  const [nextCursor, setNextCursor] = useState<string | null>(initialCursor)
 
-  const data = initial.ok ? initial.data : { items: [], nextCursor: null }
-
-  const [sales, setSales] = useState<Sale[]>(data.items)
-  const [nextCursor, setNextCursor] = useState<string | null>(data.nextCursor)
   const [filters, setFilters] = useState<{
-    collection: Hex | null
-    actor: Hex | null
+    collection: string | null
+    actor: string | null
     epoch: string | null
   }>({
     collection: null,
@@ -40,24 +43,6 @@ export function SalesAnalytics({ initialData }: { initialData: Promise<Result<Pa
 
   // tx onclick opens receipt-modal
   const [showReceipt, setShowReceipt] = useState<ShowReceiptState>({ show: false })
-  const [selectedSale, setSelectedSale] = useState<Sale | null>(data.items[0] ?? null)
-
-  useEffect(() => {
-    if (!nextCursor) return
-
-    const fetchMore = async () => {
-      const res = await fetch(`/api/sales?limit=100&cursor=${nextCursor}`)
-
-      const page: Result<PaginatedSales> = await res.json()
-
-      if (page.ok) {
-        setSales(prev => [...prev, ...page.data.items])
-        setNextCursor(page.data.nextCursor)
-      }
-    }
-
-    fetchMore()
-  }, [nextCursor])
 
   const handleFilters = (filter: keyof typeof filters, value: any) => {
     if (filters[filter] === value) value = null
@@ -86,26 +71,6 @@ export function SalesAnalytics({ initialData }: { initialData: Promise<Result<Pa
     return applyFilters(sales, filters)
   }, [filters, sales])
 
-  useEffect(() => {
-    if (!filteredSales.length) {
-      setSelectedSale(null)
-      return
-    }
-
-    if (!selectedSale) {
-      setSelectedSale(filteredSales[0])
-      return
-    }
-
-    const stillVisible = filteredSales.some(
-      sale => sale.execution.tx.hash === selectedSale.execution.tx.hash
-    )
-
-    if (!stillVisible) {
-      setSelectedSale(filteredSales[0])
-    }
-  }, [filteredSales, selectedSale])
-
   const analytics = useMemo(() => {
     return aggregateSales(filteredSales, timeUnit)
   }, [filteredSales, timeUnit])
@@ -119,10 +84,6 @@ export function SalesAnalytics({ initialData }: { initialData: Promise<Result<Pa
   const topActors = topNBy(analytics.byActor, a => a.buy.volume + a.sell.volume, 10)
 
   const totalVolume = filteredSales.reduce((sum, sale) => sum + BigInt(sale.price), 0n)
-
-  if (!initial.ok) {
-    return <div className="card">failed to load sales 💀</div>
-  }
 
   return (
     <div className="h-full flex flex-col gap-4">
@@ -140,84 +101,43 @@ export function SalesAnalytics({ initialData }: { initialData: Promise<Result<Pa
         </span>
       </div>
 
-      <div className="h-[260px] flex w-full gap-4">
-        <HomeCharts analytics={analytics} sales={filteredSales} timeUnit={timeUnit} />
-      </div>
-      <div className="flex-1 flex gap-4 overflow-hidden">
-        <ArrowList
-          items={filteredSales}
-          getId={sale => sale.execution.tx.hash}
-          selectedId={selectedSale?.execution.tx.hash ?? null}
-          onSelect={setSelectedSale}
-          className="flex-1"
-        >
-          {({ item, isSelected, onSelect: selectRow }) => (
-            <ArrowRow
-              key={item.execution.tx.hash}
-              isSelected={isSelected}
-              onSelect={() => {
-                selectRow()
-                setShowReceipt({ show: true, sale: item })
+      <div className="h-full flex gap-4 overflow-hidden">
+        <div className="flex-1 flex flex-col gap-4">
+          <div className="flex gap-4 h-[200px]">
+            <HomeCharts analytics={analytics} sales={filteredSales} timeUnit={timeUnit} />
+          </div>
+
+          <div className="flex gap-4 overflow-hidden">
+            <ArrowList
+              items={filteredSales}
+              getId={sale => sale.id}
+              selectedId={undefined}
+              onSelect={sale => {
+                setShowReceipt({ show: true, sale })
               }}
-              className="flex justify-between px-4 min-h-14"
+              className="flex-1"
             >
-              <SettlementRow sale={item} />
-            </ArrowRow>
-          )}
-        </ArrowList>
-
-        <div className="w-1/3 flex flex-col gap-4">
-          <ul className="basis-1/2 card">
-            <span className="text-xs text-muted my-2">
-              Top Collections · F = floor price · V = volume
-            </span>
-            {topCollectionsList.map(([k, v], i) => (
-              <li
-                key={k}
-                className="stat-row filter-row flex text-muted"
-                data-active={filters.collection === k}
-                onClick={() => handleFilters('collection', k)}
-              >
-                <span className="text-sm">#{i + 1}</span>
-
-                <span>SYMBOL</span>
-
-                <Stat
-                  value={floor(filteredSales, 'collection', k as `0x${string}`)}
-                  label="F"
-                  fmtFn={formatEth2}
-                />
-
-                <Stat value={topCollectionsByKey[k].volume} label="V" fmtFn={formatEth2} />
-              </li>
-            ))}
-          </ul>
-
-          <ul className="basis-1/2 card">
-            <span className="text-xs text-muted my-2">
-              Top Actors · B = buy volume · S = sell volume
-            </span>
-            {topActors.map(([k, a], i) => (
-              <li
-                key={k}
-                className="stat-row filter-row text-muted"
-                data-active={filters.actor === k}
-                onClick={() => handleFilters('actor', k)}
-              >
-                <span className="text-sm">#{i + 1}</span>
-
-                <span>{shortAddr(k as `0x${string}`)}</span>
-
-                <Stat value={a.buy.volume} label="B" fmtFn={formatEth2} />
-                <Stat value={a.sell.volume} label="S" fmtFn={formatEth2} />
-              </li>
-            ))}
-          </ul>
+              {({ item, isSelected, onSelect }) => (
+                <ArrowRow
+                  key={item.id}
+                  isSelected={isSelected}
+                  onSelect={onSelect}
+                  className="flex justify-between px-4 min-h-14"
+                >
+                  <SettlementRow sale={item} />
+                </ArrowRow>
+              )}
+            </ArrowList>
+          </div>
+        </div>
+        <div className="basis-1/4 h-full card">
+          <div>Right Panel Content</div>
         </div>
       </div>
+
       {showReceipt.show && (
         <Modal isOpen={showReceipt.show} onClose={() => setShowReceipt({ show: false })}>
-          <div className="p-4 flex flex-col gap-4">
+          <div className="p-2 flex flex-col gap-4">
             <SalesReceipt sale={showReceipt.sale} />
             <div className="border-t border-default mt-4" />
             <button className="btn btn-secondary" onClick={() => setShowReceipt({ show: false })}>

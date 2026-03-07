@@ -1,4 +1,3 @@
-
 import { getSales } from '@/lib/dmrkt-indexer/actions/sales.get'
 
 import { SalesAnalytics } from '@/components/organisms'
@@ -6,7 +5,11 @@ import { SalesAnalytics } from '@/components/organisms'
 // https://nextjs.org/docs/app/getting-started/error-handling
 
 export default async function Analytics() {
-  const res = getSales('limit=25')
+  const res = await getSales('limit=100')
 
-  return <SalesAnalytics initialData={res} />
+  const initialData = res.ok
+    ? { sales: res.data.items, cursor: res.data.nextCursor }
+    : { sales: [], cursor: null }
+
+  return <SalesAnalytics initialSales={initialData.sales} initialCursor={initialData.cursor} />
 }

@@ -1,5 +1,5 @@
-import type { Sale } from '@/domain/types'
-import type { Hex } from 'viem'
+import type { Hex } from '@/domain/shared/eth'
+import type { Sale } from '@/domain/sale'
 
 export type SettlementDoc = {
   _id: string
@@ -44,8 +44,10 @@ export type SettlementDoc = {
 
 export const settlementDocToSale = (s: SettlementDoc): Sale => {
   return {
+    id: `${s.chainId}:${s.orderHash}`,
     chainId: s.chainId,
     orderHash: s.orderHash,
+    txHash: s.execution.txHash,
 
     collection: s.collection,
     tokenId: s.tokenId,
@@ -56,37 +58,9 @@ export const settlementDocToSale = (s: SettlementDoc): Sale => {
     currency: s.currency,
     price: s.price,
 
-    order: s.orderAttributes
-      ? {
-          side: s.orderAttributes.type,
-          signer: s.orderAttributes.signer,
-        }
-      : undefined,
+    blockNumber: s.execution.block.number,
+    timestamp: s.execution.block.timestamp * 1000,
 
-    execution: {
-      logIndex: s.execution.logIndex,
-
-      block: {
-        timestamp: s.execution.block.timestamp * 1000,
-        number: s.execution.block.number,
-      },
-
-      tx: {
-        hash: s.execution.txHash,
-
-        ctx: s.execution.txContext
-          ? {
-              index: s.execution.txContext.index,
-              gasUsed: s.execution.txContext.gasUsed,
-              function: {
-                selector: s.execution.txContext.functionSelector,
-                name: s.execution.txContext.functionName,
-              },
-            }
-          : undefined,
-      },
-    },
-
-    metaStatus: s.metaStatus,
+    logIndex: s.execution.logIndex,
   }
 }

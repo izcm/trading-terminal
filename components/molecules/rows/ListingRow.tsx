@@ -8,7 +8,10 @@ export function ListingRow({ listing }: { listing: Listing }) {
   const isCb = !isAsk && listing.isCollectionBid
 
   const collection = listing.nftCollection ?? { name: 'unknown', symbol: 'unknown' }
-
+  // each row should have icon (if not tokenuri)
+  // ◼ DSEAL #36
+  // ◉ DNODE #5
+  // ◆ DGREM #81
   return (
     <>
       {/* Type Badge */}

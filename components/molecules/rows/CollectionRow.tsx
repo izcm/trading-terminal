@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 
-import type { NFTCollection } from '@/domain/types'
+import type { NFTCollection } from '@/domain'
 type Props = {
   collection: NFTCollection
 }

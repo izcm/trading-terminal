@@ -1,5 +1,5 @@
+import type { Hex } from '@/domain/shared/eth'
 import type { Order } from '@/protocol/eip712'
-import type { Hex } from 'viem'
 import type { NFTCollection } from './nft-collection'
 
 export type Listing = {
@@ -26,4 +26,6 @@ export type Listing = {
 
   // raw order for contract interaction
   rawOrder: Order
+
+  status: string
 }

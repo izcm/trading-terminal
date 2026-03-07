@@ -3,7 +3,7 @@ import { DMRKT_INDEXER_BASE_URL as baseUrl } from '../constants'
 import type { SettlementDoc } from '../types/settlement'
 import { settlementDocToSale } from '../types/settlement'
 
-import type { Sale } from '@/domain/types/sale'
+import type { Sale } from '@/domain/sale'
 
 export type PaginatedSales = {
   items: Sale[]
@@ -12,15 +12,15 @@ export type PaginatedSales = {
 
 export async function getSales(query = 'limit=50'): Promise<Result<PaginatedSales>> {
   const url = `${baseUrl}/api/settlements?${query}`
-
+  console.log(url)
   try {
     const res = await fetch(url)
     const data = await res.json()
-
+    console.log(data)
     return {
       ok: true,
       data: {
-        items: data.items.map((item: SettlementDoc) => settlementDocToSale(item)),
+        items: data.items as Sale[],
         nextCursor: data.nextCursor,
       },
     }

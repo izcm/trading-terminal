@@ -1,4 +1,4 @@
-import type { Hex } from 'viem'
+import type { Hex } from '@/domain/shared/eth'
 import { erc721Abi as abi } from 'viem'
 import { useReadContract } from 'wagmi'
 

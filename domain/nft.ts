@@ -1,4 +1,4 @@
-import type { Hex } from 'viem'
+import type { Hex } from './shared/eth'
 
 // Local NFT type - provider agnostic
 export type NFT = {

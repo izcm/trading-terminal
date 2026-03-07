@@ -3,7 +3,7 @@
 import Link from 'next/link'
 
 import { NFTCard } from '@/components/molecules'
-import type { NFT } from '@/domain/types/nft'
+import type { NFT } from '@/domain/nft'
 
 interface NFTGalleryProps {
   nfts: NFT[]

@@ -1,7 +1,6 @@
-import type { Sale } from '@/domain/types'
+import type { Hex, Sale } from '@/domain'
 import type { TimeUnit } from '@/lib/utils/format/time'
 import { timeKey } from '@/lib/utils/format/time'
-import type { Hex } from 'viem'
 export type Metrics = {
   count: number
   volume: bigint
@@ -24,22 +23,14 @@ const applySale = (m: Metrics, sale: Sale) => {
 
 type Dimension<T> = (sale: Sale) => T | null
 
-type SideGroup = 'ASK' | 'BID'
-
-const sideKey: Dimension<SideGroup> = sale => {
-  const side = sale.order?.side
-  if (!side) return null
-  return side === 'ASK' ? 'ASK' : 'BID'
-}
-
 const epochKey =
   (unit: TimeUnit): Dimension<string> =>
   sale =>
-    timeKey(sale.execution.block.timestamp, unit)
+    timeKey(sale.timestamp, unit)
 
-const collectionKey: Dimension<Hex> = sale => sale.collection
-const buyerKey: Dimension<Hex> = sale => sale.buyer
-const sellerKey: Dimension<Hex> = sale => sale.seller
+const collectionKey: Dimension<Hex> = sale => sale.collection as Hex
+const buyerKey: Dimension<Hex> = sale => sale.buyer as Hex
+const sellerKey: Dimension<Hex> = sale => sale.seller as Hex
 
 const mergeActors = (buys: Map<string, Metrics>, sells: Map<string, Metrics>) => {
   const out = new Map<string, ActorMetrics>()
@@ -79,7 +70,6 @@ const aggregateBy = <K>(sales: Sale[], dimension: Dimension<K>) => {
 export const aggregateSales = (sales: Sale[], unit: TimeUnit) => {
   const byEpoch = aggregateBy(sales, epochKey(unit))
   const byCollection = aggregateBy(sales, collectionKey)
-  const bySide = aggregateBy(sales, sideKey)
 
   const buys = aggregateBy(sales, buyerKey)
   const sells = aggregateBy(sales, sellerKey)
@@ -87,7 +77,6 @@ export const aggregateSales = (sales: Sale[], unit: TimeUnit) => {
   return {
     byEpoch,
     byCollection,
-    bySide,
     byActor: mergeActors(buys, sells),
   }
 }

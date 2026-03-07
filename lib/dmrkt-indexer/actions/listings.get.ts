@@ -6,8 +6,11 @@ export type PaginatedListings = {
   items: Listing[]
   nextCursor: string | null
 }
+
 export async function getListings(query = 'limit=50'): Promise<Result<PaginatedListings>> {
   const url = `${baseUrl}/api/orders?${query}&include=nftCollection`
+
+  console.log(url)
 
   try {
     const res = await fetch(url)

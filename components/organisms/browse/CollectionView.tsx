@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { TextInput } from '@/components/atoms'
 import { NFTCollectionBanner } from '@/components/molecules/cards/CollectionBanner'
 import { NFTGallery } from '@/components/organisms/browse/NFTGallery'
-import type { NFT, NFTCollection } from '@/domain/types'
+import type { NFT, NFTCollection } from '@/domain'
 
 interface CollectionViewProps {
   collection: NFTCollection

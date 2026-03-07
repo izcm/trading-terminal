@@ -13,14 +13,12 @@ export default async function Home() {
 
   const collections = await res.json()
 
-  const listingRes = await getListings()
+  const listingRes = await getListings('limit=20&status=active')
 
   const initialData = listingRes.ok
     ? { items: listingRes.data.items, cursor: listingRes.data.nextCursor }
     : { items: [], cursor: null }
-  console.log(initialData)
-  // const listings = paginatedListings.ok ? paginatedListings.data.items : []
-  // const initialCursor =
+
   return (
     <Feed
       collections={collections}

@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { BaseChart } from '@/components/chartjs/BaseChart'
 import { createDataset } from '@/components/chartjs/props'
-import type { Sale } from '@/domain/types'
+import type { Sale } from '@/domain'
 import type { aggregateSales } from '@/features/analytics/sales'
 import type { TimeUnit } from '@/lib/utils/format'
 import { timeKey, weiToChartNumber } from '@/lib/utils/format'
@@ -24,13 +24,8 @@ export function HomeCharts({ analytics, sales, timeUnit }: AnalyticsChartProps) 
     })
   }, [analytics])
 
-  const sideByEpoch = (side: 'ASK' | 'BID', epoch: string, unit: TimeUnit) => {
-    const items = sales.filter(
-      sale =>
-        timeKey(sale.execution.block.timestamp, unit) === epoch &&
-        sale.order &&
-        sale.order?.side === side
-    )
+  const volumeByEpoch = (epoch: string, unit: TimeUnit) => {
+    const items = sales.filter(sale => timeKey(sale.timestamp, unit) === epoch)
 
     return items.reduce((sum, sale) => sum + BigInt(sale.price), 0n)
   }
@@ -39,12 +34,7 @@ export function HomeCharts({ analytics, sales, timeUnit }: AnalyticsChartProps) 
     return [
       createDataset(
         'bar',
-        epochKeys.map(epoch => weiToChartNumber(sideByEpoch('ASK', epoch, timeUnit))),
-        '#e37dec9d'
-      ),
-      createDataset(
-        'bar',
-        epochKeys.map(epoch => weiToChartNumber(sideByEpoch('BID', epoch, timeUnit))),
+        epochKeys.map(epoch => weiToChartNumber(volumeByEpoch(epoch, timeUnit))),
         '#57bddfcb'
       ),
     ]

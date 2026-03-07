@@ -1,4 +1,4 @@
-import type { Sale } from '@/domain/types'
+import type { Sale } from '@/domain'
 import { formatEth2 } from '@/lib/utils/format'
 
 type Props = {
@@ -11,7 +11,7 @@ export function SalesReceipt({ sale }: Props) {
       {/* Header */}
       <div className="flex items-start justify-between border-b border-default pb-3">
         <div className="flex flex-col gap-1 text-left">
-          <span className="text-xs text-stat/80">{sale.order?.side ?? 'SALE'}</span>
+          <span className="text-xs text-stat/80">SALE</span>
 
           <span className="text-lg font-semibold">{formatEth2(BigInt(sale.price))} ETH</span>
         </div>
@@ -25,8 +25,6 @@ export function SalesReceipt({ sale }: Props) {
 
           <Row label="Seller" value={sale.seller} />
           <Row label="Buyer" value={sale.buyer} />
-
-          {sale.order?.signer && <Row label="Signer" value={sale.order.signer} />}
         </section>
 
         {/* Execution */}
@@ -34,16 +32,9 @@ export function SalesReceipt({ sale }: Props) {
           <span className="font-medium">Execution</span>
 
           <Row label="Chain" value={sale.chainId} />
-          <Row label="Block" value={sale.execution.block.number} />
-          <Row label="Timestamp" value={sale.execution.block.timestamp} />
-          <Row label="Tx" value={sale.execution.tx.hash} mono />
-
-          {sale.execution.tx.ctx?.function && (
-            <Row
-              label="Function"
-              value={`${sale.execution.tx.ctx.function.name}::${sale.execution.tx.ctx?.function.selector}`}
-            />
-          )}
+          <Row label="Block" value={sale.blockNumber} />
+          <Row label="Timestamp" value={sale.timestamp} />
+          <Row label="Tx" value={sale.txHash} mono />
         </section>
       </div>
     </div>
