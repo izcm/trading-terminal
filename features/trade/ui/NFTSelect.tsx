@@ -7,7 +7,7 @@ import type { Hex } from '@/domain/shared/types/eth'
 import { TextInput } from '@/ui/components/atoms'
 import { shortAddr } from '@/domain/shared/types'
 import { getImageFromTokenURI } from '@/domain/shared/utils/image'
-import { NFTSummary } from '@/ui/organisms/nft/NFTSummary'
+import { NFTSummary } from '@/ui/organisms/NFTSummary'
 
 type Props = {
   chainId: number

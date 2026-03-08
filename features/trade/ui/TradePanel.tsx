@@ -8,7 +8,7 @@ import { Modal } from '@/ui/components/atoms'
 import { NFTSelect } from '@/ui/molecules'
 
 import { ListingDetails } from './ListingDetails'
-import { NFTSummary } from '../../../ui/organisms/nft/NFTSummary'
+import { NFTSummary } from '../../../ui/organisms/NFTSummary'
 
 type Props = {
   listing: Listing | null

@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { NavItem, SidebarContainer } from '@/ui/molecules'
 import { ChartArea, LayoutGrid, Newspaper } from 'lucide-react'
 
-const Header = dynamic(() => import('@/ui/organisms/Header').then(m => m.Header), {
+const Header = dynamic(() => import('@/ui/organisms/core/Header').then(m => m.Header), {
   ssr: false,
 })
 

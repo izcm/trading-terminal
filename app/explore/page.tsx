@@ -1,4 +1,4 @@
-import { Feed } from '@/ui/organisms/Feed'
+import { Feed } from '@/ui/organisms/chain-activity/Feed'
 import { getListings } from '@/lib/dmrkt-indexer/actions/listings.get'
 import { DMRKT_INDEXER_BASE_URL as baseUrl } from '@/lib/dmrkt-indexer/constants'
 

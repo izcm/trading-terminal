@@ -12,9 +12,9 @@ import { formatEth2, shortAddr, type TimeUnit } from '@/domain/shared/types'
 import { ArrowList, ArrowRow, Modal } from '@/ui/components/atoms'
 import { SettlementRow, Stat } from '@/ui/molecules'
 
-import { SalesReceipt } from '../../../features/chain-activity/ui/SalesReceipt'
-import { Chart } from '../../../features/chain-activity/ui/Charts'
-import { NFTSummary } from '../nft/NFTSummary'
+import { SalesReceipt } from '../../../features/sales/ui/SalesReceipt'
+import { Chart } from '../../../features/sales/ui/Charts'
+import { NFTSummary } from '../NFTSummary'
 
 type ShowReceiptState = { show: false } | { show: true; sale: Sale }
 

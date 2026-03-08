@@ -1,7 +1,7 @@
 'use client'
 
 import type { Listing } from '@/lib/dmrkt-indexer/types/listing'
-import { DetailFields, type DetailField } from '@/ui/molecules/cards/DetailFields'
+import { DetailFields, type DetailField } from '@/ui/molecules/DetailFields'
 import { formatTsUTC, shortAddr } from '@/domain/shared/types'
 
 type Props = {

@@ -7,7 +7,7 @@ import type { NFTCollection } from '@/lib/dmrkt-indexer/types/nft-collection'
 import type { NFT } from '@/domain/nft'
 
 import { TextInput } from '@/ui/atoms/TextInput'
-import { NFTGallery } from '@/ui/organisms/nft/NFTGallery'
+import { ImageGallery } from '@/ui/organisms/ImageGallery'
 import { NFTCollectionBanner } from './CollectionBanner'
 
 interface CollectionViewProps {
@@ -63,7 +63,7 @@ export const CollectionView = ({ collection, nfts }: CollectionViewProps) => {
 
         {/* NFT GALLERY */}
         <main id="main" tabIndex={-1} className="w-full">
-          <NFTGallery nfts={nfts} baseUrl={baseUrl} />
+          <ImageGallery nfts={nfts} baseUrl={baseUrl} />
         </main>
       </div>
     </div>

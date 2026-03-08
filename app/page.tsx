@@ -12,9 +12,9 @@ import { Sale } from '@/domain/sale'
 import { ChainActivityProps } from '@/ui/organisms/chain-activity/ChainActivity'
 
 import { ListingRow, SettlementRow, TopCollectionRow } from '@/ui/molecules'
-import { Tab, TabUIProps } from '@/ui/organisms/Tab'
+import { Tab, TabUIProps } from '@/ui/organisms/core/Tab'
 import { TradePanel } from '@/features/trade/ui/TradePanel'
-import { SalesReceipt } from '@/features/chain-activity/ui/SalesReceipt'
+import { SalesReceipt } from '@/features/sales/ui/SalesReceipt'
 import { MarketplaceView } from '@/features/marketplace/MarketplaceView'
 
 type ModeConfig<T> = {

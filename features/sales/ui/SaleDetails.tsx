@@ -1,7 +1,7 @@
 'use client'
 
 import type { Sale } from '@/domain/sale'
-import { DetailFields, type DetailField } from '@/ui/molecules/cards/DetailFields'
+import { DetailFields, type DetailField } from '@/ui/molecules/DetailFields'
 
 type Props = {
   sale: Sale | null
