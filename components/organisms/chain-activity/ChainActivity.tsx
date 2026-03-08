@@ -18,13 +18,12 @@ import { NFTSummary } from '../shared/NFTSummary'
 
 type ShowReceiptState = { show: false } | { show: true; sale: Sale }
 
-export function ChainActivity({
-  initialSales,
-  initialCursor,
-}: {
+export type ChainActivityProps = {
   initialSales: Sale[]
   initialCursor: string | null
-}) {
+}
+
+export function ChainActivity({ initialSales, initialCursor }: ChainActivityProps) {
   const [sales, setSales] = useState<Sale[]>(initialSales)
   const [nextCursor, setNextCursor] = useState<string | null>(initialCursor)
 

@@ -1,29 +1,77 @@
-import { Feed } from '@/components/organisms/Feed'
-import { getListings } from '@/lib/dmrkt-indexer/actions/listings.get'
+import { Plus } from 'lucide-react'
+
+import { ChainActivityProps } from '@/components/organisms/chain-activity/ChainActivity'
+import { Feed } from '@/components/organisms/ListingMarketplace'
+
 import { DMRKT_INDEXER_BASE_URL as baseUrl } from '@/lib/dmrkt-indexer/constants'
+import { getListings } from '@/lib/dmrkt-indexer/actions/listings.get'
+import { getSales } from '@/lib/dmrkt-indexer/actions/sales.get'
+import { NFTCollection, TopNFTCollection } from '@/lib/dmrkt-indexer/types/nft-collection'
+
+import { ListingRow, TopCollectionRow } from '@/components/molecules'
+import { getDmrktItems } from '@/lib/http/dmrkt.get'
+import { Listing } from '@/lib/dmrkt-indexer/types/listing'
 
 // https://nextjs.org/docs/app/getting-started/error-handling
 
-export default async function FeedPage() {
-  const res = await fetch(`${baseUrl}/api/nft-collections/top?chainId=31337&limit=3`, {
-    cache: 'no-store',
-  })
+export const views = {
+  feed: {
+    id: 'feed',
+    title: 'feed',
+    header: (
+      <button className="btn btn-secondary self-end">
+        <Plus /> create order
+      </button>
+    ),
+  },
+}
 
-  if (!res.ok) throw new Error('failed to fetch collections')
+export default async function Page() {
+  /* feed */
 
-  const collections = await res.json()
+  let feedProps
 
-  const listingRes = await getListings('limit=100&status=active')
+  {
+    const colRes = await fetch(`${baseUrl}/api/nft-collections/top?chainId=31337&limit=3`, {
+      cache: 'no-store',
+    })
 
-  const initialData = listingRes.ok
-    ? { items: listingRes.data.items, cursor: listingRes.data.nextCursor }
-    : { items: [], cursor: null }
+    const collections = (await colRes.json()) as TopNFTCollection[]
+
+    const listingRes = await getDmrktItems<Listing>(
+      'orders',
+      'limit=50&status=active&include=nftCollection',
+      null
+    )
+
+    feedProps = listingRes.ok
+      ? {
+          collections,
+          initialListings: listingRes.data.items,
+          initialCursor: listingRes.data.nextCursor,
+        }
+      : { collections: [], initialListings: [], initialCursor: null }
+  }
+
+  /* chain activity */
+
+  let caProps: ChainActivityProps
+
+  {
+    const res = await getSales('limit=100&include=nftCollection&include=order')
+
+    caProps = res.ok
+      ? { initialSales: res.data.items, initialCursor: res.data.nextCursor }
+      : { initialSales: [], initialCursor: null }
+  }
 
   return (
-    <Feed
-      collections={collections}
-      initialListings={initialData.items}
-      initialCursor={initialData.cursor}
-    />
+    <>
+      <Feed
+        header={views['feed'].header}
+        initialItems={feedProps.initialListings}
+        initialCursor={feedProps.initialCursor}
+      />
+    </>
   )
 }

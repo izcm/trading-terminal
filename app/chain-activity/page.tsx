@@ -3,7 +3,7 @@ import { ChainActivity } from '@/components/organisms/chain-activity/ChainActivi
 
 // https://nextjs.org/docs/app/getting-started/error-handling
 
-export default async function ChainActivityPage() {
+export default async function Page() {
   const res = await getSales('limit=100&include=nftCollection&include=order')
 
   const initialData = res.ok

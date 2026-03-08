@@ -1,66 +1,37 @@
 'use client'
 
 import type { Listing } from '@/lib/dmrkt-indexer/types/listing'
+import { DetailFields, type DetailField } from '@/components/molecules/DetailFields'
 import { formatTsUTC, shortAddr } from '@/lib/utils/format'
 
 type Props = {
   listing: Listing | null
 }
 
-type DetailField = {
-  label: string
-  getValue: (listing: Listing) => string
-  className?: string
-}
-
-const DETAIL_FIELDS: DetailField[] = [
+const DETAIL_FIELDS: DetailField<Listing>[] = [
   {
     label: 'token id',
-    getValue: listing => (listing.isCollectionBid ? 'any' : `#${listing.tokenId}`),
+    getValue: l => (l.isCollectionBid ? 'any' : `#${l.tokenId}`),
     className: 'font-mono',
   },
   {
     label: 'price',
-    getValue: listing => `${Number(listing.price) / 1e18} ETH`,
+    getValue: l => `${Number(l.price) / 1e18} ETH`,
     className: 'font-semibold',
   },
   {
     label: 'seller',
-    getValue: listing => shortAddr(listing.actor),
+    getValue: l => shortAddr(l.actor),
     className: 'font-mono',
   },
 ]
 
-const TIMING_FIELDS: DetailField[] = [
-  {
-    label: 'starts',
-    getValue: listing => formatTsUTC(listing.start),
-  },
-  {
-    label: 'expires',
-    getValue: listing => formatTsUTC(listing.end),
-  },
+const TIMING_FIELDS: DetailField<Listing>[] = [
+  { label: 'starts', getValue: l => formatTsUTC(l.start) },
+  { label: 'expires', getValue: l => formatTsUTC(l.end) },
 ]
 
-function DetailRow({
-  label,
-  value,
-  className,
-}: {
-  label: string
-  value: string
-  className?: string
-}) {
-  return (
-    <div className="flex justify-between">
-      <span className="text-zinc-500">{label}</span>
-      <span className={className}>{value}</span>
-    </div>
-  )
-}
-
 export function ListingDetails({ listing }: Props) {
-  // nothing selected yet
   if (!listing) {
     return <div className="card h-full p-4 text-sm">select a listing ✨</div>
   }
@@ -68,10 +39,7 @@ export function ListingDetails({ listing }: Props) {
   const collection = listing.nftCollection?.name ?? 'unknown collection'
 
   return (
-    <div
-      className="flex flex-col card h-full gap-6 p-4 text-sm"
-      tabIndex={-1} // important later for keyboard focus
-    >
+    <div className="flex flex-col card h-full gap-6 p-4 text-sm" tabIndex={-1}>
       {/* title */}
       <div className="flex justify-between text-start">
         <div className="flex flex-col">
@@ -81,32 +49,18 @@ export function ListingDetails({ listing }: Props) {
 
         <span
           className={`text-xs font-semibold px-2 py-1 rounded
-            ${listing.type === 'ask' ? 'bg-ask/10 text-ask' : 'bg-bid/10 text-bid'}`}
+          ${listing.type === 'ask' ? 'bg-ask/10 text-ask' : 'bg-bid/10 text-bid'}`}
         >
           {listing.type.toUpperCase()}
         </span>
       </div>
 
       {/* details */}
-      {DETAIL_FIELDS.map(field => (
-        <DetailRow
-          key={field.label}
-          label={field.label}
-          value={field.getValue(listing)}
-          className={field.className}
-        />
-      ))}
+      <DetailFields data={listing} fields={DETAIL_FIELDS} />
 
       {/* timing */}
       <div className="pt-2 border-t border-white/5 flex flex-col gap-1">
-        {TIMING_FIELDS.map(field => (
-          <DetailRow
-            key={field.label}
-            label={field.label}
-            value={field.getValue(listing)}
-            className={field.className}
-          />
-        ))}
+        <DetailFields data={listing} fields={TIMING_FIELDS} />
       </div>
     </div>
   )

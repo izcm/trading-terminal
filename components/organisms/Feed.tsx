@@ -3,11 +3,10 @@
 import { Plus } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
-import { getListings } from '@/lib/dmrkt-indexer/actions/listings.get'
-
 // todo: make some new object do decouple from indexer
-import { Listing } from '@/lib/dmrkt-indexer/types/listing'
-import { TopNFTCollection } from '@/lib/dmrkt-indexer/types/nft-collection'
+import { getListings } from '@/lib/dmrkt-indexer/actions/listings.get'
+import type { Listing } from '@/lib/dmrkt-indexer/types/listing'
+import type { TopNFTCollection } from '@/lib/dmrkt-indexer/types/nft-collection'
 
 import { CreateOrderForm } from './trade/CreateOrderForm'
 import { TradePanel } from './trade/TradePanel'
@@ -15,21 +14,13 @@ import { TradePanel } from './trade/TradePanel'
 import { ArrowList, ArrowRow, Modal } from '@/components/atoms'
 import { ListingRow, TopCollectionRow } from '@/components/molecules'
 
-type Props = {
+export type FeedProps = {
   collections: TopNFTCollection[]
   initialListings: Listing[]
   initialCursor: string | null
 }
 
-type OrderUIState = {
-  previewSrc: string
-  isFillable: boolean
-  validating: boolean
-  txPending: boolean
-  error?: string
-}
-
-export function Feed({ collections, initialListings, initialCursor }: Props) {
+export function Feed({ collections, initialListings, initialCursor }: FeedProps) {
   const [nextCursor, setNextCursor] = useState<string | null>(initialCursor)
 
   const [listings, setListings] = useState<Listing[]>(initialListings)
