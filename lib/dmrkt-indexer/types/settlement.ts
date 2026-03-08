@@ -1,4 +1,4 @@
-import type { Hex } from '@/domain/shared/eth'
+import type { Hex } from '@/domain/shared/types/eth'
 import type { Sale } from '@/domain/sale'
 
 export type SettlementDoc = {

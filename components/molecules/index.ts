@@ -1,5 +1,5 @@
 export * from './cards/NFTCard'
-export * from './form/NFTSelectForm'
+export * from '../../features/trade/ui/NFTSelect'
 export * from './rows/CollectionRow'
 export * from './rows/ListingRow'
 export * from './rows/SettlementRow'

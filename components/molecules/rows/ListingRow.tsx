@@ -1,7 +1,7 @@
 'use client'
 
 import type { Listing } from '@/lib/dmrkt-indexer/types/listing'
-import { formatEth2, shortAddr } from '@/lib/utils/format'
+import { formatEth2, shortAddr } from '@/domain/shared/types'
 
 export function ListingRow({ listing }: { listing: Listing }) {
   const isAsk = listing.type === 'ask'

@@ -1,6 +1,6 @@
-import { Result } from '../utils/result'
+import { Result } from '@/domain/shared/types/http'
 
-import { DMRKT_INDEXER_BASE_URL as baseUrl } from '../dmrkt-indexer/constants'
+export const baseUrl = process.env.NEXT_PUBLIC_INDEXER_ENDPOINT_URL
 
 export type Paginated<T> = {
   items: T[]
@@ -28,7 +28,7 @@ export async function getDmrktItems<T>(
     }
 
     const data = await res.json()
-    console.log(data.items)
+
     return {
       ok: true,
       data: {

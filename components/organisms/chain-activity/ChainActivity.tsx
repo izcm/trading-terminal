@@ -7,14 +7,14 @@ import 'chart.js/auto'
 import type { Sale } from '@/domain/sale'
 import { aggregateSales, floor } from '@/features/analytics/sales'
 
-import { formatEth2, shortAddr, type TimeUnit } from '@/lib/utils/format'
+import { formatEth2, shortAddr, type TimeUnit } from '@/domain/shared/types'
 
 import { ArrowList, ArrowRow, Modal } from '@/components/atoms'
 import { SettlementRow, Stat } from '@/components/molecules'
 
-import { SalesReceipt } from '../SalesReceipt'
-import { Chart } from './Charts'
-import { NFTSummary } from '../shared/NFTSummary'
+import { SalesReceipt } from '../../../features/sales/ui/SalesReceipt'
+import { Chart } from '../../../features/sales/ui/Charts'
+import { NFTSummary } from '../NFTSummary'
 
 type ShowReceiptState = { show: false } | { show: true; sale: Sale }
 

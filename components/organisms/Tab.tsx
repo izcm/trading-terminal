@@ -1,25 +1,23 @@
 'use client'
 
-import React, { ReactNode, useEffect, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
 import { ArrowList, ArrowRow } from '@/components/atoms'
-import { getDmrktItems } from '@/lib/http/dmrkt.get'
+import { Paginated } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
 
-type Props<T> = {
-  browseItem: React.ComponentType<{ item: T }>
-  sidebar: React.ComponentType<{ item: T }>
+export type TabUIProps<T> = {
   header: ReactNode
-  initialItems: T[]
-  initialCursor: string | null
+  browseItem: (item: T) => ReactNode
+  sidebar: (item: T) => ReactNode
 }
 
 export function Tab<T extends { id: string }>({
   header,
-  browseItem: BrowseItem,
-  sidebar: Sidebar,
-  initialItems,
-  initialCursor,
-}: Props<T>) {
+  browseItem,
+  sidebar,
+  items: initialItems,
+  nextCursor: initialCursor,
+}: TabUIProps<T> & Paginated<T>) {
   const [nextCursor, setNextCursor] = useState<string | null>(initialCursor)
 
   const [items, setItems] = useState<T[]>(initialItems)
@@ -65,15 +63,13 @@ export function Tab<T extends { id: string }>({
                 onSelect={onSelect}
                 className="gap-4 p-2"
               >
-                <BrowseItem item={item} />
+                {browseItem(item)}
               </ArrowRow>
             )}
           </ArrowList>
         </div>
 
-        <div className="basis-1/4">
-          <Sidebar item={selected} />
-        </div>
+        <div className="basis-1/4">{selected && sidebar(selected)}</div>
       </div>
     </div>
   )

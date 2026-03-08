@@ -6,9 +6,9 @@ import { createDataset } from '@/components/chartjs/props'
 import type { Sale } from '@/domain/sale'
 
 import type { aggregateSales } from '@/features/analytics/sales'
-import type { TimeUnit } from '@/lib/utils/format'
+import type { TimeUnit } from '@/domain/shared/types'
 
-import { timeKey, weiToChartNumber } from '@/lib/utils/format'
+import { timeKey, weiToChartNumber } from '@/domain/shared/types'
 
 type AnalyticsChartProps = {
   analytics: ReturnType<typeof aggregateSales>

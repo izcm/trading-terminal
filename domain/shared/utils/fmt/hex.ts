@@ -1,4 +1,4 @@
-import type { Hex } from '@/domain/shared/eth'
+import { Hex } from '../../types/eth'
 
 const truncateHex = (hex: Hex) => `${hex.slice(0, 6)}…${hex.slice(-4)}`
 

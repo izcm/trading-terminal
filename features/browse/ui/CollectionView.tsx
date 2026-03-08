@@ -4,8 +4,8 @@ import Link from 'next/link'
 import { useState } from 'react'
 
 import { TextInput } from '@/components/atoms'
-import { NFTCollectionBanner } from '@/components/molecules/cards/CollectionBanner'
-import { NFTGallery } from '@/components/organisms/browse/NFTGallery'
+import { NFTCollectionBanner } from '@/features/browse/ui/CollectionBanner'
+import { NFTGallery } from '@/components/organisms/NFTGallery'
 import type { NFT, NFTCollection } from '@/domain'
 
 interface CollectionViewProps {

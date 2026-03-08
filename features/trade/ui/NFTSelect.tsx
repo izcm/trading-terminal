@@ -1,13 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import type { Hex } from 'viem'
+
+import type { Hex } from '@/domain/shared/types/eth'
 
 import { TextInput } from '@/components/atoms'
-import { useTokenURI } from '@/lib/blockchain'
-import { shortAddr } from '@/lib/utils/format'
-import { getImageFromTokenURI } from '@/lib/utils/image'
-import { NFTSummary } from '@/components/organisms/shared/NFTSummary'
+import { shortAddr } from '@/domain/shared/types'
+import { getImageFromTokenURI } from '@/domain/shared/utils/image'
+import { NFTSummary } from '@/components/organisms/NFTSummary'
 
 type Props = {
   chainId: number
@@ -24,7 +24,7 @@ type Props = {
   onConfirm: () => void
 }
 
-export function NFTSelectForm({ chainId, collection, validation, onValidate, onConfirm }: Props) {
+export function NFTSelect({ chainId, collection, validation, onValidate, onConfirm }: Props) {
   const [tokenIdInput, setTokenIdInput] = useState('')
   const [tokenId, setTokenId] = useState<bigint | null>(null)
 

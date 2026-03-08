@@ -5,10 +5,10 @@ import { useFillOrder } from '@/lib/blockchain'
 import type { Listing } from '@/lib/dmrkt-indexer/types/listing'
 
 import { Modal } from '@/components/atoms'
-import { NFTSelectForm } from '@/components/molecules'
+import { NFTSelect } from '@/components/molecules'
 
-import { ListingDetails } from '@/components/ui/Details'
-import { NFTSummary } from '../NFTSummary'
+import { ListingDetails } from './ListingDetails'
+import { NFTSummary } from '../../../components/organisms/NFTSummary'
 
 type Props = {
   listing: Listing | null
@@ -76,7 +76,7 @@ export function TradePanel({ listing }: Props) {
       {/* MODAL */}
       <Modal isOpen={showNFTSelectModal} onClose={() => setShowNFTSelectModal(false)}>
         <div className="flex flex-col gap-2 w-[300px] max-w-[600px]">
-          <NFTSelectForm
+          <NFTSelect
             chainId={listing.chainId}
             collection={{ address: listing.collection, symbol: listing.nftCollection?.symbol }}
             validation={{

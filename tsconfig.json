@@ -22,7 +22,7 @@
     "paths": {
       "@/*": ["./*"],
       "@/app/*": ["app/*"],
-      "@/utils/*": ["lib/utils/*"],
+      "@/utils/*": ["components/utils/*"],
       "@/blockchain/*": ["lib/blockchain/*"],
       "@/domain/*": ["domain/*"]
     }

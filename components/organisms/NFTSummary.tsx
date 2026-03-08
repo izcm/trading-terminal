@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 
-import { Hex } from '@/domain/shared/eth'
+import { Hex } from '@/domain/shared/types/eth'
 
 import { useTokenURI } from '@/lib/blockchain'
-import { getImageFromTokenURI } from '@/lib/utils/image'
+import { getImageFromTokenURI } from '@/domain/shared/utils/image'
 
 type NFTAttribute = {
   trait_type: string

@@ -1,7 +1,7 @@
 import { NFTCollection } from '@/lib/dmrkt-indexer/types/nft-collection'
 import { Listing } from '@/lib/dmrkt-indexer/types/listing'
 
-import type { Hex } from './shared/eth'
+import type { Hex } from './shared/types/eth'
 
 export const saleKey = (chainId: number, orderHash: string) => `${chainId}:${orderHash}` as const
 

@@ -1,4 +1,4 @@
-export type Result<T> = { ok: true; data: T } | { ok: false; error: string }
+import { Result } from '../types/http'
 
 export const unwrap = <T>(r: Result<T>): T => {
   if (!r.ok) throw new Error(r.error)

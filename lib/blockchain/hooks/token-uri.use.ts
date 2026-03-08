@@ -1,5 +1,4 @@
-import type { Hex } from '@/domain/shared/eth'
-import { erc721Abi as abi } from 'viem'
+import { erc721Abi as abi, type Hex } from 'viem'
 import { useReadContract } from 'wagmi'
 
 type QueryKey = {

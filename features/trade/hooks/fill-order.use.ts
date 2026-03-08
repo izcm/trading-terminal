@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import type { Hex } from '@/domain/shared/eth'
+import type { Hex } from '@/domain/shared/types/eth'
 import type { Abi } from 'viem'
 import { ContractFunctionExecutionError, ContractFunctionRevertedError } from 'viem'
 import { useAccount, useSimulateContract, useWriteContract } from 'wagmi'
@@ -8,8 +8,8 @@ import { useAccount, useSimulateContract, useWriteContract } from 'wagmi'
 import json from '@a2zb/packages/abis/dmrkt/OrderEngine.json'
 import { toOrder712, type Order } from '@/protocol/eip712'
 
-import { ozErc721Errors } from '../../abis/oz-erc721'
-import { ORDERBOOK_ERROR_MESSAGES as ERRORS } from '../error/errors'
+import { ozErc721Errors } from '../../../lib/blockchain/abis/oz-erc721'
+import { ORDERBOOK_ERROR_MESSAGES as ERRORS } from '../../../lib/blockchain/dmrkt-orderbook/error/errors'
 
 const settleAbi = [...(json.abi as Abi), ...ozErc721Errors] as Abi
 const settleAddr = process.env.NEXT_PUBLIC_ORDERBOOK_CONTRACT_ADDR as Hex

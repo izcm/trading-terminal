@@ -1,4 +1,4 @@
-import type { Hex } from './shared/eth'
+import type { Hex } from './shared/types/eth'
 
 // Local NFT type - provider agnostic
 export type NFT = {

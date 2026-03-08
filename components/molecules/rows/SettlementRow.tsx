@@ -1,7 +1,7 @@
 'use client'
 
 import type { Sale } from '@/domain/sale'
-import { formatEth2, formatTsUTC, shortAddr } from '@/lib/utils/format'
+import { formatEth2, formatTsUTC, shortAddr } from '@/domain/shared/types'
 import { Stat } from '../Stat'
 
 type Props = {
