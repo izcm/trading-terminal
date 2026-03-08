@@ -2,7 +2,9 @@
 
 import { ReactNode, useEffect, useState } from 'react'
 
-import { ArrowList, ArrowRow } from '@/components/atoms'
+import { ArrowRow } from '@/ui/atoms'
+import { ArrowList } from '@/ui/molecules'
+
 import { Paginated } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
 
 export type TabUIProps<T> = {

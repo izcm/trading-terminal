@@ -4,10 +4,10 @@ import { useState } from 'react'
 
 import type { Hex } from '@/domain/shared/types/eth'
 
-import { TextInput } from '@/components/atoms'
+import { TextInput } from '@/ui/components/atoms'
 import { shortAddr } from '@/domain/shared/types'
 import { getImageFromTokenURI } from '@/domain/shared/utils/image'
-import { NFTSummary } from '@/components/organisms/NFTSummary'
+import { NFTSummary } from '@/ui/organisms/nft/NFTSummary'
 
 type Props = {
   chainId: number

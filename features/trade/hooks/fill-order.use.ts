@@ -1,18 +1,15 @@
 import { useMemo } from 'react'
 
-import type { Hex } from '@/domain/shared/types/eth'
-import type { Abi } from 'viem'
+// todo: move this stuff out of the component (viem / wagmi)
+// note: maybe di the chain library (easy switch viem / ethers)
 import { ContractFunctionExecutionError, ContractFunctionRevertedError } from 'viem'
 import { useAccount, useSimulateContract, useWriteContract } from 'wagmi'
 
-import json from '@a2zb/packages/abis/dmrkt/OrderEngine.json'
 import { toOrder712, type Order } from '@/protocol/eip712'
+import { ORDERBOOK_ERROR_MESSAGES as ERRORS } from '@/protocol/errors'
+import { orderbookAbi, orderbookAddress } from '@/protocol/config'
 
-import { ozErc721Errors } from '../../../lib/blockchain/abis/oz-erc721'
-import { ORDERBOOK_ERROR_MESSAGES as ERRORS } from '../../../lib/blockchain/dmrkt-orderbook/error/errors'
-
-const settleAbi = [...(json.abi as Abi), ...ozErc721Errors] as Abi
-const settleAddr = process.env.NEXT_PUBLIC_ORDERBOOK_CONTRACT_ADDR as Hex
+import type { Hex } from '@/domain/shared/types/eth'
 
 const safeStringify = (obj: unknown) =>
   JSON.stringify(obj, (_, value) => (typeof value === 'bigint' ? value.toString() : value), 2)
@@ -47,8 +44,8 @@ export function useFillOrder(order?: Order, tokenIdCb?: bigint) {
   }, [order, address, tokenIdCb])
 
   const sim = useSimulateContract({
-    abi: settleAbi,
-    address: settleAddr!,
+    abi: orderbookAbi,
+    address: orderbookAddress! as Hex,
     functionName: 'settle',
     account: address,
     args,

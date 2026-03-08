@@ -2,8 +2,8 @@
 
 import { Chart } from 'react-chartjs-2'
 
-import type { CoreChartProps } from './props'
-import { defaultOptions as options } from './props'
+import type { CoreChartProps } from './primitives'
+import { defaultOptions as options } from './primitives'
 
 export function BaseChart({ type, labels, datasets }: CoreChartProps) {
   return (

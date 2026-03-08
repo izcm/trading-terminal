@@ -4,11 +4,11 @@ import { CreditCard, Layers } from 'lucide-react'
 import { useFillOrder } from '@/lib/blockchain'
 import type { Listing } from '@/lib/dmrkt-indexer/types/listing'
 
-import { Modal } from '@/components/atoms'
-import { NFTSelect } from '@/components/molecules'
+import { Modal } from '@/ui/components/atoms'
+import { NFTSelect } from '@/ui/molecules'
 
 import { ListingDetails } from './ListingDetails'
-import { NFTSummary } from '../../../components/organisms/NFTSummary'
+import { NFTSummary } from '../../../ui/organisms/nft/NFTSummary'
 
 type Props = {
   listing: Listing | null

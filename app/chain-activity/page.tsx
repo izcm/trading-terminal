@@ -1,5 +1,5 @@
 import { getSales } from '@/lib/dmrkt-indexer/actions/sales.get'
-import { ChainActivity } from '@/components/organisms/chain-activity/ChainActivity'
+import { ChainActivity } from '@/ui/organisms/chain-activity/ChainActivity'
 
 // https://nextjs.org/docs/app/getting-started/error-handling
 

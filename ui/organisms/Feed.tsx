@@ -11,8 +11,8 @@ import type { TopNFTCollection } from '@/lib/dmrkt-indexer/types/nft-collection'
 import { CreateOrderForm } from '../../features/trade/ui/CreateOrderForm'
 import { TradePanel } from '../../features/trade/ui/TradePanel'
 
-import { ArrowList, ArrowRow, Modal } from '@/components/atoms'
-import { ListingRow, TopCollectionRow } from '@/components/molecules'
+import { ArrowList, ArrowRow, Modal } from '@/ui/components/atoms'
+import { ListingRow, TopCollectionRow } from '@/ui/molecules'
 
 export type FeedProps = {
   collections: TopNFTCollection[]

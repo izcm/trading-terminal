@@ -1,6 +1,9 @@
-import type { Hex, Sale } from '@/domain'
+import type { Sale } from '@/domain/sale'
+import type { Hex } from '@/domain/shared/types/eth'
+
 import type { TimeUnit } from '@/domain/shared/utils/time'
 import { timeKey } from '@/domain/shared/utils/time'
+
 export type Metrics = {
   count: number
   volume: bigint

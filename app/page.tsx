@@ -9,12 +9,12 @@ import { getDmrktItems } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
 
 import { Sale } from '@/domain/sale'
 
-import { ChainActivityProps } from '@/components/organisms/chain-activity/ChainActivity'
+import { ChainActivityProps } from '@/ui/organisms/chain-activity/ChainActivity'
 
-import { ListingRow, SettlementRow, TopCollectionRow } from '@/components/molecules'
-import { Tab, TabUIProps } from '@/components/organisms/Tab'
+import { ListingRow, SettlementRow, TopCollectionRow } from '@/ui/molecules'
+import { Tab, TabUIProps } from '@/ui/organisms/Tab'
 import { TradePanel } from '@/features/trade/ui/TradePanel'
-import { SalesReceipt } from '@/features/sales/ui/SalesReceipt'
+import { SalesReceipt } from '@/features/chain-activity/ui/SalesReceipt'
 import { MarketplaceView } from '@/features/marketplace/MarketplaceView'
 
 type ModeConfig<T> = {

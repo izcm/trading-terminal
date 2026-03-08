@@ -5,16 +5,16 @@ import { useMemo, useState } from 'react'
 import 'chart.js/auto'
 
 import type { Sale } from '@/domain/sale'
-import { aggregateSales, floor } from '@/features/analytics/sales'
+import { aggregateSales, floor } from '@/domain/shared/utils/analyze'
 
 import { formatEth2, shortAddr, type TimeUnit } from '@/domain/shared/types'
 
-import { ArrowList, ArrowRow, Modal } from '@/components/atoms'
-import { SettlementRow, Stat } from '@/components/molecules'
+import { ArrowList, ArrowRow, Modal } from '@/ui/components/atoms'
+import { SettlementRow, Stat } from '@/ui/molecules'
 
-import { SalesReceipt } from '../../../features/sales/ui/SalesReceipt'
-import { Chart } from '../../../features/sales/ui/Charts'
-import { NFTSummary } from '../NFTSummary'
+import { SalesReceipt } from '../../../features/chain-activity/ui/SalesReceipt'
+import { Chart } from '../../../features/chain-activity/ui/Charts'
+import { NFTSummary } from '../nft/NFTSummary'
 
 type ShowReceiptState = { show: false } | { show: true; sale: Sale }
 

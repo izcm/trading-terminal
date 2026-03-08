@@ -1,12 +1,14 @@
 'use client'
-import { ChartArea, Search } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
+import { ChartArea, Search } from 'lucide-react'
 
-import { TextInput } from '@/components/atoms'
-import { NFTCollectionBanner } from '@/features/browse/ui/CollectionBanner'
-import { NFTGallery } from '@/components/organisms/NFTGallery'
-import type { NFT, NFTCollection } from '@/domain'
+import type { NFTCollection } from '@/lib/dmrkt-indexer/types/nft-collection'
+import type { NFT } from '@/domain/nft'
+
+import { TextInput } from '@/ui/atoms/TextInput'
+import { NFTGallery } from '@/ui/organisms/nft/NFTGallery'
+import { NFTCollectionBanner } from './CollectionBanner'
 
 interface CollectionViewProps {
   collection: NFTCollection

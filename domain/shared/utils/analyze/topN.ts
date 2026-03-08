@@ -4,7 +4,7 @@ export const topNBy = <T>(map: Map<string, T>, pick: (value: T) => number | bigi
       const av = pick(a)
       const bv = pick(b)
 
-      if (typeof a === 'bigint' && typeof b === 'bigint') {
+      if (typeof av === 'bigint' && typeof bv === 'bigint') {
         return Number(bv > av) - Number(bv < av)
       }
 

@@ -1,15 +1,13 @@
 'use client'
 
 import { ReactNode, useState } from 'react'
-import { TabUIProps } from '../../components/organisms/Tab'
 
-import { Listing } from '@/lib/dmrkt-indexer/types/listing'
 import { Sale } from '@/domain/sale'
-import { NFTCollection, TopNFTCollection } from '@/lib/dmrkt-indexer/types/nft-collection'
 import { Paginated } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
+import { FeedProps } from './Feed'
 
 type Props = {
-  feedProps: Paginated<Listing> & { collections: TopNFTCollection[] }
+  feedProps: FeedProps
   activityProps: Paginated<Sale>
 }
 
