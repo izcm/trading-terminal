@@ -10,6 +10,7 @@ import { timeKey } from '@/domain/shared/utils/time'
 
 import { BaseChart } from '@/ui/chartjs/BaseChart'
 import { createDataset } from '@/ui/chartjs/primitives'
+import '@/ui/chartjs/register'
 
 type AnalyticsChartProps = {
   analytics: ReturnType<typeof aggregateSales>

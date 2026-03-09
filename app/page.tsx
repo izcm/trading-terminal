@@ -41,5 +41,5 @@ export default async function Page() {
       : { initialItems: [], initialCursor: null }
   }
 
-  return <MarketplaceView feedProps={feedProps} salesProps={salesProps} />
+  return <MarketplaceView feedProps={feedProps} salesProps={salesProps} initialView="feed" />
 }

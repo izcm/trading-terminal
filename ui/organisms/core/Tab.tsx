@@ -8,7 +8,7 @@ import { ArrowRow } from '@/ui/atoms'
 import { ArrowList } from '@/ui/molecules'
 
 export type TabUIProps<T> = {
-  secondaryView?: ReactNode
+  secondaryView: (items: T[]) => ReactNode
   getGalleryItems: (
     limit: number,
     cursor: string
@@ -49,33 +49,31 @@ export function Tab<T extends { id: string }>({
   }, [nextCursor])
 
   return (
-    <div className="h-full flex flex-col gap-4">
-      <div className="flex gap-4 flex-1 overflow-hidden">
-        {/* LEFT COLUMN */}
-        <div className="flex-1 flex flex-col gap-4 overflow-none">
-          {secondaryView}
-          <ArrowList
-            items={items}
-            getId={c => c.id}
-            selectedId={selected?.id}
-            onSelect={setSelected}
-            className="overflow-y-auto"
-          >
-            {({ item, isSelected, onSelect }) => (
-              <ArrowRow
-                key={item.id}
-                isSelected={isSelected}
-                onSelect={onSelect}
-                className="gap-4 p-2"
-              >
-                {galleryItem(item)}
-              </ArrowRow>
-            )}
-          </ArrowList>
-        </div>
-
-        <div className="basis-1/4 h-full">{selected && sidePanel(selected)}</div>
+    <div className="flex gap-4 flex-1 overflow-hidden">
+      {/* LEFT COLUMN */}
+      <div className="flex-1 flex flex-col gap-4">
+        {secondaryView(items)}
+        <ArrowList
+          items={items}
+          getId={c => c.id}
+          selectedId={selected?.id}
+          onSelect={setSelected}
+          className="overflow-y-auto"
+        >
+          {({ item, isSelected, onSelect }) => (
+            <ArrowRow
+              key={item.id}
+              isSelected={isSelected}
+              onSelect={onSelect}
+              className="gap-4 p-2 flex w-full justify-between h-[54px]"
+            >
+              {galleryItem(item)}
+            </ArrowRow>
+          )}
+        </ArrowList>
       </div>
+
+      <div className="basis-1/4 h-full">{selected && sidePanel(selected)}</div>
     </div>
   )
 }

@@ -19,7 +19,7 @@ const navItems = [
     id: 'feed',
   },
   {
-    title: 'sales',
+    title: 'on-chain sales',
     icon: ChartArea,
     id: 'sales',
   },
@@ -32,11 +32,11 @@ const navItems = [
 
 export function NavSidebar() {
   return (
-    <aside className="h-full w-[250px] flex flex-col shrink-0 border-r border-soft bg-surface/12">
+    <aside className="h-full w-[250px] flex flex-col shrink-0 border-r border-soft bg-surface/16">
       {/* ---- BRAND / TITLE ---- */}
       <div className="px-3 py-4 text-start border-b border-soft">
         <div className="text-muted">d | mrkt</div>
-        <div className="text-sm text-muted/70">market client</div>
+        <div className="text-sm text-muted/70">client</div>
       </div>
 
       {/* ---- NAVIGATION ---- */}
