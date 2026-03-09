@@ -1,21 +1,21 @@
 import { ReactNode } from 'react'
 import { Plus } from 'lucide-react'
 
+// todo: decouple
 import { DMRKT_INDEXER_BASE_URL as baseUrl } from '@/lib/dmrkt-indexer/constants'
-import { NFTCollection, TopNFTCollection } from '@/lib/dmrkt-indexer/types/nft-collection'
+import { TopNFTCollection } from '@/lib/dmrkt-indexer/types/nft-collection'
 import { Listing } from '@/lib/dmrkt-indexer/types/listing'
-
 import { getDmrktItems } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
 
-import { Sale } from '@/domain/sale'
+import { TradePanel } from '@/features/trade/ui/TradePanel'
+import { SalesReceipt } from '@/features/sales/ui/SalesReceipt'
+import { MarketplaceView } from '@/features/marketplace/ui/MarketplaceView'
 
 import { ChainActivityProps } from '@/ui/organisms/chain-activity/ChainActivity'
 
 import { ListingRow, SettlementRow, TopCollectionRow } from '@/ui/molecules'
-import { Tab, TabUIProps } from '@/ui/organisms/core/Tab'
-import { TradePanel } from '@/features/trade/ui/TradePanel'
-import { SalesReceipt } from '@/features/sales/ui/SalesReceipt'
-import { MarketplaceView } from '@/features/marketplace/MarketplaceView'
+
+import { Sale } from '@/domain/sale'
 
 type ModeConfig<T> = {
   id: string
@@ -66,11 +66,13 @@ export default async function Page() {
 
     feedProps = listingRes.ok
       ? {
-          collections,
-          initialItems: listingRes.data.items,
-          initialCursor: listingRes.data.nextCursor,
+          initialItems: {
+            listings: listingRes.data.initialItems,
+            topCollections: collections,
+          },
+          initialCursor: listingRes.data.initialCursor,
         }
-      : { collections: [], initialItems: [], initialCursor: null }
+      : { initialItems: { listings: [], topCollections: [] }, initialCursor: null }
   }
 
   /* chain activity */
@@ -85,37 +87,25 @@ export default async function Page() {
     )
 
     caProps = res.ok
-      ? { initialSales: res.data.items, initialCursor: res.data.nextCursor }
+      ? { initialSales: res.data.initialItems, initialCursor: res.data.initialCursor }
       : { initialSales: [], initialCursor: null }
   }
 
   /* modes */
 
-  const modes = {
-    feed: {
-      id: 'feed',
-      header: feedMode.header,
-      browseItem: feedMode.browseItem,
-      sidebar: feedMode.sidebar,
-      initialItems: feedProps.initialItems,
-      initialCursor: feedProps.initialCursor,
-    },
-
-    activity: {
-      id: 'activity',
-      header: activityMode.header,
-      browseItem: activityMode.browseItem,
-      sidebar: activityMode.sidebar,
-      initialItems: caProps.initialSales,
-      initialCursor: caProps.initialCursor,
-    },
-  } satisfies {
-    feed: TabUIProps<Listing>
-    activity: TabUIProps<Sale>
-  }
-
-  const view = 'feed'
-  const mode = modes[view]
+  // const modes = {
+  //   activity: {
+  //     id: 'activity',
+  //     header: activityMode.header,
+  //     browseItem: activityMode.browseItem,
+  //     sidebar: activityMode.sidebar,
+  //     initialItems: caProps.initialSales,
+  //     initialCursor: caProps.initialCursor,
+  //   },
+  // } satisfies {
+  //   feed: TabUIProps<Listing>
+  //   activity: TabUIProps<Sale>
+  // }
 
   return (
     // <Tab

@@ -1,14 +1,15 @@
 import { useMemo } from 'react'
 
-import { BaseChart } from '@/ui/chartjs/BaseChart'
-import { createDataset } from '@/ui/chartjs'
-
 import type { Sale } from '@/domain/sale'
 
-import type { aggregateSales } from '@/domain/shared/utils/analyze'
-import type { TimeUnit } from '@/domain/shared/types'
+import { weiToChartNumber } from '@/lib/blockchain/utils/bigint'
 
-import { timeKey, weiToChartNumber } from '@/domain/shared/types'
+import type { aggregateSales } from '@/domain/shared/utils/analyze'
+import type { TimeUnit } from '@/domain/shared/utils/time'
+import { timeKey } from '@/domain/shared/utils/time'
+
+import { BaseChart } from '@/ui/chartjs/BaseChart'
+import { createDataset } from '@/ui/chartjs/primitives'
 
 type AnalyticsChartProps = {
   analytics: ReturnType<typeof aggregateSales>

@@ -1,13 +1,17 @@
 'use client'
 import Link from 'next/link'
+
 import { useState } from 'react'
 import { ChartArea, Search } from 'lucide-react'
 
+// todo: decouple
 import type { NFTCollection } from '@/lib/dmrkt-indexer/types/nft-collection'
+
 import type { NFT } from '@/domain/nft'
 
 import { TextInput } from '@/ui/atoms/TextInput'
 import { ImageGallery } from '@/ui/organisms/ImageGallery'
+
 import { NFTCollectionBanner } from './CollectionBanner'
 
 interface CollectionViewProps {
@@ -62,9 +66,9 @@ export const CollectionView = ({ collection, nfts }: CollectionViewProps) => {
         </aside>
 
         {/* NFT GALLERY */}
-        <main id="main" tabIndex={-1} className="w-full">
+        {/* <main id="main" tabIndex={-1} className="w-full">
           <ImageGallery nfts={nfts} baseUrl={baseUrl} />
-        </main>
+        </main> */}
       </div>
     </div>
   )

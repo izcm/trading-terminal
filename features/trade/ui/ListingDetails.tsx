@@ -2,7 +2,9 @@
 
 import type { Listing } from '@/lib/dmrkt-indexer/types/listing'
 import { DetailFields, type DetailField } from '@/ui/molecules/DetailFields'
-import { formatTsUTC, shortAddr } from '@/domain/shared/types'
+
+import { shortAddr } from '@/domain/shared/utils/fmt/hex'
+import { formatTsUTC } from '@/domain/shared/utils/time'
 
 type Props = {
   listing: Listing | null

@@ -1,7 +1,13 @@
 'use client'
 
 import type { Sale } from '@/domain/sale'
-import { formatEth2, formatTsUTC, shortAddr } from '@/domain/shared/types'
+
+// todo: decouple here
+import { formatEth2 } from '@/lib/blockchain/utils/bigint'
+
+import { shortAddr } from '@/domain/shared/utils/fmt/hex'
+import { formatTsUTC } from '@/domain/shared/utils/time'
+
 import { Stat } from '../Stat'
 
 type Props = {

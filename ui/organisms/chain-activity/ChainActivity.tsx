@@ -4,13 +4,17 @@ import { useMemo, useState } from 'react'
 
 import 'chart.js/auto'
 
+// todo: decouple
+import { formatEth2 } from '@/lib/blockchain/utils/bigint'
+
 import type { Sale } from '@/domain/sale'
+
 import { aggregateSales, floor } from '@/domain/shared/utils/analyze'
+import { shortAddr } from '@/domain/shared/utils/fmt/hex'
+import type { TimeUnit } from '@/domain/shared/utils/time'
 
-import { formatEth2, shortAddr, type TimeUnit } from '@/domain/shared/types'
-
-import { ArrowList, ArrowRow, Modal } from '@/ui/components/atoms'
-import { SettlementRow, Stat } from '@/ui/molecules'
+import { ArrowRow, Modal } from '@/ui/atoms'
+import { ArrowList, SettlementRow, Stat } from '@/ui/molecules'
 
 import { SalesReceipt } from '../../../features/sales/ui/SalesReceipt'
 import { Chart } from '../../../features/sales/ui/Charts'

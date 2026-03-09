@@ -1,11 +1,13 @@
+'use client'
+
 import { useState } from 'react'
 import { CreditCard, Layers } from 'lucide-react'
 
-import { useFillOrder } from '@/lib/blockchain'
+import { useFillOrder } from '../hooks/fill-order.use'
 import type { Listing } from '@/lib/dmrkt-indexer/types/listing'
 
-import { Modal } from '@/ui/components/atoms'
-import { NFTSelect } from '@/ui/molecules'
+import { Modal } from '@/ui/atoms'
+import { NFTSelect } from './NFTSelect'
 
 import { ListingDetails } from './ListingDetails'
 import { NFTSummary } from '../../../ui/organisms/NFTSummary'

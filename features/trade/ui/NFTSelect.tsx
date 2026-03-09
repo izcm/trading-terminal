@@ -3,11 +3,10 @@
 import { useState } from 'react'
 
 import type { Hex } from '@/domain/shared/types/eth'
+import { shortAddr } from '@/domain/shared/utils/fmt/hex'
 
-import { TextInput } from '@/ui/components/atoms'
-import { shortAddr } from '@/domain/shared/types'
-import { getImageFromTokenURI } from '@/domain/shared/utils/image'
 import { NFTSummary } from '@/ui/organisms/NFTSummary'
+import { TextInput } from '@/ui/atoms'
 
 type Props = {
   chainId: number
