@@ -32,5 +32,5 @@ export type Sale = {
   logIndex: number
 
   nftCollection?: NFTCollection | null
-  listing?: Listing | null
+  order?: Listing | null
 }

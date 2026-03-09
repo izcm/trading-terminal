@@ -1,4 +1,5 @@
 import type { ChartDataset } from 'chart.js'
+
 const purpleShades = [
   'rgba(99, 107, 255, 0.32)',
   'rgba(109, 117, 255, 0.24)',
@@ -20,6 +21,7 @@ export type CoreChartProps = {
 
 export const defaultOptions = {
   responsive: true,
+  maintainAspectRatio: false,
 
   plugins: {
     legend: {
@@ -32,6 +34,9 @@ export const defaultOptions = {
 
   scales: {
     x: {
+      ticks: {
+        display: false,
+      },
       stacked: true,
     },
     y: {

@@ -73,7 +73,7 @@ export function Tab<T extends { id: string }>({
         </ArrowList>
       </div>
 
-      <div className="basis-1/4 h-full">{selected && sidePanel(selected)}</div>
+      <div className="w-[270px]  h-full flex flex-col gap-4">{selected && sidePanel(selected)}</div>
     </div>
   )
 }

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 
 import { FeedTab, FeedProps } from './FeedTab'
 import { SalesTab, SalesProps } from './SalesTab'
+import { NavSidebar } from '@/ui/organisms'
 
 type View = 'feed' | 'sales'
 
@@ -34,12 +35,18 @@ export function MarketplaceView({ feedProps, salesProps, initialView }: Props) {
   }, [])
 
   return (
-    <div className="h-full flex flex-col gap-4">
-      <div className="basis-1/20 items-center rounded-2xl bg-surface/24">
-        <span>hello</span>
-      </div>
-      {view === 'feed' && <FeedTab {...feedProps} />}
-      {view === 'sales' && <SalesTab {...salesProps} />}
+    <div className="flex h-screen font-mono">
+      <NavSidebar />
+      <main className="flex-1 mx-auto p-4 max-w-7xl">
+        {/* Skip navigation link */}
+        <div className="h-full flex flex-col gap-4">
+          <div className="basis-1/20 items-center rounded-2xl bg-surface/24">
+            <span>hello</span>
+          </div>
+          {view === 'feed' && <FeedTab {...feedProps} />}
+          {view === 'sales' && <SalesTab {...salesProps} />}
+        </div>
+      </main>
     </div>
   )
 }

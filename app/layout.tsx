@@ -24,9 +24,7 @@ export default function RootLayout({
         >
           Skip Header
         </a> */}
-        <Providers>
-          <AppShell>{children}</AppShell>
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   )

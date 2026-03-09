@@ -2,9 +2,10 @@
 
 import { Chart } from 'react-chartjs-2'
 
-import type { CoreChartProps } from './primitives'
-import { defaultOptions as options } from './primitives'
+import type { CoreChartProps } from './defaults'
+import { defaultOptions as options } from './defaults'
 
+// do onResize https://www.chartjs.org/docs/latest/configuration/responsive.html
 export function BaseChart({ type, labels, datasets }: CoreChartProps) {
   return (
     <div className="w-full h-full">

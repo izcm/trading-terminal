@@ -9,8 +9,7 @@ import { aggregateSales } from '@/domain/shared/utils/analyze'
 
 import { SalesReceipt } from '@/features/sales/ui/SalesReceipt'
 
-import { Tab, TabUIProps } from '@/ui/organisms/core/Tab'
-import { NFTSummary } from '@/ui/organisms/NFTSummary'
+import { Tab, TabUIProps, NFTSummary } from '@/ui/organisms'
 import { SettlementRow } from '@/ui/molecules'
 import { Chart } from '@/features/sales/ui/Charts'
 
@@ -21,18 +20,17 @@ export type SalesProps = {
 
 function makeAnalyticsArea(sales: Sale[]) {
   const analytics = useMemo(() => {
-    return aggregateSales(sales, 'week')
+    return aggregateSales(sales, 'day')
   }, [sales])
 
   const totalVolume = sales.reduce((sum, sale) => sum + BigInt(sale.price), 0n)
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-3">
       <div className="flex items-center justify-evenly card p-2">
         <span>
           sales <strong>{sales.length}</strong>
         </span>
-
         <span>
           users <strong>{Array.from(analytics.byActor).length}</strong>
         </span>
@@ -41,8 +39,8 @@ function makeAnalyticsArea(sales: Sale[]) {
           volume <strong>{totalVolume}</strong>
         </span>
       </div>
-      <div className="card h-[210px]">
-        <Chart analytics={analytics} sales={sales} timeUnit={'week'} />
+      <div className="card h-[200px] flex ">
+        <Chart analytics={analytics} sales={sales} timeUnit={'day'} />
       </div>
     </div>
   )
@@ -53,14 +51,10 @@ const mode: Omit<TabUIProps<Sale>, 'secondaryView'> = {
   galleryItem: item => <SettlementRow sale={item} />,
   sidePanel: item => {
     return (
-      <div className="flex flex-col gap-4 h-full">
+      <div className="flex flex-col gap-3 h-full">
         <div className="card">
           {item && (
-            <NFTSummary
-              chainId={item?.chainId}
-              address={item?.collection}
-              tokenId={item?.tokenId}
-            />
+            <NFTSummary chainId={item.chainId} address={item.collection} tokenId={item.tokenId} />
           )}
         </div>
         <div className="h-full card">

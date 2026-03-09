@@ -52,7 +52,7 @@ export function ArrowList<T>({
       }}
     >
       {items.map(item => {
-        const isSelected = selectedId !== null && getId(item) === selectedId
+        const isSelected = selectedId !== undefined && getId(item) === selectedId
 
         return children({ item, isSelected, onSelect: () => onSelect(item) })
       })}
