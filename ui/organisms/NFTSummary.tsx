@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 
-import { Hex } from '@/domain/shared/types/eth'
-
+// todo: di?
 import { useTokenURI } from '@/lib/blockchain'
+
+import { Hex } from '@/domain/shared/types/eth'
 import { getImageFromTokenURI } from '@/domain/shared/utils/image'
 
 type NFTAttribute = {
@@ -41,7 +42,7 @@ export function NFTSummary({ chainId, address, tokenId }: Props) {
   }, [tokenURI])
 
   return (
-    <div className="shrink-0 flex justify-center overflow-hidden">
+    <div className="flex justify-center">
       <img src={previewSrc} className="w-full object-cover" alt="token preview" />
     </div>
   )

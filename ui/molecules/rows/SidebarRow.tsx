@@ -1,10 +1,11 @@
 import type { ReactNode } from 'react'
+
 type NavItemProps = {
   active?: boolean
   children: ReactNode
 }
 
-export function NavItem({ active = false, children }: NavItemProps) {
+export function SidebarRow({ active = false, children }: NavItemProps) {
   return (
     <div
       className={`

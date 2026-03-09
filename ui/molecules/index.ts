@@ -8,8 +8,7 @@ export * from './rows/SettlementRow'
 export * from './rows/TopCollectionRow'
 
 // nav
-export * from './navigation/NavItem'
-export * from './navigation/NavContainer'
+export * from './rows/SidebarRow'
 
 // root
 export * from './Stat'

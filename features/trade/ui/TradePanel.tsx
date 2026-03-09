@@ -41,7 +41,7 @@ export function TradePanel({ listing }: Props) {
   return (
     <div className="flex flex-col gap-3 h-full">
       {/* preview */}
-      <div className="h-1/3 card">
+      <div className="card">
         <NFTSummary
           chainId={listing.chainId}
           address={listing.collection}

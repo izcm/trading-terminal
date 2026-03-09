@@ -2,22 +2,22 @@
 
 import { ReactNode, useState } from 'react'
 
-import { Sale } from '@/domain/sale'
-import { Paginated } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
-import { Feed, FeedProps } from './Feed'
+import { FeedTab, FeedProps } from './FeedTab'
+import { SalesTab, SalesProps } from './SalesTab'
 
 type Props = {
   feedProps: FeedProps
+  salesProps: SalesProps
 }
 
-export function MarketplaceView({ feedProps }: Props) {
-  const [view, setView] = useState<'feed' | 'activity'>('feed')
+export function MarketplaceView({ feedProps, salesProps }: Props) {
+  const [view, setView] = useState<'feed' | 'sales'>('sales')
 
   return (
     <>
       {/* tabs */}
-      {view === 'feed' && <Feed {...feedProps} />}
-      {/* {view === 'activity' && <ActivityTab {...activityProps} />} */}
+      {view === 'feed' && <FeedTab {...feedProps} />}
+      {view === 'sales' && <SalesTab {...salesProps} />}
     </>
   )
 }

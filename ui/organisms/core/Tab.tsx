@@ -2,54 +2,54 @@
 
 import { ReactNode, useEffect, useState } from 'react'
 
+import { Result } from '@/domain/shared/types/http'
+
 import { ArrowRow } from '@/ui/atoms'
 import { ArrowList } from '@/ui/molecules'
 
-import { Paginated } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
-
 export type TabUIProps<T> = {
-  header: ReactNode
-  secondaryView: ReactNode
-  browseItem: (item: T) => ReactNode
+  secondaryView?: ReactNode
+  getGalleryItems: (
+    limit: number,
+    cursor: string
+  ) => Promise<Result<{ items: T[]; nextCursor: string | null }>>
+  galleryItem: (item: T) => ReactNode
   sidePanel: (item: T) => ReactNode
 }
 
 export function Tab<T extends { id: string }>({
-  header,
   secondaryView,
-  browseItem,
+  getGalleryItems,
+  galleryItem,
   sidePanel,
   initialItems,
   initialCursor,
-}: TabUIProps<T> & Paginated<T>) {
+}: TabUIProps<T> & { initialItems: T[]; initialCursor: string | null }) {
   const [nextCursor, setNextCursor] = useState<string | null>(initialCursor)
 
   const [items, setItems] = useState<T[]>(initialItems)
   const [selected, setSelected] = useState<T | null>(initialItems.length ? initialItems[0] : null)
 
   // todo: make this on scroll
-  // useEffect(() => {
-  //   // if (!nextCursor) return
+  useEffect(() => {
+    if (!nextCursor) return
 
-  //   const fetchMore = async () => {
-  //     const res = await getDmrktItems<T>(nextCursor)
+    const fetchMore = async () => {
+      const res = await getGalleryItems(10, nextCursor)
 
-  //     if (res.ok) {
-  //       const { nextCursor, items: newItems } = res.data
+      if (res.ok) {
+        const { nextCursor, items: newItems } = res.data
 
-  //       // setNextCursor(nextCursor)
-  //       setItems(prev => [...prev, ...newItems])
-  //     }
-  //   }
+        setNextCursor(nextCursor)
+        setItems(prev => [...prev, ...newItems])
+      }
+    }
 
-  //   fetchMore()
-  // }, [nextCursor])
+    fetchMore()
+  }, [nextCursor])
 
   return (
     <div className="h-full flex flex-col gap-4">
-      {/* ---------- HEADER ---------- */}
-      <div className="h-[40px] flex self-end ">{header}</div>
-
       <div className="flex gap-4 flex-1 overflow-hidden">
         {/* LEFT COLUMN */}
         <div className="flex-1 flex flex-col gap-4 overflow-none">
@@ -68,13 +68,13 @@ export function Tab<T extends { id: string }>({
                 onSelect={onSelect}
                 className="gap-4 p-2"
               >
-                {browseItem(item)}
+                {galleryItem(item)}
               </ArrowRow>
             )}
           </ArrowList>
         </div>
 
-        <div className="basis-1/4">{selected && sidePanel(selected)}</div>
+        <div className="basis-1/4 h-full">{selected && sidePanel(selected)}</div>
       </div>
     </div>
   )

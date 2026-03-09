@@ -5,14 +5,6 @@ export type Fill = {
   tokenId: bigint
 }
 
-export type Order = OrderCore & {
-  signature: {
-    v: number
-    r: Hex
-    s: Hex
-  }
-}
-
 type OrderCore = {
   side: number
   actor: Hex
@@ -24,6 +16,14 @@ type OrderCore = {
   start: number
   end: number
   nonce: string
+}
+
+export type Order = OrderCore & {
+  signature: {
+    v: number
+    r: Hex
+    s: Hex
+  }
 }
 
 type OrderCore712 = {

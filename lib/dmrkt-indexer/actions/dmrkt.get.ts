@@ -1,10 +1,28 @@
 import { Result } from '@/domain/shared/types/http'
+import { Listing } from '../types/listing'
+import { Sale } from '@/domain/sale'
 
 export const baseUrl = process.env.NEXT_PUBLIC_INDEXER_ENDPOINT_URL
 
 export type Paginated<T> = {
-  initialItems: T[]
-  initialCursor: string | null
+  items: T[]
+  nextCursor: string | null
+}
+
+export async function getDmrktListings(limit: number = 10, cursor: string | null = null) {
+  return getDmrktItems<Listing>(
+    'orders',
+    `limit=${limit}&status=active&include=nftCollection`,
+    cursor
+  )
+}
+
+export async function getDmrktSales(limit: number, cursor: string | null = null) {
+  return getDmrktItems<Sale>(
+    'settlements',
+    `limit=${limit}&include=nftCollection&include=order`,
+    cursor
+  )
 }
 
 export async function getDmrktItems<T>(
@@ -32,8 +50,8 @@ export async function getDmrktItems<T>(
     return {
       ok: true,
       data: {
-        initialItems: data.items as T[],
-        initialCursor: data.nextCursor ?? null,
+        items: data.items as T[],
+        nextCursor: data.nextCursor ?? null,
       },
     }
   } catch (err) {

@@ -2,6 +2,7 @@
 import { Plus } from 'lucide-react'
 
 // todo: decouple
+import { getDmrktListings } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
 import { Listing } from '@/lib/dmrkt-indexer/types/listing'
 import { TopNFTCollection } from '@/lib/dmrkt-indexer/types/nft-collection'
 
@@ -30,13 +31,18 @@ function TopCollectionsList({ collections }: { collections: TopNFTCollection[] }
 }
 
 const mode: Omit<TabUIProps<Listing>, 'secondaryView'> = {
-  header: (
-    <button className="btn btn-secondary self-end">
-      <Plus /> create order
-    </button>
-  ),
-  browseItem: item => <ListingRow listing={item} />,
-  sidePanel: item => <TradePanel listing={item} />,
+  getGalleryItems: getDmrktListings,
+  galleryItem: item => <ListingRow listing={item} />,
+  sidePanel: item => {
+    return (
+      <div className="flex flex-col h-full gap-4">
+        <button className="btn btn-secondary">
+          <Plus /> make new order
+        </button>
+        <TradePanel listing={item} />
+      </div>
+    )
+  },
 }
 
 export type FeedProps = {
@@ -47,13 +53,13 @@ export type FeedProps = {
   initialCursor: string | null
 }
 
-export function Feed({ initialItems, initialCursor }: FeedProps) {
+export function FeedTab({ initialItems, initialCursor }: FeedProps) {
   return (
     <>
       <Tab<Listing>
         secondaryView={<TopCollectionsList collections={initialItems.topCollections} />}
-        header={mode.header}
-        browseItem={mode.browseItem}
+        getGalleryItems={mode.getGalleryItems}
+        galleryItem={mode.galleryItem}
         sidePanel={mode.sidePanel}
         initialItems={initialItems.listings}
         initialCursor={initialCursor}
