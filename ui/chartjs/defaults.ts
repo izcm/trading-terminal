@@ -37,10 +37,10 @@ export const defaultOptions = {
       ticks: {
         display: false,
       },
-      stacked: true,
+      stacked: false,
     },
     y: {
-      stacked: true,
+      stacked: false,
     },
   },
 }
@@ -72,6 +72,7 @@ const datasetPresets: DatasetPresetMap = {
     borderColor: defaultLook.color,
     borderWidth: defaultLook.borderWidth,
     borderRadius: defaultLook.borderRadius,
+    barThickness: 20,
   },
 
   line: {

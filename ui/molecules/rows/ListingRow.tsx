@@ -28,7 +28,7 @@ export function ListingRow({ listing }: { listing: Listing }) {
       </div>
 
       {/* token info */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col">
         <span className="font-semibold flex items-center gap-1">
           {collection.symbol}{' '}
           {isCb ? (
@@ -70,10 +70,7 @@ export function ListingRow({ listing }: { listing: Listing }) {
       </div>
 
       {/* price */}
-      <div className="flex flex-col items-end leading-tight">
-        <span className="text-sm font-semibold">{formatEth2(BigInt(listing.price))} ETH</span>
-        <span className="text-xs text-muted">{shortAddr(listing.currency)}</span>
-      </div>
+      <span className="flex font-semibold">{formatEth2(BigInt(listing.price))} ETH</span>
     </>
   )
 }

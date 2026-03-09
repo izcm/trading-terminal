@@ -8,7 +8,7 @@ import { defaultOptions as options } from './defaults'
 // do onResize https://www.chartjs.org/docs/latest/configuration/responsive.html
 export function BaseChart({ type, labels, datasets }: CoreChartProps) {
   return (
-    <div className="w-full h-full">
+    <div className="mx-auto  w-9/10">
       <Chart type={type} data={{ labels, datasets }} options={options} />
     </div>
   )

@@ -49,9 +49,9 @@ export function Tab<T extends { id: string }>({
   }, [nextCursor])
 
   return (
-    <div className="flex gap-4 flex-1 overflow-hidden">
+    <div className="flex gap-4 overflow-hidden">
       {/* LEFT COLUMN */}
-      <div className="flex-1 flex flex-col gap-4">
+      <div className="basis-3/4 grow-0 flex flex-col gap-4">
         {secondaryView(items)}
         <ArrowList
           items={items}
@@ -65,7 +65,7 @@ export function Tab<T extends { id: string }>({
               key={item.id}
               isSelected={isSelected}
               onSelect={onSelect}
-              className="gap-4 p-2 flex w-full justify-between h-[54px]"
+              className="gap-4 p-2 flex justify-between w-full h-[54px]"
             >
               {galleryItem(item)}
             </ArrowRow>
@@ -73,7 +73,9 @@ export function Tab<T extends { id: string }>({
         </ArrowList>
       </div>
 
-      <div className="w-[270px]  h-full flex flex-col gap-4">{selected && sidePanel(selected)}</div>
+      <div className="w-1/4 max-w-[280px] shrink-0 h-full flex flex-col gap-4">
+        {selected && sidePanel(selected)}
+      </div>
     </div>
   )
 }

@@ -39,7 +39,7 @@ function makeAnalyticsArea(sales: Sale[]) {
           volume <strong>{totalVolume}</strong>
         </span>
       </div>
-      <div className="card h-[200px] flex ">
+      <div className="card w-full grow-0">
         <Chart analytics={analytics} sales={sales} timeUnit={'day'} />
       </div>
     </div>
