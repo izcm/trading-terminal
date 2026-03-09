@@ -5,7 +5,6 @@ import { formatEth2 } from '@/lib/blockchain/utils/bigint'
 import type { Listing } from '@/lib/dmrkt-indexer/types/listing'
 
 import { shortAddr } from '@/domain/shared/utils/fmt/hex'
-import { formatTsUTC } from '@/domain/shared/utils/time'
 
 export function ListingRow({ listing }: { listing: Listing }) {
   const isAsk = listing.type === 'ask'

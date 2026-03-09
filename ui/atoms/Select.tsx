@@ -1,5 +1,3 @@
-'use client'
-
 interface SelectProps {
   options: string[]
   value?: string

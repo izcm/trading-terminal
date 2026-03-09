@@ -1,5 +1,3 @@
-'use client'
-
 interface TextInputProps {
   placeholder?: string
   value?: string

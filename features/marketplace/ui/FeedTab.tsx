@@ -1,5 +1,3 @@
-'use client'
-
 // todo: decouple
 import { getDmrktListings } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
 import { Listing } from '@/lib/dmrkt-indexer/types/listing'

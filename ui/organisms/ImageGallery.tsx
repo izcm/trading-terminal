@@ -1,5 +1,3 @@
-'use client'
-
 import { ImageView } from '@/ui/molecules'
 
 type GalleryProps<T> = {

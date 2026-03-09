@@ -1,5 +1,4 @@
 import type { Sale } from '@/domain/sale'
-import { formatEth2 } from '@/domain/shared/types'
 
 type Props = {
   sale: Sale

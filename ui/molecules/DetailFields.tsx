@@ -1,5 +1,3 @@
-'use client'
-
 export type DetailField<T> = {
   label: string
   getValue: (item: T) => string | number

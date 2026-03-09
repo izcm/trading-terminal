@@ -1,4 +1,4 @@
-'use client'
+'use client' // boundry is here!
 
 import { useEffect, useState } from 'react'
 

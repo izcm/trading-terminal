@@ -1,5 +1,3 @@
-'use client'
-
 import { useMemo } from 'react'
 
 import { getDmrktSales } from '@/lib/dmrkt-indexer/actions/dmrkt.get'

@@ -1,6 +1,4 @@
-'use client'
-
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 interface SelectProps {
   options: Array<{ label: string; value: string }>
