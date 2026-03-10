@@ -1,7 +1,7 @@
 import { Chart } from 'react-chartjs-2'
 
-import type { CoreChartProps } from './defaults'
-import { defaultOptions as options } from './defaults'
+import type { CoreChartProps } from './chartjs-defaults'
+import { defaultOptions as options } from './chartjs-defaults'
 
 // do onResize https://www.chartjs.org/docs/latest/configuration/responsive.html
 export function BaseChart({ type, labels, datasets }: CoreChartProps) {

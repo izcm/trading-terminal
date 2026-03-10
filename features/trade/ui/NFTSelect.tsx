@@ -3,7 +3,7 @@
 import { useState } from 'react'
 
 import type { Hex } from '@/domain/shared/types/eth'
-import { shortAddr } from '@/domain/shared/utils/fmt/hex'
+import { addrShort } from '@/domain/shared/utils/fmt/hex'
 
 import { NFTSummary } from '@/ui/organisms/NFTSummary'
 import { TextInput } from '@/ui/atoms'
@@ -29,7 +29,7 @@ export function NFTSelect({ chainId, collection, validation, onValidate, onConfi
 
   const { address, symbol } = collection
 
-  const title = 'token id in ' + (symbol !== undefined ? symbol : shortAddr(address))
+  const title = 'token id in ' + (symbol !== undefined ? symbol : addrShort(address))
 
   const saneInput = (input: string) => /^\d+$/.test(input)
 

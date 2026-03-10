@@ -4,7 +4,7 @@ export * from './ImageView'
 // rows
 export * from './rows/CollectionRow'
 export * from './rows/ListingRow'
-export * from './rows/SettlementRow'
+export * from './rows/SaleRow'
 export * from './rows/TopCollectionRow'
 
 // nav

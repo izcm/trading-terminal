@@ -15,7 +15,7 @@ type Props = {
 }
 
 export function MarketplaceView({ feedProps, salesProps, initialView }: Props) {
-  const [view, setView] = useState<View>('sales')
+  const [view, setView] = useState<View>(initialView)
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {

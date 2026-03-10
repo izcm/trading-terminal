@@ -1,12 +1,17 @@
 import { Result } from '@/domain/shared/types/http'
 import { Listing } from '../types/listing'
 import { Sale } from '@/domain/sale'
+import { TopNFTCollection } from '../types/nft-collection'
 
 export const baseUrl = process.env.NEXT_PUBLIC_INDEXER_ENDPOINT_URL
 
 export type Paginated<T> = {
   items: T[]
   nextCursor: string | null
+}
+
+export async function getDmrktTopCollections(limit: number) {
+  return getDmrktItems<TopNFTCollection>('nft-collections/top', `limit=${limit}`, null)
 }
 
 export async function getDmrktListings(limit: number = 10, cursor: string | null = null) {

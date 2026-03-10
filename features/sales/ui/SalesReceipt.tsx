@@ -23,7 +23,7 @@ export function SalesReceipt({ sale }: Props) {
 
           <Row label="Chain" value={sale.chainId} />
           <Row label="Block" value={sale.blockNumber} />
-          <Row label="Timestamp" value={sale.timestamp} />
+          <Row label="Timestamp" value={sale.blockTimestamp} />
           <Row label="Tx" value={sale.txHash} mono />
         </section>
       </div>

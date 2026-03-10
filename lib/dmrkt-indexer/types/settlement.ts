@@ -59,7 +59,7 @@ export const settlementDocToSale = (s: SettlementDoc): Sale => {
     price: s.price,
 
     blockNumber: s.execution.block.number,
-    timestamp: s.execution.block.timestamp * 1000,
+    blockTimestamp: s.execution.block.timestamp * 1000,
 
     logIndex: s.execution.logIndex,
   }

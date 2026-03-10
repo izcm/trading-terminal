@@ -39,7 +39,7 @@ export function TradePanel({ listing }: Props) {
   }
 
   return (
-    <div className="flex flex-col gap-3 h-full">
+    <div className="flex flex-col gap-2 h-full">
       {/* preview */}
       <div className="card">
         <NFTSummary

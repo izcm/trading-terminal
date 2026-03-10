@@ -2,14 +2,15 @@ import { useMemo } from 'react'
 
 import { getDmrktSales } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
 
+import { Chart } from '@/features/sales/ui/Charts'
+import { SaleDetails } from '@/features/sales/ui/SaleDetails'
+
 import { Sale } from '@/domain/sale'
 import { aggregateSales } from '@/domain/shared/utils/analyze'
 
-import { SalesReceipt } from '@/features/sales/ui/SalesReceipt'
-
 import { Tab, TabUIProps, NFTSummary } from '@/ui/organisms'
-import { SettlementRow } from '@/ui/molecules'
-import { Chart } from '@/features/sales/ui/Charts'
+import { SaleRow } from '@/ui/molecules'
+import { Details } from '@/ui/organisms/Details'
 
 export type SalesProps = {
   initialItems: Sale[]
@@ -37,7 +38,7 @@ function makeAnalyticsArea(sales: Sale[]) {
           volume <strong>{totalVolume}</strong>
         </span>
       </div>
-      <div className="card w-full grow-0">
+      <div className="card pt-2 w-full grow-0">
         <Chart analytics={analytics} sales={sales} timeUnit={'day'} />
       </div>
     </div>
@@ -46,18 +47,20 @@ function makeAnalyticsArea(sales: Sale[]) {
 
 const mode: Omit<TabUIProps<Sale>, 'secondaryView'> = {
   getGalleryItems: getDmrktSales,
-  galleryItem: item => <SettlementRow sale={item} />,
+  galleryItem: item => <SaleRow sale={item} />,
   sidePanel: item => {
     return (
-      <div className="flex flex-col gap-3 h-full">
+      <div className="flex flex-col gap-2 h-full">
         <div className="card">
           {item && (
             <NFTSummary chainId={item.chainId} address={item.collection} tokenId={item.tokenId} />
           )}
         </div>
-        <div className="h-full card">
-          <SalesReceipt sale={item} />
+        <div className="flex flex-col gap-2 my-1">
+          <button className="btn btn-ghost">open receipt 2.0</button>
+          <span className="text-xs text-muted">gas costs, tx inputs etc.</span>
         </div>
+        <SaleDetails sale={item} />
       </div>
     )
   },

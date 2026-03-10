@@ -63,7 +63,7 @@ export function Tab<T extends { id: string }>({
               key={item.id}
               isSelected={isSelected}
               onSelect={onSelect}
-              className="gap-4 p-2 flex justify-between w-full h-[54px]"
+              className="gap-4 px-4 flex justify-between w-full h-[56px]"
             >
               {galleryItem(item)}
             </ArrowRow>

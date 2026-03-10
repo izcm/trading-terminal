@@ -7,8 +7,9 @@ import type { aggregateSales } from '@/domain/shared/utils/analyze'
 import { timeKey, type TimeUnit } from '@/domain/shared/utils/time'
 
 import { BaseChart } from '@/ui/chartjs/BaseChart'
-import { createDataset } from '@/ui/chartjs/defaults'
-import '@/ui/chartjs/register'
+import { createDataset } from '@/ui/chartjs/chartjs-defaults'
+
+import '@/ui/chartjs/chartjs-register'
 
 type AnalyticsChartProps = {
   analytics: ReturnType<typeof aggregateSales>

@@ -15,7 +15,7 @@ function DetailRow({
 }) {
   return (
     <div className="flex justify-between">
-      <span className="text-zinc-500">{label}</span>
+      <span>{label}</span>
       <span className={className}>{value}</span>
     </div>
   )
