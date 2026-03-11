@@ -16,14 +16,14 @@ export function NFTCollectionsList({
       getId={(c: NFTCollection) => c.id}
       selectedId={undefined}
       onSelect={() => alert('hello')}
-      className={`shrink-0 flex flex-${flexDir} gap-4`}
+      className={`shrink-0 flex flex-${flexDir} gap-2`}
     >
       {({ item, isSelected, onSelect }) => (
         <ArrowRow
           key={item.id}
           isSelected={isSelected}
           onSelect={onSelect}
-          className="base-row flex p-2 card bg-secondary transition w-full"
+          className="base-row flex p-1 card bg-secondary transition w-full"
         >
           <NFTCollectionRow collection={item} />
         </ArrowRow>

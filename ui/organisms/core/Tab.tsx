@@ -57,7 +57,7 @@ export function Tab<T extends { id: string }>({
         }
       : {
           arrowList:
-            'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 lg-rounded p-2',
+            'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 lg-rounded',
           arrowRow: 'outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-lg block',
         }
 

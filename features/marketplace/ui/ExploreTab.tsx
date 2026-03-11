@@ -10,9 +10,9 @@ import { getImageFromTokenURI } from '@/lib/utils/image'
 
 import { NFT } from '@/domain/nft'
 
-import { Tab } from '@/ui/organisms'
-import { NFTCollectionsList } from '@/ui/organisms/NFTCollectionsList'
+import { Tab, NFTCollectionsList } from '@/ui/organisms'
 import { GalleryItem } from '@/ui/molecules'
+import { TextInput } from '@/ui/atoms'
 
 export type CollectionsProps = {
   initialItems: {
@@ -55,7 +55,10 @@ export function ExploreTab({ initialItems, initialCursor }: CollectionsProps) {
     <>
       <Tab<NFT>
         secondaryView={() => (
-          <NFTCollectionsList collections={initialItems.collections} flexDir="row" />
+          <div className="flex flex-col gap-4">
+            <NFTCollectionsList collections={initialItems.collections} flexDir="row" />
+            <TextInput />
+          </div>
         )}
         getGalleryItems={getGalleryItems}
         galleryItem={item => (

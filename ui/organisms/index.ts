@@ -1,5 +1,6 @@
 // root
 export * from './NFTSummary'
+export * from './NFTCollectionsList'
 
 // core
 export * from './core/Header'
