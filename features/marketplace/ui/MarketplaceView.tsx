@@ -2,20 +2,29 @@
 
 import { useEffect, useState } from 'react'
 
-import { FeedTab, FeedProps } from './FeedTab'
-import { SalesTab, SalesProps } from './SalesTab'
+import { FeedTab, type FeedProps } from './FeedTab'
+import { SalesTab, type SalesProps } from './SalesTab'
+import { NFTCollectionsTab, type CollectionsProps } from './NFTCollectionsTab'
+
 import { NavSidebar } from '@/ui/organisms'
 
-type View = 'feed' | 'sales'
+type View = 'feed' | 'sales' | 'explore'
 
 type Props = {
   feedProps: FeedProps
   salesProps: SalesProps
+  collectionsProps: CollectionsProps
   initialView: View
 }
 
-export function MarketplaceView({ feedProps, salesProps, initialView }: Props) {
+export function MarketplaceView({
+  feedProps,
+  salesProps,
+  collectionsProps: exploreProps,
+  initialView,
+}: Props) {
   const [view, setView] = useState<View>(initialView)
+  console.log(exploreProps)
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -28,6 +37,7 @@ export function MarketplaceView({ feedProps, salesProps, initialView }: Props) {
 
       if (e.key === 'f') setView('feed')
       if (e.key === 's') setView('sales')
+      if (e.key === 'e') setView('explore')
     }
 
     window.addEventListener('keydown', onKey)
@@ -46,6 +56,7 @@ export function MarketplaceView({ feedProps, salesProps, initialView }: Props) {
           <>
             {view === 'feed' && <FeedTab {...feedProps} />}
             {view === 'sales' && <SalesTab {...salesProps} />}
+            {view === 'explore' && <NFTCollectionsTab {...exploreProps} />}
           </>
         </div>
       </main>

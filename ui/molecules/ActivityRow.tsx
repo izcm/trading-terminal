@@ -1,37 +1,29 @@
-// todo: decouple this
+// todo: decouple
 import { formatEth2 } from '@/lib/blockchain/utils/bigint'
-import type { Listing } from '@/lib/dmrkt-indexer/types/listing'
 
-import { addrShort } from '@/domain/shared/utils/fmt/hex'
+import { Activity } from '@/domain/shared/types/activity'
 import { tsSuperShort } from '@/domain/shared/utils/time'
 
-export function ListingRow({ listing }: { listing: Listing }) {
-  const isAsk = listing.type === 'ask'
-  const isCb = !isAsk && listing.isCollectionBid
+export function ActivityRow({ activity }: { activity: Activity }) {
+  const { activityType, isCollectionBid, timestamp, collection, tokenId, price } = activity
 
-  const collection = listing.nftCollection ?? { name: 'unknown', symbol: 'unknown' }
-
-  // each row should have icon (if not tokenuri)
-  // ◼ DSEAL #36
-  // ◉ DNODE #5
-  // ◆ DGREM #81
   return (
     <>
       {/* Type Badge */}
       <div className="flex items-center justify-center gap-4 ">
         <span
-          className={`px-3 text-center text-xs font-semibold rounded ${isAsk ? 'text-ask/70' : 'text-bid/70'}`}
+          className={`px-2 text-center text-xs font-semibold rounded ${activityType === 'ask' ? 'text-ask/70' : 'text-bid/70'}`}
         >
-          {listing.type.toUpperCase()}
+          {activityType.toUpperCase()}
         </span>
-        <span>{tsSuperShort(listing.start)}</span>
+        <span>{tsSuperShort(timestamp)}</span>
       </div>
       <div className="flex-1 flex justify-between">
         {/* token info */}
         <div className="flex flex-col">
           <span className="font-semibold flex items-center gap-1">
-            {collection.symbol}{' '}
-            {isCb ? (
+            {collection}{' '}
+            {isCollectionBid ? (
               <>
                 <span
                   className="inline-flex items-center justify-center w-4 h-4 rounded bg-accent/10 text-accent"
@@ -62,13 +54,13 @@ export function ListingRow({ listing }: { listing: Listing }) {
                 </span>
               </>
             ) : (
-              <>#{listing.tokenId}</>
+              <>#{tokenId}</>
             )}
           </span>
         </div>
 
         {/* price */}
-        <span className="flex font-semibold">{formatEth2(BigInt(listing.price))} ETH</span>
+        <span className="flex font-semibold">{formatEth2(BigInt(price))} ETH</span>
       </div>
     </>
   )

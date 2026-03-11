@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useTokenURI } from '@/lib/blockchain'
 
 import { Hex } from '@/domain/shared/types/eth'
-import { getImageFromTokenURI } from '@/domain/shared/utils/image'
+import { getImageFromTokenURI } from '@/lib/utils/image'
 
 type NFTAttribute = {
   trait_type: string

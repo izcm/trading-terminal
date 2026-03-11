@@ -1,5 +1,4 @@
 // root
-export * from './ImageGallery'
 export * from './NFTSummary'
 
 // core

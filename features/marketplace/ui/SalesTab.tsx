@@ -1,16 +1,17 @@
 import { useMemo } from 'react'
 
 import { getDmrktSales } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
+import { formatEth2 } from '@/lib/blockchain/utils/bigint'
 
 import { Chart } from '@/features/sales/ui/Charts'
 import { SaleDetails } from '@/features/sales/ui/SaleDetails'
 
-import { Sale } from '@/domain/sale'
+import type { Sale } from '@/domain/sale'
+import { activity } from '@/domain/shared/types/activity'
 import { aggregateSales } from '@/domain/shared/utils/analyze'
 
 import { Tab, TabUIProps, NFTSummary } from '@/ui/organisms'
-import { SaleRow } from '@/ui/molecules'
-import { Details } from '@/ui/organisms/Details'
+import { ActivityRow } from '@/ui/molecules'
 
 export type SalesProps = {
   initialItems: Sale[]
@@ -35,7 +36,7 @@ function makeAnalyticsArea(sales: Sale[]) {
         </span>
 
         <span>
-          volume <strong>{totalVolume}</strong>
+          volume <strong>{formatEth2(totalVolume)}</strong>
         </span>
       </div>
       <div className="card pt-2 w-full grow-0">
@@ -47,7 +48,7 @@ function makeAnalyticsArea(sales: Sale[]) {
 
 const mode: Omit<TabUIProps<Sale>, 'secondaryView'> = {
   getGalleryItems: getDmrktSales,
-  galleryItem: item => <SaleRow sale={item} />,
+  galleryItem: item => <ActivityRow activity={activity.fromSale(item)} />,
   sidePanel: item => {
     return (
       <div className="flex flex-col gap-2 h-full">
@@ -57,7 +58,7 @@ const mode: Omit<TabUIProps<Sale>, 'secondaryView'> = {
           )}
         </div>
         <div className="flex flex-col gap-2 my-1">
-          <button className="btn btn-ghost">open receipt 2.0</button>
+          <button className="btn btn-secondary">open receipt 2.0</button>
           <span className="text-xs text-muted">gas costs, tx inputs etc.</span>
         </div>
         <SaleDetails sale={item} />

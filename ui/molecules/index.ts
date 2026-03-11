@@ -1,11 +1,8 @@
 // cards
-export * from './ImageView'
+export * from './GalleryItem'
 
 // rows
-export * from './rows/CollectionRow'
-export * from './rows/ListingRow'
-export * from './rows/SaleRow'
-export * from './rows/TopCollectionRow'
+export * from './rows/NFTCollectionRow'
 
 // nav
 export * from './rows/SidebarRow'
@@ -13,3 +10,5 @@ export * from './rows/SidebarRow'
 // root
 export * from './Stat'
 export * from './ArrowList'
+export * from './ActivityRow'
+export * from './DetailFields'

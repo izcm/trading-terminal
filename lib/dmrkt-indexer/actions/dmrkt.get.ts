@@ -1,17 +1,18 @@
-import { Result } from '@/domain/shared/types/http'
-import { Listing } from '../types/listing'
-import { Sale } from '@/domain/sale'
-import { TopNFTCollection } from '../types/nft-collection'
+import type { Paginated, Result } from '@/lib/utils/http'
+
+import type { Listing } from '../types/listing'
+import type { NFTCollection } from '../types/nft-collection'
+
+import type { Sale } from '@/domain/sale'
 
 export const baseUrl = process.env.NEXT_PUBLIC_INDEXER_ENDPOINT_URL
 
-export type Paginated<T> = {
-  items: T[]
-  nextCursor: string | null
+export async function getDmrktCollections(limit: number, cursor: string | null = null) {
+  return getDmrktItems<NFTCollection>('nft-collections', `limit=${limit}`, cursor)
 }
 
 export async function getDmrktTopCollections(limit: number) {
-  return getDmrktItems<TopNFTCollection>('nft-collections/top', `limit=${limit}`, null)
+  return getDmrktItems<NFTCollection>('nft-collections/top', `limit=${limit}`, null)
 }
 
 export async function getDmrktListings(limit: number = 10, cursor: string | null = null) {
@@ -60,6 +61,6 @@ export async function getDmrktItems<T>(
       },
     }
   } catch (err) {
-    return { ok: false, error: `Error getting items: ${err}` }
+    return { ok: false, error: `error getting items: ${err}` }
   }
 }

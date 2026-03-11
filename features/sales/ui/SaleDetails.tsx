@@ -6,15 +6,33 @@ import { Details } from '@/ui/organisms/Details'
 import type { DetailField } from '@/ui/molecules/DetailFields'
 
 const DETAILS_FIELD: DetailField<Sale>[] = [
-  { label: 'chain', getValue: s => s.chainId },
-  { label: 'buyer', getValue: s => addrShort(s.buyer) },
-  { label: 'seller', getValue: s => addrShort(s.seller) },
-  { label: 'tx hash', getValue: s => truncateHex(s.txHash) },
-  { label: 'block number', getValue: s => s.blockNumber },
+  {
+    label: 'chain',
+    getValue: s => s.chainId,
+  },
+  {
+    label: 'buyer',
+    getValue: s => addrShort(s.buyer),
+  },
+  {
+    label: 'seller',
+    getValue: s => addrShort(s.seller),
+  },
+  {
+    label: 'tx hash',
+    getValue: s => truncateHex(s.txHash),
+  },
+  {
+    label: 'block number',
+    getValue: s => s.blockNumber,
+  },
 ]
 
 const TIMING_FIELDS: DetailField<Sale>[] = [
-  { label: 'block timestamp', getValue: s => tsShort(s.timestamp) },
+  {
+    label: 'block timestamp',
+    getValue: s => tsShort(s.timestamp),
+  },
 ]
 
 const TITLE_FIELD: DetailField<Sale> = {

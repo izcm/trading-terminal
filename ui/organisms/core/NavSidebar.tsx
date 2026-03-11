@@ -24,7 +24,7 @@ const navItems = [
     id: 'sales',
   },
   {
-    title: 'collections',
+    title: 'explore',
     icon: LayoutGrid,
     id: 'explore',
   },

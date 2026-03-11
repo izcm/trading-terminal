@@ -1,25 +1,23 @@
 import type { Listing } from '@/lib/dmrkt-indexer/types/listing'
-import { DetailFields, type DetailField } from '@/ui/molecules/DetailFields'
 
 import { addrShort } from '@/domain/shared/utils/fmt/hex'
 import { tsShort } from '@/domain/shared/utils/time'
+
 import { Details } from '@/ui/organisms/Details'
+import type { DetailField } from '@/ui/molecules/DetailFields'
 
 const DETAIL_FIELDS: DetailField<Listing>[] = [
   {
     label: 'token id',
     getValue: l => (l.isCollectionBid ? 'any' : `#${l.tokenId}`),
-    className: 'font-mono',
   },
   {
     label: 'price',
     getValue: l => `${Number(l.price) / 1e18} ETH`,
-    className: 'font-semibold',
   },
   {
     label: 'seller',
     getValue: l => addrShort(l.actor),
-    className: 'font-mono',
   },
 ]
 

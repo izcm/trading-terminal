@@ -17,7 +17,7 @@ export function ArrowList<T>({
   children,
   className = '',
 }: ArrowListProps<T>) {
-  const base = 'card overflow-y-auto no-scrollbar'
+  const base = 'overflow-y-auto no-scrollbar'
   return (
     <ul
       className={`${base} ${className}`}

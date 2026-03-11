@@ -1,5 +1,6 @@
-import { ReactNode } from 'react'
-import { DetailFields, type DetailField } from '../molecules/DetailFields'
+import { DetailFields, type DetailField } from '../molecules'
+
+// --- badge ---
 
 const badgeByType = {
   ask: 'bg-ask/10 text-ask',
@@ -11,13 +12,15 @@ type BadgeProps = {
   type: keyof typeof badgeByType
 }
 
-export function Badge({ type }: BadgeProps) {
+function Badge({ type }: BadgeProps) {
   return (
     <span className={`text-xs font-semibold px-2 py-1 rounded ${badgeByType[type]}`}>
       {type.toUpperCase()}
     </span>
   )
 }
+
+// --- details ---
 
 export type DetailsProps<T> = {
   item: T

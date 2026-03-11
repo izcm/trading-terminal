@@ -1,3 +1,3 @@
 export * from './abis/oz-erc721'
 export * from './config/wagmi'
-export * from './hooks/token-uri.use'
+export * from './erc721/token-uri.use'

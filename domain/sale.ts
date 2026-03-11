@@ -1,3 +1,4 @@
+// todo: mappers dto => domain
 import { NFTCollection } from '@/lib/dmrkt-indexer/types/nft-collection'
 import { Listing } from '@/lib/dmrkt-indexer/types/listing'
 

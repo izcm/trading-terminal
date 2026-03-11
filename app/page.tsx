@@ -1,8 +1,13 @@
 import { DMRKT_INDEXER_BASE_URL as baseUrl } from '@/lib/dmrkt-indexer/constants'
-import { TopNFTCollection } from '@/lib/dmrkt-indexer/types/nft-collection'
-import { getDmrktListings, getDmrktSales } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
+import {
+  getDmrktCollections,
+  getDmrktListings,
+  getDmrktSales,
+} from '@/lib/dmrkt-indexer/actions/dmrkt.get'
 
 import { MarketplaceView } from '@/features/marketplace/ui/MarketplaceView'
+import { readNFTBatch } from '@/lib/blockchain/erc721/erc721.read'
+import { NFTCollection } from '@/lib/dmrkt-indexer/types/nft-collection'
 
 export default async function Page() {
   /* feed */
@@ -14,7 +19,7 @@ export default async function Page() {
       cache: 'no-store',
     })
 
-    const collections = (await colRes.json()) as TopNFTCollection[]
+    const collections = (await colRes.json()) as NFTCollection[]
 
     const listingRes = await getDmrktListings(25) // get initial
 
@@ -41,5 +46,39 @@ export default async function Page() {
       : { initialItems: [], initialCursor: null }
   }
 
-  return <MarketplaceView feedProps={feedProps} salesProps={salesProps} initialView="feed" />
+  /* collections browse */
+
+  let collectionsProps
+
+  {
+    const colRes = await getDmrktCollections(10)
+    if (!colRes.ok) {
+      collectionsProps = { initialItems: { collections: [], nfts: [] }, initialCursor: null }
+    } else {
+      const collections = colRes.data.items
+      const nftRes = collections.length
+        ? await readNFTBatch(collections[0].address, 25)
+        : {
+            ok: true as const,
+            data: { items: [], nextCursor: null },
+          }
+
+      collectionsProps = {
+        initialItems: {
+          collections,
+          nfts: nftRes.ok ? nftRes.data.items : [],
+        },
+        initialCursor: colRes.data.nextCursor,
+      }
+    }
+  }
+
+  return (
+    <MarketplaceView
+      feedProps={feedProps}
+      salesProps={salesProps}
+      collectionsProps={collectionsProps}
+      initialView="feed"
+    />
+  )
 }

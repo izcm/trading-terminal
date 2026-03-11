@@ -1,4 +1,4 @@
-export function ImageView({ image, title }: { image: string; title: string }) {
+export function GalleryItem({ image, title }: { image: string; title: string }) {
   return (
     <div className="group card overflow-hidden hover:-translate-y-1 transition-transform">
       <div className="aspect-square bg-muted/10">

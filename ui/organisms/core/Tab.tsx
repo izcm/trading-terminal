@@ -1,17 +1,18 @@
 import { ReactNode, useEffect, useState } from 'react'
 
-import { Result } from '@/domain/shared/types/http'
+import { Result } from '@/lib/utils/http'
 
 import { ArrowRow } from '@/ui/atoms'
 import { ArrowList } from '@/ui/molecules'
 
 export type TabUIProps<T> = {
-  secondaryView: (items: T[]) => ReactNode
+  secondaryView?: (items: T[]) => ReactNode
   getGalleryItems: (
     limit: number,
     cursor: string
   ) => Promise<Result<{ items: T[]; nextCursor: string | null }>>
   galleryItem: (item: T) => ReactNode
+  galleryView?: 'list' | 'card'
   sidePanel: (item: T) => ReactNode
 }
 
@@ -19,6 +20,7 @@ export function Tab<T extends { id: string }>({
   secondaryView,
   getGalleryItems,
   galleryItem,
+  galleryView = 'list',
   sidePanel,
   initialItems,
   initialCursor,
@@ -46,24 +48,36 @@ export function Tab<T extends { id: string }>({
     fetchMore()
   }, [nextCursor])
 
+  const galleryClasses =
+    galleryView === 'list'
+      ? {
+          arrowList: 'card',
+          arrowRow:
+            'base-row rounded-md transition gap-4 px-4 flex justify-between w-full h-[56px]',
+        }
+      : {
+          arrowList: 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-1',
+          arrowRow: 'outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-lg block',
+        }
+
   return (
-    <div className="flex gap-4 overflow-hidden">
+    <div className="flex gap-4 overflow-hidden p-1">
       {/* LEFT COLUMN */}
       <div className="basis-3/4 grow-0 flex flex-col gap-4">
-        {secondaryView(items)}
+        {secondaryView && secondaryView(items)}
         <ArrowList
           items={items}
           getId={c => c.id}
           selectedId={selected?.id}
           onSelect={setSelected}
-          className="overflow-y-auto"
+          className={`${galleryClasses.arrowList}`}
         >
           {({ item, isSelected, onSelect }) => (
             <ArrowRow
               key={item.id}
               isSelected={isSelected}
               onSelect={onSelect}
-              className="gap-4 px-4 flex justify-between w-full h-[56px]"
+              className={`${galleryClasses.arrowRow}`}
             >
               {galleryItem(item)}
             </ArrowRow>
@@ -72,7 +86,7 @@ export function Tab<T extends { id: string }>({
       </div>
 
       <div className="w-1/4 max-w-[280px] shrink-0 h-full flex flex-col gap-4">
-        {selected && sidePanel(selected)}
+        {selected && sidePanel && sidePanel(selected)}
       </div>
     </div>
   )

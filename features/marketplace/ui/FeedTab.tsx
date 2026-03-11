@@ -1,50 +1,44 @@
 // todo: decouple
 import { getDmrktListings } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
-import { Listing } from '@/lib/dmrkt-indexer/types/listing'
-import { TopNFTCollection } from '@/lib/dmrkt-indexer/types/nft-collection'
+import type { Listing } from '@/lib/dmrkt-indexer/types/listing'
+
+import { TradePanel } from '@/features/trade/ui/TradePanel'
+import { activity } from '@/domain/shared/types/activity'
 
 import { Tab, TabUIProps } from '@/ui/organisms/core/Tab'
-import { ArrowList, ListingRow, TopCollectionRow } from '@/ui/molecules'
+import { ArrowList, ActivityRow, NFTCollectionRow } from '@/ui/molecules'
 import { ArrowRow } from '@/ui/atoms'
+import { NFTCollection } from '@/lib/dmrkt-indexer/types/nft-collection'
 
-import { TradePanel } from '../../trade/ui/TradePanel'
+export type FeedProps = {
+  initialItems: {
+    topCollections: NFTCollection[]
+    listings: Listing[]
+  }
+  initialCursor: string | null
+}
 
-function TopCollectionsList({ collections }: { collections: TopNFTCollection[] }) {
+function TopCollectionsList({ collections }: { collections: NFTCollection[] }) {
   return (
     <ArrowList
       items={collections}
-      getId={(c: TopNFTCollection) => c.id}
+      getId={(c: NFTCollection) => c.id}
       selectedId={undefined}
       onSelect={() => alert('hello')}
       className="shrink-0"
     >
       {({ item, isSelected, onSelect }) => (
-        <ArrowRow key={item.id} isSelected={isSelected} onSelect={onSelect} className="p-1">
-          <TopCollectionRow collection={item} />
+        <ArrowRow
+          key={item.id}
+          isSelected={isSelected}
+          onSelect={onSelect}
+          className="base-row rounded-md transition gap-4 p-1 flex justify-between w-full"
+        >
+          <NFTCollectionRow collection={item} />
         </ArrowRow>
       )}
     </ArrowList>
   )
-}
-
-const mode: Omit<TabUIProps<Listing>, 'secondaryView'> = {
-  getGalleryItems: getDmrktListings,
-  galleryItem: item => <ListingRow listing={item} />,
-  sidePanel: item => {
-    return (
-      <div className="flex flex-col h-full gap-4">
-        <TradePanel listing={item} />
-      </div>
-    )
-  },
-}
-
-export type FeedProps = {
-  initialItems: {
-    topCollections: TopNFTCollection[]
-    listings: Listing[]
-  }
-  initialCursor: string | null
 }
 
 export function FeedTab({ initialItems, initialCursor }: FeedProps) {
@@ -52,9 +46,9 @@ export function FeedTab({ initialItems, initialCursor }: FeedProps) {
     <>
       <Tab<Listing>
         secondaryView={() => <TopCollectionsList collections={initialItems.topCollections} />}
-        getGalleryItems={mode.getGalleryItems}
-        galleryItem={mode.galleryItem}
-        sidePanel={mode.sidePanel}
+        getGalleryItems={getDmrktListings}
+        galleryItem={item => <ActivityRow activity={activity.fromListing(item)} />}
+        sidePanel={item => <TradePanel listing={item} />}
         initialItems={initialItems.listings}
         initialCursor={initialCursor}
       />

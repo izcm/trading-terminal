@@ -29,10 +29,8 @@ export type NFTCollection = {
   symbol: string
   tokenType: string
   totalSupply: string
-}
 
-export type TopNFTCollection = NFTCollection & {
-  summary: {
+  summary?: {
     activeAskCount: number
     activeBidCount: number
     activeCbCount: number
