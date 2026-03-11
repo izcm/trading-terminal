@@ -56,7 +56,8 @@ export function Tab<T extends { id: string }>({
             'base-row rounded-md transition gap-4 px-4 flex justify-between w-full h-[56px]',
         }
       : {
-          arrowList: 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-1',
+          arrowList:
+            'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 lg-rounded p-2',
           arrowRow: 'outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-lg block',
         }
 

@@ -4,7 +4,7 @@ export function GalleryItem({ image, title }: { image: string; title: string }) 
       <div className="aspect-square bg-muted/10">
         <img src={image} alt={title} className="w-full h-full object-cover" />
       </div>
-      <div className="p-3 border-t border-default">
+      <div className="p-3 border-t border-default bg-secondary/80">
         <div className="truncate group-hover:text-accent transition-colors">{title}</div>
       </div>
     </div>

@@ -22,7 +22,7 @@ export type CollectionsProps = {
   initialCursor: string | null
 }
 
-export function NFTCollectionsTab({ initialItems, initialCursor }: CollectionsProps) {
+export function ExploreTab({ initialItems, initialCursor }: CollectionsProps) {
   const [address, setAddress] = useState<Address | undefined>(
     initialItems.collections.length ? initialItems.collections[0].address : undefined
   )
@@ -36,7 +36,6 @@ export function NFTCollectionsTab({ initialItems, initialCursor }: CollectionsPr
     }
 
     const batch = await readNFTBatch(address, limit, Number(cursor))
-
     if (!batch.ok) return batch
 
     return {
@@ -55,7 +54,9 @@ export function NFTCollectionsTab({ initialItems, initialCursor }: CollectionsPr
   return (
     <>
       <Tab<NFT>
-        secondaryView={() => <NFTCollectionsList collections={initialItems.collections} />}
+        secondaryView={() => (
+          <NFTCollectionsList collections={initialItems.collections} flexDir="row" />
+        )}
         getGalleryItems={getGalleryItems}
         galleryItem={item => (
           <GalleryItem image={getImageFromTokenURI(item.tokenURI)} title={item.tokenId} />

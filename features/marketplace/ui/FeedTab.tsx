@@ -9,6 +9,7 @@ import { Tab, TabUIProps } from '@/ui/organisms/core/Tab'
 import { ArrowList, ActivityRow, NFTCollectionRow } from '@/ui/molecules'
 import { ArrowRow } from '@/ui/atoms'
 import { NFTCollection } from '@/lib/dmrkt-indexer/types/nft-collection'
+import { NFTCollectionsList } from '@/ui/organisms/NFTCollectionsList'
 
 export type FeedProps = {
   initialItems: {
@@ -18,34 +19,11 @@ export type FeedProps = {
   initialCursor: string | null
 }
 
-function TopCollectionsList({ collections }: { collections: NFTCollection[] }) {
-  return (
-    <ArrowList
-      items={collections}
-      getId={(c: NFTCollection) => c.id}
-      selectedId={undefined}
-      onSelect={() => alert('hello')}
-      className="shrink-0"
-    >
-      {({ item, isSelected, onSelect }) => (
-        <ArrowRow
-          key={item.id}
-          isSelected={isSelected}
-          onSelect={onSelect}
-          className="base-row rounded-md transition gap-4 p-1 flex justify-between w-full"
-        >
-          <NFTCollectionRow collection={item} />
-        </ArrowRow>
-      )}
-    </ArrowList>
-  )
-}
-
 export function FeedTab({ initialItems, initialCursor }: FeedProps) {
   return (
     <>
       <Tab<Listing>
-        secondaryView={() => <TopCollectionsList collections={initialItems.topCollections} />}
+        secondaryView={() => <NFTCollectionsList collections={initialItems.topCollections} />}
         getGalleryItems={getDmrktListings}
         galleryItem={item => <ActivityRow activity={activity.fromListing(item)} />}
         sidePanel={item => <TradePanel listing={item} />}

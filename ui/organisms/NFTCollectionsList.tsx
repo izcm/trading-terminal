@@ -3,21 +3,27 @@ import { NFTCollection } from '@/lib/dmrkt-indexer/types/nft-collection'
 import { ArrowList, NFTCollectionRow } from '../molecules'
 import { ArrowRow } from '../atoms'
 
-export function NFTCollectionsList({ collections }: { collections: NFTCollection[] }) {
+export function NFTCollectionsList({
+  collections,
+  flexDir = 'col',
+}: {
+  collections: NFTCollection[]
+  flexDir?: 'row' | 'col'
+}) {
   return (
     <ArrowList
       items={collections}
       getId={(c: NFTCollection) => c.id}
       selectedId={undefined}
       onSelect={() => alert('hello')}
-      className="shrink-0 card"
+      className={`shrink-0 flex flex-${flexDir} gap-4`}
     >
       {({ item, isSelected, onSelect }) => (
         <ArrowRow
           key={item.id}
           isSelected={isSelected}
           onSelect={onSelect}
-          className="base-row rounded-md transition gap-4 p-1 flex justify-between w-full"
+          className="base-row flex p-2 card bg-secondary transition w-full"
         >
           <NFTCollectionRow collection={item} />
         </ArrowRow>

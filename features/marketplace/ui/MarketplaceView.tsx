@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 
 import { FeedTab, type FeedProps } from './FeedTab'
 import { SalesTab, type SalesProps } from './SalesTab'
-import { NFTCollectionsTab, type CollectionsProps } from './NFTCollectionsTab'
+import { ExploreTab, type CollectionsProps } from './ExploreTab'
 
 import { NavSidebar } from '@/ui/organisms'
 
@@ -56,7 +56,7 @@ export function MarketplaceView({
           <>
             {view === 'feed' && <FeedTab {...feedProps} />}
             {view === 'sales' && <SalesTab {...salesProps} />}
-            {view === 'explore' && <NFTCollectionsTab {...exploreProps} />}
+            {view === 'explore' && <ExploreTab {...exploreProps} />}
           </>
         </div>
       </main>
