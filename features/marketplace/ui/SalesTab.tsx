@@ -11,7 +11,7 @@ import { activity } from '@/domain/shared/types/activity'
 import { aggregateSales } from '@/domain/shared/utils/analyze'
 
 import { Tab, TabUIProps, NFTPreview } from '@/ui/organisms'
-import { ActivityRow } from '@/ui/molecules'
+import { ActivityItem } from '@/ui/molecules'
 
 export type SalesProps = {
   initialItems: Sale[]
@@ -48,20 +48,20 @@ function makeAnalyticsArea(sales: Sale[]) {
 
 const mode: Omit<TabUIProps<Sale>, 'secondaryView'> = {
   getGalleryItems: getDmrktSales,
-  galleryItem: item => <ActivityRow activity={activity.fromSale(item)} />,
+  galleryItem: item => <ActivityItem activity={activity.fromSale(item)} />,
   sidePanel: item => {
     return (
       <div className="flex flex-col gap-2 h-full">
-        <div className="card">
+        <div className="pointer-events-none">
           {item && (
             <NFTPreview chainId={item.chainId} address={item.collection} tokenId={item.tokenId} />
           )}
         </div>
         <div className="flex flex-col gap-2 my-1">
-          <button className="btn btn-secondary">open receipt 2.0</button>
+          <button className="btn btn btn-ghost">open receipt 2.0</button>
           <span className="text-xs text-muted">gas costs, tx inputs etc.</span>
         </div>
-        <div className="flex-1 card">
+        <div className="flex-1 card bg-secondary">
           <SaleDetails sale={item} />
         </div>
       </div>

@@ -25,7 +25,7 @@ type Props = {
 
 export function NFTSelect({ chainId, collection, validation, onValidate, onConfirm }: Props) {
   const [tokenIdInput, setTokenIdInput] = useState('')
-  const [tokenId, setTokenId] = useState<bigint | null>(null)
+  const [tokenId, setTokenId] = useState<bigint | undefined>(undefined)
 
   const { address, symbol } = collection
 
@@ -60,7 +60,7 @@ export function NFTSelect({ chainId, collection, validation, onValidate, onConfi
       <span>{uiError}</span>
       <span>{validation.checking}</span>
 
-      <NFTPreview chainId={chainId} address={collection.address} tokenId={tokenId?.toString()} />
+      <NFTPreview chainId={chainId} address={collection.address} tokenId={tokenId} />
 
       <button disabled={!tokenId} onClick={() => alert('hello')} className="btn btn-primary w-full">
         fill order

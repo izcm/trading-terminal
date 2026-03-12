@@ -1,11 +1,12 @@
 // todo: mappers dto => domain
 import { NFTCollection } from '@/lib/dmrkt-indexer/types/nft-collection'
-import { Listing } from '@/lib/dmrkt-indexer/types/listing'
+import type { Listing } from './listing'
 
 import type { Hex } from './shared/types/eth'
 
 export const saleKey = (chainId: number, orderHash: string) => `${chainId}:${orderHash}` as const
 
+// todo: use bigints !
 export type Sale = {
   id: string
   chainId: number
@@ -15,7 +16,7 @@ export type Sale = {
 
   // NFT details
   collection: Hex
-  tokenId: string
+  tokenId: bigint
 
   // Trade participants
   seller: Hex
@@ -23,7 +24,7 @@ export type Sale = {
 
   // Payment
   currency: Hex
-  price: string
+  price: bigint
 
   // Block/timing info
   blockNumber: number

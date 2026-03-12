@@ -16,7 +16,7 @@ type NFTAttribute = {
 type Props = {
   chainId: number
   address: Hex
-  tokenId?: string
+  tokenId?: bigint
 }
 
 export function NFTPreview({ chainId, address, tokenId }: Props) {
@@ -28,7 +28,7 @@ export function NFTPreview({ chainId, address, tokenId }: Props) {
       ? {
           chainId,
           address,
-          tokenId: BigInt(tokenId),
+          tokenId,
         }
       : undefined
   )

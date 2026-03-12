@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { CreditCard, Layers } from 'lucide-react'
 
-import type { Listing } from '@/lib/dmrkt-indexer/types/listing'
+import type { Listing } from '@/domain/listing'
 import { useFillOrder } from '../hooks/fill-order.use'
 
 import { NFTSelect } from './NFTSelect'
@@ -40,9 +40,9 @@ export function TradePanel({ listing }: Props) {
   }
 
   return (
-    <div className="flex flex-col gap-4 h-full">
+    <div className="flex flex-col gap-4 h-full ">
       {/* preview */}
-      <div className="card">
+      <div className="pointer-events-none">
         <NFTPreview
           chainId={listing.chainId}
           address={listing.collection}
@@ -50,15 +50,10 @@ export function TradePanel({ listing }: Props) {
         />
       </div>
 
-      {/* details area */}
-      <div className="flex-1 card bg-secondary/60">
-        <ListingDetails listing={listing} />
-      </div>
-
       <button
         disabled={!simulation.isFillable && !listing.isCollectionBid}
         onClick={handlePrimaryAction}
-        className="btn btn-primary w-full"
+        className="btn btn-secondary"
       >
         {listing.isCollectionBid ? (
           <>
@@ -70,6 +65,11 @@ export function TradePanel({ listing }: Props) {
           </>
         )}
       </button>
+
+      {/* details area */}
+      <div className="flex-1 card bg-secondary">
+        <ListingDetails listing={listing} />
+      </div>
 
       {/* <span className="text-xs text-muted">
           {listing.isCollectionBid

@@ -46,12 +46,26 @@ export function MarketplaceView({
   return (
     <div className="flex h-screen font-mono">
       <NavSidebar />
-      <main className="flex-1 mx-auto max-w-7xl">
+      <main className="flex-1 mx-auto max-w-7xl px-4">
         {/* Skip navigation link */}
         <div className="h-full flex flex-col gap-4">
-          {/* <div className="basis-1/20 items-center rounded-2xl bg-surface/24">
-            <span>actionbar</span>
-          </div> */}
+          <div className="flex items-center justify-center gap-2 px-1 my-4">
+            <button className="px-3 py-1 text-sm font-semibold rounded-lg border border-border-soft hover:border-accent hover:text-accent cursor-pointer transition">
+              [ Swords ]
+            </button>
+
+            <button className="px-3 py-1 text-sm font-semibold rounded-lg border border-border-soft hover:border-accent hover:text-accent cursor-pointer transition">
+              [ Elixirs ]
+            </button>
+
+            <button className="px-3 py-1 text-sm font-semibold rounded-lg border border-border-soft hover:border-accent hover:text-accent cursor-pointer transition">
+              [ Shields ]
+            </button>
+
+            <button className="px-3 py-1 text-sm font-semibold rounded-lg border border-border-soft hover:border-accent hover:text-accent cursor-pointer transition">
+              [ Eggs ]
+            </button>
+          </div>
           <>
             {view === 'feed' && <FeedTab {...feedProps} />}
             {view === 'sales' && <SalesTab {...salesProps} />}

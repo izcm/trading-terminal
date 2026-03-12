@@ -1,51 +1,42 @@
-import { Listing } from '@/lib/dmrkt-indexer/types/listing'
-
+import type { Listing } from '@/domain/listing'
 import { Sale } from '../../sale'
 import { Hex } from './eth'
 
+// todo: use bigints in other types!
 export type Activity = {
-  activityType: 'ask' | 'bid' | 'unknown'
-  isCollectionBid: boolean
-
+  type: 'ask' | 'bid' | 'unknown'
+  chainId: number
+  collection: Hex
+  tokenId: bigint
+  price: bigint
   timestamp: number
-
-  collectionAddress: Hex // can be addr / name / symbol
-  collectionSymbol: string
-
-  tokenId: string
-
-  price: string
+  isCollectionBid?: boolean
+  collectionSymbol?: string
 }
 
 export const activity = {
   fromListing(listing: Listing): Activity {
     return {
-      activityType: listing.type,
-      isCollectionBid: listing.isCollectionBid,
-
-      timestamp: listing.start,
-
-      collectionAddress: listing.collection,
-      collectionSymbol: listing.nftCollection?.symbol ?? 'UNKNOWN',
-
+      type: listing.type,
+      chainId: listing.chainId,
+      collection: listing.collection,
       tokenId: listing.tokenId,
-
       price: listing.price,
+      timestamp: listing.start,
+      isCollectionBid: listing.isCollectionBid,
+      collectionSymbol: listing.nftCollection?.symbol ?? 'unknown',
     }
   },
+
   fromSale(sale: Sale): Activity {
     return {
-      activityType: sale.order ? sale.order.type : 'unknown',
-      isCollectionBid: false, // dont care about this in ui (if care => use full sale)
-
-      timestamp: sale.timestamp, // block timestamps
-
-      collectionAddress: sale.collection,
-      collectionSymbol: sale.nftCollection?.symbol ?? 'UNKNOWN',
-
+      type: sale.order?.type ?? 'unknown',
+      chainId: sale.chainId,
+      collection: sale.collection,
       tokenId: sale.tokenId,
-
-      price: sale.price,
+      price: BigInt(sale.price),
+      timestamp: sale.timestamp,
+      collectionSymbol: sale.nftCollection?.symbol ?? 'unknown',
     }
   },
 }

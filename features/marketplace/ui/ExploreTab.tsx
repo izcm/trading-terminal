@@ -11,7 +11,7 @@ import { NFTPanel } from '@/ui/organisms/SidePanel'
 
 import { NFT } from '@/domain/nft'
 
-import { Tab } from '@/ui/organisms'
+import { NFTPreview, Tab } from '@/ui/organisms'
 import { GalleryItem } from '@/ui/molecules'
 import { TextInput } from '@/ui/atoms'
 
@@ -22,6 +22,8 @@ export type ExploreProps = {
   }
   initialCursor: string | null
 }
+
+// what?
 
 export function ExploreTab({ initialItems, initialCursor }: ExploreProps) {
   const [address, setAddress] = useState<Address | undefined>(
@@ -56,7 +58,11 @@ export function ExploreTab({ initialItems, initialCursor }: ExploreProps) {
           </div>
         )}
         getGalleryItems={getGalleryItems}
-        galleryItem={item => <GalleryItem image={item.image} title={item.tokenId} />}
+        galleryItem={item => (
+          <div className="">
+            <NFTCard nft={item} />
+          </div>
+        )}
         galleryView="card"
         sidePanel={item => (
           <div className="flex flex-col gap-2 h-full">

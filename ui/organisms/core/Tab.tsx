@@ -52,7 +52,7 @@ export function Tab<T extends { id: string }>({
     galleryView === 'list'
       ? {
           arrowList: 'flex flex-col gap-4 p-1',
-          arrowRow: 'base-row border border-soft rounded-xl transition gap-4 px-2 py-1',
+          arrowRow: 'border border-soft rounded-xl transition',
         }
       : {
           arrowList:
@@ -64,13 +64,12 @@ export function Tab<T extends { id: string }>({
     <div className="flex gap-4 overflow-y-scroll">
       {/* LEFT COLUMN */}
       <div className="flex-1 flex flex-col gap-4">
-        <div className="mt-4">{secondaryView && secondaryView(items)}</div>
         <ArrowList
           items={items}
           getId={c => c.id}
           selectedId={selected?.id}
           onSelect={setSelected}
-          className={`${galleryClasses.arrowList}`}
+          className={`${galleryClasses.arrowList} px-1`}
         >
           {({ item, isSelected, onSelect }) => (
             <ArrowRow
@@ -85,9 +84,7 @@ export function Tab<T extends { id: string }>({
         </ArrowList>
       </div>
 
-      <div className="w-1/4 shrink-0 mb-4 flex flex-col gap-4 my-4">
-        {selected && sidePanel && sidePanel(selected)}
-      </div>
+      <div className="w-1/4 shrink-0 mb-2">{selected && sidePanel && sidePanel(selected)}</div>
     </div>
   )
 }

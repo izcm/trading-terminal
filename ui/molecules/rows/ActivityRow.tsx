@@ -1,10 +1,11 @@
 // todo: decouple
 import { formatEth2 } from '@/lib/blockchain/utils/bigint'
-
-import { Activity } from '@/domain/shared/types/activity'
-import { tsSuperShort } from '@/domain/shared/utils/time'
-import { NFT } from '@/domain/nft'
 import { NFT_LOADING_IMAGE } from '@/domain/constants/placeholders'
+
+import { tsSuperShort } from '@/domain/shared/utils/time'
+import type { Activity } from '@/domain/shared/types/activity'
+import { mapTokenUriToNFT, type NFT } from '@/domain/nft'
+import { useTokenURI } from '@/lib/blockchain'
 
 type Props = {
   activity: Activity
@@ -13,10 +14,10 @@ type Props = {
 
 function placeholderNFT(activity: Activity): NFT {
   return {
-    id: `placeholder:${activity.collectionAddress}:${activity.tokenId}`,
+    id: `placeholder:${activity.collection}:${activity.tokenId}`,
     chainId: 0,
-    collection: activity.collectionAddress,
-    tokenId: activity.tokenId,
+    collection: activity.collection,
+    tokenId: BigInt(activity.tokenId),
     name: 'Loading...',
     description: '',
     image: NFT_LOADING_IMAGE,
@@ -24,9 +25,23 @@ function placeholderNFT(activity: Activity): NFT {
   }
 }
 
+export function ActivityItem({ activity }: { activity: Activity }) {
+  const { chainId, collection, tokenId } = activity
+
+  const { data: tokenURI } = useTokenURI({
+    chainId,
+    address: collection,
+    tokenId: BigInt(tokenId),
+  })
+
+  const nft = tokenURI ? mapTokenUriToNFT(chainId, collection, tokenId, tokenURI) : undefined
+
+  return <ActivityRow item={{ activity, nft }} />
+}
+
 export function ActivityRow({ item }: { item: Props }) {
   const {
-    activityType,
+    type: activityType,
     isCollectionBid,
     timestamp,
     collectionSymbol: symbol,
@@ -38,7 +53,7 @@ export function ActivityRow({ item }: { item: Props }) {
   const rarity = nft.attributes.find(a => a.trait_type === 'rarity')?.value
 
   return (
-    <>
+    <div className="base-row gap-4 py-1 px-3">
       {/* NFT image */}
       <div className="relative shrink-0 rounded-xl">
         <img src={nft.image} alt={nft.name} className="w-12 h-12 rounded object-cover" />
@@ -70,11 +85,11 @@ export function ActivityRow({ item }: { item: Props }) {
 
       {/* price */}
       <div className="text-right flex flex-col px-1">
-        <span className="font-semibold">{formatEth2(BigInt(price))} ETH</span>
+        <span className="font-semibold">{formatEth2(price)} ETH</span>
 
         <span className="text-xs text-text-muted">{tsSuperShort(timestamp)}</span>
       </div>
-    </>
+    </div>
   )
 }
 

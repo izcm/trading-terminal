@@ -1,4 +1,4 @@
-import type { Listing } from '@/lib/dmrkt-indexer/types/listing'
+import type { Listing } from '@/domain/listing'
 
 import { addrShort } from '@/domain/shared/utils/fmt/hex'
 import { tsShort } from '@/domain/shared/utils/time'

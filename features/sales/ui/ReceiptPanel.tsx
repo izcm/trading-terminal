@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { Listing } from '@/lib/dmrkt-indexer/types/listing'
+import type { Listing } from '@/domain/listing'
 
 type Props = {
   listing: Listing | null

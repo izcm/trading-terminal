@@ -17,13 +17,13 @@ export type NFT = NFTMetadata & {
   id: string
   chainId: number
   collection: Hex
-  tokenId: string
+  tokenId: bigint
 }
 
 export function mapTokenUriToNFT(
   chainId: number,
   address: Hex,
-  tokenId: string,
+  tokenId: bigint,
   tokenUri: string
 ): NFT {
   const meta = parseTokenURI(tokenUri)
@@ -32,7 +32,7 @@ export function mapTokenUriToNFT(
     id: `${chainId}:${address}:${tokenId}`,
     chainId: chainId,
     collection: address,
-    tokenId: tokenId.toString(),
+    tokenId: tokenId,
     ...meta,
   }
 }

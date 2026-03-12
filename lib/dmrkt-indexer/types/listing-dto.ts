@@ -1,9 +1,12 @@
-import type { Hex } from '@/domain/shared/types/eth'
 import type { Order } from '@/protocol/eip712'
-import type { NFTCollection } from './nft-collection'
-import { NFT } from '@/domain/nft'
 
-export type Listing = {
+import type { Hex } from '@/domain/shared/types/eth'
+import type { NFT } from '@/domain/nft'
+import type { Listing } from '@/domain/listing'
+
+import type { NFTCollection } from './nft-collection'
+
+export type ListingDTO = {
   id: string
 
   chainId: number
@@ -30,4 +33,12 @@ export type Listing = {
   rawOrder: Order
 
   status: string
+}
+
+export function toListing(dto: ListingDTO): Listing {
+  return {
+    ...dto,
+    tokenId: BigInt(dto.tokenId),
+    price: BigInt(dto.price),
+  }
 }

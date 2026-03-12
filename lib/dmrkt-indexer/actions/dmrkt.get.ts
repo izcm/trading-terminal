@@ -1,6 +1,8 @@
 import type { Paginated, Result } from '@/lib/utils/http'
 
-import type { Listing } from '../types/listing'
+import type { ListingDTO } from '../types/listing-dto'
+import { toListing } from '../types/listing-dto'
+import type { Listing } from '@/domain/listing'
 import type { NFTCollection } from '../types/nft-collection'
 
 import type { Sale } from '@/domain/sale'
@@ -19,12 +21,25 @@ export function getDmrktTopCollections(limit: number) {
   return getDmrktItems<NFTCollection>('nft-collections/top', `limit=${limit}`, null)
 }
 
-export function getDmrktListings(limit: number = 10, cursor: string | null = null) {
-  return getDmrktItems<Listing>(
+export async function getDmrktListings(
+  limit: number = 10,
+  cursor: string | null = null
+): Promise<Result<Paginated<Listing>>> {
+  const result = await getDmrktItems<ListingDTO>(
     'orders',
     `limit=${limit}&status=active&include=nftCollection`,
     cursor
   )
+
+  if (!result.ok) return result
+
+  return {
+    ok: true,
+    data: {
+      items: result.data.items.map(toListing),
+      nextCursor: result.data.nextCursor,
+    },
+  }
 }
 
 export function getDmrktSales(limit: number, cursor: string | null = null) {
