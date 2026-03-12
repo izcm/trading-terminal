@@ -11,6 +11,7 @@ import { NFTSelect } from './NFTSelect'
 
 import { ListingDetails } from './ListingDetails'
 import { NFTPreview } from '../../explore/ui/NFTPreview'
+import { NFTSummary } from '@/ui/organisms/NFTSummary'
 
 type Props = {
   listing: Listing | null

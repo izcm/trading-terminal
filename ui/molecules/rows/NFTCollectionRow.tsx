@@ -13,11 +13,11 @@ export function NFTCollectionRow({ collection }: Props) {
   return (
     <>
       <div className="w-40 flex items-center gap-4">
-        <img
+        {/* <img
           src={collection.imageUrl || `placeholders/native-collections/${collection.symbol}.svg`}
           className="w-12 object-cover"
           alt="collection image"
-        />
+        /> */}
 
         <div className="flex flex-col">
           <span className="font-semibold">{collection.symbol || 'N/A'}</span>

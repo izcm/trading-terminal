@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 
 import { FeedTab, type FeedProps } from './FeedTab'
 import { SalesTab, type SalesProps } from './SalesTab'
-import { ExploreTab, type CollectionsProps } from './ExploreTab'
+import { ExploreTab, type ExploreProps } from './ExploreTab'
 
 import { NavSidebar } from '@/ui/organisms'
 
@@ -13,7 +13,7 @@ type View = 'feed' | 'sales' | 'explore'
 type Props = {
   feedProps: FeedProps
   salesProps: SalesProps
-  collectionsProps: CollectionsProps
+  collectionsProps: ExploreProps
   initialView: View
 }
 

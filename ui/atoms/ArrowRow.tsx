@@ -17,7 +17,7 @@ export function ArrowRow({ isSelected, onSelect, children, className = '' }: Arr
     }
   }, [isSelected])
 
-  const interactive = isSelected ? 'bg-white/5' : 'hover:bg-white/5'
+  const state = isSelected ? 'bg-accent/10' : 'hover:bg-white/5 bg-secondary/50'
 
   return (
     <li
@@ -25,7 +25,7 @@ export function ArrowRow({ isSelected, onSelect, children, className = '' }: Arr
       tabIndex={isSelected ? 0 : -1}
       onClick={onSelect}
       aria-selected={isSelected}
-      className={`${interactive} ${className}`}
+      className={`${state} ${className}`}
     >
       {children}
     </li>

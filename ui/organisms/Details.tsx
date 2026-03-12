@@ -34,11 +34,11 @@ export type DetailsProps<T> = {
 
 export function Details<T>({ item, title, detailsFields, timingFields }: DetailsProps<T>) {
   if (!item) {
-    return <div className="card h-full p-4 text-sm">select a BIPBAPBOP</div>
+    return <div className={`p-4 text-sm`}>select a BIPBAPBOP</div>
   }
 
   return (
-    <div className="flex flex-col card h-full gap-6 p-4 text-sm" tabIndex={-1}>
+    <div className={`flex flex-col gap-6 p-4 text-sm`} tabIndex={-1}>
       {title && (
         <div className="flex justify-between text-start">
           <div className="flex flex-col">

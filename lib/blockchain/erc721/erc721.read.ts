@@ -4,8 +4,9 @@ import { erc721Abi } from 'viem'
 import { getPublicClient } from 'wagmi/actions'
 import { config } from '../config/wagmi'
 
-import type { NFT } from '@/domain/nft'
+import { parseTokenURI, type NFT } from '@/domain/nft'
 import type { Paginated, Result } from '@/lib/utils/http'
+import { getImageFromTokenURI } from '@/lib/utils/image'
 
 // only works with sequential tokenIds
 export async function readNFTBatch(
@@ -28,16 +29,24 @@ export async function readNFTBatch(
   try {
     const result = await Promise.all(calls)
 
+    const items = result.map((tokenUri, i) => {
+      const tokenId = i + cursor
+
+      const meta = parseTokenURI(tokenUri)
+
+      return {
+        id: `${chainId}:${address}:${tokenId}`,
+        chainId,
+        collection: address,
+        tokenId: (tokenId + cursor).toString(),
+        ...meta,
+      }
+    })
+
     return {
       ok: true,
       data: {
-        items: result.map((tokenURI, tokenId) => ({
-          id: `${31337}:${address}:${tokenId}`,
-          tokenId: (tokenId + cursor).toString(),
-          tokenURI,
-          chainId,
-          collection: address,
-        })),
+        items,
         nextCursor: null, // todo: make this less clumsy
       },
     }

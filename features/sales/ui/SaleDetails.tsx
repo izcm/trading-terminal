@@ -5,7 +5,7 @@ import { tsShort } from '@/domain/shared/utils/time'
 import { Details } from '@/ui/organisms/Details'
 import type { DetailField } from '@/ui/molecules/DetailFields'
 
-const DETAILS_FIELD: DetailField<Sale>[] = [
+const DETAIL_FIELDS: DetailField<Sale>[] = [
   {
     label: 'chain',
     getValue: s => s.chainId,
@@ -44,7 +44,7 @@ export const SaleDetails = ({ sale }: { sale: Sale }) => (
   <Details<Sale>
     item={sale}
     title={{ field: TITLE_FIELD, badge: { type: sale.order ? sale.order.type : 'unknown' } }}
-    detailsFields={DETAILS_FIELD}
+    detailsFields={DETAIL_FIELDS}
     timingFields={TIMING_FIELDS}
   />
 )

@@ -15,8 +15,9 @@ import { GalleryItem } from '@/ui/molecules'
 import { TextInput } from '@/ui/atoms'
 import { SidePanel } from '@/ui/organisms/SidePanel'
 import { NFTCollectionBanner } from '@/features/explore/ui/NFTCollectionBanner'
+import { NFTSummary } from '@/ui/organisms/NFTSummary'
 
-export type CollectionsProps = {
+export type ExploreProps = {
   initialItems: {
     nfts: NFT[]
     collections: NFTCollection[]
@@ -24,7 +25,7 @@ export type CollectionsProps = {
   initialCursor: string | null
 }
 
-export function ExploreTab({ initialItems, initialCursor }: CollectionsProps) {
+export function ExploreTab({ initialItems, initialCursor }: ExploreProps) {
   const [address, setAddress] = useState<Address | undefined>(
     initialItems.collections.length ? initialItems.collections[0].address : undefined
   )
@@ -40,19 +41,7 @@ export function ExploreTab({ initialItems, initialCursor }: CollectionsProps) {
     const batch = await readNFTBatch(address, limit, Number(cursor))
     if (!batch.ok) return batch
 
-    return {
-      ok: true,
-      data: {
-        items: batch.data.items.map(item => ({
-          id: item.tokenId,
-          tokenId: item.tokenId,
-          tokenURI: item.tokenURI,
-          chainId: item.chainId,
-          collection: item.collection,
-        })),
-        nextCursor: batch.data.nextCursor,
-      },
-    }
+    return batch
   }
 
   return (
@@ -68,26 +57,12 @@ export function ExploreTab({ initialItems, initialCursor }: CollectionsProps) {
           </div>
         )}
         getGalleryItems={getGalleryItems}
-        galleryItem={item => (
-          <GalleryItem image={getImageFromTokenURI(item.tokenURI)} title={item.tokenId} />
-        )}
+        galleryItem={item => <GalleryItem image={item.image} title={item.tokenId} />}
         galleryView="card"
         sidePanel={item => (
           <div className="flex flex-col gap-2 h-full">
-            <div className="card">
-              {item && (
-                <NFTPreview
-                  chainId={item.chainId}
-                  address={item.collection}
-                  tokenId={item.tokenId}
-                />
-              )}
-            </div>
-            <div className="flex flex-col gap-2 my-1">
-              <button className="btn btn-secondary">open receipt 2.0</button>
-              <span className="text-xs text-muted">gas costs, tx inputs etc.</span>
-            </div>
-            -
+            {item && <NFTSummary nft={item} />}
+            <button className="btn btn-primary">make bid</button>
           </div>
         )}
         initialItems={initialItems.nfts}

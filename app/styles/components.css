@@ -183,6 +183,7 @@
   border: 1px solid;
   border-color: var(--border-default);
   border-radius: 0.5rem;
+  overflow: hidden;
 }
 
 .base-row {

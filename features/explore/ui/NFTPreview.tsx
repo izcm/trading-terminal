@@ -41,9 +41,5 @@ export function NFTPreview({ chainId, address, tokenId }: Props) {
     preview()
   }, [tokenURI])
 
-  return (
-    <div className="flex justify-center">
-      <img src={previewSrc} className="w-full object-cover" alt="token preview" />
-    </div>
-  )
+  return <img src={previewSrc} className="w-full object-cover" alt="token preview" />
 }

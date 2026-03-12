@@ -52,8 +52,7 @@ export function Tab<T extends { id: string }>({
     galleryView === 'list'
       ? {
           arrowList: 'flex flex-col gap-4',
-          arrowRow:
-            'base-row border border-soft rounded-xl transition gap-4 px-3 py-3 bg-secondary/50',
+          arrowRow: 'base-row border border-soft rounded-xl transition gap-4 px-3 py-3',
         }
       : {
           arrowList:
