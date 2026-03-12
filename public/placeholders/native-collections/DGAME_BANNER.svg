@@ -1,0 +1,37 @@
+<svg width="900" height="200" viewBox="0 0 900 200" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="200" rx="18" fill="#0b0b0e"/>
+
+  <rect
+    x="12"
+    y="12"
+    width="876"
+    height="176"
+    rx="14"
+    fill="#141418"
+    stroke="rgba(120,255,180,0.35)"
+    stroke-width="1.5"
+  />
+
+  <text
+    x="60"
+    y="110"
+    fill="rgba(230,235,240,0.94)"
+    font-family="monospace"
+    font-size="64"
+    font-weight="700"
+    letter-spacing="6"
+  >
+    dmrkt
+  </text>
+
+  <text
+    x="62"
+    y="140"
+    fill="rgba(165,175,185,0.6)"
+    font-family="monospace"
+    font-size="18"
+    letter-spacing="2"
+  >
+    inventory market
+  </text>
+</svg>

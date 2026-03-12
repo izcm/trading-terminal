@@ -13,7 +13,8 @@ export async function readNFTBatch(
   limit: number,
   cursor: number = 0
 ): Promise<Result<Paginated<NFT>>> {
-  const client = getPublicClient(config, { chainId: 31337 })
+  const chainId = 31337 // todo: multichain
+  const client = getPublicClient(config, { chainId })
 
   const calls = Array.from({ length: limit }, (_, tokenId) =>
     client.readContract({
@@ -34,6 +35,8 @@ export async function readNFTBatch(
           id: `${31337}:${address}:${tokenId}`,
           tokenId: (tokenId + cursor).toString(),
           tokenURI,
+          chainId,
+          collection: address,
         })),
         nextCursor: null, // todo: make this less clumsy
       },

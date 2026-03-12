@@ -8,7 +8,11 @@ import type { Sale } from '@/domain/sale'
 export const baseUrl = process.env.NEXT_PUBLIC_INDEXER_ENDPOINT_URL
 
 export async function getDmrktCollections(limit: number, cursor: string | null = null) {
-  return getDmrktItems<NFTCollection>('nft-collections', `limit=${limit}`, cursor)
+  return getDmrktItems<NFTCollection>(
+    'nft-collections',
+    `limit=${limit}&address=0x0Cc60CAE6Db663824eb49AfD43a9871E6e8ed885`,
+    cursor
+  )
 }
 
 export async function getDmrktTopCollections(limit: number) {
@@ -31,6 +35,7 @@ export async function getDmrktSales(limit: number, cursor: string | null = null)
   )
 }
 
+export async function getDmrktItem<T>() {}
 export async function getDmrktItems<T>(
   params: string,
   query: string,

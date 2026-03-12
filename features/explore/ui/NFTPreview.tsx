@@ -17,7 +17,7 @@ type Props = {
   tokenId?: string
 }
 
-export function NFTSummary({ chainId, address, tokenId }: Props) {
+export function NFTPreview({ chainId, address, tokenId }: Props) {
   // UI elements
   const [previewSrc, setPreviewSrc] = useState<string>('/placeholders/token-waiting.svg')
 

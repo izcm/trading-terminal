@@ -1,14 +1,13 @@
 // todo: decouple
 import { getDmrktListings } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
 import type { Listing } from '@/lib/dmrkt-indexer/types/listing'
+import type { NFTCollection } from '@/lib/dmrkt-indexer/types/nft-collection'
 
 import { TradePanel } from '@/features/trade/ui/TradePanel'
 import { activity } from '@/domain/shared/types/activity'
 
-import { Tab, TabUIProps } from '@/ui/organisms/core/Tab'
-import { ArrowList, ActivityRow, NFTCollectionRow } from '@/ui/molecules'
-import { ArrowRow } from '@/ui/atoms'
-import { NFTCollection } from '@/lib/dmrkt-indexer/types/nft-collection'
+import { Tab } from '@/ui/organisms/core/Tab'
+import { ActivityRow } from '@/ui/molecules'
 import { NFTCollectionsList } from '@/ui/organisms/NFTCollectionsList'
 
 export type FeedProps = {

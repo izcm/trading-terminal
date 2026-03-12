@@ -1,5 +1,5 @@
 // root
-export * from './NFTSummary'
+export * from '../../features/explore/ui/NFTPreview'
 export * from './NFTCollectionsList'
 
 // core

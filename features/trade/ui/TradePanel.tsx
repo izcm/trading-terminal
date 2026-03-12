@@ -10,7 +10,7 @@ import { Modal } from '@/ui/atoms'
 import { NFTSelect } from './NFTSelect'
 
 import { ListingDetails } from './ListingDetails'
-import { NFTSummary } from '../../../ui/organisms/NFTSummary'
+import { NFTPreview } from '../../explore/ui/NFTPreview'
 
 type Props = {
   listing: Listing | null
@@ -42,7 +42,7 @@ export function TradePanel({ listing }: Props) {
     <div className="flex flex-col gap-2 h-full">
       {/* preview */}
       <div className="card">
-        <NFTSummary
+        <NFTPreview
           chainId={listing.chainId}
           address={listing.collection}
           tokenId={listing.tokenId}

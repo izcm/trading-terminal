@@ -10,7 +10,7 @@ import type { Sale } from '@/domain/sale'
 import { activity } from '@/domain/shared/types/activity'
 import { aggregateSales } from '@/domain/shared/utils/analyze'
 
-import { Tab, TabUIProps, NFTSummary } from '@/ui/organisms'
+import { Tab, TabUIProps, NFTPreview } from '@/ui/organisms'
 import { ActivityRow } from '@/ui/molecules'
 
 export type SalesProps = {
@@ -54,7 +54,7 @@ const mode: Omit<TabUIProps<Sale>, 'secondaryView'> = {
       <div className="flex flex-col gap-2 h-full">
         <div className="card">
           {item && (
-            <NFTSummary chainId={item.chainId} address={item.collection} tokenId={item.tokenId} />
+            <NFTPreview chainId={item.chainId} address={item.collection} tokenId={item.tokenId} />
           )}
         </div>
         <div className="flex flex-col gap-2 my-1">

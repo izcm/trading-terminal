@@ -1,0 +1,19 @@
+.text-muted {
+  color: var(--text-muted);
+}
+
+.border-default {
+  border-color: var(--border-default);
+}
+
+.border-soft {
+  border-color: var(--border-soft);
+}
+
+.bg-muted {
+  background: var(--bg-muted);
+}
+
+.pixelated {
+  image-rendering: pixelated;
+}

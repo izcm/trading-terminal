@@ -1,0 +1,120 @@
+@theme {
+  --color-primary: var(--bg-primary);
+  --color-secondary: var(--bg-secondary);
+  --color-surface: var(--bg-surface);
+  --color-muted: var(--text-muted);
+
+  --color-stat: var(--accent-stat);
+  --color-ask: var(--accent-ask);
+  --color-bid: var(--accent-bid);
+
+  --color-text: var(--text-primary);
+  --color-text-muted: var(--text-muted);
+
+  --color-border: var(--border-default);
+  --color-border-soft: var(--border-soft);
+
+  --color-accent: var(--accent);
+  --color-accent-weak: var(--accent-weak);
+
+  --color-nebula: #05060d;
+  --color-obsidian-indigo: #0b0f1e;
+
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Helvetica, Arial,
+    'Apple Color Emoji', 'Segoe UI Emoji';
+  --font-mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+    monospace;
+
+  --text-hero: clamp(1.75rem, 1.4rem + 1.6vw, 3.1rem);
+  --text-h2: clamp(1.25rem, 1.1rem + 0.8vw, 1.875rem);
+}
+
+:root[data-theme='rpg-loot'] {
+  color-scheme: dark;
+
+  --bg-primary: #0b0b0e;
+  --bg-secondary: #141418;
+  --bg-surface: #1a1a20;
+  --bg-muted: rgba(120, 255, 180, 0.05);
+
+  --text-primary: rgba(230, 235, 240, 0.94);
+  --text-muted: rgba(165, 175, 185, 0.6);
+
+  --border-default: rgba(120, 255, 180, 0.35);
+  --border-soft: rgba(120, 255, 180, 0.15);
+
+  --accent: #66ffb2;
+  --accent-weak: rgba(102, 255, 178, 0.25);
+
+  --accent-stat: #5ee7ff;
+  --accent-bid: #a78bfa; /* arcane violet */
+  --accent-ask: #ff8a3d; /* ember orange */
+
+  --panel-shadow: 0 0 10px rgba(102, 255, 178, 0.25), 0 0 40px rgba(102, 255, 178, 0.1);
+
+  --bg-hero: linear-gradient(180deg, #050507 0%, #0b0b0e 35%, #111118 70%, #050507 100%);
+}
+
+:root[data-theme='cyber-void'] {
+  color-scheme: dark;
+
+  --bg-primary: #010208;
+  --bg-secondary: #090b1d;
+  --bg-surface: #06071a;
+  --bg-muted: rgba(140, 160, 255, 0.09);
+
+  --text-primary: rgba(196, 198, 207, 0.94);
+  --text-muted: rgba(188, 200, 242, 0.72);
+
+  --border-default: rgba(130, 151, 255, 0.479);
+  --border-soft: rgba(130, 151, 255, 0.39);
+
+  --accent: #6e75fa;
+  --accent-weak: rgba(109, 117, 255, 0.6);
+
+  --accent-stat: #60d7ff;
+  --accent-bid: #60d7ff;
+  --accent-ask: #e37dec;
+
+  --panel-shadow:
+    0 0 20px rgba(109, 117, 255, 0.22), 0 0 60px rgba(109, 117, 255, 0.16),
+    0 0 140px rgba(77, 217, 255, 0.12);
+
+  --bg-hero: linear-gradient(
+    135deg,
+    #000000 0%,
+    #01030a 15%,
+    #04071b 40%,
+    #080d3a 65%,
+    #0e144f 85%,
+    #04081a 100%
+  );
+}
+
+:root[data-theme='neon-abyss'] {
+  color-scheme: dark;
+
+  --bg-primary: #000000;
+  --bg-secondary: #020202;
+  --bg-surface: #050505;
+  --bg-muted: rgba(180, 120, 255, 0.05);
+
+  --text-primary: rgba(235, 235, 235, 0.94);
+  --text-muted: rgba(170, 170, 170, 0.55);
+
+  --border-default: rgba(168, 85, 247, 0.45);
+  --border-soft: rgba(168, 85, 247, 0.18);
+
+  --accent: #a855f7;
+  --accent-weak: rgba(168, 85, 247, 0.25);
+
+  --accent-stat: #c084fc;
+  --accent-bid: #c084fc;
+  --accent-ask: #ff4df0;
+
+  --panel-shadow: 0 0 10px rgba(168, 85, 247, 0.3), 0 0 28px rgba(168, 85, 247, 0.15);
+
+  --bg-hero: linear-gradient(180deg, #000000 0%, #05010a 30%, #0a0216 60%, #000000 100%);
+}

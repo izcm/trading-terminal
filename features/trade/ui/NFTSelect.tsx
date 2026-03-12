@@ -5,7 +5,7 @@ import { useState } from 'react'
 import type { Hex } from '@/domain/shared/types/eth'
 import { addrShort } from '@/domain/shared/utils/fmt/hex'
 
-import { NFTSummary } from '@/ui/organisms/NFTSummary'
+import { NFTPreview } from '@/features/explore/ui/NFTPreview'
 import { TextInput } from '@/ui/atoms'
 
 type Props = {
@@ -60,7 +60,7 @@ export function NFTSelect({ chainId, collection, validation, onValidate, onConfi
       <span>{uiError}</span>
       <span>{validation.checking}</span>
 
-      <NFTSummary chainId={chainId} address={collection.address} tokenId={tokenId?.toString()} />
+      <NFTPreview chainId={chainId} address={collection.address} tokenId={tokenId?.toString()} />
 
       <button disabled={!tokenId} onClick={() => alert('hello')} className="btn btn-primary w-full">
         fill order

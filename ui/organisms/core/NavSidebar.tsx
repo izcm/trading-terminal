@@ -1,7 +1,6 @@
 'use client'
 
 import dynamic from 'next/dynamic'
-import Link from 'next/link'
 
 // todo: move to centralized icons.ts
 import { ChartArea, LayoutGrid, Newspaper } from 'lucide-react'
@@ -32,9 +31,9 @@ const navItems = [
 
 export function NavSidebar() {
   return (
-    <aside className="h-full w-[250px] flex flex-col shrink-0 border-r border-soft bg-surface/16">
+    <aside className="h-full w-[250px] flex flex-col shrink-0 border-r border-default bg-surface/16">
       {/* ---- BRAND / TITLE ---- */}
-      <div className="px-3 py-4 text-start border-b border-soft">
+      <div className="px-3 py-4 text-start border-b border-default">
         <div className="text-muted">d | mrkt</div>
         <div className="text-sm text-muted/70">client</div>
       </div>

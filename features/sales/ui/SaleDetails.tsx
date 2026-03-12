@@ -30,7 +30,7 @@ const DETAILS_FIELD: DetailField<Sale>[] = [
 
 const TIMING_FIELDS: DetailField<Sale>[] = [
   {
-    label: 'block timestamp',
+    label: 'timestamp',
     getValue: s => tsShort(s.timestamp),
   },
 ]

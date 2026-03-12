@@ -23,8 +23,7 @@ export function MarketplaceView({
   collectionsProps: exploreProps,
   initialView,
 }: Props) {
-  const [view, setView] = useState<View>(initialView)
-  console.log(exploreProps)
+  const [view, setView] = useState<View>('explore')
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {

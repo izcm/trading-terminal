@@ -12,7 +12,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex h-screen font-mono">
       <NavSidebar />
-      <main className="flex-1 max-w-7xl">
+      <main className="flex-1 max-w-[1000px]">
         {/* Skip navigation link */}
         {children}
       </main>

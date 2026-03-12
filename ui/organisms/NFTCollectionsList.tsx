@@ -23,7 +23,7 @@ export function NFTCollectionsList({
           key={item.id}
           isSelected={isSelected}
           onSelect={onSelect}
-          className="base-row flex p-1 card bg-secondary transition w-full"
+          className="base-row flex p-1 card bg-secondary/40 transition w-full"
         >
           <NFTCollectionRow collection={item} />
         </ArrowRow>
