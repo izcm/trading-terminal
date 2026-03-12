@@ -10,5 +10,5 @@ export * from './rows/SidebarRow'
 // root
 export * from './Stat'
 export * from './ArrowList'
-export * from './ActivityRow'
+export * from './rows/ActivityRow'
 export * from './DetailFields'

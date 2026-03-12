@@ -1,7 +1,7 @@
 import { Listing } from '@/lib/dmrkt-indexer/types/listing'
 
 import { Sale } from '../../sale'
-import { addrShort } from '../utils/fmt/hex'
+import { Hex } from './eth'
 
 export type Activity = {
   activityType: 'ask' | 'bid' | 'unknown'
@@ -9,7 +9,9 @@ export type Activity = {
 
   timestamp: number
 
-  collection: string // can be addr / name / symbol
+  collectionAddress: Hex // can be addr / name / symbol
+  collectionSymbol: string
+
   tokenId: string
 
   price: string
@@ -23,10 +25,11 @@ export const activity = {
 
       timestamp: listing.start,
 
-      collection: listing.nftCollection
-        ? listing.nftCollection.symbol
-        : addrShort(listing.collection),
+      collectionAddress: listing.collection,
+      collectionSymbol: listing.nftCollection?.symbol ?? 'UNKNOWN',
+
       tokenId: listing.tokenId,
+
       price: listing.price,
     }
   },
@@ -37,7 +40,9 @@ export const activity = {
 
       timestamp: sale.timestamp, // block timestamps
 
-      collection: sale.nftCollection ? sale.nftCollection.symbol : sale.collection,
+      collectionAddress: sale.collection,
+      collectionSymbol: sale.nftCollection?.symbol ?? 'UNKNOWN',
+
       tokenId: sale.tokenId,
 
       price: sale.price,

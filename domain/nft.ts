@@ -14,10 +14,27 @@ export type NFTMetadata = {
 }
 
 export type NFT = NFTMetadata & {
-  id: string // just set to tokenid
+  id: string
   chainId: number
   collection: Hex
   tokenId: string
+}
+
+export function mapTokenUriToNFT(
+  chainId: number,
+  address: Hex,
+  tokenId: string,
+  tokenUri: string
+): NFT {
+  const meta = parseTokenURI(tokenUri)
+
+  return {
+    id: `${chainId}:${address}:${tokenId}`,
+    chainId: chainId,
+    collection: address,
+    tokenId: tokenId.toString(),
+    ...meta,
+  }
 }
 
 // made defensively to future proof

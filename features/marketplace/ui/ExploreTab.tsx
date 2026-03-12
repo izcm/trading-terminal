@@ -1,21 +1,19 @@
-// todo: di here?
 import { useState } from 'react'
 import { Address } from 'viem'
 
 import { NFTCollection } from '@/lib/dmrkt-indexer/types/nft-collection'
 import { readNFTBatch } from '@/lib/blockchain/erc721/erc721.read'
-
 import { Result } from '@/lib/utils/http'
-import { getImageFromTokenURI } from '@/lib/utils/image'
+
+import { NFTCollectionBanner } from '@/features/explore/ui/NFTCollectionBanner'
+import { NFTCard } from '@/ui/organisms/NFTCard'
+import { NFTPanel } from '@/ui/organisms/SidePanel'
 
 import { NFT } from '@/domain/nft'
 
-import { Tab, NFTCollectionsList, NFTPreview } from '@/ui/organisms'
+import { Tab } from '@/ui/organisms'
 import { GalleryItem } from '@/ui/molecules'
 import { TextInput } from '@/ui/atoms'
-import { SidePanel } from '@/ui/organisms/SidePanel'
-import { NFTCollectionBanner } from '@/features/explore/ui/NFTCollectionBanner'
-import { NFTSummary } from '@/ui/organisms/NFTSummary'
 
 export type ExploreProps = {
   initialItems: {
@@ -50,6 +48,7 @@ export function ExploreTab({ initialItems, initialCursor }: ExploreProps) {
         secondaryView={() => (
           <div className="flex flex-col gap-4 h-[150px]">
             <NFTCollectionBanner collection={initialItems.collections[0]} />
+
             <div className="flex gap-4">
               <TextInput />
               <button className="basis-1/3 btn btn-secondary">make collection bid</button>
@@ -61,7 +60,7 @@ export function ExploreTab({ initialItems, initialCursor }: ExploreProps) {
         galleryView="card"
         sidePanel={item => (
           <div className="flex flex-col gap-2 h-full">
-            {item && <NFTSummary nft={item} />}
+            {item && <NFTPanel nft={item} details={<div>hello</div>} />}
             <button className="btn btn-primary">make bid</button>
           </div>
         )}

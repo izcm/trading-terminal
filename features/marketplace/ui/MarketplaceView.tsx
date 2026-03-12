@@ -23,7 +23,7 @@ export function MarketplaceView({
   collectionsProps: exploreProps,
   initialView,
 }: Props) {
-  const [view, setView] = useState<View>('explore')
+  const [view, setView] = useState<View>('feed')
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {

@@ -15,11 +15,11 @@ export async function getDmrktCollections(limit: number, cursor: string | null =
   )
 }
 
-export async function getDmrktTopCollections(limit: number) {
+export function getDmrktTopCollections(limit: number) {
   return getDmrktItems<NFTCollection>('nft-collections/top', `limit=${limit}`, null)
 }
 
-export async function getDmrktListings(limit: number = 10, cursor: string | null = null) {
+export function getDmrktListings(limit: number = 10, cursor: string | null = null) {
   return getDmrktItems<Listing>(
     'orders',
     `limit=${limit}&status=active&include=nftCollection`,
@@ -27,7 +27,7 @@ export async function getDmrktListings(limit: number = 10, cursor: string | null
   )
 }
 
-export async function getDmrktSales(limit: number, cursor: string | null = null) {
+export function getDmrktSales(limit: number, cursor: string | null = null) {
   return getDmrktItems<Sale>(
     'settlements',
     `limit=${limit}&include=nftCollection&include=order`,
@@ -35,7 +35,6 @@ export async function getDmrktSales(limit: number, cursor: string | null = null)
   )
 }
 
-export async function getDmrktItem<T>() {}
 export async function getDmrktItems<T>(
   params: string,
   query: string,

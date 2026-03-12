@@ -4,7 +4,7 @@ export function GalleryItem({
   image,
   title,
   details,
-}: { image: string; title: string } & { details?: ReactNode }) {
+}: { image: string; title?: string } & { details?: ReactNode }) {
   return (
     <div className="card bg-primary group hover:-translate-y-1 transition-transform">
       <div className="border-b border-default">

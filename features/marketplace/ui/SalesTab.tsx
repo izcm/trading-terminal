@@ -61,7 +61,9 @@ const mode: Omit<TabUIProps<Sale>, 'secondaryView'> = {
           <button className="btn btn-secondary">open receipt 2.0</button>
           <span className="text-xs text-muted">gas costs, tx inputs etc.</span>
         </div>
-        <SaleDetails sale={item} />
+        <div className="flex-1 card">
+          <SaleDetails sale={item} />
+        </div>
       </div>
     )
   },

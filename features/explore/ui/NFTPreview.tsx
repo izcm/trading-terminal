@@ -4,7 +4,9 @@ import { useEffect, useState } from 'react'
 import { useTokenURI } from '@/lib/blockchain'
 
 import { Hex } from '@/domain/shared/types/eth'
-import { getImageFromTokenURI } from '@/lib/utils/image'
+import { mapTokenUriToNFT, NFT, parseTokenURI } from '@/domain/nft'
+
+import { NFTCard } from '@/ui/organisms/NFTCard'
 
 type NFTAttribute = {
   trait_type: string
@@ -19,7 +21,7 @@ type Props = {
 
 export function NFTPreview({ chainId, address, tokenId }: Props) {
   // UI elements
-  const [previewSrc, setPreviewSrc] = useState<string>('/placeholders/token-waiting.svg')
+  const [nft, setNft] = useState<NFT>()
 
   const { data: tokenURI } = useTokenURI(
     tokenId
@@ -30,16 +32,16 @@ export function NFTPreview({ chainId, address, tokenId }: Props) {
         }
       : undefined
   )
+
   useEffect(() => {
-    if (!tokenURI) return
+    if (!tokenURI || !tokenId) return
 
     const preview = async () => {
-      const image = getImageFromTokenURI(tokenURI)
-      setPreviewSrc(image)
+      setNft(mapTokenUriToNFT(chainId, address, tokenId, tokenURI))
     }
 
     preview()
   }, [tokenURI])
 
-  return <img src={previewSrc} className="w-full object-cover" alt="token preview" />
+  return <NFTCard nft={nft} />
 }

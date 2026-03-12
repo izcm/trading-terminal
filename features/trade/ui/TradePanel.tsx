@@ -3,15 +3,15 @@
 import { useState } from 'react'
 import { CreditCard, Layers } from 'lucide-react'
 
-import { useFillOrder } from '../hooks/fill-order.use'
 import type { Listing } from '@/lib/dmrkt-indexer/types/listing'
+import { useFillOrder } from '../hooks/fill-order.use'
 
-import { Modal } from '@/ui/atoms'
 import { NFTSelect } from './NFTSelect'
-
 import { ListingDetails } from './ListingDetails'
 import { NFTPreview } from '../../explore/ui/NFTPreview'
-import { NFTSummary } from '@/ui/organisms/NFTSummary'
+
+import { Modal } from '@/ui/atoms'
+import { NFTCard } from '@/ui/organisms/NFTCard'
 
 type Props = {
   listing: Listing | null
@@ -40,7 +40,7 @@ export function TradePanel({ listing }: Props) {
   }
 
   return (
-    <div className="flex flex-col gap-2 h-full">
+    <div className="flex flex-col gap-4 h-full">
       {/* preview */}
       <div className="card">
         <NFTPreview
@@ -49,7 +49,7 @@ export function TradePanel({ listing }: Props) {
           tokenId={listing.tokenId}
         />
       </div>
-      <div className="flex flex-col gap-2 my-1">
+      {/* <div className="flex flex-col gap-2 my-1">
         <button
           disabled={!simulation.isFillable && !listing.isCollectionBid}
           onClick={handlePrimaryAction}
@@ -71,10 +71,12 @@ export function TradePanel({ listing }: Props) {
             ? 'choose nft to sell into this bid'
             : 'wallet will ask you to confirm'}
         </span>
-      </div>
+      </div> */}
 
       {/* details area */}
-      <ListingDetails listing={listing} />
+      <div className="flex-1 card bg-secondary/60">
+        <ListingDetails listing={listing} />
+      </div>
 
       {/* MODAL */}
       <Modal isOpen={showNFTSelectModal} onClose={() => setShowNFTSelectModal(false)}>

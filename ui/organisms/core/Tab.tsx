@@ -52,7 +52,7 @@ export function Tab<T extends { id: string }>({
     galleryView === 'list'
       ? {
           arrowList: 'flex flex-col gap-4',
-          arrowRow: 'base-row border border-soft rounded-xl transition gap-4 px-3 py-3',
+          arrowRow: 'base-row border border-soft rounded-xl transition gap-4 px-2 py-2 ',
         }
       : {
           arrowList:
@@ -70,7 +70,7 @@ export function Tab<T extends { id: string }>({
           getId={c => c.id}
           selectedId={selected?.id}
           onSelect={setSelected}
-          className={`${galleryClasses.arrowList} p-1`}
+          className={`${galleryClasses.arrowList}`}
         >
           {({ item, isSelected, onSelect }) => (
             <ArrowRow

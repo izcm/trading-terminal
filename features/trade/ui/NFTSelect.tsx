@@ -29,7 +29,7 @@ export function NFTSelect({ chainId, collection, validation, onValidate, onConfi
 
   const { address, symbol } = collection
 
-  const title = 'token id in ' + (symbol !== undefined ? symbol : addrShort(address))
+  const title = 'token id in ' + (symbol ?? addrShort(address))
 
   const saneInput = (input: string) => /^\d+$/.test(input)
 
