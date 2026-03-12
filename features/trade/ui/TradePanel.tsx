@@ -49,34 +49,33 @@ export function TradePanel({ listing }: Props) {
           tokenId={listing.tokenId}
         />
       </div>
-      {/* <div className="flex flex-col gap-2 my-1">
-        <button
-          disabled={!simulation.isFillable && !listing.isCollectionBid}
-          onClick={handlePrimaryAction}
-          className="btn btn-primary w-full"
-        >
-          {listing.isCollectionBid ? (
-            <>
-              <Layers size={16} /> select nft
-            </>
-          ) : (
-            <>
-              <CreditCard size={16} /> buy now
-            </>
-          )}
-        </button>
-
-        <span className="text-xs text-muted">
-          {listing.isCollectionBid
-            ? 'choose nft to sell into this bid'
-            : 'wallet will ask you to confirm'}
-        </span>
-      </div> */}
 
       {/* details area */}
       <div className="flex-1 card bg-secondary/60">
         <ListingDetails listing={listing} />
       </div>
+
+      <button
+        disabled={!simulation.isFillable && !listing.isCollectionBid}
+        onClick={handlePrimaryAction}
+        className="btn btn-primary w-full"
+      >
+        {listing.isCollectionBid ? (
+          <>
+            <Layers size={16} /> select nft
+          </>
+        ) : (
+          <>
+            <CreditCard size={16} /> buy now
+          </>
+        )}
+      </button>
+
+      {/* <span className="text-xs text-muted">
+          {listing.isCollectionBid
+            ? 'choose nft to sell into this bid'
+            : 'wallet will ask you to confirm'}
+    
 
       {/* MODAL */}
       <Modal isOpen={showNFTSelectModal} onClose={() => setShowNFTSelectModal(false)}>

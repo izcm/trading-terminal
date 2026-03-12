@@ -35,38 +35,41 @@ export function ActivityRow({ item }: { item: Props }) {
   } = item.activity
 
   const nft = item.nft ?? placeholderNFT(item.activity)
-
   const rarity = nft.attributes.find(a => a.trait_type === 'rarity')?.value
 
   return (
     <>
       {/* NFT image */}
-      <div className="relative h-full  shrink-0">
-        <img src={nft.image} alt={nft.name} className="w-12 h-12 rounded object-cover " />
+      <div className="relative shrink-0 rounded-xl">
+        <img src={nft.image} alt={nft.name} className="w-12 h-12 rounded object-cover" />
 
-        {/* ask/bid indicator */}
+        {/* activity indicator */}
         <span
           className={`absolute -bottom-1 -right-1 text-[10px] px-1 rounded
-            ${activityType === 'ask' ? 'bg-ask text-black' : 'bg-bid text-black'}
-          `}
+          ${activityType === 'ask' ? 'bg-ask text-black' : 'bg-bid text-black'}
+        `}
         >
           {activityType}
         </span>
       </div>
 
       {/* NFT info */}
-      <div className="flex flex-col flex-1 min-w-0">
-        <span className="font-semibold truncate">{nft.name}</span>
+      <div className="flex flex-col justify-center flex-1 min-h-[56px]">
+        <span className="font-semibold truncate">
+          {isCollectionBid ? `${symbol} collection bid` : nft.name}
+        </span>
 
         <span className="text-xs text-text-muted">
           {symbol} {!isCollectionBid && `#${tokenId}`}
         </span>
 
-        {rarity && <span className="text-[11px] text-accent">{rarity}</span>}
+        {!isCollectionBid && rarity && <span className="text-[11px] text-accent">{rarity}</span>}
+
+        {isCollectionBid && <span className="text-xs text-accent/70">any NFT in collection</span>}
       </div>
 
       {/* price */}
-      <div className="text-right flex flex-col">
+      <div className="text-right flex flex-col px-1">
         <span className="font-semibold">{formatEth2(BigInt(price))} ETH</span>
 
         <span className="text-xs text-text-muted">{tsSuperShort(timestamp)}</span>
@@ -74,6 +77,7 @@ export function ActivityRow({ item }: { item: Props }) {
     </>
   )
 }
+
 // export function ActivityRow({ item }: { item: Props }) {
 //   const {
 //     activityType,

@@ -51,20 +51,20 @@ export function Tab<T extends { id: string }>({
   const galleryClasses =
     galleryView === 'list'
       ? {
-          arrowList: 'flex flex-col gap-4',
-          arrowRow: 'base-row border border-soft rounded-xl transition gap-4 px-2 py-2 ',
+          arrowList: 'flex flex-col gap-4 p-1',
+          arrowRow: 'base-row border border-soft rounded-xl transition gap-4 px-2 py-1',
         }
       : {
           arrowList:
             'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 lg-rounded',
-          arrowRow: 'outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-lg block',
+          arrowRow: 'outline-none focus-visible:ring-1 focus-visible:ring-accent rounded-lg block',
         }
 
   return (
-    <div className="flex gap-4 overflow-hidden p-1">
+    <div className="flex gap-4 overflow-y-scroll">
       {/* LEFT COLUMN */}
       <div className="flex-1 flex flex-col gap-4">
-        {secondaryView && secondaryView(items)}
+        <div className="mt-4">{secondaryView && secondaryView(items)}</div>
         <ArrowList
           items={items}
           getId={c => c.id}
@@ -85,7 +85,7 @@ export function Tab<T extends { id: string }>({
         </ArrowList>
       </div>
 
-      <div className="w-1/4 shrink-0 h-full flex flex-col gap-4">
+      <div className="w-1/4 shrink-0 mb-4 flex flex-col gap-4 my-4">
         {selected && sidePanel && sidePanel(selected)}
       </div>
     </div>
