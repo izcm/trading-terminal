@@ -6,9 +6,9 @@ import { CreditCard, Layers } from 'lucide-react'
 import type { Listing } from '@/domain/listing'
 import { useFillOrder } from '../hooks/fill-order.use'
 
+import { NFTPreview } from '@/features/explore/ui/NFTPreview'
 import { NFTSelect } from './NFTSelect'
 import { ListingDetails } from './ListingDetails'
-import { NFTPreview } from '../../explore/ui/NFTPreview'
 
 import { Modal } from '@/ui/atoms'
 import { NFTCard } from '@/ui/organisms/NFTCard'

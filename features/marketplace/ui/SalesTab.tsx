@@ -18,34 +18,6 @@ export type SalesProps = {
   initialCursor: string | null
 }
 
-function makeAnalyticsArea(sales: Sale[]) {
-  const analytics = useMemo(() => {
-    return aggregateSales(sales, 'day')
-  }, [sales])
-
-  const totalVolume = sales.reduce((sum, sale) => sum + BigInt(sale.price), 0n)
-
-  return (
-    <div className="flex flex-col gap-3">
-      <div className="flex items-center justify-evenly card p-2">
-        <span>
-          sales <strong>{sales.length}</strong>
-        </span>
-        <span>
-          users <strong>{Array.from(analytics.byActor).length}</strong>
-        </span>
-
-        <span>
-          volume <strong>{formatEth2(totalVolume)}</strong>
-        </span>
-      </div>
-      <div className="card pt-2 w-full grow-0">
-        <Chart analytics={analytics} sales={sales} timeUnit={'day'} />
-      </div>
-    </div>
-  )
-}
-
 const mode: Omit<TabUIProps<Sale>, 'secondaryView'> = {
   getGalleryItems: getDmrktSales,
   galleryItem: item => <ActivityItem activity={activity.fromSale(item)} />,
@@ -73,7 +45,6 @@ export function SalesTab({ initialItems, initialCursor }: SalesProps) {
   return (
     <>
       <Tab<Sale>
-        secondaryView={makeAnalyticsArea}
         getGalleryItems={getDmrktSales}
         galleryItem={mode.galleryItem}
         sidePanel={mode.sidePanel}

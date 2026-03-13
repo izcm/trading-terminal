@@ -53,7 +53,7 @@ export function ActivityRow({ item }: { item: Props }) {
   const rarity = nft.attributes.find(a => a.trait_type === 'rarity')?.value
 
   return (
-    <div className="base-row gap-4 py-1 px-3">
+    <div className="base-row gap-4 py-1 px-2">
       {/* NFT image */}
       <div className="relative shrink-0 rounded-xl">
         <img src={nft.image} alt={nft.name} className="w-12 h-12 rounded object-cover" />

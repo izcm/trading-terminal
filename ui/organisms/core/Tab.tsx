@@ -2,7 +2,7 @@ import { ReactNode, useEffect, useState } from 'react'
 
 import { Result } from '@/lib/utils/http'
 
-import { ArrowRow } from '@/ui/atoms'
+import { ArrowRow, TextInput } from '@/ui/atoms'
 import { ArrowList } from '@/ui/molecules'
 
 export type TabUIProps<T> = {
@@ -61,15 +61,17 @@ export function Tab<T extends { id: string }>({
         }
 
   return (
-    <div className="flex gap-4 overflow-y-scroll">
+    <div className="flex h-full min-h-0 gap-4">
       {/* LEFT COLUMN */}
-      <div className="flex-1 flex flex-col gap-4">
+      <div className="flex min-h-0 flex-1 flex-col gap-4">
+        {secondaryView && secondaryView(items)}
+        <TextInput />
         <ArrowList
           items={items}
           getId={c => c.id}
           selectedId={selected?.id}
           onSelect={setSelected}
-          className={`${galleryClasses.arrowList} px-1`}
+          className={`${galleryClasses.arrowList} min-h-0 flex-1 px-1`}
         >
           {({ item, isSelected, onSelect }) => (
             <ArrowRow
@@ -84,7 +86,7 @@ export function Tab<T extends { id: string }>({
         </ArrowList>
       </div>
 
-      <div className="w-1/4 shrink-0 mb-2">{selected && sidePanel && sidePanel(selected)}</div>
+      <div className="w-1/4 shrink-0">{selected && sidePanel && sidePanel(selected)}</div>
     </div>
   )
 }

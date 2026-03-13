@@ -28,8 +28,8 @@ body {
 }
 
 input:focus {
-  outline: none !important;
-  border-color: color-mix(in oklab, var(--accent) 60%, var(--border-default) 40%) !important;
-  box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 20%, transparent) !important;
-  background: color-mix(in oklab, var(--bg-surface) 90%, var(--accent) 10%) !important;
+  outline: none;
+  border-color: color-mix(in oklab, var(--accent) 35%, var(--border-default));
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 5%, transparent);
+  background: color-mix(in oklab, var(--bg-surface) 8%, var(--accent) 5%);
 }

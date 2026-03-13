@@ -6,8 +6,6 @@ import { FeedTab, type FeedProps } from './FeedTab'
 import { SalesTab, type SalesProps } from './SalesTab'
 import { ExploreTab, type ExploreProps } from './ExploreTab'
 
-import { NavSidebar } from '@/ui/organisms'
-
 type View = 'feed' | 'sales' | 'explore'
 
 type Props = {
@@ -16,6 +14,21 @@ type Props = {
   collectionsProps: ExploreProps
   initialView: View
 }
+
+const navItems = [
+  {
+    title: 'feed',
+    id: 'feed',
+  },
+  {
+    title: 'sales',
+    id: 'sales',
+  },
+  {
+    title: 'explore',
+    id: 'explore',
+  },
+]
 
 export function MarketplaceView({
   feedProps,
@@ -44,12 +57,27 @@ export function MarketplaceView({
   }, [])
 
   return (
-    <div className="flex h-screen font-mono">
-      <NavSidebar />
-      <main className="flex-1 mx-auto max-w-7xl px-4">
-        {/* Skip navigation link */}
-        <div className="h-full flex flex-col gap-4">
-          <div className="flex items-center justify-center gap-2 px-1 my-4">
+    <div className="mx-auto flex gap-12 h-screen justify-center overflow-hidden font-mono">
+      {/* sidebar */}
+      <aside className="flex items-center">
+        <div className="flex flex-col gap-8">
+          {navItems.map(item => (
+            <button
+              key={item.id}
+              onClick={() => setView(item.id as View)}
+              data-active={view === item.id}
+              className="btn btn-ghost min-w-[120px]"
+            >
+              {item.title}
+            </button>
+          ))}
+        </div>
+      </aside>
+
+      {/* ---- main content ---- */}
+      <main className="flex">
+        <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col">
+          <div className="my-4 flex items-center justify-center gap-2 px-1 text-accent">
             <button className="px-3 py-1 text-sm font-semibold rounded-lg border border-border-soft hover:border-accent hover:text-accent cursor-pointer transition">
               [ Swords ]
             </button>
@@ -66,11 +94,11 @@ export function MarketplaceView({
               [ Eggs ]
             </button>
           </div>
-          <>
+          <div className="min-h-0 flex-1">
             {view === 'feed' && <FeedTab {...feedProps} />}
             {view === 'sales' && <SalesTab {...salesProps} />}
             {view === 'explore' && <ExploreTab {...exploreProps} />}
-          </>
+          </div>
         </div>
       </main>
     </div>

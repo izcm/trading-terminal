@@ -7,7 +7,7 @@ interface TextInputProps {
 export function TextInput({ placeholder, value, onChange }: TextInputProps) {
   return (
     <input
-      className="card px-9 py-2 w-full"
+      className="card px-4 py-2 w-full"
       placeholder={placeholder}
       value={value}
       onChange={e => onChange?.(e.target.value)}
