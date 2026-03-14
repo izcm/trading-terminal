@@ -1,12 +1,8 @@
 'use client' // boundry is here!
 
-import { ReactNode, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import {
-  getDmrktCollections,
-  getDmrktListings,
-  getDmrktSales,
-} from '@/lib/dmrkt-indexer/actions/dmrkt.get'
+import { getDmrktListings, getDmrktSales } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
 import type { Paginated, Result } from '@/lib/utils/http'
 
 import { activity } from '@/domain/shared/activity'
@@ -15,10 +11,11 @@ import type { Sale } from '@/domain/sale'
 
 import { Gallery, NFTPreview } from '@/ui/organisms'
 import { ActivityItem, NFTRow } from '@/ui/molecules'
-import { TextInput } from '@/ui/atoms'
+import { Modal, TextInput } from '@/ui/atoms'
 
 import { SaleDetails } from '@/features/sales/ui/SaleDetails'
 import { ListingDetails } from '@/features/trade/ui/ListingDetails'
+import { NFTSelect } from '@/features/trade/ui/NFTSelect'
 
 type Page<T> = {
   items: T[]
@@ -52,7 +49,7 @@ type InitialState = {
   [K in View]: Page<ViewResource[K]>
 }
 
-const stateUI = {
+const viewConfig = {
   feed: {
     galleryItem: (item: Listing) => <ActivityItem activity={activity.fromListing(item)} />,
     details: (item: Listing) => <ListingDetails listing={item} />,
@@ -113,30 +110,14 @@ export function MarketplaceView(initial: InitialState) {
     sales: initial.sales.items[0] ?? null,
   })
 
-  const ui = stateUI[view]
+  const ui = viewConfig[view]
   const selected = selectedByView[view]
 
   return (
-    <div className="flex h-screen max-w-4xl mx-auto overflow-hidden font-mono">
-      {/* sidebar */}
-      {/* <aside className="flex h-full items-center">
-        <div className="flex flex-col">
-          {navItems.map(item => (
-            <button
-              key={item.id}
-              onClick={() => setView(item.id as View)}
-              data-active={view === item.id}
-              className="btn btn-ghost min-w-[120px]"
-            >
-              {item.title}
-            </button>
-          ))}
-        </div>
-      </aside> */}
-
+    <div className="flex gap-4 h-screen max-w-4xl mx-auto overflow-hidden font-mono">
       {/* ---- main content ---- */}
-      <main className="flex flex-col items-center gap-4">
-        <div className="my-4 flex gap-2 px-1 text-accent">
+      <main className="flex flex-col mt-4 items-center gap-4">
+        <div className="flex gap-2 px-1 text-accent">
           <button className="menuBtn">[ Swords ]</button>
 
           <button className="menuBtn">[ Elixirs ]</button>
@@ -144,6 +125,25 @@ export function MarketplaceView(initial: InitialState) {
           <button className="menuBtn">[ Shields ]</button>
 
           <button className="menuBtn">[ Eggs ]</button>
+        </div>
+
+        <div className="flex w-full border-b border-soft">
+          {(Object.keys(viewConfig) as View[]).map(title => (
+            <button
+              key={title}
+              onClick={() => setView(title)}
+              className={`
+            flex-1 py-2 text-center border-b-2 transition
+        ${
+          title === view
+            ? 'border-accent-weak text-accent-weak'
+            : 'border-transparent text-muted hover:text-accent/70'
+        }
+      `}
+            >
+              {title.charAt(0).toUpperCase() + title.slice(1)}
+            </button>
+          ))}
         </div>
 
         <div className="min-h-0 flex gap-4 justify-center">
@@ -164,7 +164,7 @@ export function MarketplaceView(initial: InitialState) {
           </div>
 
           <div className="basis-1/4 flex flex-col gap-3 mb-2">
-            <button className="btn btn-secondary">open receipt 2.0</button>
+            {/* <button className="btn btn-secondary">open receipt 2.0</button> */}
 
             <div className="pointer-events-none">
               <NFTPreview
@@ -179,6 +179,17 @@ export function MarketplaceView(initial: InitialState) {
             )}
           </div>
         </div>
+        {selected && (
+          <Modal isOpen={false} onClose={() => alert('hello')}>
+            <NFTSelect
+              chainId={selected.chainId}
+              address={selected.collection}
+              validation={{ canConfirm: true, checking: true }}
+              onValidate={() => alert('hello')}
+              onConfirm={() => alert('hello')}
+            />
+          </Modal>
+        )}
       </main>
     </div>
   )

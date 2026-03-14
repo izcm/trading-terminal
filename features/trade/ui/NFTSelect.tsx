@@ -3,33 +3,25 @@
 import { useState } from 'react'
 
 import type { Hex } from '@/domain/shared/eth'
-import { addrShort } from '@/domain/shared/utils/fmt/hex'
 
 import { NFTPreview } from '@/features/explore/ui/NFTPreview'
 import { TextInput } from '@/ui/atoms'
 
 type Props = {
   chainId: number
-  collection: {
-    address: Hex
-    symbol?: string
-  }
+  address: Hex
   validation: {
     canConfirm: boolean
     checking: boolean
-    error: string | undefined
+    error?: string
   }
   onValidate: (tokenId: bigint) => void
   onConfirm: () => void
 }
 
-export function NFTSelect({ chainId, collection, validation, onValidate, onConfirm }: Props) {
+export function NFTSelect({ chainId, address, validation, onValidate, onConfirm }: Props) {
   const [tokenIdInput, setTokenIdInput] = useState('')
   const [tokenId, setTokenId] = useState<bigint | undefined>(undefined)
-
-  const { address, symbol } = collection
-
-  const title = 'token id in ' + (symbol ?? addrShort(address))
 
   const saneInput = (input: string) => /^\d+$/.test(input)
 
@@ -45,8 +37,7 @@ export function NFTSelect({ chainId, collection, validation, onValidate, onConfi
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      <span>{title}</span>
+    <div className="flex flex-col gap-4 max-w-[200px]">
       <div className="flex gap-2">
         <TextInput value={tokenIdInput} onChange={e => setTokenIdInput(e)} placeholder="eg. 44" />
         <button
@@ -60,7 +51,11 @@ export function NFTSelect({ chainId, collection, validation, onValidate, onConfi
       <span>{uiError}</span>
       <span>{validation.checking}</span>
 
-      <NFTPreview chainId={chainId} address={collection.address} tokenId={tokenId} />
+      <div>
+        <div className="pointer-events-none">
+          <NFTPreview chainId={chainId} address={address} tokenId={tokenId} />
+        </div>
+      </div>
 
       <button disabled={!tokenId} onClick={() => alert('hello')} className="btn btn-primary w-full">
         fill order

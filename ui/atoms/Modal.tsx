@@ -59,7 +59,7 @@ export function Modal({ isOpen, onClose, children }: ModalProps) {
       <div
         ref={containerRef}
         className="
-          bg-surface
+          bg-secondary/40
           border border-default
           rounded-lg
           shadow-lg p-4"
