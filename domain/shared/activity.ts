@@ -1,5 +1,5 @@
 import type { Listing } from '@/domain/listing'
-import { Sale } from '../../sale'
+import { Sale } from '../sale'
 import { Hex } from './eth'
 
 // todo: use bigints in other types!

@@ -1,5 +1,5 @@
 // Local Collection type - provider agnostic
-import type { Hex } from '@/domain/shared/types/eth'
+import type { Hex } from '@/domain/shared/eth'
 
 type Status = 'DONE' | 'PENDING' | 'FAILED'
 

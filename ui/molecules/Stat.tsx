@@ -1,4 +1,4 @@
-import type { Hex } from '@/domain/shared/types/eth'
+import type { Hex } from '@/domain/shared/eth'
 
 export function Stat<T extends bigint | Hex | number>({
   value,

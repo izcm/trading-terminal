@@ -9,7 +9,7 @@ import { toOrder712, type Order } from '@/protocol/eip712'
 import { ORDERBOOK_ERROR_MESSAGES as ERRORS } from '@/protocol/errors'
 import { orderbookAbi, orderbookAddress } from '@/protocol/config'
 
-import type { Hex } from '@/domain/shared/types/eth'
+import type { Hex } from '@/domain/shared/eth'
 
 const safeStringify = (obj: unknown) =>
   JSON.stringify(obj, (_, value) => (typeof value === 'bigint' ? value.toString() : value), 2)

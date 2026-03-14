@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 
-import type { Hex } from '@/domain/shared/types/eth'
+import type { Hex } from '@/domain/shared/eth'
 import { addrShort } from '@/domain/shared/utils/fmt/hex'
 
 import { NFTPreview } from '@/features/explore/ui/NFTPreview'

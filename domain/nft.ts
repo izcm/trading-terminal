@@ -1,5 +1,5 @@
 import { NFT_PLACEHOLDER_IMAGE } from './constants/placeholders'
-import type { Hex } from './shared/types/eth'
+import type { Hex } from './shared/eth'
 
 type NFTAttribute = {
   trait_type: string

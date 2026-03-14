@@ -1,4 +1,4 @@
-import type { Hex } from '@/domain/shared/types/eth'
+import type { Hex } from '@/domain/shared/eth'
 
 export type Fill = {
   actor: Hex

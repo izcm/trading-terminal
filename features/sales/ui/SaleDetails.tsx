@@ -10,18 +10,18 @@ const DETAIL_FIELDS: DetailField<Sale>[] = [
     label: 'chain',
     getValue: s => s.chainId,
   },
-  {
-    label: 'buyer',
-    getValue: s => addrShort(s.buyer),
-  },
-  {
-    label: 'seller',
-    getValue: s => addrShort(s.seller),
-  },
-  {
-    label: 'tx hash',
-    getValue: s => truncateHex(s.txHash),
-  },
+  // {
+  //   label: 'buyer',
+  //   getValue: s => addrShort(s.buyer),
+  // },
+  // {
+  //   label: 'seller',
+  //   getValue: s => addrShort(s.seller),
+  // },
+  // {
+  //   label: 'tx hash',
+  //   getValue: s => truncateHex(s.txHash),
+  // },
   {
     label: 'block number',
     getValue: s => s.blockNumber,

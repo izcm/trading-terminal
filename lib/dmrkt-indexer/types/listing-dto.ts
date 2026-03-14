@@ -1,6 +1,6 @@
 import type { Order } from '@/protocol/eip712'
 
-import type { Hex } from '@/domain/shared/types/eth'
+import type { Hex } from '@/domain/shared/eth'
 import type { NFT } from '@/domain/nft'
 import type { Listing } from '@/domain/listing'
 

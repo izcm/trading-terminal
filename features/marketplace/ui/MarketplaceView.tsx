@@ -9,13 +9,14 @@ import {
 } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
 import type { Paginated, Result } from '@/lib/utils/http'
 
-import { activity } from '@/domain/shared/types/activity'
+import { activity } from '@/domain/shared/activity'
 import type { Listing } from '@/domain/listing'
 import type { Sale } from '@/domain/sale'
 
 import { Gallery, NFTPreview } from '@/ui/organisms'
 import { ActivityItem, NFTRow } from '@/ui/molecules'
 import { TextInput } from '@/ui/atoms'
+
 import { SaleDetails } from '@/features/sales/ui/SaleDetails'
 import { ListingDetails } from '@/features/trade/ui/ListingDetails'
 
@@ -24,31 +25,31 @@ type Page<T> = {
   cursor: string | null
 }
 
-type ViewMap = {
+type ViewResource = {
   feed: Listing
   sales: Sale
   // explore: NFT
 }
 
-type View = keyof ViewMap
+type View = keyof ViewResource
 
 type ViewPages = {
-  [K in View]: Page<ViewMap[K]>
+  [K in View]: Page<ViewResource[K]>
 }
 
-type PageGetters<K extends keyof ViewMap> = (
+type PageGetters<K extends keyof ViewResource> = (
   limit: number,
   cursor: string | null
-) => Promise<Result<Paginated<ViewMap[K]>>>
+) => Promise<Result<Paginated<ViewResource[K]>>>
 
-const pageGetters: { [K in keyof ViewMap]: PageGetters<K> } = {
+const pageGetters: { [K in keyof ViewResource]: PageGetters<K> } = {
   feed: getDmrktListings,
   sales: getDmrktSales,
   // explore: getDmrktCollections,
 }
 
 type InitialState = {
-  [K in View]: Page<ViewMap[K]>
+  [K in View]: Page<ViewResource[K]>
 }
 
 const stateUI = {
@@ -63,7 +64,7 @@ const stateUI = {
 }
 
 export function MarketplaceView(initial: InitialState) {
-  const [view, setView] = useState<View>('feed')
+  const [view, setView] = useState<View>('sales')
 
   // keyboard shortcuts
   useEffect(() => {
@@ -107,7 +108,13 @@ export function MarketplaceView(initial: InitialState) {
     fetchMore()
   }, [current.cursor])
 
-  const [selected, setSelected] = useState<ViewMap[View] | null>(current.items[0])
+  const [selectedByView, setSelectedByView] = useState<{ [K in View]: ViewResource[K] | null }>({
+    feed: initial.feed.items[0] ?? null,
+    sales: initial.sales.items[0] ?? null,
+  })
+
+  const ui = stateUI[view]
+  const selected = selectedByView[view]
 
   return (
     <div className="flex h-screen max-w-4xl mx-auto overflow-hidden font-mono">
@@ -145,9 +152,14 @@ export function MarketplaceView(initial: InitialState) {
 
             <Gallery<any>
               items={state[view].items}
-              selected={selected}
-              onSelect={setSelected}
-              galleryItem={item => stateUI[view]['galleryItem'](item)}
+              selected={selectedByView[view]}
+              onSelect={item =>
+                setSelectedByView(prev => ({
+                  ...prev,
+                  [view]: item,
+                }))
+              }
+              galleryItem={item => ui['galleryItem'](item as any)}
             />
           </div>
 
@@ -155,15 +167,16 @@ export function MarketplaceView(initial: InitialState) {
             <button className="btn btn-secondary">open receipt 2.0</button>
 
             <div className="pointer-events-none">
-              {selected && (
-                <NFTPreview
-                  chainId={selected.chainId}
-                  address={selected.collection}
-                  tokenId={selected.tokenId}
-                />
-              )}
+              <NFTPreview
+                chainId={selected?.chainId}
+                address={selected?.collection}
+                tokenId={selected?.tokenId}
+              />
             </div>
-            <div className="flex-1 card bg-secondary">{stateUI[view]['details'](selected)}</div>
+
+            {selected && (
+              <div className="flex-1 card bg-secondary">{ui['details'](selected as any)}</div>
+            )}
           </div>
         </div>
       </main>
