@@ -17,7 +17,7 @@ export function ArrowRow({ isSelected, onSelect, children, className = '' }: Arr
     }
   }, [isSelected])
 
-  const state = isSelected ? 'bg-accent/10' : 'hover:bg-white/5 bg-secondary/60'
+  const state = isSelected ? 'bg-accent/16' : 'hover:bg-white/5 bg-secondary/60'
 
   return (
     <li

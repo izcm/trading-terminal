@@ -4,6 +4,7 @@ import { Hex } from './eth'
 
 // todo: use bigints in other types!
 export type Activity = {
+  source: 'sale' | 'listing'
   type: 'ask' | 'bid' | 'unknown'
   chainId: number
   collection: Hex
@@ -17,6 +18,7 @@ export type Activity = {
 export const activity = {
   fromListing(listing: Listing): Activity {
     return {
+      source: 'listing',
       type: listing.type,
       chainId: listing.chainId,
       collection: listing.collection,
@@ -30,6 +32,7 @@ export const activity = {
 
   fromSale(sale: Sale): Activity {
     return {
+      source: 'sale',
       type: sale.order?.type ?? 'unknown',
       chainId: sale.chainId,
       collection: sale.collection,

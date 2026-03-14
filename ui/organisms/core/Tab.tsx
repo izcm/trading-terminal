@@ -1,52 +1,24 @@
 import { ReactNode, useEffect, useState } from 'react'
 
-import { Result } from '@/lib/utils/http'
-
 import { ArrowRow, TextInput } from '@/ui/atoms'
 import { ArrowList } from '@/ui/molecules'
 
 export type TabUIProps<T> = {
-  secondaryView?: (items: T[]) => ReactNode
-  getGalleryItems: (
-    limit: number,
-    cursor: string
-  ) => Promise<Result<{ items: T[]; nextCursor: string | null }>>
+  items: T[]
   galleryItem: (item: T) => ReactNode
+  selected: T
+  onSelect: (item: T) => void
   galleryView?: 'list' | 'card'
-  sidePanel: (item: T) => ReactNode
 }
 
-export function Tab<T extends { id: string }>({
-  secondaryView,
-  getGalleryItems,
+export function Gallery<T extends { id: string }>({
+  items,
   galleryItem,
+  selected,
+  onSelect,
   galleryView = 'list',
-  sidePanel,
-  initialItems,
-  initialCursor,
-}: TabUIProps<T> & { initialItems: T[]; initialCursor: string | null }) {
-  const [nextCursor, setNextCursor] = useState<string | null>(initialCursor)
-
-  const [items, setItems] = useState<T[]>(initialItems)
-  const [selected, setSelected] = useState<T | null>(initialItems.length ? initialItems[0] : null)
-
-  // todo: make this on scroll
-  useEffect(() => {
-    if (!nextCursor) return
-
-    const fetchMore = async () => {
-      const res = await getGalleryItems(10, nextCursor)
-
-      if (res.ok) {
-        const { nextCursor, items: newItems } = res.data
-
-        setNextCursor(nextCursor)
-        setItems(prev => [...prev, ...newItems])
-      }
-    }
-
-    fetchMore()
-  }, [nextCursor])
+}: TabUIProps<T>) {
+  // const [selected, setSelected] = useState<T | null>(initialItems.length ? initialItems[0] : null)
 
   const galleryClasses =
     galleryView === 'list'
@@ -64,14 +36,12 @@ export function Tab<T extends { id: string }>({
     <div className="flex h-full min-h-0 gap-4">
       {/* LEFT COLUMN */}
       <div className="flex min-h-0 flex-1 flex-col gap-4">
-        {secondaryView && secondaryView(items)}
-        <TextInput />
         <ArrowList
           items={items}
           getId={c => c.id}
           selectedId={selected?.id}
-          onSelect={setSelected}
-          className={`${galleryClasses.arrowList} min-h-0 flex-1 px-1`}
+          onSelect={onSelect}
+          className={`${galleryClasses.arrowList} min-h-0 flex-1 px-2`}
         >
           {({ item, isSelected, onSelect }) => (
             <ArrowRow
@@ -85,8 +55,6 @@ export function Tab<T extends { id: string }>({
           )}
         </ArrowList>
       </div>
-
-      <div className="w-1/4 shrink-0">{selected && sidePanel && sidePanel(selected)}</div>
     </div>
   )
 }

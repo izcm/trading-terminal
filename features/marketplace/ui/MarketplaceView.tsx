@@ -1,43 +1,71 @@
 'use client' // boundry is here!
 
-import { useEffect, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
-import { FeedTab, type FeedProps } from './FeedTab'
-import { SalesTab, type SalesProps } from './SalesTab'
-import { ExploreTab, type ExploreProps } from './ExploreTab'
+import {
+  getDmrktCollections,
+  getDmrktListings,
+  getDmrktSales,
+} from '@/lib/dmrkt-indexer/actions/dmrkt.get'
+import type { Paginated, Result } from '@/lib/utils/http'
 
-type View = 'feed' | 'sales' | 'explore'
+import { activity } from '@/domain/shared/types/activity'
+import type { Listing } from '@/domain/listing'
+import type { Sale } from '@/domain/sale'
 
-type Props = {
-  feedProps: FeedProps
-  salesProps: SalesProps
-  collectionsProps: ExploreProps
-  initialView: View
+import { Gallery, NFTPreview } from '@/ui/organisms'
+import { ActivityItem, NFTRow } from '@/ui/molecules'
+import { TextInput } from '@/ui/atoms'
+import { SaleDetails } from '@/features/sales/ui/SaleDetails'
+import { ListingDetails } from '@/features/trade/ui/ListingDetails'
+
+type Page<T> = {
+  items: T[]
+  cursor: string | null
 }
 
-const navItems = [
-  {
-    title: 'feed',
-    id: 'feed',
-  },
-  {
-    title: 'sales',
-    id: 'sales',
-  },
-  {
-    title: 'explore',
-    id: 'explore',
-  },
-]
+type ViewMap = {
+  feed: Listing
+  sales: Sale
+  // explore: NFT
+}
 
-export function MarketplaceView({
-  feedProps,
-  salesProps,
-  collectionsProps: exploreProps,
-  initialView,
-}: Props) {
+type View = keyof ViewMap
+
+type ViewPages = {
+  [K in View]: Page<ViewMap[K]>
+}
+
+type PageGetters<K extends keyof ViewMap> = (
+  limit: number,
+  cursor: string | null
+) => Promise<Result<Paginated<ViewMap[K]>>>
+
+const pageGetters: { [K in keyof ViewMap]: PageGetters<K> } = {
+  feed: getDmrktListings,
+  sales: getDmrktSales,
+  // explore: getDmrktCollections,
+}
+
+type InitialState = {
+  [K in View]: Page<ViewMap[K]>
+}
+
+const stateUI = {
+  feed: {
+    galleryItem: (item: Listing) => <ActivityItem activity={activity.fromListing(item)} />,
+    details: (item: Listing) => <ListingDetails listing={item} />,
+  },
+  sales: {
+    galleryItem: (item: Sale) => <ActivityItem activity={activity.fromSale(item)} />,
+    details: (item: Sale) => <SaleDetails sale={item} />,
+  },
+}
+
+export function MarketplaceView(initial: InitialState) {
   const [view, setView] = useState<View>('feed')
 
+  // keyboard shortcuts
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement
@@ -49,18 +77,43 @@ export function MarketplaceView({
 
       if (e.key === 'f') setView('feed')
       if (e.key === 's') setView('sales')
-      if (e.key === 'e') setView('explore')
+      // if (e.key === 'e') setView('explore')
     }
 
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [])
 
+  const [state, setState] = useState<ViewPages>(initial)
+
+  const current = state[view]
+
+  useEffect(() => {
+    if (!current.cursor) return
+
+    const fetchMore = async () => {
+      const res = await pageGetters[view](10, current.cursor)
+
+      if (res.ok) {
+        const { nextCursor, items: newItems } = res.data
+
+        setState(prev => ({
+          ...prev,
+          [view]: { items: [...prev[view].items, ...newItems], cursor: nextCursor },
+        }))
+      }
+    }
+
+    fetchMore()
+  }, [current.cursor])
+
+  const [selected, setSelected] = useState<ViewMap[View] | null>(current.items[0])
+
   return (
-    <div className="mx-auto flex gap-12 h-screen justify-center overflow-hidden font-mono">
+    <div className="flex h-screen max-w-4xl mx-auto overflow-hidden font-mono">
       {/* sidebar */}
-      <aside className="flex items-center">
-        <div className="flex flex-col gap-8">
+      {/* <aside className="flex h-full items-center">
+        <div className="flex flex-col">
           {navItems.map(item => (
             <button
               key={item.id}
@@ -72,32 +125,45 @@ export function MarketplaceView({
             </button>
           ))}
         </div>
-      </aside>
+      </aside> */}
 
       {/* ---- main content ---- */}
-      <main className="flex">
-        <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col">
-          <div className="my-4 flex items-center justify-center gap-2 px-1 text-accent">
-            <button className="px-3 py-1 text-sm font-semibold rounded-lg border border-border-soft hover:border-accent hover:text-accent cursor-pointer transition">
-              [ Swords ]
-            </button>
+      <main className="flex flex-col items-center gap-4">
+        <div className="my-4 flex gap-2 px-1 text-accent">
+          <button className="menuBtn">[ Swords ]</button>
 
-            <button className="px-3 py-1 text-sm font-semibold rounded-lg border border-border-soft hover:border-accent hover:text-accent cursor-pointer transition">
-              [ Elixirs ]
-            </button>
+          <button className="menuBtn">[ Elixirs ]</button>
 
-            <button className="px-3 py-1 text-sm font-semibold rounded-lg border border-border-soft hover:border-accent hover:text-accent cursor-pointer transition">
-              [ Shields ]
-            </button>
+          <button className="menuBtn">[ Shields ]</button>
 
-            <button className="px-3 py-1 text-sm font-semibold rounded-lg border border-border-soft hover:border-accent hover:text-accent cursor-pointer transition">
-              [ Eggs ]
-            </button>
+          <button className="menuBtn">[ Eggs ]</button>
+        </div>
+
+        <div className="min-h-0 flex gap-4 justify-center">
+          <div className="flex-1 flex flex-col gap-4">
+            <TextInput />
+
+            <Gallery<any>
+              items={state[view].items}
+              selected={selected}
+              onSelect={setSelected}
+              galleryItem={item => stateUI[view]['galleryItem'](item)}
+            />
           </div>
-          <div className="min-h-0 flex-1">
-            {view === 'feed' && <FeedTab {...feedProps} />}
-            {view === 'sales' && <SalesTab {...salesProps} />}
-            {view === 'explore' && <ExploreTab {...exploreProps} />}
+
+          <div className="basis-1/4 flex flex-col gap-3 mb-2">
+            <button className="btn btn-secondary">open receipt 2.0</button>
+
+            <div className="pointer-events-none">
+              {selected && (
+                <NFTPreview
+                  chainId={selected.chainId}
+                  address={selected.collection}
+                  tokenId={selected.tokenId}
+                />
+              )}
+            </div>
+            <div className="flex-1 card bg-secondary">{stateUI[view]['details'](selected)}</div>
           </div>
         </div>
       </main>

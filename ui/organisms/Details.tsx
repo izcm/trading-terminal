@@ -39,7 +39,7 @@ export function Details<T>({ item, title, detailsFields, timingFields }: Details
 
   return (
     <div className={`flex flex-col gap-6 p-4 text-sm`} tabIndex={-1}>
-      {title && (
+      {/* {title && (
         <div className="flex justify-between text-start">
           <div className="flex flex-col">
             <span className="text-xs">{title.field.label}</span>
@@ -47,7 +47,7 @@ export function Details<T>({ item, title, detailsFields, timingFields }: Details
           </div>
           <Badge type={title.badge.type} />
         </div>
-      )}
+      )} */}
 
       {/* details */}
       <DetailFields data={item} fields={detailsFields} />

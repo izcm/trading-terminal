@@ -3,6 +3,7 @@ export * from './GalleryItem'
 
 // rows
 export * from './rows/NFTCollectionRow'
+export * from './rows/NFTRow'
 
 // nav
 export * from './rows/SidebarRow'

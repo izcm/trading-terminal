@@ -10,26 +10,30 @@ import type { Sale } from '@/domain/sale'
 export const baseUrl = process.env.NEXT_PUBLIC_INDEXER_ENDPOINT_URL
 
 export async function getDmrktCollections(limit: number, cursor: string | null = null) {
-  return getDmrktItems<NFTCollection>(
-    'nft-collections',
-    `limit=${limit}&address=0x0Cc60CAE6Db663824eb49AfD43a9871E6e8ed885`,
-    cursor
-  )
+  return getDmrktItems<NFTCollection>({
+    params: 'nft-collections',
+    query: `limit=${limit}&address=0x0Cc60CAE6Db663824eb49AfD43a9871E6e8ed885`,
+    cursor,
+  })
 }
 
 export function getDmrktTopCollections(limit: number) {
-  return getDmrktItems<NFTCollection>('nft-collections/top', `limit=${limit}`, null)
+  return getDmrktItems<NFTCollection>({
+    params: 'nft-collections/top',
+    query: `limit=${limit}`,
+    cursor: null,
+  })
 }
 
 export async function getDmrktListings(
   limit: number = 10,
   cursor: string | null = null
 ): Promise<Result<Paginated<Listing>>> {
-  const result = await getDmrktItems<ListingDTO>(
-    'orders',
-    `limit=${limit}&status=active&include=nftCollection`,
-    cursor
-  )
+  const result = await getDmrktItems<ListingDTO>({
+    params: 'orders',
+    query: `limit=${limit}&status=active&include=nftCollection`,
+    cursor,
+  })
 
   if (!result.ok) return result
 
@@ -43,18 +47,22 @@ export async function getDmrktListings(
 }
 
 export function getDmrktSales(limit: number, cursor: string | null = null) {
-  return getDmrktItems<Sale>(
-    'settlements',
-    `limit=${limit}&include=nftCollection&include=order`,
-    cursor
-  )
+  return getDmrktItems<Sale>({
+    params: 'settlements',
+    query: `limit=${limit}&include=nftCollection&include=order`,
+    cursor,
+  })
 }
 
-export async function getDmrktItems<T>(
-  params: string,
-  query: string,
+export async function getDmrktItems<T>({
+  params,
+  query,
+  cursor,
+}: {
+  params: string
+  query: string
   cursor: string | null
-): Promise<Result<Paginated<T>>> {
+}): Promise<Result<Paginated<T>>> {
   const searchParams = new URLSearchParams(query)
 
   if (cursor) {
