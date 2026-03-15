@@ -1,5 +1,9 @@
 import type { Hex } from '@/domain/shared/eth'
 
+export function orderType(order: Order) {
+  return order.side === 0 ? 'ask' : 'bid'
+}
+
 export type Fill = {
   actor: Hex
   tokenId: bigint

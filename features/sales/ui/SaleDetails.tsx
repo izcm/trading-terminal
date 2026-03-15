@@ -10,18 +10,18 @@ const DETAIL_FIELDS: DetailField<Sale>[] = [
     label: 'chain',
     getValue: s => s.chainId,
   },
-  // {
-  //   label: 'buyer',
-  //   getValue: s => addrShort(s.buyer),
-  // },
-  // {
-  //   label: 'seller',
-  //   getValue: s => addrShort(s.seller),
-  // },
-  // {
-  //   label: 'tx hash',
-  //   getValue: s => truncateHex(s.txHash),
-  // },
+  {
+    label: 'buyer',
+    getValue: s => addrShort(s.buyer),
+  },
+  {
+    label: 'seller',
+    getValue: s => addrShort(s.seller),
+  },
+  {
+    label: 'tx hash',
+    getValue: s => truncateHex(s.txHash),
+  },
   {
     label: 'block number',
     getValue: s => s.blockNumber,
@@ -43,7 +43,7 @@ const TITLE_FIELD: DetailField<Sale> = {
 export const SaleDetails = ({ sale }: { sale: Sale }) => (
   <Details<Sale>
     item={sale}
-    title={{ field: TITLE_FIELD, badge: { type: sale.order ? sale.order.type : 'unknown' } }}
+    // title={{ field: TITLE_FIELD, badge: { type: sale.order ? sale.order.type : 'unknown' } }}
     detailsFields={DETAIL_FIELDS}
     timingFields={TIMING_FIELDS}
   />

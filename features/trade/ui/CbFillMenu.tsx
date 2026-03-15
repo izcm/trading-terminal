@@ -19,7 +19,8 @@ type Props = {
   onConfirm: () => void
 }
 
-export function NFTSelect({ chainId, address, validation, onValidate, onConfirm }: Props) {
+// menu for selecting nft for collection_bid ( cb )
+export function CbFillMenu({ chainId, address, validation, onValidate, onConfirm }: Props) {
   const [tokenIdInput, setTokenIdInput] = useState('')
   const [tokenId, setTokenId] = useState<bigint | undefined>(undefined)
 
@@ -50,11 +51,11 @@ export function NFTSelect({ chainId, address, validation, onValidate, onConfirm 
       </div>
 
       <div className="flex gap-4">
-        <div className="basis-1/3 pointer-events-none bg-black/50">
+        <div className="basis-1/3 pointer-events-none bg-black/20">
           <NFTPreview chainId={chainId} address={address} tokenId={tokenId} />
         </div>
 
-        <div className="flex-1 card rounded-lg bg-black/50">Hello</div>
+        <div className="flex-1 card rounded-lg bg-black/20">Hello</div>
       </div>
 
       <button disabled={!tokenId} onClick={() => alert('hello')} className="btn btn-primary">

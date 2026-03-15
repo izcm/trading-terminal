@@ -5,7 +5,6 @@ import React, { ReactNode, useEffect, useState } from 'react'
 import { getDmrktListings, getDmrktSales } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
 import type { Paginated, Result } from '@/lib/utils/http'
 
-import { activity } from '@/domain/shared/activity'
 import type { Listing } from '@/domain/listing'
 import type { Sale } from '@/domain/sale'
 
@@ -13,9 +12,8 @@ import { Gallery, NFTPreview } from '@/ui/organisms'
 import { ActivityItem, NFTRow } from '@/ui/molecules'
 import { Modal, TextInput } from '@/ui/atoms'
 
-import { SaleDetails } from '@/features/sales/ui/SaleDetails'
-import { ListingDetails } from '@/features/trade/ui/ListingDetails'
-import { NFTSelect } from '@/features/trade/ui/NFTSelect'
+import { useTradeValidation } from '@/features/trade/hooks/trade-validation.use'
+import { makeViewConfig } from '../view-config'
 
 type Page<T> = {
   items: T[]
@@ -72,9 +70,9 @@ export function MarketplaceView(initial: InitialState) {
     return () => window.removeEventListener('keydown', onKey)
   }, [])
 
-  const [items, setItems] = useState<ViewPages>(initial)
+  const [state, setState] = useState<ViewPages>(initial)
 
-  const current = items[view]
+  const current = state[view]
 
   useEffect(() => {
     if (!current.cursor) return
@@ -85,7 +83,7 @@ export function MarketplaceView(initial: InitialState) {
       if (res.ok) {
         const { nextCursor, items: newItems } = res.data
 
-        setItems(prev => ({
+        setState(prev => ({
           ...prev,
           [view]: { items: [...prev[view].items, ...newItems], cursor: nextCursor },
         }))
@@ -100,27 +98,13 @@ export function MarketplaceView(initial: InitialState) {
     sales: initial.sales.items[0] ?? null,
   })
 
-  const selected = selectedByView[view] as ViewResource[typeof view]
+  const selected = selectedByView[view]
 
-  const viewConfig = {
-    feed: {
-      galleryItem: (item: Listing) => <ActivityItem activity={activity.fromListing(item)} />,
-      details: (item: Listing) => <ListingDetails listing={item} />,
-      mainActionBtn: (item: Listing) => (
-        <button onClick={() => isModalOpen(true)} className="btn btn-primary">
-          {item.isCollectionBid ? 'select NFT' : 'buy now'}
-        </button>
-      ),
-    },
-    sales: {
-      galleryItem: (item: Sale) => <ActivityItem activity={activity.fromSale(item)} />,
-      details: (item: Sale) => <SaleDetails sale={item} />,
-      mainActionBtn: (item: Sale) => (
-        <button className="btn btn-secondary">open receipt 2.0</button>
-      ),
-    },
-  }
+  const simulation = useTradeValidation(
+    view === 'feed' ? (selected as Listing).rawOrder : undefined
+  )
 
+  const viewConfig = makeViewConfig({ isFillable: simulation.isFillable })
   const ui = viewConfig[view]
 
   return (
@@ -143,7 +127,7 @@ export function MarketplaceView(initial: InitialState) {
               key={title}
               onClick={() => setView(title)}
               className={`
-            flex-1 py-2 text-center border-b-2 transition
+            flex-1 py-2 text-center border-b-2 transition cursor-pointer
         ${
           title === view
             ? 'border-accent-weak text-accent-weak'
@@ -161,8 +145,8 @@ export function MarketplaceView(initial: InitialState) {
             <TextInput />
 
             <Gallery<ViewResource[View]>
-              items={items[view].items}
-              selected={selected}
+              items={state[view].items}
+              selected={selected as any}
               onSelect={item =>
                 setSelectedByView(prev => ({
                   ...prev,
@@ -185,17 +169,6 @@ export function MarketplaceView(initial: InitialState) {
             {selected && <div className="card bg-secondary">{ui['details'](selected as any)}</div>}
           </div>
         </div>
-        {selected && (
-          <Modal isOpen={view === 'feed' && modalOpen} onClose={() => isModalOpen(false)}>
-            <NFTSelect
-              chainId={selected.chainId}
-              address={selected.collection}
-              validation={{ canConfirm: true, checking: true }}
-              onValidate={() => alert('hello')}
-              onConfirm={() => alert('hello')}
-            />
-          </Modal>
-        )}
       </main>
     </div>
   )

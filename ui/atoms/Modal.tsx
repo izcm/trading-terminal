@@ -59,13 +59,17 @@ export function Modal({ isOpen, onClose, children }: ModalProps) {
       <div
         ref={containerRef}
         className="
-          bg-secondary/40
+          flex flex-col gap-2
+          bg-primary/60  backdrop-blur-lg
           border border-default
           rounded-lg
           shadow-lg p-4"
         onClick={e => e.stopPropagation()}
       >
         {children}
+        <button className="btn btn-secondary" onClick={onClose}>
+          cancel
+        </button>
       </div>
     </div>
   )

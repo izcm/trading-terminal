@@ -1,7 +1,7 @@
 import type { Address, Hex } from 'viem'
 import { erc721Abi } from 'viem'
 
-import { getPublicClient } from 'wagmi/actions'
+import { getPublicClient, readContract } from 'wagmi/actions'
 import { config } from '../config/wagmi'
 
 import { mapTokenUriToNFT, type NFT } from '@/domain/nft'
@@ -68,4 +68,41 @@ export async function readNFTBatch(
 }
 
 // temporary (indexer will track nft stats)
-function getTokensByOwner(address: Hex): Promise<Result<Paginated<NFT>>> {}
+async function getTokensByOwner(
+  owner: Address,
+  collection: Address,
+  max = 1000
+): Promise<Result<NFT[]>> {
+  let client = getPublicClient(config, { chainId: CHAIN_ID })
+
+  const items: NFT[] = []
+
+  for (let tokenId = 0; tokenId < max; tokenId++) {
+    const bigTokenId = BigInt(tokenId)
+
+    try {
+      const ownerOf = await client.readContract({
+        abi: erc721Abi,
+        address: collection,
+        functionName: 'ownerOf',
+        args: [bigTokenId],
+      })
+
+      if (ownerOf.toLowerCase() !== owner) continue
+
+      const tokenURI = await client.readContract({
+        abi: erc721Abi,
+        address: collection,
+        functionName: 'tokenURI',
+        args: [bigTokenId],
+      })
+
+      items.push(mapTokenUriToNFT(CHAIN_ID, collection, bigTokenId, tokenURI))
+    } catch {
+      // token not minted / any parsing error
+      break
+    }
+  }
+
+  return { ok: true, data: items }
+}

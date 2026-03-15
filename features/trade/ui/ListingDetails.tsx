@@ -16,7 +16,7 @@ const DETAIL_FIELDS: DetailField<Listing>[] = [
     getValue: l => `${Number(l.price) / 1e18} ETH`,
   },
   {
-    label: 'seller',
+    label: 'maker',
     getValue: l => addrShort(l.actor),
   },
 ]
