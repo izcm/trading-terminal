@@ -66,7 +66,7 @@ export function TradeBtn({ listing, disabled }: Props) {
         <div className="flex flex-col gap-2">
           <CbFillMenu
             chainId={listing.chainId}
-            address={listing.collection}
+            collection={listing.collection}
             validation={{
               canConfirm: sim.isFillable,
               checking: sim.checking,

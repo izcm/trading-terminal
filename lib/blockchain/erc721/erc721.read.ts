@@ -68,7 +68,7 @@ export async function readNFTBatch(
 }
 
 // temporary (indexer will track nft stats)
-async function getTokensByOwner(
+export async function getTokensByOwner(
   owner: Address,
   collection: Address,
   max = 1000
@@ -88,7 +88,7 @@ async function getTokensByOwner(
         args: [bigTokenId],
       })
 
-      if (ownerOf.toLowerCase() !== owner) continue
+      if (ownerOf.toLowerCase() !== owner.toLowerCase()) continue
 
       const tokenURI = await client.readContract({
         abi: erc721Abi,

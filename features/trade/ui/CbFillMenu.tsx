@@ -1,15 +1,19 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import type { Hex } from '@/domain/shared/eth'
 
 import { NFTPreview } from '@/features/explore/ui/NFTPreview'
-import { TextInput } from '@/ui/atoms'
+import { ArrowRow } from '@/ui/atoms'
+import { getTokensByOwner } from '@/lib/blockchain/erc721/erc721.read'
+import { useAccount } from 'wagmi'
+import { NFT } from '@/domain/nft'
+import { ArrowList, NFTRow } from '@/ui/molecules'
 
 type Props = {
   chainId: number
-  address: Hex
+  collection: Hex
   validation: {
     canConfirm: boolean
     checking: boolean
@@ -20,46 +24,70 @@ type Props = {
 }
 
 // menu for selecting nft for collection_bid ( cb )
-export function CbFillMenu({ chainId, address, validation, onValidate, onConfirm }: Props) {
-  const [tokenIdInput, setTokenIdInput] = useState('')
+export function CbFillMenu({ chainId, collection, validation, onValidate, onConfirm }: Props) {
+  const { address: userAddr } = useAccount()
+
+  const [nfts, setNfts] = useState<NFT[]>([])
   const [tokenId, setTokenId] = useState<bigint | undefined>(undefined)
 
-  const saneInput = (input: string) => /^\d+$/.test(input)
+  useEffect(() => {
+    if (!userAddr) return
+    console.log('HELLO')
+    const readTokens = async () => {
+      const res = await getTokensByOwner(userAddr, collection)
 
-  const inputError = tokenIdInput.length === 0 ? '' : saneInput(tokenIdInput) ? '' : 'digits only'
-  const uiError = inputError || validation.error
+      if (res.ok) setNfts(res.data)
+    }
 
-  const handleValidate = (tidStr: string) => {
-    if (!saneInput(tidStr)) return // sanity check
-    const tid = BigInt(tidStr)
+    readTokens()
+    console.log('read it!')
+  }, [userAddr, collection, chainId])
 
-    setTokenId(tid)
-    onValidate(tid)
+  useEffect(() => {
+    if (tokenId !== undefined || nfts.length === 0) return
+    setTokenId(nfts[0].tokenId)
+    onValidate(nfts[0].tokenId)
+  }, [nfts, tokenId, onValidate])
+
+  const selectedNftId =
+    tokenId === undefined ? nfts[0]?.id : nfts.find(nft => nft.tokenId === tokenId)?.id
+
+  const handleSelect = (nft: NFT) => {
+    setTokenId(nft.tokenId)
+    onValidate(nft.tokenId)
   }
-
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex gap-2">
-        <TextInput value={tokenIdInput} onChange={e => setTokenIdInput(e)} placeholder="eg. 44" />
-        <button
-          disabled={!tokenIdInput || !saneInput(tokenIdInput)}
-          onClick={() => handleValidate(tokenIdInput)}
-          className="btn btn-accent"
-        >
-          check
-        </button>
-      </div>
-
-      <div className="flex gap-4">
-        <div className="basis-1/3 pointer-events-none bg-black/20">
-          <NFTPreview chainId={chainId} address={address} tokenId={tokenId} />
+      <div className="flex max-w-[600px] h-[480px] gap-4 p-1">
+        <div className="basis-1/3 self-center pointer-events-none bg-black/20">
+          <NFTPreview chainId={chainId} address={collection} tokenId={tokenId} />
         </div>
 
-        <div className="flex-1 card rounded-lg bg-black/20">Hello</div>
+        <div className="flex-1 card bg-black/20">
+          <ArrowList
+            items={nfts}
+            getId={nft => nft.id}
+            selectedId={selectedNftId}
+            onSelect={handleSelect}
+            className="h-full min-h-0 bg-primary"
+          >
+            {({ item, isSelected, onSelect }) => (
+              <ArrowRow key={item.id} isSelected={isSelected} onSelect={onSelect} className="flex">
+                <NFTRow nft={item} />
+              </ArrowRow>
+            )}
+          </ArrowList>
+        </div>
       </div>
 
-      <button disabled={!tokenId} onClick={() => alert('hello')} className="btn btn-primary">
-        fill order
+      {validation.error && <p className="text-sm text-red-400">{validation.error}</p>}
+
+      <button
+        disabled={!tokenId || validation.checking || !validation.canConfirm}
+        onClick={onConfirm}
+        className="btn btn-primary"
+      >
+        {validation.checking ? 'checking...' : 'fill order'}
       </button>
     </div>
   )

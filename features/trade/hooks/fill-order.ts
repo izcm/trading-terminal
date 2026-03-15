@@ -33,7 +33,6 @@ export function useFillOrder(order?: Order, tokenIdCb?: bigint) {
   const { writeContractAsync, status } = useWriteContract()
 
   const fillOrder = async () => {
-    console.log(sim)
     if (!sim.isSuccess) return
     if (sim.isPending) return
     if (!sim.data?.request) return

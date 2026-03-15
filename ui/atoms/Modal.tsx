@@ -62,7 +62,7 @@ export function Modal({ isOpen, onClose, children }: ModalProps) {
           flex flex-col gap-2
           bg-primary/60  backdrop-blur-lg
           border border-default
-          rounded-lg
+          rounded-lg mx-4
           shadow-lg p-4"
         onClick={e => e.stopPropagation()}
       >

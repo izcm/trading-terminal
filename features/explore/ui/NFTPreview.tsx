@@ -12,10 +12,9 @@ type Props = {
   chainId?: number
   address?: Hex
   tokenId?: bigint
-  pointerEvents?: boolean
 }
 
-export function NFTPreview({ chainId, address, tokenId, pointerEvents = false }: Props) {
+export function NFTPreview({ chainId, address, tokenId }: Props) {
   // UI elements
   const [nft, setNft] = useState<NFT>()
 
@@ -41,11 +40,5 @@ export function NFTPreview({ chainId, address, tokenId, pointerEvents = false }:
     preview()
   }, [tokenURI])
 
-  const classPointerEvents = pointerEvents ? '' : 'pointer-events-none'
-
-  return (
-    <div className={`${classPointerEvents}`}>
-      <NFTCard nft={nft} />
-    </div>
-  )
+  return <NFTCard nft={nft} />
 }
