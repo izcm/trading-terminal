@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Address } from 'viem'
 
-import { NFTCollection } from '@/lib/dmrkt-indexer/types/nft-collection'
+import type { NFTCollection } from '@/domain/nft-collection'
 import { readNFTBatch } from '@/lib/blockchain/erc721/erc721.read'
 import { Result } from '@/lib/utils/http'
 

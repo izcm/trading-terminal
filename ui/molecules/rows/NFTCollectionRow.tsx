@@ -1,6 +1,6 @@
 'use client'
 
-import { NFTCollection } from '@/lib/dmrkt-indexer/types/nft-collection'
+import type { NFTCollection } from '@/domain/nft-collection'
 import { Stat } from '../Stat'
 
 type Props = {

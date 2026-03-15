@@ -1,5 +1,5 @@
 // todo: mappers dto => domain
-import { NFTCollection } from '@/lib/dmrkt-indexer/types/nft-collection'
+import type { NFTCollection } from './nft-collection'
 import type { Listing } from './listing'
 
 import type { Hex } from './shared/eth'

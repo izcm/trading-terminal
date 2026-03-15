@@ -1,7 +1,7 @@
 import type { Order } from '@/protocol/eip712'
 
 import type { Hex } from './shared/eth'
-import type { NFTCollection } from '@/lib/dmrkt-indexer/types/nft-collection'
+import type { NFTCollection } from './nft-collection'
 import type { NFT } from './nft'
 
 export type Listing = {

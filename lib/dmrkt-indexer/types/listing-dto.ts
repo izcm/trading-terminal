@@ -4,7 +4,7 @@ import type { Hex } from '@/domain/shared/eth'
 import type { NFT } from '@/domain/nft'
 import type { Listing } from '@/domain/listing'
 
-import type { NFTCollection } from './nft-collection'
+import { toNFTCollection, type NFTCollectionDTO } from './nft-collection'
 
 export type ListingDTO = {
   id: string
@@ -26,7 +26,7 @@ export type ListingDTO = {
   start: number // unix ms
   end: number // unix ms
 
-  nftCollection?: NFTCollection | null
+  nftCollection?: NFTCollectionDTO | null
   nft?: NFT | null
 
   // raw order for contract interaction
@@ -38,6 +38,7 @@ export type ListingDTO = {
 export function toListing(dto: ListingDTO): Listing {
   return {
     ...dto,
+    nftCollection: dto.nftCollection ? toNFTCollection(dto.nftCollection) : dto.nftCollection,
     tokenId: BigInt(dto.tokenId),
     price: BigInt(dto.price),
   }

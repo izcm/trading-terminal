@@ -58,7 +58,7 @@ export function CbFillMenu({ chainId, collection, validation, onValidate, onConf
   }
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex max-w-[600px] h-[480px] gap-4 p-1">
+      <div className="flex max-h-[465px] max-w-[600px] gap-4 p-1">
         <div className="basis-1/3 self-center pointer-events-none bg-black/20">
           <NFTPreview chainId={chainId} address={collection} tokenId={tokenId} />
         </div>
@@ -69,10 +69,10 @@ export function CbFillMenu({ chainId, collection, validation, onValidate, onConf
             getId={nft => nft.id}
             selectedId={selectedNftId}
             onSelect={handleSelect}
-            className="h-full min-h-0 bg-primary"
+            className="h-full bg-primary"
           >
             {({ item, isSelected, onSelect }) => (
-              <ArrowRow key={item.id} isSelected={isSelected} onSelect={onSelect} className="flex">
+              <ArrowRow key={item.id} isSelected={isSelected} onSelect={onSelect}>
                 <NFTRow nft={item} />
               </ArrowRow>
             )}

@@ -3,26 +3,52 @@ import type { Paginated, Result } from '@/lib/utils/http'
 import type { ListingDTO } from '../types/listing-dto'
 import { toListing } from '../types/listing-dto'
 import type { Listing } from '@/domain/listing'
-import type { NFTCollection } from '../types/nft-collection'
+import type { NFTCollection } from '@/domain/nft-collection'
+import { toNFTCollection, type NFTCollectionDTO } from '../types/nft-collection'
 
 import type { Sale } from '@/domain/sale'
 
 export const baseUrl = process.env.NEXT_PUBLIC_INDEXER_ENDPOINT_URL
 
-export async function getDmrktCollections(limit: number, cursor: string | null = null) {
-  return getDmrktItems<NFTCollection>({
+export async function getDmrktCollections(
+  limit: number,
+  cursor: string | null = null
+): Promise<Result<Paginated<NFTCollection>>> {
+  const result = await getDmrktItems<NFTCollectionDTO>({
     params: 'nft-collections',
     query: `limit=${limit}&address=0x0Cc60CAE6Db663824eb49AfD43a9871E6e8ed885`,
     cursor,
   })
+
+  if (!result.ok) return result
+
+  return {
+    ok: true,
+    data: {
+      items: result.data.items.map(toNFTCollection),
+      nextCursor: result.data.nextCursor,
+    },
+  }
 }
 
-export function getDmrktTopCollections(limit: number) {
-  return getDmrktItems<NFTCollection>({
+export async function getDmrktTopCollections(
+  limit: number
+): Promise<Result<Paginated<NFTCollection>>> {
+  const result = await getDmrktItems<NFTCollectionDTO>({
     params: 'nft-collections/top',
     query: `limit=${limit}`,
     cursor: null,
   })
+
+  if (!result.ok) return result
+
+  return {
+    ok: true,
+    data: {
+      items: result.data.items.map(toNFTCollection),
+      nextCursor: result.data.nextCursor,
+    },
+  }
 }
 
 export async function getDmrktListings(

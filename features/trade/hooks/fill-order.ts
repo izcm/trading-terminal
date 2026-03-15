@@ -1,15 +1,7 @@
-import { useMemo } from 'react'
+import { useWriteContract } from 'wagmi'
 
-// todo: move this stuff out of the component (viem / wagmi)
-// note: maybe di the chain library (easy switch viem / ethers)
-import { ContractFunctionExecutionError, ContractFunctionRevertedError } from 'viem'
-import { useAccount, useSimulateContract, useWriteContract } from 'wagmi'
+import type { Order } from '@/protocol/eip712'
 
-import { toOrder712, type Order } from '@/protocol/eip712'
-import { ORDERBOOK_ERROR_MESSAGES as ERRORS } from '@/protocol/errors'
-import { orderbookAbi, orderbookAddress } from '@/protocol/config'
-
-import type { Hex } from '@/domain/shared/eth'
 import { useTradeSimulation } from './trade-simulation.use'
 
 const safeStringify = (obj: unknown) =>

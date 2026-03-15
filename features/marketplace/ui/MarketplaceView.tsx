@@ -14,6 +14,7 @@ import { Modal, TextInput } from '@/ui/atoms'
 
 import { useTradeValidation } from '@/features/trade/hooks/trade-validation.use'
 import { makeViewConfig } from '../view-config'
+import { TxTracker } from '../TxTracker'
 
 type Page<T> = {
   items: T[]
@@ -111,14 +112,20 @@ export function MarketplaceView(initial: InitialState) {
     <div className="flex gap-4 h-screen max-w-4xl mx-auto overflow-hidden font-mono">
       {/* ---- main content ---- */}
       <main className="flex flex-col mt-4 items-center gap-4">
-        <div className="flex gap-2 px-1 text-accent">
-          <button className="menuBtn">[ Swords ]</button>
+        <div className="flex items-center justify-between w-full gap-2 px-1 text-accent">
+          <div className="basis-1/4"></div>
+          <div className="1/2">
+            <button className="menuBtn">[ Swords ]</button>
 
-          <button className="menuBtn">[ Elixirs ]</button>
+            <button className="menuBtn">[ Elixirs ]</button>
 
-          <button className="menuBtn">[ Shields ]</button>
+            <button className="menuBtn">[ Shields ]</button>
 
-          <button className="menuBtn">[ Eggs ]</button>
+            <button className="menuBtn">[ Eggs ]</button>
+          </div>
+          <div className="basis-1/4">
+            <TxTracker />
+          </div>
         </div>
 
         <div className="flex w-full border-b border-soft">

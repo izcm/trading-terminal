@@ -1,9 +1,9 @@
-// Local Collection type - provider agnostic
+import type { NFTCollection } from '@/domain/nft-collection'
 import type { Hex } from '@/domain/shared/eth'
 
 type Status = 'DONE' | 'PENDING' | 'FAILED'
 
-export type NFTCollection = {
+export type NFTCollectionDTO = {
   id: string
 
   chainId: number
@@ -13,7 +13,7 @@ export type NFTCollection = {
   bannerImageUrl?: string
 
   marketData?: {
-    floorPrice?: number
+    floorPrice?: string
   }
 
   socials?: {
@@ -35,5 +35,19 @@ export type NFTCollection = {
     activeBidCount: number
     activeCbCount: number
     totalActive: number
+  }
+}
+
+export function toNFTCollection(dto: NFTCollectionDTO): NFTCollection {
+  return {
+    ...dto,
+    marketData: dto.marketData
+      ? {
+          ...dto.marketData,
+          floorPrice:
+            dto.marketData.floorPrice === undefined ? undefined : BigInt(dto.marketData.floorPrice),
+        }
+      : undefined,
+    totalSupply: BigInt(dto.totalSupply),
   }
 }

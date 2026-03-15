@@ -1,4 +1,4 @@
-import { NFTCollection } from '@/lib/dmrkt-indexer/types/nft-collection'
+import type { NFTCollection } from '@/domain/nft-collection'
 
 import { ArrowList, NFTCollectionRow } from '../molecules'
 import { ArrowRow } from '../atoms'

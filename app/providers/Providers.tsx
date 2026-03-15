@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic'
 import { config } from '@/blockchain/config/wagmi'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
+import { TxProvider } from './TxProvider'
 
 const WalletProvider = dynamic(() => import('./WalletProvider'), {
   ssr: false,
@@ -24,7 +25,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <WalletProvider>{children}</WalletProvider>
+        <WalletProvider>
+          <TxProvider> {children}</TxProvider>
+        </WalletProvider>
       </QueryClientProvider>
     </WagmiProvider>
   )
