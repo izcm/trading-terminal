@@ -11,13 +11,20 @@ import { NFTSelect } from './NFTSelect'
 import { ListingDetails } from './ListingDetails'
 
 import { Modal } from '@/ui/atoms'
-import { NFTCard } from '@/ui/organisms/NFTCard'
+import { Order } from '@/protocol/eip712'
 
 type Props = {
   listing: Listing | null
 }
 
-export function TradePanel({ listing }: Props) {
+type TradeProps = {
+  order: Order
+
+}
+// trade owne order fill mechanism
+// tx-provider tracks tx stateport function
+export function Trade({order, fill}: )
+export function Trade({ listing }: Props) {
   // collection bid feature
   const [showNFTSelectModal, setShowNFTSelectModal] = useState<boolean>(false)
   const [tokenIdCb, setTokenIdCb] = useState<bigint | undefined>(undefined)

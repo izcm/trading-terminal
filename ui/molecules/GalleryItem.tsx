@@ -11,9 +11,11 @@ export function GalleryItem({
         <img src={image} alt={title} className="w-full h-full object-cover" />
       </div>
       <div className="bg-secondary">
-        <div className="border-b border-default p-3">
-          <span>{title}</span>
-        </div>
+        {title && (
+          <div className="border-b border-default p-3">
+            <span>{title}</span>
+          </div>
+        )}
         <div className="transition-colors">{details}</div>
       </div>
     </div>

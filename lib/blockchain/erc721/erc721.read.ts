@@ -1,4 +1,4 @@
-import type { Address } from 'viem'
+import type { Address, Hex } from 'viem'
 import { erc721Abi } from 'viem'
 
 import { getPublicClient } from 'wagmi/actions'
@@ -9,7 +9,7 @@ import type { Paginated, Result } from '@/lib/utils/http'
 
 const CHAIN_ID = 31337 // todo: multichain
 
-export async function readNFT(address: Address, tokenId: string): Promise<Result<NFT>> {
+export async function readNFT(address: Address, tokenId: bigint): Promise<Result<NFT>> {
   const client = getPublicClient(config, { chainId: CHAIN_ID })
 
   try {
@@ -17,7 +17,7 @@ export async function readNFT(address: Address, tokenId: string): Promise<Result
       address,
       abi: erc721Abi,
       functionName: 'tokenURI',
-      args: [BigInt(tokenId)],
+      args: [tokenId],
     })
 
     return {
@@ -51,8 +51,8 @@ export async function readNFTBatch(
     const result = await Promise.all(calls)
 
     const items = result.map((tokenUri, i) => {
-      const tokenId = (i + cursor).toString() // i know this is absolutely wild (will remove asap)
-      return mapTokenUriToNFT(CHAIN_ID, address, tokenId, tokenUri)
+      const tokenId = i + cursor // i know this is absolutely wild (will remove asap)
+      return mapTokenUriToNFT(CHAIN_ID, address, BigInt(tokenId), tokenUri)
     })
 
     return {
@@ -66,3 +66,6 @@ export async function readNFTBatch(
     return { ok: false, error: `error reading items: ${err}` }
   }
 }
+
+// temporary (indexer will track nft stats)
+function getTokensByOwner(address: Hex): Promise<Result<Paginated<NFT>>> {}

@@ -37,7 +37,7 @@ export function NFTSelect({ chainId, address, validation, onValidate, onConfirm 
   }
 
   return (
-    <div className="flex flex-col gap-4 max-w-[200px]">
+    <div className="flex flex-col gap-4">
       <div className="flex gap-2">
         <TextInput value={tokenIdInput} onChange={e => setTokenIdInput(e)} placeholder="eg. 44" />
         <button
@@ -48,16 +48,16 @@ export function NFTSelect({ chainId, address, validation, onValidate, onConfirm 
           check
         </button>
       </div>
-      <span>{uiError}</span>
-      <span>{validation.checking}</span>
 
-      <div>
-        <div className="pointer-events-none">
+      <div className="flex gap-4">
+        <div className="basis-1/3 pointer-events-none bg-black/50">
           <NFTPreview chainId={chainId} address={address} tokenId={tokenId} />
         </div>
+
+        <div className="flex-1 card rounded-lg bg-black/50">Hello</div>
       </div>
 
-      <button disabled={!tokenId} onClick={() => alert('hello')} className="btn btn-primary w-full">
+      <button disabled={!tokenId} onClick={() => alert('hello')} className="btn btn-primary">
         fill order
       </button>
     </div>

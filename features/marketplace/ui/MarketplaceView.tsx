@@ -1,6 +1,6 @@
 'use client' // boundry is here!
 
-import { useEffect, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 
 import { getDmrktListings, getDmrktSales } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
 import type { Paginated, Result } from '@/lib/utils/http'
@@ -30,6 +30,10 @@ type ViewResource = {
 
 type View = keyof ViewResource
 
+type InitialState = {
+  [K in View]: Page<ViewResource[K]>
+}
+
 type ViewPages = {
   [K in View]: Page<ViewResource[K]>
 }
@@ -45,23 +49,9 @@ const pageGetters: { [K in keyof ViewResource]: PageGetters<K> } = {
   // explore: getDmrktCollections,
 }
 
-type InitialState = {
-  [K in View]: Page<ViewResource[K]>
-}
-
-const viewConfig = {
-  feed: {
-    galleryItem: (item: Listing) => <ActivityItem activity={activity.fromListing(item)} />,
-    details: (item: Listing) => <ListingDetails listing={item} />,
-  },
-  sales: {
-    galleryItem: (item: Sale) => <ActivityItem activity={activity.fromSale(item)} />,
-    details: (item: Sale) => <SaleDetails sale={item} />,
-  },
-}
-
 export function MarketplaceView(initial: InitialState) {
-  const [view, setView] = useState<View>('sales')
+  const [view, setView] = useState<View>('feed')
+  const [modalOpen, isModalOpen] = useState<boolean>(false)
 
   // keyboard shortcuts
   useEffect(() => {
@@ -82,9 +72,9 @@ export function MarketplaceView(initial: InitialState) {
     return () => window.removeEventListener('keydown', onKey)
   }, [])
 
-  const [state, setState] = useState<ViewPages>(initial)
+  const [items, setItems] = useState<ViewPages>(initial)
 
-  const current = state[view]
+  const current = items[view]
 
   useEffect(() => {
     if (!current.cursor) return
@@ -95,7 +85,7 @@ export function MarketplaceView(initial: InitialState) {
       if (res.ok) {
         const { nextCursor, items: newItems } = res.data
 
-        setState(prev => ({
+        setItems(prev => ({
           ...prev,
           [view]: { items: [...prev[view].items, ...newItems], cursor: nextCursor },
         }))
@@ -110,8 +100,28 @@ export function MarketplaceView(initial: InitialState) {
     sales: initial.sales.items[0] ?? null,
   })
 
+  const selected = selectedByView[view] as ViewResource[typeof view]
+
+  const viewConfig = {
+    feed: {
+      galleryItem: (item: Listing) => <ActivityItem activity={activity.fromListing(item)} />,
+      details: (item: Listing) => <ListingDetails listing={item} />,
+      mainActionBtn: (item: Listing) => (
+        <button onClick={() => isModalOpen(true)} className="btn btn-primary">
+          {item.isCollectionBid ? 'select NFT' : 'buy now'}
+        </button>
+      ),
+    },
+    sales: {
+      galleryItem: (item: Sale) => <ActivityItem activity={activity.fromSale(item)} />,
+      details: (item: Sale) => <SaleDetails sale={item} />,
+      mainActionBtn: (item: Sale) => (
+        <button className="btn btn-secondary">open receipt 2.0</button>
+      ),
+    },
+  }
+
   const ui = viewConfig[view]
-  const selected = selectedByView[view]
 
   return (
     <div className="flex gap-4 h-screen max-w-4xl mx-auto overflow-hidden font-mono">
@@ -150,9 +160,9 @@ export function MarketplaceView(initial: InitialState) {
           <div className="flex-1 flex flex-col gap-4">
             <TextInput />
 
-            <Gallery<any>
-              items={state[view].items}
-              selected={selectedByView[view]}
+            <Gallery<ViewResource[View]>
+              items={items[view].items}
+              selected={selected}
               onSelect={item =>
                 setSelectedByView(prev => ({
                   ...prev,
@@ -164,8 +174,6 @@ export function MarketplaceView(initial: InitialState) {
           </div>
 
           <div className="basis-1/4 flex flex-col gap-3 mb-2">
-            {/* <button className="btn btn-secondary">open receipt 2.0</button> */}
-
             <div className="pointer-events-none">
               <NFTPreview
                 chainId={selected?.chainId}
@@ -173,14 +181,12 @@ export function MarketplaceView(initial: InitialState) {
                 tokenId={selected?.tokenId}
               />
             </div>
-
-            {selected && (
-              <div className="flex-1 card bg-secondary">{ui['details'](selected as any)}</div>
-            )}
+            {selected && ui.mainActionBtn(selected as any)}
+            {selected && <div className="card bg-secondary">{ui['details'](selected as any)}</div>}
           </div>
         </div>
         {selected && (
-          <Modal isOpen={false} onClose={() => alert('hello')}>
+          <Modal isOpen={view === 'feed' && modalOpen} onClose={() => isModalOpen(false)}>
             <NFTSelect
               chainId={selected.chainId}
               address={selected.collection}
