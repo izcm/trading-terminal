@@ -1,15 +1,17 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useAccount } from 'wagmi'
+
+import { getTokensByOwner } from '@/lib/blockchain/erc721/erc721.read'
 
 import type { Hex } from '@/domain/shared/eth'
+import type { NFT } from '@/domain/nft'
 
-import { NFTPreview } from '@/features/explore/ui/NFTPreview'
-import { ArrowRow } from '@/ui/atoms'
-import { getTokensByOwner } from '@/lib/blockchain/erc721/erc721.read'
-import { useAccount } from 'wagmi'
-import { NFT } from '@/domain/nft'
 import { ArrowList, NFTRow } from '@/ui/molecules'
+import { ArrowRow } from '@/ui/atoms'
+
+import { NFTPreview } from '@/features/browse/ui/NFTPreview'
 
 type Props = {
   chainId: number
@@ -32,7 +34,6 @@ export function CbFillMenu({ chainId, collection, validation, onValidate, onConf
 
   useEffect(() => {
     if (!userAddr) return
-    console.log('HELLO')
     const readTokens = async () => {
       const res = await getTokensByOwner(userAddr, collection)
 
@@ -40,7 +41,6 @@ export function CbFillMenu({ chainId, collection, validation, onValidate, onConf
     }
 
     readTokens()
-    console.log('read it!')
   }, [userAddr, collection, chainId])
 
   useEffect(() => {

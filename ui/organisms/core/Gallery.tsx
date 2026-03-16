@@ -6,7 +6,7 @@ import { ArrowList } from '@/ui/molecules'
 export type TabUIProps<T> = {
   items: T[]
   galleryItem: (item: T) => ReactNode
-  selected: T
+  selected?: T
   onSelect: (item: T) => void
   galleryView?: 'list' | 'card'
 }
@@ -18,8 +18,6 @@ export function Gallery<T extends { id: string }>({
   onSelect,
   galleryView = 'list',
 }: TabUIProps<T>) {
-  // const [selected, setSelected] = useState<T | null>(initialItems.length ? initialItems[0] : null)
-
   const galleryClasses =
     galleryView === 'list'
       ? {

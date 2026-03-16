@@ -1,6 +1,6 @@
 import { getDmrktListings, getDmrktSales } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
 
-import { MarketplaceView } from '@/features/marketplace/ui/MarketplaceView'
+import { MarketplaceView } from '@/features/MarketplaceView'
 
 export default async function Page() {
   const listingCall = await getDmrktListings(25)

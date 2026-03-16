@@ -1,7 +1,5 @@
 import { createContext, ReactNode, useContext, useEffect, useReducer, useState } from 'react'
-import { getPublicClient } from 'wagmi/actions'
 
-import { config } from '@/lib/blockchain'
 import { Hex } from '@/domain/shared/eth'
 import { useWaitForTransactionReceipt } from 'wagmi'
 
@@ -34,6 +32,7 @@ export function TxProvider({ children }: { children: ReactNode }) {
     <TxContext value={{ txs, addTx }}>
       {txs.map(tx => (
         <TxWatcher
+          key={tx.hash}
           hash={tx.hash}
           onSuccess={() => updateTx(tx.hash, 'success')}
           onFail={() => updateTx(tx.hash, 'failed')}
@@ -58,7 +57,7 @@ export function TxWatcher({
   useEffect(() => {
     if (isSuccess) onSuccess()
     if (isError) onFail()
-  })
+  }, [isSuccess, isError])
 
   return null
 }

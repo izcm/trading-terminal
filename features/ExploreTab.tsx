@@ -5,10 +5,6 @@ import type { NFTCollection } from '@/domain/nft-collection'
 import { readNFTBatch } from '@/lib/blockchain/erc721/erc721.read'
 import { Result } from '@/lib/utils/http'
 
-import { NFTCollectionBanner } from '@/features/explore/ui/NFTCollectionBanner'
-import { NFTCard } from '@/ui/organisms/NFTCard'
-import { NFTPanel } from '@/ui/organisms/SidePanel'
-
 import { NFT } from '@/domain/nft'
 
 import { NFTPreview, Gallery } from '@/ui/organisms'

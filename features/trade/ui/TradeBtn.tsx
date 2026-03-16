@@ -6,9 +6,9 @@ import { CreditCard, Layers } from 'lucide-react'
 import type { Listing } from '@/domain/listing'
 import { useFillOrder } from '../hooks/fill-order'
 
-import { NFTPreview } from '@/features/explore/ui/NFTPreview'
+import { NFTPreview } from '@/features/browse/ui/NFTPreview'
 import { CbFillMenu } from './CbFillMenu'
-import { ListingDetails } from './ListingDetails'
+import { ListingDetails } from '../../browse/ui/ListingDetails'
 
 import { Modal } from '@/ui/atoms'
 import { Order, orderType } from '@/protocol/eip712'

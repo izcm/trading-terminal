@@ -37,7 +37,6 @@ export function useFillOrder(order?: Order, tokenIdCb?: bigint) {
     const hash = await writeContractAsync(sim.data.request)
 
     addTx(hash)
-    TxWatcher(hash)
   }
 
   return {

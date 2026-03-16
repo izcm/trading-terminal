@@ -2,12 +2,10 @@ import { activity } from '@/domain/shared/activity'
 import type { Listing } from '@/domain/listing'
 import type { Sale } from '@/domain/sale'
 
-import { Gallery, NFTPreview } from '@/ui/organisms'
 import { ActivityItem, NFTRow } from '@/ui/molecules'
-import { Modal, TextInput } from '@/ui/atoms'
-import { ListingDetails } from '../trade/ui/ListingDetails'
-import { SaleDetails } from '../sales/ui/SaleDetails'
-import { TradeBtn } from '../trade/ui/TradeBtn'
+import { ListingDetails } from './browse/ui/ListingDetails'
+import { SaleDetails } from './browse/ui/SaleDetails'
+import { TradeBtn } from './trade/ui/TradeBtn'
 
 export function makeViewConfig(simulation: { isFillable: boolean }) {
   return {

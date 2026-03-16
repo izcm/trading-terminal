@@ -1,3 +1,4 @@
+import { Toaster } from 'sonner'
 import type { Metadata } from 'next'
 
 import './globals.css'
@@ -23,7 +24,10 @@ export default function RootLayout({
         >
           Skip Header
         </a> */}
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          <Toaster position="top-center" />
+        </Providers>
       </body>
     </html>
   )

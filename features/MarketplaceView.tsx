@@ -1,6 +1,6 @@
 'use client' // boundry is here!
 
-import React, { ReactNode, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { getDmrktListings, getDmrktSales } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
 import type { Paginated, Result } from '@/lib/utils/http'
@@ -8,13 +8,11 @@ import type { Paginated, Result } from '@/lib/utils/http'
 import type { Listing } from '@/domain/listing'
 import type { Sale } from '@/domain/sale'
 
-import { Gallery, NFTPreview } from '@/ui/organisms'
-import { TextInput } from '@/ui/atoms'
+import { Tab } from '@/ui/organisms/Tab'
 
-import { useTradeValidation } from '@/features/trade/hooks/trade-validation.use'
-
-import { makeViewConfig } from '../view-config'
-import { TxTracker } from '../TxTracker'
+import { useTradeValidation } from './trade/hooks/trade-validation.use'
+import { TxTracker } from './trade/ui/TxTracker'
+import { makeViewConfig } from './view-config'
 
 type Page<T> = {
   items: T[]
@@ -147,35 +145,19 @@ export function MarketplaceView(initial: InitialState) {
           ))}
         </div>
 
-        <div className="min-h-0 flex gap-4 justify-center">
-          <div className="flex-1 flex flex-col gap-4">
-            <TextInput />
-
-            <Gallery<ViewResource[View]>
-              items={state[view].items}
-              selected={selected as any}
-              onSelect={item =>
-                setSelectedByView(prev => ({
-                  ...prev,
-                  [view]: item,
-                }))
-              }
-              galleryItem={item => ui['galleryItem'](item as any)}
-            />
-          </div>
-
-          <div className="basis-1/4 flex flex-col gap-3 mb-2">
-            <div className="pointer-events-none">
-              <NFTPreview
-                chainId={selected?.chainId}
-                address={selected?.collection}
-                tokenId={selected?.tokenId}
-              />
-            </div>
-            {selected && ui.mainActionBtn(selected as any)}
-            {selected && <div className="card bg-secondary">{ui['details'](selected as any)}</div>}
-          </div>
-        </div>
+        <Tab<ViewResource[View]>
+          items={state[view].items}
+          selected={selected as any}
+          onSelect={item =>
+            setSelectedByView(prev => ({
+              ...prev,
+              [view]: item,
+            }))
+          }
+          galleryItem={item => ui['galleryItem'](item as any)}
+          mainActionBtn={item => ui.mainActionBtn(item as any)}
+          details={item => ui['details'](item as any)}
+        />
       </main>
     </div>
   )
