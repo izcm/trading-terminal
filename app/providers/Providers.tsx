@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic'
 
-import { config } from '@/blockchain/config/wagmi'
+import { config } from '@/lib/blockchain/wagmi'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
 import { TxProvider } from './TxProvider'

@@ -22,11 +22,11 @@ const safeStringify = (obj: unknown) =>
  * @returns validation and execution state
  */
 
-export function useFillOrder(order?: Order, tokenIdCb?: bigint) {
+export function useFillOrder(order?: Order, listingId?: string, tokenIdCb?: bigint) {
   const { addTx } = useTx()
   const sim = useTradeSimulation(order, tokenIdCb)
 
-  const { writeContractAsync, status } = useWriteContract()
+  const { writeContractAsync } = useWriteContract()
 
   const fillOrder = async () => {
     if (!sim.isSuccess) return
@@ -36,11 +36,10 @@ export function useFillOrder(order?: Order, tokenIdCb?: bigint) {
     // setTxHash(hash) // global state / tx provider
     const hash = await writeContractAsync(sim.data.request)
 
-    addTx(hash)
+    addTx(hash, listingId)
   }
 
   return {
-    txStatus: status,
     fillOrder,
     simulation: sim,
   }

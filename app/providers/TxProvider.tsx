@@ -8,11 +8,12 @@ type TxStatus = 'pending' | 'success' | 'failed'
 type Tx = {
   hash: Hex
   status: TxStatus
+  listingId?: string
 }
 
 type TxContextType = {
   txs: Tx[]
-  addTx: (hash: Hex) => void
+  addTx: (hash: Hex, listingId?: string) => void
 }
 
 export const TxContext = createContext<TxContextType | null>(null)
@@ -20,8 +21,8 @@ export const TxContext = createContext<TxContextType | null>(null)
 export function TxProvider({ children }: { children: ReactNode }) {
   const [txs, setTxs] = useState<Tx[]>([])
 
-  const addTx = (hash: Hex) => {
-    setTxs(prev => [...prev, { hash, status: 'pending' }])
+  const addTx = (hash: Hex, listingId?: string) => {
+    setTxs(prev => [...prev, { hash, status: 'pending', listingId }])
   }
 
   const updateTx = (hash: Hex, status: TxStatus) => {

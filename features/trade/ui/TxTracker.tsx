@@ -35,20 +35,28 @@ export function TxTracker() {
   }, [txs])
 
   return (
-    <div>
-      {pending.length > 0 && (
-        <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1">
-          <PulseDot />
-          <span className="text-xs text-text-muted animate-pulse">{pending.length} pending</span>
-        </div>
-      )}
+    <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1">
+      <PulseDot active={pending.length > 0} />
+      <span
+        className={`text-xs ${
+          pending.length > 0 ? 'text-text-muted animate-pulse' : 'text-text-muted/60'
+        }`}
+      >
+        {pending.length > 0 ? `${pending.length} pending` : '0 pending'}
+      </span>
     </div>
   )
 }
 
-const PulseDot = () => (
+const PulseDot = ({ active }: { active: boolean }) => (
   <span className="relative inline-flex h-2.5 w-2.5">
-    <span className="absolute inline-flex h-full w-full rounded-full bg-accent/40 animate-ping" />
-    <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-accent" />
+    {active && (
+      <span className="absolute inline-flex h-full w-full rounded-full bg-accent/40 animate-ping" />
+    )}
+    <span
+      className={`relative inline-flex h-2.5 w-2.5 rounded-full ${
+        active ? 'bg-accent' : 'bg-border-soft'
+      }`}
+    />
   </span>
 )

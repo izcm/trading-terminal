@@ -3,11 +3,12 @@ import type { Listing } from '@/domain/listing'
 import type { Sale } from '@/domain/sale'
 
 import { ActivityItem, NFTRow } from '@/ui/molecules'
+
 import { ListingDetails } from './browse/ui/ListingDetails'
 import { SaleDetails } from './browse/ui/SaleDetails'
 import { TradeBtn } from './trade/ui/TradeBtn'
 
-export function makeViewConfig(simulation: { isFillable: boolean }) {
+export function makeTabConfig(simulation: { isFillable: boolean }) {
   return {
     feed: {
       galleryItem: (item: Listing) => <ActivityItem activity={activity.fromListing(item)} />,

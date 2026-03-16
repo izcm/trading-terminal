@@ -31,26 +31,6 @@ export async function getDmrktCollections(
   }
 }
 
-export async function getDmrktTopCollections(
-  limit: number
-): Promise<Result<Paginated<NFTCollection>>> {
-  const result = await getDmrktItems<NFTCollectionDTO>({
-    params: 'nft-collections/top',
-    query: `limit=${limit}`,
-    cursor: null,
-  })
-
-  if (!result.ok) return result
-
-  return {
-    ok: true,
-    data: {
-      items: result.data.items.map(toNFTCollection),
-      nextCursor: result.data.nextCursor,
-    },
-  }
-}
-
 export async function getDmrktListings(
   limit: number = 10,
   cursor: string | null = null

@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
-import { TextInput } from '../atoms'
-import { Gallery } from './core/Gallery'
+import { TextInput } from '../../atoms'
+import { Gallery } from './Gallery'
 import { NFTPreview } from '@/features/browse/ui/NFTPreview'
 import { Hex } from '@/domain/shared/eth'
 

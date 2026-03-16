@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { CreditCard, Layers } from 'lucide-react'
 
 import type { Listing } from '@/domain/listing'
-import { useFillOrder } from '../hooks/fill-order'
+import { useFillOrder } from '../hooks/fill-order.use'
 
 import { NFTPreview } from '@/features/browse/ui/NFTPreview'
 import { CbFillMenu } from './CbFillMenu'
@@ -25,7 +25,7 @@ export function TradeBtn({ listing, disabled }: Props) {
   const [tokenIdCb, setTokenIdCb] = useState<bigint | undefined>(undefined)
 
   // chain interaction stuff
-  const { txStatus, fillOrder } = useFillOrder(listing?.rawOrder, tokenIdCb)
+  const { fillOrder } = useFillOrder(listing?.rawOrder, listing?.id, tokenIdCb)
   const sim = useTradeValidation(listing?.rawOrder, tokenIdCb)
 
   const handlePrimaryAction = () => {

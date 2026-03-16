@@ -195,21 +195,17 @@
   color: var(--accent);
 }
 
-button[data-active='true'] {
+/* button[data-active='true'] {
   border-color: var(--accent);
   color: var(--text-primary);
   background: color-mix(in oklab, var(--accent) 5%, transparent);
-}
+} */
 
 .btn-accent {
-  background: transparent;
-  color: var(--text-primary);
+  background-color: color-mix(in oklab, var(--bg-surface) 50%, transparent);
+  color: var(--accent-weak);
 
-  border: 1px solid color-mix(in oklab, var(--accent) 40%, var(--border-default));
-
-  box-shadow:
-    0 0 0 0 rgba(0, 0, 0, 0),
-    0 0 2px color-mix(in oklab, var(--accent) 6%, transparent);
+  border: 1px solid color-mix(in oklab, var(--accent) 20%, var(--border-soft));
 
   transition:
     border-color 160ms ease,
@@ -221,20 +217,13 @@ button[data-active='true'] {
 .btn-accent:hover {
   border-color: color-mix(in oklab, var(--accent) 18%, var(--border-default));
   box-shadow: 0 0 4px color-mix(in oklab, var(--accent) 10%, transparent);
-  background: color-mix(in oklab, var(--accent) 2%, transparent);
+  background: color-mix(in oklab, var(--bg-surface) 60%, var(--accent) 4%);
 }
 
 .btn-accent:active {
   transform: translateY(0.5px) scale(0.995);
   box-shadow: 0 0 2px color-mix(in oklab, var(--accent) 8%, transparent);
-}
-
-.btn-accent:active:focus-visible {
-  border-color: color-mix(in oklab, var(--accent) 68%, var(--border-default));
-  box-shadow:
-    0 0 0 2px var(--bg-primary),
-    0 0 0 5px color-mix(in oklab, var(--accent) 42%, transparent),
-    0 0 14px color-mix(in oklab, var(--accent) 24%, transparent);
+  background: color-mix(in oklab, var(--bg-surface) 60%, var(--accent) 8%);
 }
 
 .btn-accent:disabled {

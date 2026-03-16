@@ -1,6 +1,6 @@
 'use client' // boundry is here!
 
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { getDmrktListings, getDmrktSales } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
 import type { Paginated, Result } from '@/lib/utils/http'
@@ -8,83 +8,73 @@ import type { Paginated, Result } from '@/lib/utils/http'
 import type { Listing } from '@/domain/listing'
 import type { Sale } from '@/domain/sale'
 
-import { Tab } from '@/ui/organisms/Tab'
+import { Tab } from '@/ui/organisms/core/Tab'
 
 import { useTradeValidation } from './trade/hooks/trade-validation.use'
 import { TxTracker } from './trade/ui/TxTracker'
-import { makeViewConfig } from './view-config'
+import { makeTabConfig } from './tab-config'
+import { useTx } from '@/app/providers/TxProvider'
+import { useKeyboardShortcuts } from './browse/hooks/keyboard-shortcuts.use'
 
 type Page<T> = {
   items: T[]
   cursor: string | null
 }
 
-type ViewResource = {
+type TabResource = {
   feed: Listing
   sales: Sale
   // explore: NFT
 }
 
-type View = keyof ViewResource
+type TabName = keyof TabResource
 
 type InitialState = {
-  [K in View]: Page<ViewResource[K]>
+  [K in TabName]: Page<TabResource[K]>
 }
 
-type ViewPages = {
-  [K in View]: Page<ViewResource[K]>
+type TabPages = {
+  [K in TabName]: Page<TabResource[K]>
 }
 
-type PageGetters<K extends keyof ViewResource> = (
+type PageGetters<K extends keyof TabResource> = (
   limit: number,
   cursor: string | null
-) => Promise<Result<Paginated<ViewResource[K]>>>
+) => Promise<Result<Paginated<TabResource[K]>>>
 
-const pageGetters: { [K in keyof ViewResource]: PageGetters<K> } = {
+const pageGetters: { [K in keyof TabResource]: PageGetters<K> } = {
   feed: getDmrktListings,
   sales: getDmrktSales,
   // explore: getDmrktCollections,
 }
 
 export function MarketplaceView(initial: InitialState) {
-  const [view, setView] = useState<View>('feed')
-  const [modalOpen, isModalOpen] = useState<boolean>(false)
+  // providers
+  const { txs } = useTx()
 
-  // keyboard shortcuts
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      const target = e.target as HTMLElement
+  // effects
+  useKeyboardShortcuts({ f: () => setTab('feed'), s: () => setTab('sales') })
 
-      // don't trigger while typing
-      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
-        return
-      }
+  // on tx success => remove listing from feed
 
-      if (e.key === 'f') setView('feed')
-      if (e.key === 's') setView('sales')
-      // if (e.key === 'e') setView('explore')
-    }
+  // tab state
+  const [tab, setTab] = useState<TabName>('feed')
+  const [state, setState] = useState<TabPages>(initial)
 
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [])
-
-  const [state, setState] = useState<ViewPages>(initial)
-
-  const current = state[view]
+  const current = state[tab]
 
   useEffect(() => {
     if (!current.cursor) return
 
     const fetchMore = async () => {
-      const res = await pageGetters[view](10, current.cursor)
+      const res = await pageGetters[tab](10, current.cursor)
 
       if (res.ok) {
         const { nextCursor, items: newItems } = res.data
 
         setState(prev => ({
           ...prev,
-          [view]: { items: [...prev[view].items, ...newItems], cursor: nextCursor },
+          [tab]: { items: [...prev[tab].items, ...newItems], cursor: nextCursor },
         }))
       }
     }
@@ -92,27 +82,27 @@ export function MarketplaceView(initial: InitialState) {
     fetchMore()
   }, [current.cursor])
 
-  const [selectedByView, setSelectedByView] = useState<{ [K in View]: ViewResource[K] | null }>({
+  const [selectedByTab, setSelectedByTab] = useState<{ [K in TabName]: TabResource[K] | null }>({
     feed: initial.feed.items[0] ?? null,
     sales: initial.sales.items[0] ?? null,
   })
 
-  const selected = selectedByView[view]
+  const selected = selectedByTab[tab]
 
-  const simulation = useTradeValidation(
-    view === 'feed' ? (selected as Listing).rawOrder : undefined
-  )
+  const simulation = useTradeValidation(tab === 'feed' ? (selected as Listing).rawOrder : undefined)
 
-  const viewConfig = makeViewConfig({ isFillable: simulation.isFillable })
-  const ui = viewConfig[view]
+  const tabConfig = makeTabConfig({ isFillable: simulation.isFillable })
+  const ui = tabConfig[tab]
 
   return (
     <div className="flex gap-4 h-screen max-w-4xl mx-auto overflow-hidden font-mono">
       {/* ---- main content ---- */}
       <main className="flex flex-col mt-4 items-center gap-4">
         <div className="flex items-center justify-between w-full gap-2 px-1 text-accent">
-          <div className="basis-1/4"></div>
-          <div className="1/2">
+          <div className="basis-1/4 flex">
+            <button className="btn btn-accent h-[27px]">+ new order</button>
+          </div>
+          <div>
             <button className="menuBtn">[ Swords ]</button>
 
             <button className="menuBtn">[ Elixirs ]</button>
@@ -121,20 +111,20 @@ export function MarketplaceView(initial: InitialState) {
 
             <button className="menuBtn">[ Eggs ]</button>
           </div>
-          <div className="basis-1/4">
+          <div className="basis-1/4 flex justify-end">
             <TxTracker />
           </div>
         </div>
 
         <div className="flex w-full border-b border-soft">
-          {(Object.keys(viewConfig) as View[]).map(title => (
+          {(Object.keys(tabConfig) as TabName[]).map(title => (
             <button
               key={title}
-              onClick={() => setView(title)}
+              onClick={() => setTab(title)}
               className={`
             flex-1 py-2 text-center border-b-2 transition cursor-pointer
         ${
-          title === view
+          title === tab
             ? 'border-accent-weak text-accent-weak'
             : 'border-transparent text-muted hover:text-accent/70'
         }
@@ -145,13 +135,13 @@ export function MarketplaceView(initial: InitialState) {
           ))}
         </div>
 
-        <Tab<ViewResource[View]>
-          items={state[view].items}
-          selected={selected as any}
+        <Tab
+          items={state[tab].items}
+          selected={selected ?? undefined}
           onSelect={item =>
-            setSelectedByView(prev => ({
+            setSelectedByTab(prev => ({
               ...prev,
-              [view]: item,
+              [tab]: item,
             }))
           }
           galleryItem={item => ui['galleryItem'](item as any)}

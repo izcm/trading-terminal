@@ -2,7 +2,7 @@ import type { Address, Hex } from 'viem'
 import { erc721Abi } from 'viem'
 
 import { getPublicClient, readContract } from 'wagmi/actions'
-import { config } from '../config/wagmi'
+import { config } from '../wagmi'
 
 import { mapTokenUriToNFT, type NFT } from '@/domain/nft'
 import type { Paginated, Result } from '@/lib/utils/http'
