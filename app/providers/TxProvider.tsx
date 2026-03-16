@@ -1,5 +1,9 @@
+import { createContext, ReactNode, useContext, useEffect, useReducer, useState } from 'react'
+import { getPublicClient } from 'wagmi/actions'
+
+import { config } from '@/lib/blockchain'
 import { Hex } from '@/domain/shared/eth'
-import { createContext, ReactNode, useContext, useState } from 'react'
+import { useWaitForTransactionReceipt } from 'wagmi'
 
 type TxStatus = 'pending' | 'success' | 'failed'
 
@@ -8,22 +12,55 @@ type Tx = {
   status: TxStatus
 }
 
-type TxManager = {
+type TxContextType = {
   txs: Tx[]
   addTx: (hash: Hex) => void
 }
 
-export type Something = {
-  number: number
-  setNumber: (i: number) => void
-}
-
-export const TxContext = createContext<Something | null>(null)
+export const TxContext = createContext<TxContextType | null>(null)
 
 export function TxProvider({ children }: { children: ReactNode }) {
-  const [number, setNumber] = useState<number>(0)
+  const [txs, setTxs] = useState<Tx[]>([])
 
-  return <TxContext value={{ number, setNumber }}>{children}</TxContext>
+  const addTx = (hash: Hex) => {
+    setTxs(prev => [...prev, { hash, status: 'pending' }])
+  }
+
+  const updateTx = (hash: Hex, status: TxStatus) => {
+    setTxs(prev => prev.map(tx => (tx.hash === hash ? { ...tx, status } : tx)))
+  }
+
+  return (
+    <TxContext value={{ txs, addTx }}>
+      {txs.map(tx => (
+        <TxWatcher
+          hash={tx.hash}
+          onSuccess={() => updateTx(tx.hash, 'success')}
+          onFail={() => updateTx(tx.hash, 'failed')}
+        />
+      ))}
+      {children}
+    </TxContext>
+  )
+}
+
+export function TxWatcher({
+  hash,
+  onSuccess,
+  onFail,
+}: {
+  hash: Hex
+  onSuccess: () => void
+  onFail: () => void
+}) {
+  const { isError, isSuccess } = useWaitForTransactionReceipt({ hash })
+
+  useEffect(() => {
+    if (isSuccess) onSuccess()
+    if (isError) onFail()
+  })
+
+  return null
 }
 
 export function useTx() {

@@ -9,10 +9,10 @@ import type { Listing } from '@/domain/listing'
 import type { Sale } from '@/domain/sale'
 
 import { Gallery, NFTPreview } from '@/ui/organisms'
-import { ActivityItem, NFTRow } from '@/ui/molecules'
-import { Modal, TextInput } from '@/ui/atoms'
+import { TextInput } from '@/ui/atoms'
 
 import { useTradeValidation } from '@/features/trade/hooks/trade-validation.use'
+
 import { makeViewConfig } from '../view-config'
 import { TxTracker } from '../TxTracker'
 

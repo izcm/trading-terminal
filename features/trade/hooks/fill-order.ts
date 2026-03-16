@@ -1,5 +1,7 @@
 import { useWriteContract } from 'wagmi'
 
+import { useTx, TxWatcher } from '@/app/providers/TxProvider'
+
 import type { Order } from '@/protocol/eip712'
 
 import { useTradeSimulation } from './trade-simulation.use'
@@ -21,7 +23,9 @@ const safeStringify = (obj: unknown) =>
  */
 
 export function useFillOrder(order?: Order, tokenIdCb?: bigint) {
+  const { addTx } = useTx()
   const sim = useTradeSimulation(order, tokenIdCb)
+
   const { writeContractAsync, status } = useWriteContract()
 
   const fillOrder = async () => {
@@ -30,7 +34,10 @@ export function useFillOrder(order?: Order, tokenIdCb?: bigint) {
     if (!sim.data?.request) return
 
     // setTxHash(hash) // global state / tx provider
-    return writeContractAsync(sim.data.request)
+    const hash = await writeContractAsync(sim.data.request)
+
+    addTx(hash)
+    TxWatcher(hash)
   }
 
   return {
