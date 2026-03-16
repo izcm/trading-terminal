@@ -24,8 +24,8 @@ export function NFTCard({ nft }: { nft?: NFT }) {
   return (
     <GalleryItem
       image={props.image}
-      title={props.title}
-      // title={props.title?.split(' ').slice(1).join(' ')}
+      // title={props.title}
+      title={props.title?.split(' ').slice(1).join(' ')}
       details={props.details}
     />
   )

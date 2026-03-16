@@ -38,7 +38,7 @@ export function CbFillMenu({
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 max-h-[500px]">
       <OwnedNFTPicker
         chainId={chainId}
         collection={collection}

@@ -9,7 +9,7 @@ export type Fill = {
   tokenId: bigint
 }
 
-type OrderCore = {
+export type OrderCore = {
   side: number
   actor: Hex
   isCollectionBid: boolean

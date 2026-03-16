@@ -4,6 +4,8 @@ import { useAccount } from 'wagmi'
 import { Hex } from '@/domain/shared/eth'
 import { OwnedNFTPicker } from '@/features/OwnedNFTPicker'
 import { Modal } from '@/ui/atoms'
+import { CreateOrderMenu } from './CreateOrderMenu'
+import { Order, OrderCore } from '@/protocol/eip712'
 
 // asks:
 // - show owned tokens in list
@@ -26,7 +28,7 @@ export function CreateOrderBtn({ chainId, collection }: Props) {
   const { address: user } = useAccount()
 
   const [showModal, setShowModal] = useState<boolean>(false)
-  const [tokenId, setTokenId] = useState<bigint | undefined>(undefined)
+  const [order, setOrder] = useState<OrderCore | undefined>(undefined)
 
   if (!user) return <button disabled className="btn btn-accent h-[27px]"></button>
 
@@ -37,16 +39,12 @@ export function CreateOrderBtn({ chainId, collection }: Props) {
       </button>
       {/* MODAL */}
       <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
-        <div className="flex flex-col gap-2">
-          <OwnedNFTPicker
-            chainId={chainId}
-            collection={collection}
-            user={user}
-            selectedTokenId={tokenId}
-            onSelect={nft => setTokenId(nft.tokenId)}
-          />
-          <button className="btn btn-primary">next</button>
-        </div>
+        <CreateOrderMenu
+          chainId={chainId}
+          collection={collection}
+          user={user}
+          onConfirm={() => alert('hello')}
+        />
       </Modal>
     </div>
   )
