@@ -2,14 +2,13 @@
 
 import { useEffect, useState } from 'react'
 
-import { useTx } from '@/app/providers/TxProvider'
 import type { Page } from '@/lib/utils/http'
 import type { Listing } from '@/domain/listing'
 
 import { Tab } from '@/ui/organisms/core/Tab'
 
 // hooks
-import { useKeyboardShortcuts } from './browse/hooks/keyboard-shortcuts.use'
+import { useKeyboardShortcuts } from './keyboard-shortcuts.use'
 
 // trade
 import { useTradeValidation } from './trade/hooks/trade-validation.use'
@@ -18,6 +17,7 @@ import { TxTracker } from './trade/ui/TxTracker'
 // tab config
 import { makeTabUiConfig, pageGetters, type TabName, type TabResource } from './tab-config'
 import { useFeedTxSync } from './browse/hooks/feed-tx-sync.use'
+import { CreateOrderBtn } from './orders/ui/CreateOrderBtn'
 
 type InitialState = {
   [K in TabName]: Page<TabResource[K]>
@@ -80,9 +80,10 @@ export function MarketplaceView(initial: InitialState) {
     <div className="flex gap-4 h-screen max-w-4xl mx-auto overflow-hidden font-mono">
       {/* ---- main content ---- */}
       <main className="flex flex-col mt-4 items-center gap-4">
-        <div className="flex items-center justify-between w-full gap-2 px-1 text-accent">
+        <div className="flex items-center justify-between w-full gap-2 px-1">
           <div className="basis-1/4 flex">
-            <button className="btn btn-accent h-[27px]">+ new order</button>
+            {/* todo: make nice way to pass chainid in case of later multichain */}
+            <CreateOrderBtn chainId={31337} collection={state.feed.items[0].collection} />
           </div>
           <div>
             <button className="menuBtn">[ Swords ]</button>

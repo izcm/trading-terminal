@@ -19,5 +19,14 @@ export function NFTCard({ nft }: { nft?: NFT }) {
   const props = nft
     ? { image: nft.image, title: nft.name, details: details(nft) }
     : { image: NFT_LOADING_IMAGE }
-  return <GalleryItem image={props.image} title={props.title} details={props.details} />
+
+  // removes rarity from title for less verbose UI
+  return (
+    <GalleryItem
+      image={props.image}
+      title={props.title}
+      // title={props.title?.split(' ').slice(1).join(' ')}
+      details={props.details}
+    />
+  )
 }

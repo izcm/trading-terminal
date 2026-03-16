@@ -4,23 +4,28 @@ import { useState } from 'react'
 import { CreditCard, Layers } from 'lucide-react'
 
 import type { Listing } from '@/domain/listing'
-import { useFillOrder } from '../hooks/fill-order.use'
-
-import { NFTPreview } from '@/features/browse/ui/NFTPreview'
-import { CbFillMenu } from './CbFillMenu'
-import { ListingDetails } from '../../browse/ui/ListingDetails'
 
 import { Modal } from '@/ui/atoms'
-import { Order, orderType } from '@/protocol/eip712'
+
 import { useTradeValidation } from '../hooks/trade-validation.use'
+import { useFillOrder } from '../hooks/fill-order.use'
+
+import { CbFillMenu } from './CbFillMenu'
+import { useAccount } from 'wagmi'
 
 type Props = {
   listing: Listing | null
   disabled: boolean
 }
 
+/**
+ *
+ * @param disabled value allows parent to disable trade feature
+ */
 export function TradeBtn({ listing, disabled }: Props) {
-  // collection bid feature
+  const { address: user } = useAccount()
+
+  // modal for selecting token to put into collection bid
   const [showModal, setShowModal] = useState<boolean>(false)
   const [tokenIdCb, setTokenIdCb] = useState<bigint | undefined>(undefined)
 
@@ -38,8 +43,12 @@ export function TradeBtn({ listing, disabled }: Props) {
     }
   }
 
-  if (!listing) {
-    return <div>No listing</div>
+  if (!listing || !user) {
+    return (
+      <button disabled={true} className="">
+        nobody is connected
+      </button>
+    )
   }
 
   return (
@@ -55,11 +64,6 @@ export function TradeBtn({ listing, disabled }: Props) {
           </>
         )}
       </button>
-      {/* <span className="text-xs text-muted">
-          {listing.isCollectionBid
-            ? 'choose nft to sell into this bid'
-            : 'wallet will ask you to confirm'}
-    
 
       {/* MODAL */}
       <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
@@ -67,6 +71,7 @@ export function TradeBtn({ listing, disabled }: Props) {
           <CbFillMenu
             chainId={listing.chainId}
             collection={listing.collection}
+            user={user}
             validation={{
               canConfirm: sim.isFillable,
               checking: sim.checking,

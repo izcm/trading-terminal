@@ -18,7 +18,7 @@ export function NFTPreview({ chainId, address, tokenId }: Props) {
   // UI elements
   const [nft, setNft] = useState<NFT>()
 
-  const enabled = !!chainId && !!address && !!tokenId
+  const enabled = !!chainId && !!address && tokenId !== undefined
 
   const { data: tokenURI } = useTokenURI(
     enabled

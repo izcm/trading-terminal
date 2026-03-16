@@ -1,4 +1,3 @@
-// todo: mappers dto => domain
 import type { NFTCollection } from './nft-collection'
 import type { Listing } from './listing'
 
@@ -6,7 +5,6 @@ import type { Hex } from './shared/eth'
 
 export const saleKey = (chainId: number, orderHash: string) => `${chainId}:${orderHash}` as const
 
-// todo: use bigints !
 export type Sale = {
   id: string
   chainId: number

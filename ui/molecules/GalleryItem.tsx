@@ -12,7 +12,7 @@ export function GalleryItem({
       </div>
       <div className="bg-secondary">
         {title && (
-          <div className="border-b border-default p-3">
+          <div className="h-[70px] overflow-hidden border-b border-default p-3">
             <span>{title}</span>
           </div>
         )}

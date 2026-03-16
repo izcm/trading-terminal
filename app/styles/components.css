@@ -226,12 +226,6 @@
   background: color-mix(in oklab, var(--bg-surface) 60%, var(--accent) 8%);
 }
 
-.btn-accent:disabled {
-  opacity: 0.4;
-  box-shadow: none;
-  cursor: not-allowed;
-}
-
 @keyframes pulseGlow {
   0%,
   100% {

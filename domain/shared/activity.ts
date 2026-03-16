@@ -2,7 +2,6 @@ import type { Listing } from '@/domain/listing'
 import { Sale } from '../sale'
 import { Hex } from './eth'
 
-// todo: use bigints in other types!
 export type Activity = {
   source: 'sale' | 'listing'
   type: 'ask' | 'bid' | 'unknown'
@@ -37,7 +36,7 @@ export const activity = {
       chainId: sale.chainId,
       collection: sale.collection,
       tokenId: sale.tokenId,
-      price: BigInt(sale.price),
+      price: sale.price,
       timestamp: sale.timestamp,
       collectionSymbol: sale.nftCollection?.symbol ?? 'unknown',
     }
