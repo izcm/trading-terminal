@@ -1,4 +1,4 @@
-import type { Paginated, Result } from '@/lib/utils/http'
+import type { Page, Result } from '@/lib/utils/http'
 
 import type { ListingDTO } from '../types/listing-dto'
 import { toListing } from '../types/listing-dto'
@@ -13,7 +13,7 @@ export const baseUrl = process.env.NEXT_PUBLIC_INDEXER_ENDPOINT_URL
 export async function getDmrktCollections(
   limit: number,
   cursor: string | null = null
-): Promise<Result<Paginated<NFTCollection>>> {
+): Promise<Result<Page<NFTCollection>>> {
   const result = await getDmrktItems<NFTCollectionDTO>({
     params: 'nft-collections',
     query: `limit=${limit}&address=0x0Cc60CAE6Db663824eb49AfD43a9871E6e8ed885`,
@@ -26,7 +26,7 @@ export async function getDmrktCollections(
     ok: true,
     data: {
       items: result.data.items.map(toNFTCollection),
-      nextCursor: result.data.nextCursor,
+      cursor: result.data.cursor,
     },
   }
 }
@@ -34,7 +34,7 @@ export async function getDmrktCollections(
 export async function getDmrktListings(
   limit: number = 10,
   cursor: string | null = null
-): Promise<Result<Paginated<Listing>>> {
+): Promise<Result<Page<Listing>>> {
   const result = await getDmrktItems<ListingDTO>({
     params: 'orders',
     query: `limit=${limit}&status=active&include=nftCollection`,
@@ -47,7 +47,7 @@ export async function getDmrktListings(
     ok: true,
     data: {
       items: result.data.items.map(toListing),
-      nextCursor: result.data.nextCursor,
+      cursor: result.data.cursor,
     },
   }
 }
@@ -68,7 +68,7 @@ export async function getDmrktItems<T>({
   params: string
   query: string
   cursor: string | null
-}): Promise<Result<Paginated<T>>> {
+}): Promise<Result<Page<T>>> {
   const searchParams = new URLSearchParams(query)
 
   if (cursor) {
@@ -90,7 +90,7 @@ export async function getDmrktItems<T>({
       ok: true,
       data: {
         items: data.items as T[],
-        nextCursor: data.nextCursor ?? null,
+        cursor: data.nextCursor ?? null,
       },
     }
   } catch (err) {

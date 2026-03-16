@@ -7,11 +7,11 @@ export default async function Page() {
   const salesCall = await getDmrktSales(25)
 
   const feed = listingCall.ok
-    ? { items: listingCall.data.items, cursor: listingCall.data.nextCursor }
+    ? { items: listingCall.data.items, cursor: listingCall.data.cursor }
     : { items: [], cursor: null }
 
   const sales = salesCall.ok
-    ? { items: salesCall.data.items, cursor: salesCall.data.nextCursor }
+    ? { items: salesCall.data.items, cursor: salesCall.data.cursor }
     : { items: [], cursor: null }
 
   return <MarketplaceView feed={feed} sales={sales} />

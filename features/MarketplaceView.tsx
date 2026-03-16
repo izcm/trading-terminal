@@ -2,32 +2,22 @@
 
 import { useEffect, useState } from 'react'
 
-import { getDmrktListings, getDmrktSales } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
-import type { Paginated, Result } from '@/lib/utils/http'
-
+import { useTx } from '@/app/providers/TxProvider'
+import type { Page } from '@/lib/utils/http'
 import type { Listing } from '@/domain/listing'
-import type { Sale } from '@/domain/sale'
 
 import { Tab } from '@/ui/organisms/core/Tab'
 
-import { useTradeValidation } from './trade/hooks/trade-validation.use'
-import { TxTracker } from './trade/ui/TxTracker'
-import { makeTabConfig } from './tab-config'
-import { useTx } from '@/app/providers/TxProvider'
+// hooks
 import { useKeyboardShortcuts } from './browse/hooks/keyboard-shortcuts.use'
 
-type Page<T> = {
-  items: T[]
-  cursor: string | null
-}
+// trade
+import { useTradeValidation } from './trade/hooks/trade-validation.use'
+import { TxTracker } from './trade/ui/TxTracker'
 
-type TabResource = {
-  feed: Listing
-  sales: Sale
-  // explore: NFT
-}
-
-type TabName = keyof TabResource
+// tab config
+import { makeTabUiConfig, pageGetters, type TabName, type TabResource } from './tab-config'
+import { useFeedTxSync } from './browse/hooks/feed-tx-sync.use'
 
 type InitialState = {
   [K in TabName]: Page<TabResource[K]>
@@ -37,29 +27,21 @@ type TabPages = {
   [K in TabName]: Page<TabResource[K]>
 }
 
-type PageGetters<K extends keyof TabResource> = (
-  limit: number,
-  cursor: string | null
-) => Promise<Result<Paginated<TabResource[K]>>>
-
-const pageGetters: { [K in keyof TabResource]: PageGetters<K> } = {
-  feed: getDmrktListings,
-  sales: getDmrktSales,
-  // explore: getDmrktCollections,
-}
-
 export function MarketplaceView(initial: InitialState) {
-  // providers
-  const { txs } = useTx()
-
-  // effects
+  // hook subs
   useKeyboardShortcuts({ f: () => setTab('feed'), s: () => setTab('sales') })
-
-  // on tx success => remove listing from feed
+  useFeedTxSync(updateFeed) // on tx success => remove listing from feed
 
   // tab state
   const [tab, setTab] = useState<TabName>('feed')
   const [state, setState] = useState<TabPages>(initial)
+
+  function updateFeed(fn: (feed: Page<Listing>) => Page<Listing>) {
+    setState(prev => ({
+      ...prev,
+      feed: fn(prev.feed),
+    }))
+  }
 
   const current = state[tab]
 
@@ -70,7 +52,7 @@ export function MarketplaceView(initial: InitialState) {
       const res = await pageGetters[tab](10, current.cursor)
 
       if (res.ok) {
-        const { nextCursor, items: newItems } = res.data
+        const { cursor: nextCursor, items: newItems } = res.data
 
         setState(prev => ({
           ...prev,
@@ -91,8 +73,8 @@ export function MarketplaceView(initial: InitialState) {
 
   const simulation = useTradeValidation(tab === 'feed' ? (selected as Listing).rawOrder : undefined)
 
-  const tabConfig = makeTabConfig({ isFillable: simulation.isFillable })
-  const ui = tabConfig[tab]
+  const tabUiConfig = makeTabUiConfig({ isFillable: simulation.isFillable })
+  const ui = tabUiConfig[tab]
 
   return (
     <div className="flex gap-4 h-screen max-w-4xl mx-auto overflow-hidden font-mono">
@@ -117,7 +99,7 @@ export function MarketplaceView(initial: InitialState) {
         </div>
 
         <div className="flex w-full border-b border-soft">
-          {(Object.keys(tabConfig) as TabName[]).map(title => (
+          {(Object.keys(tabUiConfig) as TabName[]).map(title => (
             <button
               key={title}
               onClick={() => setTab(title)}

@@ -13,7 +13,7 @@ export function TxTracker() {
   const pending = txs.filter(tx => tx.status === 'pending')
 
   useEffect(() => {
-    txs.map(tx => {
+    txs.forEach(tx => {
       if (seen.current.has(tx.hash)) return
 
       if (tx.status === 'success') {

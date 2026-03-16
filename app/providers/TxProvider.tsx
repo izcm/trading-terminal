@@ -5,7 +5,7 @@ import { useWaitForTransactionReceipt } from 'wagmi'
 
 type TxStatus = 'pending' | 'success' | 'failed'
 
-type Tx = {
+export type Tx = {
   hash: Hex
   status: TxStatus
   listingId?: string

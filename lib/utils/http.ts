@@ -1,8 +1,8 @@
 export type Result<T> = { ok: true; data: T } | { ok: false; error: string }
 
-export type Paginated<T> = {
+export type Page<T> = {
   items: T[]
-  nextCursor: string | null
+  cursor: string | null
 }
 
 export const unwrap = <T>(r: Result<T>): T => {

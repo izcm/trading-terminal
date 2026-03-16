@@ -5,7 +5,7 @@ import { getPublicClient, readContract } from 'wagmi/actions'
 import { config } from '../wagmi'
 
 import { mapTokenUriToNFT, type NFT } from '@/domain/nft'
-import type { Paginated, Result } from '@/lib/utils/http'
+import type { Page, Result } from '@/lib/utils/http'
 
 const CHAIN_ID = 31337 // todo: multichain
 
@@ -35,7 +35,7 @@ export async function readNFTBatch(
   address: Address,
   limit: number,
   cursor: number = 0 // i know this is absolutely wild (will remove asap)
-): Promise<Result<Paginated<NFT>>> {
+): Promise<Result<Page<NFT>>> {
   const client = getPublicClient(config, { chainId: CHAIN_ID })
 
   const calls = Array.from({ length: limit }, (_, tokenId) =>
@@ -59,7 +59,7 @@ export async function readNFTBatch(
       ok: true,
       data: {
         items,
-        nextCursor: null, // todo: make this less clumsy
+        cursor: null, // todo: make this less clumsy
       },
     }
   } catch (err) {

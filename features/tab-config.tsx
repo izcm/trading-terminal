@@ -1,3 +1,5 @@
+import type { Page, Result } from '@/lib/utils/http'
+
 import { activity } from '@/domain/shared/activity'
 import type { Listing } from '@/domain/listing'
 import type { Sale } from '@/domain/sale'
@@ -7,8 +9,28 @@ import { ActivityItem, NFTRow } from '@/ui/molecules'
 import { ListingDetails } from './browse/ui/ListingDetails'
 import { SaleDetails } from './browse/ui/SaleDetails'
 import { TradeBtn } from './trade/ui/TradeBtn'
+import { getDmrktListings, getDmrktSales } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
 
-export function makeTabConfig(simulation: { isFillable: boolean }) {
+export type TabResource = {
+  feed: Listing
+  sales: Sale
+  // explore: NFT
+}
+
+export type TabName = keyof TabResource
+
+type PageGetters<K extends keyof TabResource> = (
+  limit: number,
+  cursor: string | null
+) => Promise<Result<Page<TabResource[K]>>>
+
+export const pageGetters: { [K in keyof TabResource]: PageGetters<K> } = {
+  feed: getDmrktListings,
+  sales: getDmrktSales,
+  // explore: getDmrktCollections,
+}
+
+export function makeTabUiConfig(simulation: { isFillable: boolean }) {
   return {
     feed: {
       galleryItem: (item: Listing) => <ActivityItem activity={activity.fromListing(item)} />,
