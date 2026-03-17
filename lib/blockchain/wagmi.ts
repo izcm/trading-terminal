@@ -2,7 +2,7 @@ import { createConfig, http } from 'wagmi'
 import { anvil } from 'wagmi/chains'
 import { injected } from 'wagmi/connectors'
 
-export const config = createConfig({
+export const wagmiConfig = createConfig({
   chains: [{ ...anvil, testnet: true }],
   connectors: [injected()],
   transports: {

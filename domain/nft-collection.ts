@@ -11,10 +11,6 @@ export type NFTCollection = {
   imageUrl?: string
   bannerImageUrl?: string
 
-  marketData?: {
-    floorPrice?: bigint
-  }
-
   socials?: {
     twitterUsername?: string
     externalUrl?: string
@@ -27,7 +23,7 @@ export type NFTCollection = {
   name: string
   symbol: string
   tokenType: string
-  totalSupply: bigint
+  totalSupply?: bigint
 
   summary?: {
     activeAskCount: number

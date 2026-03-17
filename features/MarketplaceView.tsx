@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 
+import { getDmrktListing } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
 import type { Page } from '@/lib/utils/http'
 import type { Listing } from '@/domain/listing'
 
@@ -29,7 +30,7 @@ type TabPages = {
 
 export function MarketplaceView(initial: InitialState) {
   // hook subs
-  useKeyboardShortcuts({ f: () => setTab('feed'), s: () => setTab('sales') })
+  useKeyboardShortcuts({ fn: () => setTab('feed'), s: () => setTab('sales') })
   useFeedTxSync(updateFeed) // on tx success => remove listing from feed
 
   // tab state
@@ -54,10 +55,21 @@ export function MarketplaceView(initial: InitialState) {
       if (res.ok) {
         const { cursor: nextCursor, items: newItems } = res.data
 
-        setState(prev => ({
-          ...prev,
-          [tab]: { items: [...prev[tab].items, ...newItems], cursor: nextCursor },
-        }))
+        // build set:        O(n)
+        // filter newItems:  O(m)
+        // total:            O(n + m)
+        setState(prev => {
+          // orderhash exists on both listing + settlement
+          const existing = new Set(prev[tab].items.map(i => i.orderHash))
+
+          return {
+            ...prev,
+            [tab]: {
+              items: [...prev[tab].items, ...newItems.filter(n => !existing.has(n.orderHash))],
+              cursor: nextCursor,
+            },
+          }
+        })
       }
     }
 
@@ -77,13 +89,28 @@ export function MarketplaceView(initial: InitialState) {
   const ui = tabUiConfig[tab]
 
   return (
-    <div className="flex gap-4 h-screen max-w-4xl mx-auto overflow-hidden font-mono">
+    <div className="flex gap-4 h-screen max-w-4xl px-2 mx-auto overflow-hidden font-mono">
       {/* ---- main content ---- */}
       <main className="flex flex-col mt-4 items-center gap-4">
-        <div className="flex items-center justify-between w-full gap-2 px-1">
+        <div className="flex items-center justify-between w-full gap-2">
           <div className="basis-1/4 flex">
             {/* todo: make nice way to pass chainid in case of later multichain */}
-            <CreateOrderBtn chainId={31337} collection={state.feed.items[0].collection} />
+            {/* todo important: change this buggy [0] thing asap very important */}
+            <CreateOrderBtn
+              chainId={31337}
+              collection={state.feed.items[0].collection}
+              onOrderCreated={async id => {
+                const res = await getDmrktListing(id)
+                if (!res.ok) return
+                const listing = res.data
+                console.log(listing)
+
+                updateFeed(feed => ({
+                  ...feed, // cursor etc
+                  items: [listing, ...feed.items.filter(i => i.orderHash !== listing.orderHash)],
+                }))
+              }}
+            />
           </div>
           <div>
             <button className="menuBtn">[ Swords ]</button>

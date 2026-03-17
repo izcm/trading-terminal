@@ -7,14 +7,12 @@ export function GalleryItem({
 }: { image: string; title?: string } & { details?: ReactNode }) {
   return (
     <div className="card group hover:-translate-y-1 transition-transform hover:text-accent">
-      <div className="border-b border-default">
-        <img src={image} alt={title} className="w-full h-full object-cover" />
-      </div>
-      <div className="bg-secondary">
+      <img src={image} alt={title} className="border-b border-default object-cover" />
+      <div className="bg-secondary flex flex-col">
         {title && (
-          <div className="h-[70px] overflow-hidden border-b border-default p-3">
-            <span>{title}</span>
-          </div>
+          <span className="h-[60px] grid place-items-center border-b border-default px-2">
+            {title}
+          </span>
         )}
         <div className="transition-colors">{details}</div>
       </div>

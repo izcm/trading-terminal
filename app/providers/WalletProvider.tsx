@@ -1,6 +1,6 @@
 'use client'
 
-import { config } from '@/lib/blockchain/wagmi'
+import { wagmiConfig } from '@/lib/blockchain/wagmi'
 import { midnightTheme, RainbowKitProvider } from '@rainbow-me/rainbowkit'
 import '@rainbow-me/rainbowkit/styles.css'
 import { WagmiProvider } from 'wagmi'
@@ -12,7 +12,7 @@ const CYBER_VOID = {
 
 export default function WalletProvider({ children }: { children: React.ReactNode }) {
   return (
-    <WagmiProvider config={config}>
+    <WagmiProvider config={wagmiConfig}>
       <RainbowKitProvider
         theme={midnightTheme({
           accentColor: CYBER_VOID.accent,

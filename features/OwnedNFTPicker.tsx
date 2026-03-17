@@ -12,17 +12,25 @@ type Props = {
   chainId: number
   collection: Hex
   user: Hex
-  selectedTokenId?: bigint
+  selectedId?: string
   onSelect: (nft: NFT) => void
 }
 
-export function OwnedNFTPicker({ chainId, collection, user, onSelect, selectedTokenId }: Props) {
+export function OwnedNFTPicker({
+  chainId,
+  collection,
+  user,
+  onSelect,
+  selectedId: selectedTokenId,
+}: Props) {
   // todo: user context with nfts?
   const [nfts, setNfts] = useState<NFT[]>([])
 
   useEffect(() => {
     if (!user) return
     const readTokens = async () => {
+      console.log(collection)
+
       const res = await getTokensByOwner(user, collection)
 
       if (res.ok) setNfts(res.data)
@@ -42,7 +50,7 @@ export function OwnedNFTPicker({ chainId, collection, user, onSelect, selectedTo
         <ArrowList
           items={nfts}
           getId={nft => nft.tokenId.toString()}
-          selectedId={selectedTokenId?.toString()}
+          selectedId={selectedTokenId}
           onSelect={onSelect}
           className="min-h-0 flex-1 bg-primary"
         >

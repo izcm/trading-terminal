@@ -1,4 +1,4 @@
-import { getDmrktListings, getDmrktSales } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
+import { getDmrktListings, getDmrktSales } from '@/lib/dmrkt-indexer/actions/dmrkt-page.get'
 
 import { MarketplaceView } from '@/features/MarketplaceView'
 

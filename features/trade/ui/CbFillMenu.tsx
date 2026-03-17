@@ -17,6 +17,7 @@ type Props = {
     checking: boolean
     error?: string
   }
+
   onValidate: (tokenId: bigint) => void
   onConfirm: () => void
 }
@@ -43,7 +44,7 @@ export function CbFillMenu({
         chainId={chainId}
         collection={collection}
         user={user}
-        selectedTokenId={tokenId}
+        selectedId={tokenId?.toString()}
         onSelect={handleSelect}
       />
 

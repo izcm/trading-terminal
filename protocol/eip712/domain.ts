@@ -1,6 +1,6 @@
 const contractAddr = process.env.NEXT_PUBLIC_ORDERBOOK_CONTRACT_ADDR
 
-export const domain = {
+export const dmrktDomain = {
   name: 'dmrkt',
   version: '0',
   chainId: 31337,

@@ -2,7 +2,7 @@ import type { Address, Hex } from 'viem'
 import { erc721Abi } from 'viem'
 
 import { getPublicClient, readContract } from 'wagmi/actions'
-import { config } from '../wagmi'
+import { wagmiConfig } from '../wagmi'
 
 import { mapTokenUriToNFT, type NFT } from '@/domain/nft'
 import type { Page, Result } from '@/lib/utils/http'
@@ -10,7 +10,7 @@ import type { Page, Result } from '@/lib/utils/http'
 const CHAIN_ID = 31337 // todo: multichain
 
 export async function readNFT(address: Address, tokenId: bigint): Promise<Result<NFT>> {
-  const client = getPublicClient(config, { chainId: CHAIN_ID })
+  const client = getPublicClient(wagmiConfig, { chainId: CHAIN_ID })
 
   try {
     const tokenUri = await client.readContract({
@@ -36,7 +36,7 @@ export async function readNFTBatch(
   limit: number,
   cursor: number = 0 // i know this is absolutely wild (will remove asap)
 ): Promise<Result<Page<NFT>>> {
-  const client = getPublicClient(config, { chainId: CHAIN_ID })
+  const client = getPublicClient(wagmiConfig, { chainId: CHAIN_ID })
 
   const calls = Array.from({ length: limit }, (_, tokenId) =>
     client.readContract({
@@ -73,7 +73,7 @@ export async function getTokensByOwner(
   collection: Address,
   max = 1000
 ): Promise<Result<NFT[]>> {
-  let client = getPublicClient(config, { chainId: CHAIN_ID })
+  const client = getPublicClient(wagmiConfig, { chainId: CHAIN_ID })
 
   const items: NFT[] = []
 
@@ -98,9 +98,10 @@ export async function getTokensByOwner(
       })
 
       items.push(mapTokenUriToNFT(CHAIN_ID, collection, bigTokenId, tokenURI))
-    } catch {
-      // token not minted / any parsing error
-      break
+    } catch (err) {
+      // token not minted / any parsing error; keep scanning next tokenId
+      // console.log(err)
+      continue
     }
   }
 

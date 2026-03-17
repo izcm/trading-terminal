@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { useEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
 
 type ModalProps = {
   isOpen: boolean
@@ -26,7 +26,7 @@ export function Modal({ isOpen, onClose, children }: ModalProps) {
     }
   }, [onClose, isOpen])
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!isOpen) return
     lastFocusedRef.current = document.activeElement as HTMLElement | null
   }, [isOpen])

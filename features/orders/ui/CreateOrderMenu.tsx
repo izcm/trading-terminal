@@ -1,29 +1,64 @@
-import { DURATIONS } from '@/domain/constants/durations'
+import { useLayoutEffect, useRef, useState } from 'react'
+
+import { OrderCore } from '@/protocol/eip712'
+
 import { Hex } from '@/domain/shared/eth'
+
 import { OwnedNFTPicker } from '@/features/OwnedNFTPicker'
 import { TextInput } from '@/ui/atoms'
-import { useState } from 'react'
 
 type Props = {
   chainId: number
   collection: Hex
   user: Hex
-  onConfirm: () => void
+  onConfirm: (order: OrderCore) => void
 }
 
 export function CreateOrderMenu({ chainId, collection, user, onConfirm }: Props) {
   const [stage, setStage] = useState<'pick' | 'terms'>('pick')
 
-  const [tokenId, setTokenId] = useState<bigint>()
+  const [tokenId, setTokenId] = useState<string>()
   const [price, setPrice] = useState('')
   const [start, setStart] = useState('')
   const [end, setEnd] = useState('')
 
-  const valid = tokenId !== undefined && Number(price) > 0 && Number(end) > Number(start)
+  const formRef = useRef<HTMLFormElement>(null)
+
+  // autofocus first element on stage change
+  useLayoutEffect(() => {
+    if (stage === 'pick') return //  focus on first list element (see arrowrow.tsx)
+    const form = formRef.current
+    if (!form) return
+
+    const first = form.querySelector<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    )
+
+    first?.focus()
+  }, [stage])
+
+  // const valid = tokenId !== undefined && Number(price) > 0 && Number(end) > Number(start)
+
+  const valid = tokenId !== undefined
 
   function submit(e: React.FormEvent) {
     e.preventDefault()
-    if (valid) onConfirm()
+    if (valid) {
+      const order: OrderCore = {
+        side: 0, // ask
+        isCollectionBid: false,
+        actor: user, // no eip1271 per today
+        collection,
+        tokenId,
+        price: '1',
+        currency: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+        start: 0,
+        end: 1776371736,
+        nonce: Date.now().toString(), // todo... check valid just for heck of it
+      }
+
+      onConfirm(order)
+    }
   }
 
   if (stage === 'pick')
@@ -34,8 +69,8 @@ export function CreateOrderMenu({ chainId, collection, user, onConfirm }: Props)
             chainId={chainId}
             collection={collection}
             user={user}
-            selectedTokenId={tokenId}
-            onSelect={nft => setTokenId(nft.tokenId)}
+            selectedId={tokenId}
+            onSelect={nft => setTokenId(nft.tokenId.toString())}
           />
         </div>
 
@@ -46,7 +81,7 @@ export function CreateOrderMenu({ chainId, collection, user, onConfirm }: Props)
     )
 
   return (
-    <form onSubmit={submit} className="flex flex-col gap-3">
+    <form ref={formRef} onSubmit={submit} className="flex flex-col gap-3">
       <div className="text-text-muted">nft #{tokenId}</div>
 
       <div>
@@ -67,7 +102,10 @@ export function CreateOrderMenu({ chainId, collection, user, onConfirm }: Props)
           back
         </button>
 
-        <button type="submit" disabled={!valid} className="flex-1 btn btn-accent">
+        {/* <button type="submit" disabled={!valid} className="flex-1 btn btn-accent">
+          create order
+        </button> */}
+        <button type="submit" className="flex-1 btn btn-accent">
           create order
         </button>
       </div>

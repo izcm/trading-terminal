@@ -12,10 +12,6 @@ export type NFTCollectionDTO = {
   imageUrl?: string
   bannerImageUrl?: string
 
-  marketData?: {
-    floorPrice?: string
-  }
-
   socials?: {
     twitterUsername?: string
     externalUrl?: string
@@ -25,10 +21,10 @@ export type NFTCollectionDTO = {
 
   updatedAt: number
 
-  name: string
-  symbol: string
-  tokenType: string
-  totalSupply: string
+  name?: string | null
+  symbol?: string | null
+  tokenType?: string | null
+  totalSupply?: string | null
 
   summary?: {
     activeAskCount: number
@@ -38,16 +34,23 @@ export type NFTCollectionDTO = {
   }
 }
 
+function toOptionalBigInt(value: string | null | undefined): bigint | undefined {
+  if (!value) return undefined
+
+  try {
+    return BigInt(value)
+  } catch {
+    return undefined
+  }
+}
+
 export function toNFTCollection(dto: NFTCollectionDTO): NFTCollection {
   return {
     ...dto,
-    marketData: dto.marketData
-      ? {
-          ...dto.marketData,
-          floorPrice:
-            dto.marketData.floorPrice === undefined ? undefined : BigInt(dto.marketData.floorPrice),
-        }
-      : undefined,
-    totalSupply: BigInt(dto.totalSupply),
+    name: dto.name ?? 'unknown collection',
+    symbol: dto.symbol ?? 'N/A',
+    tokenType: dto.tokenType ?? 'ERC721',
+
+    totalSupply: toOptionalBigInt(dto.totalSupply),
   }
 }

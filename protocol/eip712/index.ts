@@ -1,3 +1,3 @@
 export * from './domain'
-export * from './order-schema'
+export * from './types'
 export * from './order'
