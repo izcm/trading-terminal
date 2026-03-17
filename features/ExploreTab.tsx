@@ -7,9 +7,8 @@ import { Result } from '@/lib/utils/http'
 
 import { NFT } from '@/domain/nft'
 
-import { NFTPreview, Gallery } from '@/ui/organisms'
-import { GalleryItem, NFTRow } from '@/ui/molecules'
-import { TextInput } from '@/ui/atoms'
+import { Gallery } from '@/ui/organisms'
+import { NFTRow } from '@/ui/molecules'
 
 export type ExploreProps = {
   initialItems: {

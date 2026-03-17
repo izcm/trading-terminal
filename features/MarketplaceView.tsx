@@ -4,21 +4,25 @@ import { useEffect, useState } from 'react'
 
 import { getDmrktListing } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
 import type { Page } from '@/lib/utils/http'
-import type { Listing } from '@/domain/listing'
 
 import { Tab } from '@/ui/organisms/core/Tab'
 
+import type { Listing } from '@/domain/listing'
+
 // hooks
-import { useKeyboardShortcuts } from './keyboard-shortcuts.use'
+import { useKeyboardShortcuts } from './hooks/keyboard-shortcuts.use'
 
 // trade
 import { useTradeValidation } from './trade/hooks/trade-validation.use'
 import { TxTracker } from './trade/ui/TxTracker'
 
-// tab config
-import { makeTabUiConfig, pageGetters, type TabName, type TabResource } from './tab-config'
+// features
 import { useFeedTxSync } from './browse/hooks/feed-tx-sync.use'
 import { CreateOrderBtn } from './orders/ui/CreateOrderBtn'
+
+// tab config
+import { makeTabUiConfig, pageGetters, type TabName, type TabResource } from './tab-config'
+import { useFresh } from './hooks/fresh.use'
 
 type InitialState = {
   [K in TabName]: Page<TabResource[K]>
@@ -29,13 +33,18 @@ type TabPages = {
 }
 
 export function MarketplaceView(initial: InitialState) {
-  // hook subs
+  // useEffect subs
   useKeyboardShortcuts({ fn: () => setTab('feed'), s: () => setTab('sales') })
   useFeedTxSync(updateFeed) // on tx success => remove listing from feed
+
+  // tracks fresh rows per tab (user created order / websocket published new sale)
+  const fresh = useFresh<TabName>()
 
   // tab state
   const [tab, setTab] = useState<TabName>('feed')
   const [state, setState] = useState<TabPages>(initial)
+
+  const currTabState = state[tab]
 
   function updateFeed(fn: (feed: Page<Listing>) => Page<Listing>) {
     setState(prev => ({
@@ -44,13 +53,11 @@ export function MarketplaceView(initial: InitialState) {
     }))
   }
 
-  const current = state[tab]
-
   useEffect(() => {
-    if (!current.cursor) return
+    if (!currTabState.cursor) return
 
     const fetchMore = async () => {
-      const res = await pageGetters[tab](10, current.cursor)
+      const res = await pageGetters[tab](10, currTabState.cursor)
 
       if (res.ok) {
         const { cursor: nextCursor, items: newItems } = res.data
@@ -74,7 +81,7 @@ export function MarketplaceView(initial: InitialState) {
     }
 
     fetchMore()
-  }, [current.cursor])
+  }, [currTabState.cursor, tab])
 
   const [selectedByTab, setSelectedByTab] = useState<{ [K in TabName]: TabResource[K] | null }>({
     feed: initial.feed.items[0] ?? null,
@@ -103,12 +110,13 @@ export function MarketplaceView(initial: InitialState) {
                 const res = await getDmrktListing(id)
                 if (!res.ok) return
                 const listing = res.data
-                console.log(listing)
 
                 updateFeed(feed => ({
                   ...feed, // cursor etc
                   items: [listing, ...feed.items.filter(i => i.orderHash !== listing.orderHash)],
                 }))
+
+                fresh.add('feed', listing.id)
               }}
             />
           </div>
@@ -154,7 +162,9 @@ export function MarketplaceView(initial: InitialState) {
               [tab]: item,
             }))
           }
+          /* eslint-disable  @typescript-eslint/no-explicit-any */
           galleryItem={item => ui['galleryItem'](item as any)}
+          galleryItemIsFresh={item => fresh.has(tab, item.id)}
           mainActionBtn={item => ui.mainActionBtn(item as any)}
           details={item => ui['details'](item as any)}
         />

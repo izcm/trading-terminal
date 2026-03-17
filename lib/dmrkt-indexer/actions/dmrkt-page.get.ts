@@ -2,7 +2,6 @@ import type { Page, Result } from '@/lib/utils/http'
 
 import type { Sale } from '@/domain/sale'
 import type { Listing } from '@/domain/listing'
-import type { NFTCollection } from '@/domain/nft-collection'
 
 import { toListing, type ListingDTO } from '../types/listing-dto'
 

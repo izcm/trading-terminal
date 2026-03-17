@@ -4,7 +4,7 @@ import { activity } from '@/domain/shared/activity'
 import type { Listing } from '@/domain/listing'
 import type { Sale } from '@/domain/sale'
 
-import { ActivityItem, NFTRow } from '@/ui/molecules'
+import { ActivityItem } from '@/ui/molecules'
 
 import { ListingDetails } from './browse/ui/ListingDetails'
 import { SaleDetails } from './browse/ui/SaleDetails'

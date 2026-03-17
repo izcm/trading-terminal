@@ -1,11 +1,11 @@
-import type { Address, Hex } from 'viem'
-import { erc721Abi } from 'viem'
+import { erc721Abi, type Address } from 'viem'
 
-import { getPublicClient, readContract } from 'wagmi/actions'
+import type { Page, Result } from '@/lib/utils/http'
+
+import { getPublicClient } from 'wagmi/actions'
 import { wagmiConfig } from '../wagmi'
 
 import { mapTokenUriToNFT, type NFT } from '@/domain/nft'
-import type { Page, Result } from '@/lib/utils/http'
 
 const CHAIN_ID = 31337 // todo: multichain
 
@@ -98,7 +98,7 @@ export async function getTokensByOwner(
       })
 
       items.push(mapTokenUriToNFT(CHAIN_ID, collection, bigTokenId, tokenURI))
-    } catch (err) {
+    } catch {
       // token not minted / any parsing error; keep scanning next tokenId
       // console.log(err)
       continue

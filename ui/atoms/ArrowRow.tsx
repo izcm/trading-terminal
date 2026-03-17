@@ -17,16 +17,8 @@ export function ArrowRow({ isSelected, onSelect, children, className }: ArrowRow
     }
   }, [isSelected])
 
-  const state = isSelected ? 'bg-accent/30' : 'hover:bg-white/15 bg-secondary/60'
-
   return (
-    <li
-      ref={ref}
-      tabIndex={isSelected ? 0 : -1}
-      onClick={onSelect}
-      aria-selected={isSelected}
-      className={`${state} ${className}`}
-    >
+    <li ref={ref} tabIndex={isSelected ? 0 : -1} onClick={onSelect} className={className}>
       {children}
     </li>
   )

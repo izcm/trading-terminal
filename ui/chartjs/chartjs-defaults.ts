@@ -58,6 +58,7 @@ export function createDataset(
   label?: string
 ): ChartDataset<keyof DatasetPresetMap, number[]> {
   return {
+    /* eslint-disable  @typescript-eslint/no-explicit-any */
     ...(datasetPresets[type] as any),
     borderColor: borderColor ?? datasetPresets[type].borderColor,
     data,

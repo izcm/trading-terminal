@@ -29,8 +29,6 @@ export function OwnedNFTPicker({
   useEffect(() => {
     if (!user) return
     const readTokens = async () => {
-      console.log(collection)
-
       const res = await getTokensByOwner(user, collection)
 
       if (res.ok) setNfts(res.data)
@@ -42,7 +40,7 @@ export function OwnedNFTPicker({
     if (!selectedTokenId && nfts.length > 0) {
       onSelect(nfts[0])
     }
-  }, [nfts, selectedTokenId])
+  }, [nfts, selectedTokenId, onSelect])
 
   return (
     <div className="flex h-full min-h-0 gap-4 overflow-hidden">

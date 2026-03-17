@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { toast } from '@/ui/organisms/core/Toast'
 import { useTx } from '@/app/providers/TxProvider'
 

@@ -1,5 +1,4 @@
 import { ContractFunctionExecutionError, ContractFunctionRevertedError } from 'viem'
-import { useWriteContract } from 'wagmi'
 
 import { ORDERBOOK_ERROR_MESSAGES as ERRORS } from '@/protocol/errors'
 import { Order } from '@/protocol/eip712'

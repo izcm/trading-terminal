@@ -38,3 +38,23 @@
     transform: translateX(0);
   }
 }
+
+.fresh {
+  animation: freshPulse 1.2s ease-in-out infinite;
+}
+
+.fresh {
+  animation: freshPulse 2s ease-in-out infinite;
+}
+
+@keyframes freshPulse {
+  0% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: color-mix(in oklab, var(--color-accent) 12%, transparent);
+  }
+  100% {
+    background-color: transparent;
+  }
+}

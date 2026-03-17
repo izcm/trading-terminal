@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, useEffect, useReducer, useState } from 'react'
+import { createContext, ReactNode, useContext, useEffect, useState } from 'react'
 
 import { Hex } from '@/domain/shared/eth'
 import { useWaitForTransactionReceipt } from 'wagmi'
@@ -55,6 +55,7 @@ export function TxWatcher({
 }) {
   const { isError, isSuccess } = useWaitForTransactionReceipt({ hash })
 
+  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
     if (isSuccess) onSuccess()
     if (isError) onFail()

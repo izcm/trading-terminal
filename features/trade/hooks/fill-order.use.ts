@@ -1,6 +1,6 @@
 import { useWriteContract } from 'wagmi'
 
-import { useTx, TxWatcher } from '@/app/providers/TxProvider'
+import { useTx } from '@/app/providers/TxProvider'
 
 import type { Order } from '@/protocol/eip712'
 

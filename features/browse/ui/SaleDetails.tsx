@@ -35,10 +35,10 @@ const TIMING_FIELDS: DetailField<Sale>[] = [
   },
 ]
 
-const TITLE_FIELD: DetailField<Sale> = {
-  label: 'collection',
-  getValue: s => (s.nftCollection ? s.nftCollection.name : s.collection),
-}
+// const TITLE_FIELD: DetailField<Sale> = {
+//   label: 'collection',
+//   getValue: s => (s.nftCollection ? s.nftCollection.name : s.collection),
+// }
 
 export const SaleDetails = ({ sale }: { sale: Sale }) => (
   <Details<Sale>

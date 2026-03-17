@@ -15,5 +15,5 @@ export function useKeyboardShortcuts(map: Record<string, () => void>) {
 
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [])
+  }, [map])
 }

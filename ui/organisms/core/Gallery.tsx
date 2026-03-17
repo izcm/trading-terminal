@@ -1,13 +1,15 @@
-import { ReactNode, useEffect, useState } from 'react'
+import { ReactNode } from 'react'
 
-import { ArrowRow, TextInput } from '@/ui/atoms'
+import { ArrowRow } from '@/ui/atoms'
 import { ArrowList } from '@/ui/molecules'
+import clsx from 'clsx'
 
-export type TabUIProps<T> = {
+export type GalleryProps<T> = {
   items: T[]
   galleryItem: (item: T) => ReactNode
   selected?: T
   onSelect: (item: T) => void
+  isFresh?: (item: T) => boolean
   galleryView?: 'list' | 'card'
 }
 
@@ -16,8 +18,9 @@ export function Gallery<T extends { id: string }>({
   galleryItem,
   selected,
   onSelect,
+  isFresh = () => false,
   galleryView = 'list',
-}: TabUIProps<T>) {
+}: GalleryProps<T>) {
   const galleryClasses =
     galleryView === 'list'
       ? {
@@ -46,7 +49,18 @@ export function Gallery<T extends { id: string }>({
               key={item.id}
               isSelected={isSelected}
               onSelect={onSelect}
-              className={`${galleryClasses.arrowRow}`}
+              className={clsx(
+                galleryClasses.arrowRow,
+
+                // default
+                !isSelected && !isFresh(item) && 'hover:bg-white/15 bg-secondary/80',
+
+                // fresh
+                !isSelected && isFresh(item) && 'fresh',
+
+                // selected
+                isSelected && 'bg-accent/30'
+              )}
             >
               {galleryItem(item)}
             </ArrowRow>

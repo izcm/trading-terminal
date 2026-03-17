@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useTokenURI } from '@/lib/blockchain'
 
 import { Hex } from '@/domain/shared/eth'
-import { mapTokenUriToNFT, NFT, parseTokenURI } from '@/domain/nft'
+import { mapTokenUriToNFT, NFT } from '@/domain/nft'
 
 import { NFTCard } from '@/ui/organisms/NFTCard'
 
@@ -38,7 +38,7 @@ export function NFTPreview({ chainId, address, tokenId }: Props) {
     }
 
     preview()
-  }, [tokenURI])
+  }, [address, chainId, enabled, tokenId, tokenURI])
 
   return <NFTCard nft={nft} />
 }

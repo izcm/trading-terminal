@@ -74,7 +74,7 @@ export function CreateOrderMenu({ chainId, collection, user, onConfirm }: Props)
           />
         </div>
 
-        <button disabled={!tokenId} onClick={() => setStage('terms')} className="btn btn-accent">
+        <button disabled={!tokenId} onClick={() => setStage('terms')} className="btn btn-primary">
           next
         </button>
       </div>
@@ -105,7 +105,7 @@ export function CreateOrderMenu({ chainId, collection, user, onConfirm }: Props)
         {/* <button type="submit" disabled={!valid} className="flex-1 btn btn-accent">
           create order
         </button> */}
-        <button type="submit" className="flex-1 btn btn-accent">
+        <button type="submit" className="flex-1 btn btn-primary">
           create order
         </button>
       </div>
