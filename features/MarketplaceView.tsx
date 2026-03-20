@@ -1,126 +1,54 @@
 'use client' // boundry is here!
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
-import { getDmrktListing } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
 import type { Page } from '@/lib/utils/http'
-
-import { Tab } from '@/ui/organisms/core/Tab'
-
-import type { Listing } from '@/domain/listing'
+import { TextInput } from '@/ui/atoms'
 
 // hooks
 import { useKeyboardShortcuts } from './hooks/keyboard-shortcuts.use'
 
-// trade
-import { useTradeValidation } from './trade/hooks/trade-validation.use'
-import { TxTracker } from './trade/ui/TxTracker'
-
 // features
-import { useFeedTxSync } from './browse/hooks/feed-tx-sync.use'
+import { TxTracker } from './trade/ui/TxTracker'
 import { CreateOrderBtn } from './orders/ui/CreateOrderBtn'
 
 // tab config
-import { makeTabUiConfig, pageGetters, type TabName, type TabResource } from './tab-config'
-import { useFresh } from './hooks/fresh.use'
+import { pageGetters, type TabName, type TabResource } from './tab-config'
+import { FeedTab, SalesTab } from './Tabs'
+import { useTabData } from './hooks/tab-data.use'
 
 type InitialState = {
   [K in TabName]: Page<TabResource[K]>
 }
 
-type TabPages = {
-  [K in TabName]: Page<TabResource[K]>
-}
-
 export function MarketplaceView(initial: InitialState) {
   // useEffect subs
-  useKeyboardShortcuts({ fn: () => setTab('feed'), s: () => setTab('sales') })
-  useFeedTxSync(updateFeed) // on tx success => remove listing from feed
-
-  // tracks fresh rows per tab (user created order / websocket published new sale)
-  const fresh = useFresh<TabName>()
+  useKeyboardShortcuts({
+    f: () => setTab('feed'),
+    s: () => setTab('sales'),
+  })
 
   // tab state
   const [tab, setTab] = useState<TabName>('feed')
-  const [state, setState] = useState<TabPages>(initial)
 
-  const currTabState = state[tab]
+  const feed = useTabData(pageGetters.feed, { status: 'active' })
+  const sales = useTabData(pageGetters.sales, { status: 'expired' })
 
-  function updateFeed(fn: (feed: Page<Listing>) => Page<Listing>) {
-    setState(prev => ({
-      ...prev,
-      feed: fn(prev.feed),
-    }))
-  }
-
-  useEffect(() => {
-    if (!currTabState.cursor) return
-
-    const fetchMore = async () => {
-      const res = await pageGetters[tab](10, currTabState.cursor)
-
-      if (res.ok) {
-        const { cursor: nextCursor, items: newItems } = res.data
-
-        // build set:        O(n)
-        // filter newItems:  O(m)
-        // total:            O(n + m)
-        setState(prev => {
-          // orderhash exists on both listing + settlement
-          const existing = new Set(prev[tab].items.map(i => i.orderHash))
-
-          return {
-            ...prev,
-            [tab]: {
-              items: [...prev[tab].items, ...newItems.filter(n => !existing.has(n.orderHash))],
-              cursor: nextCursor,
-            },
-          }
-        })
-      }
-    }
-
-    fetchMore()
-  }, [currTabState.cursor, tab])
-
-  const [selectedByTab, setSelectedByTab] = useState<{ [K in TabName]: TabResource[K] | null }>({
-    feed: initial.feed.items[0] ?? null,
-    sales: initial.sales.items[0] ?? null,
-  })
-
-  const selected = selectedByTab[tab]
-
-  const simulation = useTradeValidation(tab === 'feed' ? (selected as Listing).rawOrder : undefined)
-
-  const tabUiConfig = makeTabUiConfig({ isFillable: simulation.isFillable })
-  const ui = tabUiConfig[tab]
+  const data = tab === 'feed' ? feed : sales
 
   return (
     <div className="flex gap-4 h-screen max-w-4xl px-2 mx-auto overflow-hidden font-mono">
       {/* ---- main content ---- */}
       <main className="flex flex-col mt-4 items-center gap-4">
-        <div className="flex items-center justify-between w-full gap-2">
-          <div className="basis-1/4 flex">
+        <div className="flex items-center justify-between w-full gap-4">
+          <div>
             {/* todo: make nice way to pass chainid in case of later multichain */}
             {/* todo important: change this buggy [0] thing asap very important */}
-            <CreateOrderBtn
-              chainId={31337}
-              collection={state.feed.items[0].collection}
-              onOrderCreated={async id => {
-                const res = await getDmrktListing(id)
-                if (!res.ok) return
-                const listing = res.data
-
-                updateFeed(feed => ({
-                  ...feed, // cursor etc
-                  items: [listing, ...feed.items.filter(i => i.orderHash !== listing.orderHash)],
-                }))
-
-                fresh.add('feed', listing.id)
-              }}
-            />
+            {feed.items.length && (
+              <CreateOrderBtn chainId={31337} collection={feed.items[0].collection} />
+            )}
           </div>
-          <div>
+          <div className="flex gap-4">
             <button className="menuBtn">[ Swords ]</button>
 
             <button className="menuBtn">[ Elixirs ]</button>
@@ -129,13 +57,13 @@ export function MarketplaceView(initial: InitialState) {
 
             <button className="menuBtn">[ Eggs ]</button>
           </div>
-          <div className="basis-1/4 flex justify-end">
+          <div className="flex justify-end">
             <TxTracker />
           </div>
         </div>
 
         <div className="flex w-full border-b border-soft">
-          {(Object.keys(tabUiConfig) as TabName[]).map(title => (
+          {['feed', 'sales'].map(title => (
             <button
               key={title}
               onClick={() => setTab(title)}
@@ -153,21 +81,16 @@ export function MarketplaceView(initial: InitialState) {
           ))}
         </div>
 
-        <Tab
-          items={state[tab].items}
-          selected={selected ?? undefined}
-          onSelect={item =>
-            setSelectedByTab(prev => ({
-              ...prev,
-              [tab]: item,
-            }))
-          }
-          /* eslint-disable  @typescript-eslint/no-explicit-any */
-          galleryItem={item => ui['galleryItem'](item as any)}
-          galleryItemIsFresh={item => fresh.has(tab, item.id)}
-          mainActionBtn={item => ui.mainActionBtn(item as any)}
-          details={item => ui['details'](item as any)}
-        />
+        <div className="min-h-0 flex-col flex gap-4 justify-center">
+          <TextInput
+            key={tab}
+            defaultValue={Object.entries(feed.filters)
+              .map(([k, v]) => `${k}=${v}`)
+              .join('&')}
+          />
+          {tab === 'feed' && <FeedTab data={feed} />}
+          {tab === 'sales' && <SalesTab data={sales} />}
+        </div>
       </main>
     </div>
   )

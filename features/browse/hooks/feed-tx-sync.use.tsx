@@ -21,5 +21,5 @@ export function useFeedTxSync(updateFeed: (fn: (feed: Page<Listing>) => Page<Lis
       ...feed, // cursor etc.
       items: feed.items.filter(l => !filled.includes(l.id)), // if filled => filter out
     }))
-  }, [txs])
+  }, [txs, updateFeed])
 }

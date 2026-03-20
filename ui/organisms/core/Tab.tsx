@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { TextInput } from '../../atoms'
+
 import { Gallery } from './Gallery'
 import { NFTPreview } from '@/features/browse/ui/NFTPreview'
 import { Hex } from '@/domain/shared/eth'
@@ -9,7 +9,7 @@ type TabProps<T> = {
   selected: T | undefined
   onSelect: (item: T) => void
   galleryItem: (item: T) => ReactNode
-  galleryItemIsFresh: (item: T) => boolean
+  galleryItemIsFresh?: (item: T) => boolean
   mainActionBtn: (item: T) => ReactNode
   details?: (item: T) => ReactNode
 }
@@ -26,7 +26,7 @@ export function Tab<T extends { id: string; chainId: number; collection: Hex; to
   return (
     <div className="min-h-0 flex gap-4 justify-center">
       <div className="flex-1 flex flex-col gap-4">
-        <TextInput />
+        {/* <TextInput onChange={onSearch} /> */}
 
         <Gallery<T>
           items={items}
@@ -50,7 +50,7 @@ export function Tab<T extends { id: string; chainId: number; collection: Hex; to
         ) : (
           <button className="btn btn-secondary">view full receipt</button>
         )}
-        <div className="card bg-secondary h-full">{details && details(selected as any)}</div>
+        <div className="card bg-secondary h-full">{details && selected && details(selected)}</div>
       </div>
     </div>
   )

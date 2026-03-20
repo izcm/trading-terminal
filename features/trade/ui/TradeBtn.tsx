@@ -15,14 +15,13 @@ import { useAccount } from 'wagmi'
 
 type Props = {
   listing: Listing | null
-  disabled: boolean
 }
 
 /**
  *
  * @param disabled value allows parent to disable trade feature
  */
-export function TradeBtn({ listing, disabled }: Props) {
+export function TradeBtn({ listing }: Props) {
   const { address: user } = useAccount()
 
   // modal for selecting token to put into collection bid
@@ -51,9 +50,11 @@ export function TradeBtn({ listing, disabled }: Props) {
     )
   }
 
+  const isDisabled = !sim.isFillable && !listing.isCollectionBid
+
   return (
     <>
-      <button disabled={disabled} onClick={handlePrimaryAction} className="btn btn-primary">
+      <button disabled={isDisabled} onClick={handlePrimaryAction} className="btn btn-primary">
         {listing.isCollectionBid ? (
           <>
             <Layers size={16} /> select nft

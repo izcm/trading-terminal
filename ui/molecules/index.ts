@@ -2,14 +2,10 @@
 export * from './GalleryItem'
 
 // rows
-export * from './rows/NFTCollectionRow'
 export * from './rows/NFTRow'
-
-// nav
 export * from './rows/SidebarRow'
+export * from './rows/ActivityRow'
 
 // root
-export * from './Stat'
 export * from './ArrowList'
-export * from './rows/ActivityRow'
 export * from './DetailFields'

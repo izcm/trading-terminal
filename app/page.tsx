@@ -3,8 +3,8 @@ import { getDmrktListings, getDmrktSales } from '@/lib/dmrkt-indexer/actions/dmr
 import { MarketplaceView } from '@/features/MarketplaceView'
 
 export default async function Page() {
-  const listingCall = await getDmrktListings(25)
-  const salesCall = await getDmrktSales(25)
+  const listingCall = await getDmrktListings()
+  const salesCall = await getDmrktSales()
 
   const feed = listingCall.ok
     ? { items: listingCall.data.items, cursor: listingCall.data.cursor }
