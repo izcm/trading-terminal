@@ -1,8 +1,11 @@
-export type NFT = {
+import type { NFT } from '@/domain/nft'
+import type { Hex } from '@/domain/shared/eth'
+
+export type NFTDTO = {
   id: string
 
   chainId: number
-  collection: string
+  collection: Hex
   tokenId: string
 
   tokenUri?: string
@@ -14,10 +17,13 @@ export type NFT = {
     value: string
   }[]
 
-  metaStatus: string
-  metaError?: string
-
   createdAtBlock: number
-  updatedAt: number
-  createdAt: number
+}
+
+export function toNFT(dto: NFTDTO): NFT {
+  return {
+    ...dto,
+    tokenId: BigInt(dto.tokenId),
+    createdAtBlock: BigInt(dto.createdAtBlock),
+  }
 }

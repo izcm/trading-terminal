@@ -1,7 +1,6 @@
 import type { Order } from '@/protocol/eip712'
 
 import type { Hex } from '@/domain/shared/eth'
-import type { NFT } from '@/domain/nft'
 import type { Listing } from '@/domain/listing'
 
 import { toNFTCollection, type NFTCollectionDTO } from './nft-collection'
@@ -27,7 +26,6 @@ export type ListingDTO = {
   end: number // unix ms
 
   nftCollection?: NFTCollectionDTO | null
-  nft?: NFT | null
 
   // raw order for contract interaction
   rawOrder: Order

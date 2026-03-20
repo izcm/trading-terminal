@@ -50,7 +50,9 @@ export function Tab<T extends { id: string; chainId: number; collection: Hex; to
         ) : (
           <button className="btn btn-secondary">view full receipt</button>
         )}
-        <div className="card bg-secondary h-full">{details && selected && details(selected)}</div>
+        {/* <div className="card bg-secondary h-full">
+          {items.length && selected !== undefined && details(selected)}
+        </div> */}
       </div>
     </div>
   )

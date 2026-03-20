@@ -13,8 +13,8 @@ import { TxTracker } from './trade/ui/TxTracker'
 import { CreateOrderBtn } from './orders/ui/CreateOrderBtn'
 
 // tab config
-import { pageGetters, type TabName, type TabResource } from './tab-config'
-import { FeedTab, SalesTab } from './Tabs'
+import { pageGetters, tabUIConfig, type TabName, type TabResource } from './tab-config'
+import { Tabs } from './Tabs'
 import { useTabData } from './hooks/tab-data.use'
 
 type InitialState = {
@@ -33,13 +33,14 @@ export function MarketplaceView(initial: InitialState) {
 
   const feed = useTabData(pageGetters.feed, { status: 'active' })
   const sales = useTabData(pageGetters.sales, { status: 'expired' })
+  const explore = useTabData(pageGetters.explore, {})
 
   const data = tab === 'feed' ? feed : sales
 
   return (
     <div className="flex gap-4 h-screen max-w-4xl px-2 mx-auto overflow-hidden font-mono">
       {/* ---- main content ---- */}
-      <main className="flex flex-col mt-4 items-center gap-4">
+      <main className="flex-1 flex flex-col mt-4 gap-4">
         <div className="flex items-center justify-between w-full gap-4">
           <div>
             {/* todo: make nice way to pass chainid in case of later multichain */}
@@ -63,7 +64,7 @@ export function MarketplaceView(initial: InitialState) {
         </div>
 
         <div className="flex w-full border-b border-soft">
-          {['feed', 'sales'].map(title => (
+          {(Object.keys(tabUIConfig) as TabName[]).map(title => (
             <button
               key={title}
               onClick={() => setTab(title)}
@@ -88,8 +89,9 @@ export function MarketplaceView(initial: InitialState) {
               .map(([k, v]) => `${k}=${v}`)
               .join('&')}
           />
-          {tab === 'feed' && <FeedTab data={feed} />}
-          {tab === 'sales' && <SalesTab data={sales} />}
+          <Tabs feed={feed} sales={sales} activeTab={tab} explore={explore} />
+          {/* {tab === 'feed' && <FeedTab data={feed} />}
+          {tab === 'sales' && <SalesTab data={sales} />} */}
         </div>
       </main>
     </div>

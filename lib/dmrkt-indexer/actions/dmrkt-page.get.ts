@@ -2,9 +2,10 @@ import type { Page, Result } from '@/lib/utils/http'
 
 import type { Sale } from '@/domain/sale'
 import type { Listing } from '@/domain/listing'
+import type { NFT } from '@/domain/nft'
 
 import { toListing, type ListingDTO } from '../types/listing-dto'
-import { NFT } from '../types/nft'
+import { toNFT, type NFTDTO } from '../types/nft'
 
 export const baseUrl = process.env.NEXT_PUBLIC_INDEXER_ENDPOINT_URL
 
@@ -13,10 +14,22 @@ export async function getDmrktNFTs(
 ): Promise<Result<Page<NFT>>> {
   const query = new URLSearchParams(filters)
 
-  return getDmrktItems<NFT>({
+  const res = await getDmrktItems<NFTDTO>({
     params: 'nfts',
     query,
   })
+
+  if (!res.ok) return res
+  console.log('wtf')
+  console.log(res)
+
+  return {
+    ok: true,
+    data: {
+      items: res.data.items.map(toNFT),
+      cursor: res.data.cursor,
+    },
+  }
 }
 
 export async function getDmrktListings(

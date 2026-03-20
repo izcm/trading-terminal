@@ -15,7 +15,6 @@ export function useTabData<T extends { id: string }>(
       if (!res.ok) return
       setItems(res.data.items)
       setCursor(res.data.cursor)
-      console.log(res)
     })
   }, [filters, getPage])
 

@@ -11,7 +11,7 @@ import type { NFT } from '@/domain/nft'
 
 import { activity } from '@/domain/shared/activity'
 
-import { ActivityItem } from '@/ui/molecules'
+import { ActivityItem, NFTRow } from '@/ui/molecules'
 
 import { ListingDetails } from './browse/ui/ListingDetails'
 import { SaleDetails } from './browse/ui/SaleDetails'
@@ -20,8 +20,8 @@ import { ReactNode } from 'react'
 
 export type TabResource = {
   feed: Listing
+  explore: NFT
   sales: Sale
-  // explore: NFT
 }
 
 export type TabName = keyof TabResource
@@ -33,7 +33,7 @@ type PageGetters<K extends keyof TabResource> = (
 export const pageGetters: { [K in keyof TabResource]: PageGetters<K> } = {
   feed: getDmrktListings,
   sales: getDmrktSales,
-  // explore: getDmrktNFTs,
+  explore: getDmrktNFTs,
 }
 
 type TabUIConfig = {
@@ -47,17 +47,19 @@ type TabUIConfig = {
 export const tabUIConfig: TabUIConfig = {
   feed: {
     galleryItem: (item: Listing) => <ActivityItem activity={activity.fromListing(item)} />,
-
     details: (item: Listing) => <ListingDetails listing={item} />,
-
     mainActionBtn: (item: Listing) => <TradeBtn listing={item} />,
+  },
+
+  explore: {
+    galleryItem: (item: NFT) => <NFTRow nft={item} />,
+    details: () => <div>placeholder</div>,
+    mainActionBtn: () => <button className="btn btn-secondary">view full receipt</button>,
   },
 
   sales: {
     galleryItem: (item: Sale) => <ActivityItem activity={activity.fromSale(item)} />,
-
     details: (item: Sale) => <SaleDetails sale={item} />,
-
     mainActionBtn: () => <button className="btn btn-secondary">view full receipt</button>,
   },
 }
