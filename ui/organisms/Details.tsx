@@ -38,7 +38,7 @@ export function Details<T>({ item, title, detailsFields, timingFields }: Details
   }
 
   return (
-    <div className={`flex flex-col gap-6 p-4 text-sm`} tabIndex={-1}>
+    <div className={`h-full flex flex-col p-4 text-sm justify-between`} tabIndex={-1}>
       {title && (
         <div className="flex justify-between text-start">
           <div className="flex flex-col">
@@ -50,7 +50,9 @@ export function Details<T>({ item, title, detailsFields, timingFields }: Details
       )}
 
       {/* details */}
-      <DetailFields data={item} fields={detailsFields} />
+      <div className="flex flex-col gap-4">
+        <DetailFields data={item} fields={detailsFields} />
+      </div>
 
       {/* timing */}
       {timingFields && (

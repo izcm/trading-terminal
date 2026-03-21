@@ -2,7 +2,6 @@ import type { NFT } from '@/domain/nft'
 
 export function NFTRow({ nft }: { nft: NFT }) {
   const rarity = nft.attributes?.find(a => a.trait_type === 'rarity')?.value
-
   return (
     <div className="base-row gap-4 py-1 px-2">
       <div className="relative shrink-0">

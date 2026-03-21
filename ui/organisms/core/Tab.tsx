@@ -11,7 +11,7 @@ type TabProps<T> = {
   galleryItem: (item: T) => ReactNode
   galleryItemIsFresh?: (item: T) => boolean
   mainActionBtn: (item: T) => ReactNode
-  details?: (item: T) => ReactNode
+  details: (item: T) => ReactNode
 }
 
 export function Tab<T extends { id: string; chainId: number; collection: Hex; tokenId: bigint }>({
@@ -26,8 +26,6 @@ export function Tab<T extends { id: string; chainId: number; collection: Hex; to
   return (
     <div className="min-h-0 flex gap-4 justify-center">
       <div className="flex-1 flex flex-col gap-4">
-        {/* <TextInput onChange={onSearch} /> */}
-
         <Gallery<T>
           items={items}
           selected={selected}
@@ -50,9 +48,9 @@ export function Tab<T extends { id: string; chainId: number; collection: Hex; to
         ) : (
           <button className="btn btn-secondary">view full receipt</button>
         )}
-        {/* <div className="card bg-secondary h-full">
-          {items.length && selected !== undefined && details(selected)}
-        </div> */}
+        <div className="card bg-secondary h-full">
+          {selected !== undefined && details(selected)}
+        </div>
       </div>
     </div>
   )

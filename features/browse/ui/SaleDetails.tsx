@@ -18,10 +18,10 @@ const DETAIL_FIELDS: DetailField<Sale>[] = [
     label: 'seller',
     getValue: s => addrShort(s.seller),
   },
-  {
-    label: 'tx hash',
-    getValue: s => truncateHex(s.txHash),
-  },
+  // {
+  //   label: 'tx hash',
+  //   getValue: s => truncateHex(s.txHash),
+  // },
   {
     label: 'block number',
     getValue: s => s.blockNumber,

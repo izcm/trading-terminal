@@ -1,5 +1,7 @@
 import { Result } from '@/lib/utils/http'
 import { Listing } from '@/domain/listing'
+import { Sale } from '@/domain/sale'
+import { NFT } from '@/domain/nft'
 
 export const baseUrl = process.env.NEXT_PUBLIC_INDEXER_ENDPOINT_URL
 
@@ -7,7 +9,21 @@ export function getDmrktListing(id: string): Promise<Result<Listing>> {
   return getDmrktItem({ params: 'orders', id })
 }
 
-async function getDmrktItem<T>({ params, id }: { params: string; id: string }): Promise<Result<T>> {
+export function getDmrktSale(id: string): Promise<Result<Sale>> {
+  return getDmrktItem({ params: 'settlements', id })
+}
+
+export function getDmrktNFT(id: string): Promise<Result<NFT>> {
+  return getDmrktItem({ params: 'nfts', id })
+}
+
+export async function getDmrktItem<T>({
+  params,
+  id,
+}: {
+  params: string
+  id: string
+}): Promise<Result<T>> {
   const url = `${baseUrl}/api/${params}/${id}`
 
   try {

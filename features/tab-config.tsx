@@ -1,22 +1,25 @@
+import { ReactNode } from 'react'
+
 import type { Page, Result } from '@/lib/utils/http'
 import {
   getDmrktListings,
   getDmrktSales,
   getDmrktNFTs,
 } from '@/lib/dmrkt-indexer/actions/dmrkt-page.get'
+import { getDmrktListing, getDmrktNFT, getDmrktSale } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
 
 import type { Listing } from '@/domain/listing'
 import type { Sale } from '@/domain/sale'
 import type { NFT } from '@/domain/nft'
-
 import { activity } from '@/domain/shared/activity'
 
+// shared components
 import { ActivityItem, NFTRow } from '@/ui/molecules'
 
+// feature components
 import { ListingDetails } from './browse/ui/ListingDetails'
 import { SaleDetails } from './browse/ui/SaleDetails'
 import { TradeBtn } from './trade/ui/TradeBtn'
-import { ReactNode } from 'react'
 
 export type TabResource = {
   feed: Listing
@@ -36,10 +39,18 @@ export const pageGetters: { [K in keyof TabResource]: PageGetters<K> } = {
   explore: getDmrktNFTs,
 }
 
+export const itemGetters: {
+  [K in keyof TabResource]: (id: string) => Promise<Result<TabResource[K]>>
+} = {
+  feed: getDmrktListing,
+  sales: getDmrktSale,
+  explore: getDmrktNFT,
+}
+
 type TabUIConfig = {
   [K in TabName]: {
     galleryItem: (item: TabResource[K]) => ReactNode
-    details?: (item: TabResource[K]) => ReactNode
+    details: (item: TabResource[K]) => ReactNode
     mainActionBtn: (item: TabResource[K]) => ReactNode
   }
 }

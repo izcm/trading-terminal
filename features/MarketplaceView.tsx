@@ -1,8 +1,11 @@
 'use client' // boundry is here!
 
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
+import { connectWs } from '@/lib/realtime/ws'
 import type { Page } from '@/lib/utils/http'
+
+// shared components
 import { TextInput } from '@/ui/atoms'
 
 // hooks
@@ -13,50 +16,119 @@ import { TxTracker } from './trade/ui/TxTracker'
 import { CreateOrderBtn } from './orders/ui/CreateOrderBtn'
 
 // tab config
-import { pageGetters, tabUIConfig, type TabName, type TabResource } from './tab-config'
+import { pageGetters, TabResource, tabUIConfig, type TabName } from './tab-config'
 import { Tabs } from './Tabs'
-import { useTabData } from './hooks/tab-data.use'
+import { useTabMutations } from './hooks/tab-mutations.use'
+import { useWsFeed, useWsSales } from './hooks/ws-sub.use'
+import { useFresh } from './hooks/fresh.use'
 
 type InitialState = {
   [K in TabName]: Page<TabResource[K]>
 }
 
+type TabPages = {
+  [K in TabName]: Page<TabResource[K]>
+}
+
 export function MarketplaceView(initial: InitialState) {
-  // useEffect subs
   useKeyboardShortcuts({
     f: () => setTab('feed'),
     s: () => setTab('sales'),
+    e: () => setTab('explore'),
   })
 
-  // tab state
+  // --- state ---
   const [tab, setTab] = useState<TabName>('feed')
+  const [state, setState] = useState<TabPages>(initial)
+  const { add: addFresh } = useFresh<TabName>()
 
-  const feed = useTabData(pageGetters.feed, { status: 'active' })
-  const sales = useTabData(pageGetters.sales, { status: 'expired' })
-  const explore = useTabData(pageGetters.explore, {})
+  const curr = state[tab]
 
-  const data = tab === 'feed' ? feed : sales
+  const [filters, setFilters] = useState<Record<TabName, Record<string, string>>>({
+    feed: { status: 'active' },
+    sales: { status: 'expired' },
+    explore: {},
+  })
+
+  // --- mutations ---
+  const { mergePage, replacePage, addItem } = useTabMutations(setState)
+
+  const addItemAndMarkFresh = useCallback(
+    <K extends TabName>(tab: K, item: TabResource[K]) => {
+      addItem(tab, item)
+      addFresh(tab, item.id)
+    },
+    [addItem, addFresh]
+  )
+
+  // --- ws connect + subs ---
+  useEffect(() => {
+    connectWs()
+  }, [])
+
+  useWsFeed(addItemAndMarkFresh)
+  useWsSales(addItemAndMarkFresh)
+
+  // --- pagination ---
+  useEffect(() => {
+    if (!curr.cursor) return
+
+    // merging pages because page fetching adds to page
+    const run = async () => {
+      const res = await pageGetters[tab](filters[tab])
+      if (!res.ok) return
+
+      mergePage(tab, res.data.items, res.data.cursor)
+    }
+
+    run()
+  }, [filters, tab, curr.cursor, mergePage])
+
+  // --- filter change ---
+  useEffect(() => {
+    const run = async () => {
+      const res = await pageGetters[tab](filters[tab])
+      if (!res.ok) return
+
+      replacePage(tab, res.data)
+    }
+
+    run()
+  }, [tab, filters, replacePage])
+
+  const handleSearch = async (value: string) => {
+    const params = new URLSearchParams(value)
+    const next: Record<string, string> = {}
+
+    for (const [key, value] of params.entries()) {
+      next[key] = value
+    }
+
+    setFilters(prev => ({
+      ...prev,
+      [tab]: next,
+    }))
+  }
 
   return (
     <div className="flex gap-4 h-screen max-w-4xl px-2 mx-auto overflow-hidden font-mono">
       {/* ---- main content ---- */}
       <main className="flex-1 flex flex-col mt-4 gap-4">
-        <div className="flex items-center justify-between w-full gap-4">
+        <div className="flex items-center justify-between gap-4">
           <div>
             {/* todo: make nice way to pass chainid in case of later multichain */}
             {/* todo important: change this buggy [0] thing asap very important */}
-            {feed.items.length && (
-              <CreateOrderBtn chainId={31337} collection={feed.items[0].collection} />
-            )}
+            <CreateOrderBtn
+              chainId={31337}
+              collection={'0x1fF9801346D12158FD95bC6Ef2084B7Fe707b53f'}
+            />
           </div>
-          <div className="flex gap-4">
+          <div className="flex gap-4 justify-center">
             <button className="menuBtn">[ Swords ]</button>
 
             <button className="menuBtn">[ Elixirs ]</button>
 
             <button className="menuBtn">[ Shields ]</button>
-
-            <button className="menuBtn">[ Eggs ]</button>
           </div>
           <div className="flex justify-end">
             <TxTracker />
@@ -85,13 +157,17 @@ export function MarketplaceView(initial: InitialState) {
         <div className="min-h-0 flex-col flex gap-4 justify-center">
           <TextInput
             key={tab}
-            defaultValue={Object.entries(feed.filters)
+            defaultValue={Object.entries(filters[tab])
               .map(([k, v]) => `${k}=${v}`)
               .join('&')}
+            onSubmit={handleSearch}
           />
-          <Tabs feed={feed} sales={sales} activeTab={tab} explore={explore} />
-          {/* {tab === 'feed' && <FeedTab data={feed} />}
-          {tab === 'sales' && <SalesTab data={sales} />} */}
+          <Tabs
+            feed={state.feed.items}
+            sales={state.sales.items}
+            activeTab={tab}
+            explore={state.explore.items}
+          />
         </div>
       </main>
     </div>

@@ -21,11 +21,6 @@ const DETAIL_FIELDS: DetailField<Listing>[] = [
   },
 ]
 
-const TITLE_FIELD: DetailField<Listing> = {
-  label: 'collection',
-  getValue: l => (l.nftCollection ? l.nftCollection.name : l.collection),
-}
-
 const TIMING_FIELDS: DetailField<Listing>[] = [
   { label: 'starts', getValue: l => tsShort(l.start) },
   { label: 'expires', getValue: l => tsShort(l.end) },
@@ -34,7 +29,7 @@ const TIMING_FIELDS: DetailField<Listing>[] = [
 export const ListingDetails = ({ listing }: { listing: Listing }) => (
   <Details<Listing>
     item={listing}
-    title={{ field: TITLE_FIELD, badge: { type: listing.type } }}
+    // title={{ field: TITLE_FIELD, badge: { type: listing.type } }}
     detailsFields={DETAIL_FIELDS}
     timingFields={TIMING_FIELDS}
   />

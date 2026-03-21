@@ -1,32 +1,46 @@
 import { useEffect, useState } from 'react'
 
 import { Tab } from '@/ui/organisms/core/Tab'
-
-import { useTabData } from './hooks/tab-data.use'
-import { TabName, TabResource, tabUIConfig } from './tab-config'
+import { tabUIConfig, type TabName, type TabResource } from './tab-config'
 
 type Props = {
-  [K in TabName]: ReturnType<typeof useTabData<TabResource[K]>>
+  [K in TabName]: TabResource[K][]
 } & { activeTab: TabName }
 
 export function Tabs(data: Props) {
-  const ui = tabUIConfig[data.activeTab]
-  return <TabContainer ui={ui} data={data[data.activeTab]} />
-}
+  const tab = data.activeTab
+  const ui = tabUIConfig[tab]
 
+  const [selectedByTab, setSelectedByTab] = useState<Partial<{ [K in TabName]: TabResource[K] }>>(
+    {}
+  )
+
+  return (
+    <TabContainer
+      ui={ui}
+      items={data[tab]}
+      selected={selectedByTab[tab]}
+      setSelected={item => setSelectedByTab(prev => ({ ...prev, [tab]: item }))}
+    />
+  )
+}
 export function TabContainer<K extends TabName>({
   ui,
-  data,
+  items,
+  selected,
+  setSelected,
 }: {
   ui: (typeof tabUIConfig)[K]
-  data: ReturnType<typeof useTabData<TabResource[K]>>
+  items: TabResource[K][]
+  selected: TabResource[K] | undefined
+  setSelected: (item: TabResource[K]) => void
 }) {
-  const { items, setFilters, loadMore } = data
-  const [selected, setSelected] = useState<TabResource[K] | undefined>()
-
+  // set default ONLY if none selected yet
   useEffect(() => {
-    setSelected(items[0])
-  }, [items])
+    if (!selected && items.length > 0) {
+      setSelected(items[0])
+    }
+  }, [items, selected, setSelected])
 
   return (
     <Tab

@@ -20,8 +20,6 @@ export async function getDmrktNFTs(
   })
 
   if (!res.ok) return res
-  console.log('wtf')
-  console.log(res)
 
   return {
     ok: true,
