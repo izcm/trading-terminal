@@ -24,6 +24,7 @@ export function Tabs(data: Props) {
     />
   )
 }
+
 export function TabContainer<K extends TabName>({
   ui,
   items,
@@ -37,10 +38,15 @@ export function TabContainer<K extends TabName>({
 }) {
   // set default ONLY if none selected yet
   useEffect(() => {
-    if (!selected && items.length > 0) {
+    if (items.length === 0) return
+
+    const exists = selected && items.some(i => i.id === selected.id)
+
+    if (!exists) {
       setSelected(items[0])
     }
-  }, [items, selected, setSelected])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [items, selected])
 
   return (
     <Tab

@@ -9,6 +9,31 @@ import { mapTokenUriToNFT, type NFT } from '@/domain/nft'
 
 const CHAIN_ID = 31337 // todo: multichain
 
+export async function readOwned(collection: Address, user: Address): Promise<string[]> {
+  const client = getPublicClient(wagmiConfig, { chainId: CHAIN_ID })
+
+  const ids: string[] = []
+
+  for (let tokenId = 0; tokenId < 1000; tokenId++) {
+    const bigTokenId = BigInt(tokenId)
+
+    try {
+      const ownerOf = await client.readContract({
+        abi: erc721Abi,
+        address: collection,
+        functionName: 'ownerOf',
+        args: [bigTokenId],
+      })
+
+      if (ownerOf.toLowerCase() === user.toLowerCase()) ids.push(tokenId.toString())
+    } catch {
+      continue
+    }
+  }
+
+  return ids
+}
+
 export async function readNFT(address: Address, tokenId: bigint): Promise<Result<NFT>> {
   const client = getPublicClient(wagmiConfig, { chainId: CHAIN_ID })
 

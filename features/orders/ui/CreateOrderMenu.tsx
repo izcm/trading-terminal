@@ -1,7 +1,6 @@
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { OrderCore } from '@/protocol/eip712'
-
 import { Hex } from '@/domain/shared/eth'
 
 import { OwnedNFTPicker } from '@/features/OwnedNFTPicker'
@@ -11,7 +10,7 @@ type Props = {
   chainId: number
   collection: Hex
   user: Hex
-  onConfirm: (order: OrderCore) => void
+  onConfirm: (order: OrderCore) => Promise<void>
 }
 
 export function CreateOrderMenu({ chainId, collection, user, onConfirm }: Props) {
@@ -25,8 +24,8 @@ export function CreateOrderMenu({ chainId, collection, user, onConfirm }: Props)
   const formRef = useRef<HTMLFormElement>(null)
 
   // autofocus first element on stage change
-  useLayoutEffect(() => {
-    if (stage === 'pick') return //  focus on first list element (see arrowrow.tsx)
+  useEffect(() => {
+    if (stage === 'pick') return
     const form = formRef.current
     if (!form) return
 
@@ -37,27 +36,23 @@ export function CreateOrderMenu({ chainId, collection, user, onConfirm }: Props)
     first?.focus()
   }, [stage])
 
-  // const valid = tokenId !== undefined && Number(price) > 0 && Number(end) > Number(start)
-
   const valid = tokenId !== undefined
 
   function submit(e: React.FormEvent) {
     e.preventDefault()
-    if (valid) {
-      const order: OrderCore = {
-        side: 0, // ask
-        isCollectionBid: false,
-        actor: user, // no eip1271 per today
-        collection,
-        tokenId,
-        price: '1',
-        currency: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
-        start: 0,
-        end: 1776371736,
-        nonce: Date.now().toString(), // todo... check valid just for heck of it
-      }
+    if (!valid) return
 
-      onConfirm(order)
+    const order: OrderCore = {
+      side: 0,
+      isCollectionBid: false,
+      actor: user,
+      collection,
+      tokenId,
+      price: '1',
+      currency: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+      start: 0,
+      end: 1776371736,
+      nonce: Date.now().toString(),
     }
   }
 
@@ -86,27 +81,24 @@ export function CreateOrderMenu({ chainId, collection, user, onConfirm }: Props)
 
       <div>
         <div className="text-text-muted">Price (ETH)</div>
-        <TextInput placeholder="0.15" value={price} onChange={setPrice} />
+        <TextInput placeholder="0.15" defaultValue={price} onSubmit={setPrice} />
       </div>
 
       <div className="flex gap-2 flex-col sm:flex-row">
-        <TextInput placeholder="start timestamp" value={start} onChange={setStart} />
-
-        <TextInput placeholder="end timestamp" value={end} onChange={setEnd} />
+        <TextInput placeholder="start timestamp" defaultValue={start} onSubmit={setStart} />
+        <TextInput placeholder="end timestamp" defaultValue={end} onSubmit={setEnd} />
       </div>
 
       {!valid && <div className="text-red-400">invalid order</div>}
+      {state?.error && <div className="text-red-400">{state.error}</div>}
 
       <div className="flex gap-2">
         <button type="button" onClick={() => setStage('pick')} className="flex-1 btn btn-ghost">
           back
         </button>
 
-        {/* <button type="submit" disabled={!valid} className="flex-1 btn btn-accent">
-          create order
-        </button> */}
-        <button type="submit" className="flex-1 btn btn-primary">
-          create order
+        <button type="submit" disabled={pending || !valid} className="flex-1 btn btn-primary">
+          {pending ? 'creating...' : 'create order'}
         </button>
       </div>
     </form>

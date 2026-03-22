@@ -10,6 +10,9 @@ import { TextInput } from '@/ui/atoms'
 
 // hooks
 import { useKeyboardShortcuts } from './hooks/keyboard-shortcuts.use'
+import { useTabMutations } from './hooks/tab-mutations.use'
+import { useWsFeed, useWsSales } from './hooks/ws-sub.use'
+import { useFresh } from './hooks/fresh.use'
 
 // features
 import { TxTracker } from './trade/ui/TxTracker'
@@ -18,9 +21,6 @@ import { CreateOrderBtn } from './orders/ui/CreateOrderBtn'
 // tab config
 import { pageGetters, TabResource, tabUIConfig, type TabName } from './tab-config'
 import { Tabs } from './Tabs'
-import { useTabMutations } from './hooks/tab-mutations.use'
-import { useWsFeed, useWsSales } from './hooks/ws-sub.use'
-import { useFresh } from './hooks/fresh.use'
 
 type InitialState = {
   [K in TabName]: Page<TabResource[K]>
@@ -96,7 +96,7 @@ export function MarketplaceView(initial: InitialState) {
     run()
   }, [tab, filters, replacePage])
 
-  const handleSearch = async (value: string) => {
+  function handleSearch(value: string) {
     const params = new URLSearchParams(value)
     const next: Record<string, string> = {}
 
@@ -120,10 +120,10 @@ export function MarketplaceView(initial: InitialState) {
             {/* todo important: change this buggy [0] thing asap very important */}
             <CreateOrderBtn
               chainId={31337}
-              collection={'0x1fF9801346D12158FD95bC6Ef2084B7Fe707b53f'}
+              collection={'0x1Db6f0B4E780c7eccD9736090627e824E4abe83D'}
             />
           </div>
-          <div className="flex gap-4 justify-center">
+          <div className="flex gap-4 justify-center text-accent">
             <button className="menuBtn">[ Swords ]</button>
 
             <button className="menuBtn">[ Elixirs ]</button>
@@ -165,8 +165,8 @@ export function MarketplaceView(initial: InitialState) {
           <Tabs
             feed={state.feed.items}
             sales={state.sales.items}
-            activeTab={tab}
             explore={state.explore.items}
+            activeTab={tab}
           />
         </div>
       </main>

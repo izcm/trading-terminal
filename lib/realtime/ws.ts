@@ -20,14 +20,11 @@ export function connectWs() {
 
 // register handlers
 export function on(event: string, fn: Handler) {
-  console.log('REGISTER', event)
-
   if (!handlers[event]) handlers[event] = new Set()
 
   handlers[event].add(fn)
 
   return () => {
-    console.log('UNREGISTER', event)
     handlers[event].delete(fn)
   }
 }
