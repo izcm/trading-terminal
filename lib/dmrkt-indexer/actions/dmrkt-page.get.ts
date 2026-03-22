@@ -9,10 +9,24 @@ import { toNFT, type NFTDTO } from '../types/nft'
 
 export const baseUrl = process.env.NEXT_PUBLIC_INDEXER_ENDPOINT_URL
 
+function toSearchParams(filters: Record<string, string[]>) {
+  const params = new URLSearchParams()
+
+  const traits = filters.trait ?? []
+  const values = filters.value ?? []
+
+  for (let i = 0; i < Math.max(traits.length, values.length); i++) {
+    if (traits[i]) params.append('trait', traits[i])
+    if (values[i]) params.append('value', values[i])
+  }
+
+  return params
+}
+
 export async function getDmrktNFTs(
-  filters: Record<string, string> = {}
+  filters: Record<string, string[]> = {}
 ): Promise<Result<Page<NFT>>> {
-  const query = new URLSearchParams(filters)
+  const query = toSearchParams(filters)
 
   const res = await getDmrktItems<NFTDTO>({
     params: 'nfts',
@@ -31,9 +45,9 @@ export async function getDmrktNFTs(
 }
 
 export async function getDmrktListings(
-  filters: Record<string, string> = {}
+  filters: Record<string, string[]> = {}
 ): Promise<Result<Page<Listing>>> {
-  const query = new URLSearchParams(filters)
+  const query = toSearchParams(filters)
 
   query.append('include', 'nftCollection')
 
@@ -53,8 +67,8 @@ export async function getDmrktListings(
   }
 }
 
-export function getDmrktSales(filters: Record<string, string> = {}) {
-  const query = new URLSearchParams(filters)
+export function getDmrktSales(filters: Record<string, string[]> = {}) {
+  const query = toSearchParams(filters)
 
   query.append('include', 'nftCollection')
   query.append('include', 'order')

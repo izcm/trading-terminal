@@ -30,7 +30,7 @@ export type TabResource = {
 export type TabName = keyof TabResource
 
 type PageGetters<K extends keyof TabResource> = (
-  filters: Record<string, string>
+  filters: Record<string, string[]>
 ) => Promise<Result<Page<TabResource[K]>>>
 
 export const pageGetters: { [K in keyof TabResource]: PageGetters<K> } = {

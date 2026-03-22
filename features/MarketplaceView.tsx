@@ -44,9 +44,9 @@ export function MarketplaceView(initial: InitialState) {
 
   const curr = state[tab]
 
-  const [filters, setFilters] = useState<Record<TabName, Record<string, string>>>({
-    feed: { status: 'active' },
-    sales: { status: 'expired' },
+  const [filters, setFilters] = useState<Record<TabName, Record<string, string[]>>>({
+    feed: { status: ['active'] },
+    sales: { status: ['expired'] },
     explore: {},
   })
 
@@ -98,10 +98,12 @@ export function MarketplaceView(initial: InitialState) {
 
   function handleSearch(value: string) {
     const params = new URLSearchParams(value)
-    const next: Record<string, string> = {}
+
+    const next: Record<string, string[]> = {}
 
     for (const [key, value] of params.entries()) {
-      next[key] = value
+      if (!next[key]) next[key] = []
+      next[key].push(value)
     }
 
     setFilters(prev => ({
