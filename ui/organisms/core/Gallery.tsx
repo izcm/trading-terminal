@@ -24,7 +24,7 @@ export function Gallery<T extends { id: string }>({
   const galleryClasses =
     galleryView === 'list'
       ? {
-          arrowList: 'flex flex-col gap-4 p-1',
+          arrowList: 'flex flex-col gap-4',
           arrowRow: 'border border-soft rounded-xl transition',
         }
       : {
@@ -42,7 +42,7 @@ export function Gallery<T extends { id: string }>({
           getId={c => c.id}
           selectedId={selected?.id}
           onSelect={onSelect}
-          className={`${galleryClasses.arrowList} min-h-0 flex-1 px-2`}
+          className={`${galleryClasses.arrowList} min-h-0 flex-1 p-1`}
         >
           {({ item, isSelected, onSelect }) => (
             <ArrowRow

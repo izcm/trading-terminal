@@ -97,13 +97,13 @@ export function MarketplaceView(initial: InitialState) {
   }, [tab, filters, replacePage])
 
   function handleSearch(value: string) {
-    const params = new URLSearchParams(value)
-
+    const rawParams = new URLSearchParams(value)
     const next: Record<string, string[]> = {}
 
-    for (const [key, value] of params.entries()) {
-      if (!next[key]) next[key] = []
-      next[key].push(value)
+    for (const [key, raw] of rawParams) {
+      const values = raw.split(',')
+      const unique = [...new Set(values)]
+      next[key] = unique
     }
 
     setFilters(prev => ({

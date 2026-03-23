@@ -6,26 +6,14 @@ import type { NFT } from '@/domain/nft'
 
 import { toListing, type ListingDTO } from '../types/listing-dto'
 import { toNFT, type NFTDTO } from '../types/nft'
+import { toSearchParams } from './logic/param-mapper'
 
 export const baseUrl = process.env.NEXT_PUBLIC_INDEXER_ENDPOINT_URL
-
-function toSearchParams(filters: Record<string, string[]>) {
-  const params = new URLSearchParams()
-
-  const traits = filters.trait ?? []
-  const values = filters.value ?? []
-
-  for (let i = 0; i < Math.max(traits.length, values.length); i++) {
-    if (traits[i]) params.append('trait', traits[i])
-    if (values[i]) params.append('value', values[i])
-  }
-
-  return params
-}
 
 export async function getDmrktNFTs(
   filters: Record<string, string[]> = {}
 ): Promise<Result<Page<NFT>>> {
+  console.log(filters)
   const query = toSearchParams(filters)
 
   const res = await getDmrktItems<NFTDTO>({
