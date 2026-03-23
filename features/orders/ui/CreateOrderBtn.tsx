@@ -6,7 +6,7 @@ import { OrderCore, toOrder712, eip712Types, dmrktDomain } from '@/protocol/eip7
 import { Hex } from '@/domain/shared/eth'
 import { Modal } from '@/ui/atoms'
 
-import { CreateOrderMenu, OrderInput } from './CreateOrderMenu'
+import { CreateAskFlow, OrderInput } from './CreateAskFlow'
 import { postDmrktOrder } from '@/lib/dmrkt-indexer/actions/dmrkt.post'
 import { NFT } from '@/domain/nft'
 import { getDmrktNFTs } from '@/lib/dmrkt-indexer/actions/dmrkt-page.get'
@@ -130,11 +130,7 @@ export function CreateOrderBtn({ chainId, collection, onOrderCreated }: Props) {
       {/* MODAL */}
 
       <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
-        <CreateOrderMenu
-          nftSelection={nfts}
-          user={user}
-          onConfirm={input => createAndAskForSignature(input)}
-        />
+        <CreateAskFlow nftSelection={nfts} onConfirm={input => createAndAskForSignature(input)} />
       </Modal>
     </div>
   )

@@ -48,10 +48,10 @@
 
 /* selected */
 .btn-rounded[data-active='true'] {
-  border-color: var(--accent);
-  color: var(--accent);
+  border-color: var(--accent-weak);
+  color: var(--accent-weak);
 
-  background: color-mix(in oklab, var(--accent) 6%, transparent);
+  background: color-mix(in oklab, var(--accent) 5%, transparent);
 }
 
 .btn:focus-visible {

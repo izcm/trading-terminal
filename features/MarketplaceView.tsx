@@ -116,8 +116,8 @@ export function MarketplaceView(initial: InitialState) {
     <div className="flex gap-4 h-screen max-w-4xl px-2 mx-auto overflow-hidden font-mono">
       {/* ---- main content ---- */}
       <main className="flex-1 flex flex-col mt-4 gap-4">
-        <div className="flex items-center justify-between gap-4">
-          <div>
+        <div className="flex items-center">
+          <div className="basis-1/4 flex justify-start">
             {/* todo: make nice way to pass chainid in case of later multichain */}
             {/* todo important: change this buggy [0] thing asap very important */}
             <CreateOrderBtn
@@ -125,14 +125,14 @@ export function MarketplaceView(initial: InitialState) {
               collection={'0x1Db6f0B4E780c7eccD9736090627e824E4abe83D'}
             />
           </div>
-          <div className="flex gap-4 justify-center text-accent">
+          <div className="basis-1/2 flex justify-center gap-4 text-accent">
             <button className="menuBtn">[ Swords ]</button>
 
             <button className="menuBtn">[ Elixirs ]</button>
 
             <button className="menuBtn">[ Shields ]</button>
           </div>
-          <div className="flex justify-end">
+          <div className="w-1/4 flex justify-end">
             <TxTracker />
           </div>
         </div>
