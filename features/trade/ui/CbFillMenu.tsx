@@ -5,7 +5,7 @@ import { useState } from 'react'
 import type { Hex } from '@/domain/shared/eth'
 import type { NFT } from '@/domain/nft'
 
-import { NFTPicker } from '@/features/inventory/ui/NFTPicker'
+import { NFTPicker } from '@/ui/organisms/NFTPicker'
 
 type Props = {
   chainId: number

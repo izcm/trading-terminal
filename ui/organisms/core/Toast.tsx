@@ -16,18 +16,18 @@ export function toast(toast: Omit<ToastProps, 'id'>) {
 
 export function Toast({ title, description }: ToastProps) {
   return (
-    <div className="flex items-start gap-3 w-full md:max-w-[360px] rounded-xl border border-border bg-surface p-4 shadow-[var(--panel-shadow)]">
+    <div className="flex items-start gap-3 w-full md:max-w-[360px] rounded-xl border border bg-surface p-4 shadow-[var(--panel-shadow)]">
       {/* accent bar */}
       <div className="mt-1 h-2 w-2 rounded-full bg-accent" />
 
       <div className="flex-1">
-        <p className="text-sm font-semibold text-text">{title}</p>
-        <p className="mt-1 text-xs text-text-muted">{description}</p>
+        <p className="text-sm font-semibold text-accent-weak ">{title}</p>
+        <p className="mt-1 text-xs text-muted">{description}</p>
       </div>
 
       {/* dismiss */}
       <button
-        className="text-xs text-text-muted hover:text-accent transition-colors"
+        className="text-xs text-muted hover:text-accent transition-colors"
         onClick={() => sonnerToast.dismiss()}
       >
         ✕

@@ -87,7 +87,7 @@ export function MarketplaceView(initial: InitialState) {
   // --- filter change ---
   useEffect(() => {
     const run = async () => {
-      const res = await pageGetters[tab](filters[tab])
+      const res = await pageGetters[tab]({ filters: filters[tab], cursor: null })
       if (!res.ok) return
 
       replacePage(tab, res.data)

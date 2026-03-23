@@ -1,5 +1,5 @@
 import type { Sale } from '@/domain/sale'
-import { addrShort, truncateHex } from '@/domain/shared/utils/fmt/hex'
+import { addrShort } from '@/domain/shared/utils/fmt/hex'
 import { tsShort } from '@/domain/shared/utils/time'
 
 import { Details } from '@/ui/organisms/Details'

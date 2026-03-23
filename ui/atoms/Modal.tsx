@@ -26,14 +26,16 @@ export function Modal({ isOpen, onClose, children }: ModalProps) {
     }
   }, [onClose, isOpen])
 
-  useEffect(() => {
-    if (!isOpen) return
-    lastFocusedRef.current = document.activeElement as HTMLElement | null
-  }, [isOpen])
+  // useEffect(() => {
+  //   if (!isOpen) return
+  //   lastFocusedRef.current = document.activeElement as HTMLElement | null
+  // }, [isOpen])
 
   // focus on first elegible item in modal
   useEffect(() => {
     if (!isOpen) return
+
+    lastFocusedRef.current = document.activeElement as HTMLElement | null
 
     const el = containerRef.current
     if (!el) return

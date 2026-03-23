@@ -6,11 +6,11 @@ import { OrderCore, toOrder712, eip712Types, dmrktDomain } from '@/protocol/eip7
 import { Hex } from '@/domain/shared/eth'
 import { Modal } from '@/ui/atoms'
 
-import { CreateOrderMenu } from './CreateOrderMenu'
+import { CreateOrderMenu, OrderInput } from './CreateOrderMenu'
 import { postDmrktOrder } from '@/lib/dmrkt-indexer/actions/dmrkt.post'
 import { NFT } from '@/domain/nft'
 import { getDmrktNFTs } from '@/lib/dmrkt-indexer/actions/dmrkt-page.get'
-import { useOwnedTokenIds } from '@/features/inventory/hooks/owned-tokenids.use'
+import { useOwnedTokenIds } from '@/features/hooks/owned-tokenids.use'
 
 // asks:
 // - show owned tokens in list
@@ -72,7 +72,6 @@ export function CreateOrderBtn({ chainId, collection, onOrderCreated }: Props) {
   const { address: user } = useAccount()
 
   const { ids, refetch } = useOwnedTokenIds(collection, user)
-  console.log(ids)
 
   const filters = useMemo(() => ({ tokenIds: ids }), [ids])
   const { items: nfts, fetchFirstPage } = useNFTPage(filters)
@@ -88,7 +87,19 @@ export function CreateOrderBtn({ chainId, collection, onOrderCreated }: Props) {
 
   if (!user) return <button disabled className="btn btn-accent h-[27px]"></button>
 
-  async function askForSignature(order: OrderCore) {
+  async function createAndAskForSignature(input: OrderInput) {
+    if (!user) return
+
+    const order: OrderCore = {
+      side: 0,
+      isCollectionBid: false,
+      actor: user,
+      collection,
+      currency: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+      nonce: Date.now().toString(),
+      ...input,
+    }
+
     const order712 = toOrder712(order)
 
     const sig = await signTypedDataAsync({
@@ -119,7 +130,11 @@ export function CreateOrderBtn({ chainId, collection, onOrderCreated }: Props) {
       {/* MODAL */}
 
       <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
-        <CreateOrderMenu ownedNFTs={nfts} user={user} onConfirm={order => askForSignature(order)} />
+        <CreateOrderMenu
+          nftSelection={nfts}
+          user={user}
+          onConfirm={input => createAndAskForSignature(input)}
+        />
       </Modal>
     </div>
   )

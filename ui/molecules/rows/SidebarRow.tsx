@@ -14,7 +14,7 @@ export function SidebarRow({ active = false, children }: NavItemProps) {
         ${
           active
             ? 'border-accent bg-secondary'
-            : 'text-muted border-transparent hover:text-text hover:bg-secondary/70'
+            : 'text-muted border-transparent hover: hover:bg-secondary/70'
         }
       `}
     >

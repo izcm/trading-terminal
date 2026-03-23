@@ -125,7 +125,6 @@ export async function getTokensByOwner(
       items.push(mapTokenUriToNFT(CHAIN_ID, collection, bigTokenId, tokenURI))
     } catch {
       // token not minted / any parsing error; keep scanning next tokenId
-      // console.log(err)
       continue
     }
   }

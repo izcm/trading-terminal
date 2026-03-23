@@ -20,7 +20,7 @@
   font-weight: 500;
   letter-spacing: 0.01em;
   border-radius: 0.7rem;
-  border: 1px solid transparent;
+  border: 1px solid;
 
   transition:
     transform 120ms ease,
@@ -28,6 +28,30 @@
     background 180ms ease,
     color 180ms ease,
     box-shadow 180ms ease;
+}
+
+.btn-rounded {
+  border-radius: 1.2rem;
+  border: 1px solid transparent;
+
+  background: transparent;
+  color: var(--color-text-muted);
+
+  transition: all 120ms ease;
+}
+
+/* hover (subtle hint) */
+.btn-rounded:hover {
+  border-color: var(--border-default);
+  color: var(--color-text);
+}
+
+/* selected */
+.btn-rounded[data-active='true'] {
+  border-color: var(--accent);
+  color: var(--accent);
+
+  background: color-mix(in oklab, var(--accent) 6%, transparent);
 }
 
 .btn:focus-visible {

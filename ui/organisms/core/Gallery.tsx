@@ -25,7 +25,7 @@ export function Gallery<T extends { id: string }>({
     galleryView === 'list'
       ? {
           arrowList: 'flex flex-col gap-4',
-          arrowRow: 'border border-soft rounded-xl transition',
+          arrowRow: 'border border-default/65 rounded-xl transition',
         }
       : {
           arrowList:

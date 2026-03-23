@@ -17,8 +17,8 @@ import { activity } from '@/domain/shared/activity'
 import { ActivityItem, NFTRow } from '@/ui/molecules'
 
 // feature components
-import { ListingDetails } from './browse/ui/ListingDetails'
-import { SaleDetails } from './browse/ui/SaleDetails'
+import { ListingDetails } from './marketplace/ListingDetails'
+import { SaleDetails } from './marketplace/SaleDetails'
 import { TradeBtn } from './trade/ui/TradeBtn'
 
 export type TabResource = {
@@ -29,9 +29,10 @@ export type TabResource = {
 
 export type TabName = keyof TabResource
 
-type PageGetters<K extends keyof TabResource> = (
-  filters: Record<string, string[]>
-) => Promise<Result<Page<TabResource[K]>>>
+type PageGetters<K extends keyof TabResource> = (args: {
+  filters?: Record<string, string[]>
+  cursor?: string | null
+}) => Promise<Result<Page<TabResource[K]>>>
 
 export const pageGetters: { [K in keyof TabResource]: PageGetters<K> } = {
   feed: getDmrktListings,

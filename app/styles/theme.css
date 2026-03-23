@@ -8,11 +8,10 @@
   --color-ask: var(--accent-ask);
   --color-bid: var(--accent-bid);
 
-  --color-text: var(--text-primary);
-  --color-text-muted: var(--text-muted);
+  --color-muted: var(--text-muted);
 
-  --color-border: var(--border-default);
-  --color-border-soft: var(--border-soft);
+  --color-default: var(--border-default);
+  --color-soft: var(--border-soft);
 
   --color-accent: var(--accent);
   --color-accent-weak: var(--accent-weak);
