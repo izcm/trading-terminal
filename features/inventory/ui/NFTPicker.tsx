@@ -9,38 +9,17 @@ import { ArrowList, NFTRow } from '@/ui/molecules'
 import { ArrowRow } from '@/ui/atoms'
 
 type Props = {
-  chainId: number
-  collection: Hex
-  user: Hex
+  nfts: NFT[]
   selectedId?: string
   onSelect: (nft: NFT) => void
 }
 
-export function OwnedNFTPicker({
-  chainId,
-  collection,
-  user,
-  onSelect,
-  selectedId: selectedTokenId,
-}: Props) {
-  // todo: user context with nfts?
-  const [nfts, setNfts] = useState<NFT[]>([])
-
-  useEffect(() => {
-    if (!user) return
-    const readTokens = async () => {
-      const res = await getTokensByOwner(user, collection)
-
-      if (res.ok) setNfts(res.data)
-    }
-    readTokens()
-  }, [user, collection, chainId])
-
-  useEffect(() => {
-    if (!selectedTokenId && nfts.length > 0) {
-      onSelect(nfts[0])
-    }
-  }, [nfts, selectedTokenId, onSelect])
+export function NFTPicker({ nfts, onSelect, selectedId: selectedTokenId }: Props) {
+  // useEffect(() => {
+  //   if (!selectedTokenId && nfts.length > 0) {
+  //     onSelect(nfts[0])
+  //   }
+  // }, [nfts, selectedTokenId, onSelect])
 
   return (
     <div className="flex h-full min-h-0 gap-4 overflow-hidden">

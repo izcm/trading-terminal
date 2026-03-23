@@ -5,7 +5,7 @@ import { useState } from 'react'
 import type { Hex } from '@/domain/shared/eth'
 import type { NFT } from '@/domain/nft'
 
-import { OwnedNFTPicker } from '@/features/inventory/ui/OwnedNFTPicker'
+import { NFTPicker } from '@/features/inventory/ui/NFTPicker'
 
 type Props = {
   chainId: number
@@ -40,7 +40,7 @@ export function CbFillMenu({
 
   return (
     <div className="flex flex-col gap-4 max-h-[500px]">
-      <OwnedNFTPicker
+      <NFTPicker
         chainId={chainId}
         collection={collection}
         user={user}

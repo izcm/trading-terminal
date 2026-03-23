@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useAccount, useSignTypedData } from 'wagmi'
 
 import { OrderCore, toOrder712, eip712Types, dmrktDomain } from '@/protocol/eip712'
@@ -8,9 +8,9 @@ import { Modal } from '@/ui/atoms'
 
 import { CreateOrderMenu } from './CreateOrderMenu'
 import { postDmrktOrder } from '@/lib/dmrkt-indexer/actions/dmrkt.post'
-import { useOwnedNFTs } from '@/features/hooks/owned-tokenids.use'
 import { NFT } from '@/domain/nft'
 import { getDmrktNFTs } from '@/lib/dmrkt-indexer/actions/dmrkt-page.get'
+import { useOwnedTokenIds } from '@/features/inventory/hooks/owned-tokenids.use'
 
 // asks:
 // - show owned tokens in list
@@ -33,22 +33,54 @@ type Props = {
 function useNFTPage(filters: Record<string, string[]>) {
   const [items, setItems] = useState<NFT[]>([])
   const [cursor, setCursor] = useState<string | null>(null)
+  const [initialLoading, setInitialLoading] = useState<boolean>(false)
 
-  const fetchPage = useCallback(async () => {
+  // --- first page (reset + load)
+  const fetchFirstPage = useCallback(async () => {
+    setInitialLoading(true)
+
+    const res = await getDmrktNFTs({ ...filters, cursor: null })
+    if (res.ok) {
+      setItems(res.data.items)
+      setCursor(res.data.cursor ?? null)
+    }
+
+    setInitialLoading(false)
+  }, [filters])
+
+  // --- next page (append)
+  const fetchNextPage = useCallback(async () => {
+    if (!cursor) return
+
     const res = await getDmrktNFTs({ ...filters, cursor })
-
-    if (!res.ok) return
-
-    setItems(prev => [...prev, ...res.data.items])
-    setCursor(res.data.cursor)
+    if (res.ok) {
+      setItems(prev => [...prev, ...res.data.items])
+      setCursor(res.data.cursor ?? null)
+    }
   }, [filters, cursor])
 
-  return { items, fetchPage, cursor }
+  return {
+    items,
+    cursor,
+    initialLoading,
+    fetchFirstPage,
+    fetchNextPage,
+  }
 }
 
 export function CreateOrderBtn({ chainId, collection, onOrderCreated }: Props) {
   const { address: user } = useAccount()
-  // const { nfts, refetch } = useNFTPage(collection, user)
+
+  const { ids, refetch } = useOwnedTokenIds(collection, user)
+  console.log(ids)
+
+  const filters = useMemo(() => ({ tokenIds: ids }), [ids])
+  const { items: nfts, fetchFirstPage } = useNFTPage(filters)
+
+  useEffect(() => {
+    if (!ids || ids.length === 0) return
+    fetchFirstPage()
+  }, [ids, fetchFirstPage])
 
   const { signTypedDataAsync } = useSignTypedData()
 
@@ -87,12 +119,7 @@ export function CreateOrderBtn({ chainId, collection, onOrderCreated }: Props) {
       {/* MODAL */}
 
       <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
-        <CreateOrderMenu
-          chainId={chainId}
-          collection={collection}
-          user={user}
-          onConfirm={order => askForSignature(order)}
-        />
+        <CreateOrderMenu ownedNFTs={nfts} user={user} onConfirm={order => askForSignature(order)} />
       </Modal>
     </div>
   )
