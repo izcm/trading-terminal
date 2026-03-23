@@ -5,7 +5,7 @@ import type { Listing } from '@/domain/listing'
 
 import { toNFTCollection, type NFTCollectionDTO } from './nft-collection'
 
-export type ListingDTO = {
+export type OrderDTO = {
   id: string
 
   chainId: number
@@ -33,7 +33,7 @@ export type ListingDTO = {
   status: string
 }
 
-export function toListing(dto: ListingDTO): Listing {
+export function toListing(dto: OrderDTO): Listing {
   return {
     ...dto,
     nftCollection: dto.nftCollection ? toNFTCollection(dto.nftCollection) : dto.nftCollection,

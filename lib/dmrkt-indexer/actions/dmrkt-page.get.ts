@@ -4,69 +4,92 @@ import type { Sale } from '@/domain/sale'
 import type { Listing } from '@/domain/listing'
 import type { NFT } from '@/domain/nft'
 
-import { toListing, type ListingDTO } from '../types/listing-dto'
+import { toListing, type OrderDTO } from '../types/order'
 import { toNFT, type NFTDTO } from '../types/nft'
 import { toSearchParams } from './logic/param-mapper'
+import { SettlementDTO, toSale } from '../types/settlement'
 
 export const baseUrl = process.env.NEXT_PUBLIC_INDEXER_ENDPOINT_URL
 
-export async function getDmrktNFTs(
-  filters: Record<string, string[]> = {}
-): Promise<Result<Page<NFT>>> {
-  console.log(filters)
+function buildQuery({
+  filters,
+  cursor,
+  includes = [],
+}: {
+  filters: Record<string, string[]>
+  cursor?: string | null
+  includes?: string[]
+}) {
   const query = toSearchParams(filters)
 
-  const res = await getDmrktItems<NFTDTO>({
-    params: 'nfts',
-    query,
-  })
+  if (cursor) query.append('cursor', cursor)
 
+  includes.forEach(inc => query.append('include', inc))
+
+  return query
+}
+
+function mapResult<TDTO, T>(res: Result<Page<TDTO>>, toDomain: (dto: TDTO) => T): Result<Page<T>> {
   if (!res.ok) return res
 
   return {
     ok: true,
     data: {
-      items: res.data.items.map(toNFT),
+      items: res.data.items.map(toDomain),
       cursor: res.data.cursor,
     },
   }
 }
 
-export async function getDmrktListings(
-  filters: Record<string, string[]> = {}
-): Promise<Result<Page<Listing>>> {
-  const query = toSearchParams(filters)
+// --- NFTs ---
+export async function getDmrktNFTs({
+  filters = {},
+  cursor,
+}: {
+  filters?: Record<string, string[]>
+  cursor?: string | null
+} = {}): Promise<Result<Page<NFT>>> {
+  const res = await getDmrktItems<NFTDTO>({
+    params: 'nfts',
+    query: buildQuery({ filters, cursor }),
+  })
 
-  query.append('include', 'nftCollection')
+  return mapResult(res, toNFT)
+}
 
-  const res = await getDmrktItems<ListingDTO>({
+// --- Listings ---
+export async function getDmrktListings({
+  filters = {},
+  cursor,
+}: {
+  filters?: Record<string, string[]>
+  cursor?: string | null
+} = {}): Promise<Result<Page<Listing>>> {
+  const query = buildQuery({ filters, cursor, includes: ['nftCollection'] })
+  const res = await getDmrktItems<OrderDTO>({
     params: 'orders',
     query,
   })
-
-  if (!res.ok) return res
-
-  return {
-    ok: true,
-    data: {
-      items: res.data.items.map(toListing),
-      cursor: res.data.cursor,
-    },
-  }
+  return mapResult(res, toListing)
 }
 
-export function getDmrktSales(filters: Record<string, string[]> = {}) {
-  const query = toSearchParams(filters)
-
-  query.append('include', 'nftCollection')
-  query.append('include', 'order')
-
-  return getDmrktItems<Sale>({
+// --- Sales ---
+export async function getDmrktSales({
+  filters = {},
+  cursor,
+}: {
+  filters?: Record<string, string[]>
+  cursor?: string | null
+} = {}) {
+  const query = buildQuery({ filters, cursor, includes: ['nftCollection', 'order'] })
+  const res = await getDmrktItems<SettlementDTO>({
     params: 'settlements',
     query,
   })
+  return mapResult(res, toSale)
 }
 
+// --- Core fetch ---
 export async function getDmrktItems<T>({
   params,
   query,

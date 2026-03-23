@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useAccount, useSignTypedData } from 'wagmi'
 
 import { OrderCore, toOrder712, eip712Types, dmrktDomain } from '@/protocol/eip712'
@@ -8,6 +8,9 @@ import { Modal } from '@/ui/atoms'
 
 import { CreateOrderMenu } from './CreateOrderMenu'
 import { postDmrktOrder } from '@/lib/dmrkt-indexer/actions/dmrkt.post'
+import { useOwnedNFTs } from '@/features/hooks/owned-tokenids.use'
+import { NFT } from '@/domain/nft'
+import { getDmrktNFTs } from '@/lib/dmrkt-indexer/actions/dmrkt-page.get'
 
 // asks:
 // - show owned tokens in list
@@ -27,8 +30,26 @@ type Props = {
   onOrderCreated?: (id: string) => void
 }
 
+function useNFTPage(filters: Record<string, string[]>) {
+  const [items, setItems] = useState<NFT[]>([])
+  const [cursor, setCursor] = useState<string | null>(null)
+
+  const fetchPage = useCallback(async () => {
+    const res = await getDmrktNFTs({ ...filters, cursor })
+
+    if (!res.ok) return
+
+    setItems(prev => [...prev, ...res.data.items])
+    setCursor(res.data.cursor)
+  }, [filters, cursor])
+
+  return { items, fetchPage, cursor }
+}
+
 export function CreateOrderBtn({ chainId, collection, onOrderCreated }: Props) {
   const { address: user } = useAccount()
+  // const { nfts, refetch } = useNFTPage(collection, user)
+
   const { signTypedDataAsync } = useSignTypedData()
 
   const [showModal, setShowModal] = useState<boolean>(false)

@@ -11,11 +11,11 @@ import { TextInput } from '@/ui/atoms'
 // hooks
 import { useKeyboardShortcuts } from './hooks/keyboard-shortcuts.use'
 import { useTabMutations } from './hooks/tab-mutations.use'
-import { useWsFeed, useWsSales } from './hooks/ws-sub.use'
+import { useWsFeed, useWsSales } from './realtime/hooks/ws-sub.use'
 import { useFresh } from './hooks/fresh.use'
 
 // features
-import { TxTracker } from './trade/ui/TxTracker'
+import { TxTracker } from './realtime/ui/TxTracker'
 import { CreateOrderBtn } from './orders/ui/CreateOrderBtn'
 
 // tab config

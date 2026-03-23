@@ -2,7 +2,7 @@
 import { useEffect } from 'react'
 import { on } from '@/lib/realtime/ws'
 import { getDmrktListing, getDmrktSale } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
-import type { TabResource } from '../tab-config'
+import type { TabResource } from '../../tab-config'
 
 export function useWsFeed(
   addItem: <K extends keyof TabResource>(tab: K, item: TabResource[K]) => void

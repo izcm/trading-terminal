@@ -1,11 +1,14 @@
 import type { Hex } from '@/domain/shared/eth'
 import type { Sale } from '@/domain/sale'
 
-export type SettlementDoc = {
-  _id: string
+import { type NFTCollectionDTO, toNFTCollection } from './nft-collection'
+import { type OrderDTO, toListing } from './order'
 
+export type SettlementDTO = {
+  id: string
   chainId: number
   orderHash: Hex
+  txHash: Hex
 
   collection: Hex
   tokenId: string
@@ -16,51 +19,59 @@ export type SettlementDoc = {
   currency: Hex
   price: string
 
-  execution: {
-    logIndex: number
-    txHash: Hex
+  blockNumber: number
+  timestamp: number
 
-    block: {
-      number: number
-      timestamp: number
-    }
+  logIndex: number
 
-    txContext?: {
-      index: number
-      gasUsed: string
-      effectiveGasPrice: string
-      functionSelector: Hex
-      functionName: string
-      contractAddress: Hex
+  callReconstructed: boolean
+  txInputs?: {
+    order?: {
+      signer: Hex
+      collection: Hex
+      tokenId: string
+      currency: Hex
+      price: string
+      start: string
+      end: string
+      nonce: string
     }
+    fill?: {
+      tokenId: string
+      actor: Hex
+    }
+    gasUsed?: string
+    gasPrice?: string
   }
 
-  metaStatus: 'PENDING' | 'DONE' | 'FAILED'
-  orderAttributes?: {
-    type: 'ASK' | 'BID' | 'COLLECTION_BID'
-    signer: Hex
-  }
+  nftCollection?: NFTCollectionDTO | null
+  order?: OrderDTO | null
 }
 
-export const settlementDocToSale = (s: SettlementDoc): Sale => {
+export function toSale(dto: SettlementDTO): Sale {
   return {
-    id: `${s.chainId}:${s.orderHash}`,
-    chainId: s.chainId,
-    orderHash: s.orderHash,
-    txHash: s.execution.txHash,
+    id: dto.id,
+    chainId: dto.chainId,
 
-    collection: s.collection,
-    tokenId: s.tokenId,
+    orderHash: dto.orderHash,
+    txHash: dto.txHash,
 
-    seller: s.seller,
-    buyer: s.buyer,
+    collection: dto.collection,
+    tokenId: BigInt(dto.tokenId),
 
-    currency: s.currency,
-    price: s.price,
+    seller: dto.seller,
+    buyer: dto.buyer,
 
-    blockNumber: s.execution.block.number,
-    blockTimestamp: s.execution.block.timestamp * 1000,
+    currency: dto.currency,
+    price: BigInt(dto.price),
 
-    logIndex: s.execution.logIndex,
+    blockNumber: dto.blockNumber,
+    timestamp: dto.timestamp,
+
+    logIndex: dto.logIndex,
+
+    nftCollection: dto.nftCollection ? toNFTCollection(dto.nftCollection) : null,
+
+    order: dto.order ? toListing(dto.order) : null,
   }
 }

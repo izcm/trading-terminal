@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { OrderCore } from '@/protocol/eip712'
 import { Hex } from '@/domain/shared/eth'
 
-import { OwnedNFTPicker } from '@/features/OwnedNFTPicker'
+import { OwnedNFTPicker } from '@/features/inventory/ui/OwnedNFTPicker'
 import { TextInput } from '@/ui/atoms'
 
 type Props = {
