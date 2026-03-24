@@ -12,6 +12,7 @@ import { TextInput } from '@/ui/atoms'
 import { useKeyboardShortcuts } from './hooks/use-keyboard-shortcuts'
 import { useTabMutations } from './hooks/use-tab-mutations'
 import { useWsFeed, useWsSales } from './realtime/hooks/use-ws-sub'
+import { useSearchFilters } from './browse/hooks/use-search-filters'
 import { useFresh } from './browse/hooks/use-fresh'
 
 // features
@@ -41,13 +42,10 @@ export function MarketplaceView(initial: InitialState) {
   const [state, setState] = useState<TabPages>(initial)
   const { add: addFresh } = useFresh<TabName>()
 
-  const curr = state[tab]
+  // --- search filters + 'mine' flag ---
+  const { filters, mine, handleSearch } = useSearchFilters(tab)
 
-  const [filters, setFilters] = useState<Record<TabName, Record<string, string[]>>>({
-    feed: { status: ['active'] },
-    sales: { status: ['expired'] },
-    explore: {},
-  })
+  const curr = state[tab]
 
   // --- mutations ---
   const { mergePage, replacePage, addItem } = useTabMutations(setState)
@@ -94,22 +92,6 @@ export function MarketplaceView(initial: InitialState) {
 
     run()
   }, [tab, filters, replacePage])
-
-  function handleSearch(value: string) {
-    const rawParams = new URLSearchParams(value)
-    const next: Record<string, string[]> = {}
-
-    for (const [key, raw] of rawParams) {
-      const values = raw.split(',')
-      const unique = [...new Set(values)]
-      next[key] = unique
-    }
-
-    setFilters(prev => ({
-      ...prev,
-      [tab]: next,
-    }))
-  }
 
   return (
     <div className="flex gap-4 h-screen max-w-4xl px-2 mx-auto overflow-hidden font-mono">
