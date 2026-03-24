@@ -3,7 +3,7 @@ import { ContractFunctionExecutionError, ContractFunctionRevertedError } from 'v
 import { ORDERBOOK_ERROR_MESSAGES as ERRORS } from '@/protocol/errors'
 import { Order } from '@/protocol/eip712'
 
-import { useTradeSimulation } from './trade-simulation.use'
+import { useTradeSimulation } from './use-trade-simulation'
 
 export function useTradeValidation(order?: Order, tokenIdCb?: bigint) {
   const sim = useTradeSimulation(order, tokenIdCb)

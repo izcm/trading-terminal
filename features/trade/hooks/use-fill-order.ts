@@ -4,7 +4,7 @@ import { useTx } from '@/app/providers/TxProvider'
 
 import type { Order } from '@/protocol/eip712'
 
-import { useTradeSimulation } from './trade-simulation.use'
+import { useTradeSimulation } from './use-trade-simulation'
 
 const safeStringify = (obj: unknown) =>
   JSON.stringify(obj, (_, value) => (typeof value === 'bigint' ? value.toString() : value), 2)

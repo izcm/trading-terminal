@@ -80,7 +80,7 @@
   color: color-mix(in oklab, var(--text-primary) 92%, white 8%);
   font-weight: 600;
 
-  border-color: color-mix(in oklab, var(--accent) 40%, var(--border-default));
+  border-color: color-mix(in oklab, var(--accent) 40%, var(--border-default) 40%);
 
   background: linear-gradient(
     160deg,

@@ -10,10 +10,11 @@ export type FormInput = {
 
 type Props = {
   tokenId: string
-  onSumbit: (formInput: FormInput) => void
+  onSubmit: (formInput: FormInput) => void
+  back?: () => void
 }
 
-export function OrderForm({ tokenId, onSumbit }: Props) {
+export function OrderForm({ tokenId, onSubmit, back }: Props) {
   const [price, setPrice] = useState('')
   const [start, setStart] = useState('')
   const [end, setEnd] = useState('')
@@ -46,7 +47,7 @@ export function OrderForm({ tokenId, onSumbit }: Props) {
     e.preventDefault()
     if (!valid) return
 
-    onSumbit({
+    onSubmit({
       price,
       start: Number(start),
       end: Number(end),
@@ -86,15 +87,12 @@ export function OrderForm({ tokenId, onSumbit }: Props) {
         </div>
       </div>
 
-      {/* <div className="flex gap-2 flex-col sm:flex-row">
-        <TextInput placeholder="start timestamp" value={start} onChange={setStart} />
-        <TextInput placeholder="end timestamp" value={end} onChange={setEnd} />
-      </div> */}
-
       <div className="flex gap-2">
-        {/* <button type="button" onClick={() => setStage('pick')} className="flex-1 btn btn-ghost">
-          back
-        </button> */}
+        {back && (
+          <button type="button" onClick={back} className="flex-1 btn btn-ghost">
+            back
+          </button>
+        )}
 
         <button type="submit" disabled={!valid} className="flex-1 btn btn-primary">
           create order

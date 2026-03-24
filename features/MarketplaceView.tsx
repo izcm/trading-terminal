@@ -9,14 +9,13 @@ import type { Page } from '@/lib/utils/http'
 import { TextInput } from '@/ui/atoms'
 
 // hooks
-import { useKeyboardShortcuts } from './hooks/keyboard-shortcuts.use'
-import { useTabMutations } from './hooks/tab-mutations.use'
-import { useWsFeed, useWsSales } from './realtime/hooks/ws-sub.use'
-import { useFresh } from './hooks/fresh.use'
+import { useKeyboardShortcuts } from './hooks/use-keyboard-shortcuts'
+import { useTabMutations } from './hooks/use-tab-mutations'
+import { useWsFeed, useWsSales } from './realtime/hooks/use-ws-sub'
+import { useFresh } from './browse/hooks/use-fresh'
 
 // features
 import { TxTracker } from './realtime/ui/TxTracker'
-import { CreateOrderBtn } from './orders/ui/CreateOrderBtn'
 
 // tab config
 import { pageGetters, TabResource, tabUIConfig, type TabName } from './tab-config'
@@ -73,7 +72,7 @@ export function MarketplaceView(initial: InitialState) {
   useEffect(() => {
     if (!curr.cursor) return
 
-    // merging pages because page fetching adds to page
+    // merging pages
     const run = async () => {
       const res = await pageGetters[tab](filters[tab])
       if (!res.ok) return
@@ -118,12 +117,10 @@ export function MarketplaceView(initial: InitialState) {
       <main className="flex-1 flex flex-col mt-4 gap-4">
         <div className="flex items-center">
           <div className="basis-1/4 flex justify-start">
-            {/* todo: make nice way to pass chainid in case of later multichain */}
-            {/* todo important: change this buggy [0] thing asap very important */}
-            <CreateOrderBtn
+            {/* <CreateAskBtn
               chainId={31337}
               collection={'0x1Db6f0B4E780c7eccD9736090627e824E4abe83D'}
-            />
+            /> */}
           </div>
           <div className="basis-1/2 flex justify-center gap-4 text-accent">
             <button className="menuBtn">[ Swords ]</button>

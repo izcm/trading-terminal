@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import { Gallery } from './Gallery'
-import { NFTPreview } from '@/features/marketplace/NFTPreview'
+import { NFTPreview } from '@/features/browse/ui/NFTPreview'
 import { Hex } from '@/domain/shared/eth'
 
 type TabProps<T> = {

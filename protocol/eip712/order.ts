@@ -4,13 +4,18 @@ export function orderType(order: Order) {
   return order.side === 0 ? 'ask' : 'bid'
 }
 
+export enum OrderSide {
+  ASK = 0,
+  BID = 1,
+}
+
 export type Fill = {
   actor: Hex
   tokenId: bigint
 }
 
 export type OrderCore = {
-  side: number
+  side: OrderSide
   actor: Hex
   isCollectionBid: boolean
   collection: Hex

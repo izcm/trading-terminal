@@ -7,8 +7,8 @@ import type { Listing } from '@/domain/listing'
 
 import { Modal } from '@/ui/atoms'
 
-import { useTradeValidation } from '../hooks/trade-validation.use'
-import { useFillOrder } from '../hooks/fill-order.use'
+import { useTradeValidation } from '../hooks/use-trade-validation'
+import { useFillOrder } from '../hooks/use-fill-order'
 
 import { CbFillMenu } from './CbFillMenu'
 import { useAccount } from 'wagmi'

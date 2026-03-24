@@ -6,18 +6,18 @@ import { NFTPicker } from '@/ui/organisms/NFTPicker'
 import { FormInput, OrderForm } from './OrderForm'
 
 type Props = {
-  nftSelection: NFT[] // if ask => ownedNFTs : (if isBid) => nfts per X (eg. collection)
-  onConfirm: (orderInput: OrderInput) => Promise<void>
+  nftSelection: NFT[]
+  onConfirm: (orderInput: OrderInput) => void
 }
 
 export type OrderInput = FormInput & {
   tokenId: string
 }
 
-export function CreateAskFlow({ nftSelection, onConfirm }: Props) {
+export function AskFlow({ nftSelection, onConfirm }: Props) {
   const [stage, setStage] = useState<'pick' | 'terms'>('pick')
 
-  const [tokenId, setTokenId] = useState<string>(nftSelection[0].tokenId.toString())
+  const [tokenId, setTokenId] = useState<string>(nftSelection[0]?.tokenId.toString())
 
   function wrapAsk(input: FormInput) {
     onConfirm({
@@ -43,5 +43,5 @@ export function CreateAskFlow({ nftSelection, onConfirm }: Props) {
       </div>
     )
 
-  return <OrderForm tokenId={tokenId} onSumbit={wrapAsk} />
+  return <OrderForm tokenId={tokenId} onSubmit={wrapAsk} back={() => setStage('pick')} />
 }

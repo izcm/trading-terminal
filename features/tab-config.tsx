@@ -17,9 +17,10 @@ import { activity } from '@/domain/shared/activity'
 import { ActivityItem, NFTRow } from '@/ui/molecules'
 
 // feature components
-import { ListingDetails } from './marketplace/ListingDetails'
-import { SaleDetails } from './marketplace/SaleDetails'
+import { ListingDetails } from './browse/ui/ListingDetails'
+import { SaleDetails } from './browse/ui/SaleDetails'
 import { TradeBtn } from './trade/ui/TradeBtn'
+import { CreateOrderBtn } from './orders/ui/CreateBidBtn'
 
 export type TabResource = {
   feed: Listing
@@ -58,20 +59,26 @@ type TabUIConfig = {
 
 export const tabUIConfig: TabUIConfig = {
   feed: {
-    galleryItem: (item: Listing) => <ActivityItem activity={activity.fromListing(item)} />,
-    details: (item: Listing) => <ListingDetails listing={item} />,
-    mainActionBtn: (item: Listing) => <TradeBtn listing={item} />,
+    galleryItem: (l: Listing) => <ActivityItem activity={activity.fromListing(l)} />,
+    details: (l: Listing) => <ListingDetails listing={l} />,
+    mainActionBtn: (l: Listing) => <TradeBtn listing={l} />,
   },
 
   explore: {
-    galleryItem: (item: NFT) => <NFTRow nft={item} />,
+    galleryItem: (n: NFT) => <NFTRow nft={n} />,
     details: () => <div>placeholder</div>,
-    mainActionBtn: () => <button className="btn btn-secondary">view full receipt</button>,
+    mainActionBtn: (n: NFT) => (
+      <CreateOrderBtn
+        chainId={n.chainId}
+        collection={n.collection}
+        tokenId={n.tokenId.toString()}
+      />
+    ),
   },
 
   sales: {
-    galleryItem: (item: Sale) => <ActivityItem activity={activity.fromSale(item)} />,
-    details: (item: Sale) => <SaleDetails sale={item} />,
+    galleryItem: (s: Sale) => <ActivityItem activity={activity.fromSale(s)} />,
+    details: (s: Sale) => <SaleDetails sale={s} />,
     mainActionBtn: () => <button className="btn btn-secondary">view full receipt</button>,
   },
 }
