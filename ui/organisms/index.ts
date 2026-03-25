@@ -1,5 +1,5 @@
 // root
-export * from '../../features/browse/ui/NFTPreview'
+export * from '../../features/marketplace/ui/NFTPreview'
 export * from './NFTCollectionsList'
 
 // core

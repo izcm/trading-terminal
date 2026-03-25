@@ -5,7 +5,11 @@ import { TabName, TabResource } from '@/features/tab-config'
 import { useOwnedTokenIds } from './use-owned-tokenids'
 
 // rules per tab for marking a domain item as "mine"
-export function useMine<K extends TabName>(tab: TabName, user: Hex | undefined, collection: Hex) {
+export function useMine<K extends TabName>(
+  tab: TabName,
+  user: Hex | undefined,
+  collection: Hex | undefined
+) {
   const { ids } = useOwnedTokenIds(collection, user)
 
   // normalize tokenIds for query building
@@ -44,7 +48,7 @@ export function useMine<K extends TabName>(tab: TabName, user: Hex | undefined, 
         case 'sales':
           return {
             ...filters,
-            participant: [user], // or buyer/seller depending on API
+            seller: [user], // or buyer/seller depending on API
           }
 
         case 'explore':

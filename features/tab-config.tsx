@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 
+import { OrderSide } from '@/protocol/eip712'
 import type { Page, Result } from '@/lib/utils/http'
 import {
   getDmrktListings,
@@ -17,10 +18,10 @@ import { activity } from '@/domain/shared/activity'
 import { ActivityItem, NFTRow } from '@/ui/molecules'
 
 // feature components
-import { ListingDetails } from './browse/ui/ListingDetails'
-import { SaleDetails } from './browse/ui/SaleDetails'
+import { ListingDetails } from './marketplace/ui/ListingDetails'
+import { SaleDetails } from './marketplace/ui/SaleDetails'
 import { TradeBtn } from './trade/ui/TradeBtn'
-import { CreateOrderBtn } from './orders/ui/CreateBidBtn'
+import { CreateOrderBtn } from './orders/ui/CreateOrderBtn'
 
 export type TabResource = {
   feed: Listing
@@ -49,11 +50,15 @@ export const itemGetters: {
   explore: getDmrktNFT,
 }
 
+export type TabCtx<K extends TabName> = {
+  isMine: (item: TabResource[K]) => boolean
+}
+
 type TabUIConfig = {
   [K in TabName]: {
     galleryItem: (item: TabResource[K]) => ReactNode
-    details: (item: TabResource[K]) => ReactNode
-    mainActionBtn: (item: TabResource[K], ctx?: { ownedTokenIds?: bigint[] }) => ReactNode
+    details?: (item: TabResource[K]) => ReactNode
+    mainActionBtn: (item: TabResource[K], ctx?: TabCtx<K>) => ReactNode
   }
 }
 
@@ -68,9 +73,23 @@ export const tabUIConfig: TabUIConfig = {
     galleryItem: (n: NFT) => <NFTRow nft={n} />,
     details: () => <div>placeholder</div>,
     mainActionBtn: (n: NFT, ctx) => {
-      const owned = ctx?.ownedTokenIds?.includes(n.tokenId)
+      const owned = ctx?.isMine(n)
 
-      return <CreateOrderBtn chainId={n.chainId} collection={n.collection} tokenId={n.tokenId} />
+      let side
+
+      const btnProps = {
+        chainId: n.chainId,
+        collection: n.collection,
+        tokenId: n.tokenId,
+      }
+
+      if (owned) {
+        side = OrderSide.ASK
+      } else {
+        side = OrderSide.BID
+      }
+
+      return <CreateOrderBtn side={side} {...btnProps} />
     },
   },
 

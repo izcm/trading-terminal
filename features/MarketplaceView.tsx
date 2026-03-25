@@ -13,8 +13,8 @@ import { TextInput } from '@/ui/atoms'
 import { useKeyboardShortcuts } from './hooks/use-keyboard-shortcuts'
 import { useTabMutations } from './hooks/use-tab-mutations'
 import { useWsFeed, useWsSales } from './realtime/hooks/use-ws-sub'
-import { useSearchFilters } from './browse/hooks/use-search-filters'
-import { useFresh } from './browse/hooks/use-fresh'
+import { useSearchFilters } from './marketplace/hooks/use-search-filters'
+import { useFresh } from './marketplace/hooks/use-fresh'
 
 // tab config
 import { pageGetters, TabResource, tabUIConfig, type TabName } from './tab-config'
@@ -22,8 +22,7 @@ import { Tabs } from './Tabs'
 
 // features
 import { TxTracker } from './realtime/ui/TxTracker'
-import { CreateAskBtn } from './orders/ui/CreateAskBtn'
-import { useMine } from './browse/hooks/use-mine'
+import { useMine } from './marketplace/hooks/use-mine'
 
 type InitialState = {
   [K in TabName]: Page<TabResource[K]>
@@ -49,7 +48,9 @@ export function MarketplaceView(initial: InitialState) {
   const { add: addFresh } = useFresh<TabName>()
 
   // per today marketplace only supports one collection
-  const activeCollection = initial.explore.items[0].collection
+  const activeCollection = initial.explore.items.length
+    ? initial.explore.items[0].collection
+    : undefined
 
   // --- search filters + 'mine' flag ---
   const { filters, mine, handleSearch } = useSearchFilters(tab)
@@ -120,10 +121,10 @@ export function MarketplaceView(initial: InitialState) {
       <main className="flex-1 flex flex-col mt-4 gap-4">
         <div className="flex items-center">
           <div className="basis-1/4 flex justify-start">
-            <CreateAskBtn
+            {/* <CreateAskBtn
               chainId={31337}
               collection={'0x1Db6f0B4E780c7eccD9736090627e824E4abe83D'}
-            />
+            /> */}
           </div>
           <div className="basis-1/2 flex justify-center gap-4 text-accent">
             <button className="menuBtn">[ Swords ]</button>
@@ -173,6 +174,7 @@ export function MarketplaceView(initial: InitialState) {
             sales={state.sales.items}
             explore={state.explore.items}
             activeTab={tab}
+            ctx={{ isMine }}
           />
         </div>
       </main>

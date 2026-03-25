@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import { Gallery } from './Gallery'
-import { NFTPreview } from '@/features/browse/ui/NFTPreview'
+import { NFTPreview } from '@/features/marketplace/ui/NFTPreview'
 import { Hex } from '@/domain/shared/eth'
 
 type TabProps<T> = {
@@ -11,7 +11,7 @@ type TabProps<T> = {
   galleryItem: (item: T) => ReactNode
   galleryItemIsFresh?: (item: T) => boolean
   mainActionBtn: (item: T) => ReactNode
-  details: (item: T) => ReactNode
+  details?: (item: T) => ReactNode
 }
 
 export function Tab<T extends { id: string; chainId: number; collection: Hex; tokenId: bigint }>({
@@ -48,9 +48,11 @@ export function Tab<T extends { id: string; chainId: number; collection: Hex; to
         ) : (
           <button className="btn btn-secondary">view full receipt</button>
         )}
-        <div className="card bg-secondary h-full">
-          {selected !== undefined && details(selected)}
-        </div>
+        {selected !== undefined && details && (
+          <div className="card bg-secondary h-full">
+            {selected !== undefined && details && details(selected)}
+          </div>
+        )}
       </div>
     </div>
   )

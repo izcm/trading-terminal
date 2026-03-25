@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 
 import { Tab } from '@/ui/organisms/core/Tab'
-import { tabUIConfig, type TabName, type TabResource } from './tab-config'
+import { TabCtx, tabUIConfig, type TabName, type TabResource } from './tab-config'
 
 type Props = {
   [K in TabName]: TabResource[K][]
-} & { activeTab: TabName }
+} & { activeTab: TabName; ctx?: TabCtx<TabName> }
 
 export function Tabs(data: Props) {
   const tab = data.activeTab
@@ -21,6 +21,7 @@ export function Tabs(data: Props) {
       items={data[tab]}
       selected={selectedByTab[tab]}
       setSelected={item => setSelectedByTab(prev => ({ ...prev, [tab]: item }))}
+      ctx={data.ctx}
     />
   )
 }
@@ -30,13 +31,14 @@ export function TabContainer<K extends TabName>({
   items,
   selected,
   setSelected,
+  ctx,
 }: {
   ui: (typeof tabUIConfig)[K]
   items: TabResource[K][]
   selected: TabResource[K] | undefined
   setSelected: (item: TabResource[K]) => void
+  ctx?: TabCtx<K>
 }) {
-  // set default ONLY if none selected yet
   useEffect(() => {
     if (items.length === 0) return
 
@@ -45,8 +47,7 @@ export function TabContainer<K extends TabName>({
     if (!exists) {
       setSelected(items[0])
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [items, selected])
+  }, [items, selected, setSelected])
 
   return (
     <Tab
@@ -54,7 +55,7 @@ export function TabContainer<K extends TabName>({
       selected={selected}
       onSelect={setSelected}
       galleryItem={ui.galleryItem}
-      mainActionBtn={ui.mainActionBtn}
+      mainActionBtn={item => ui.mainActionBtn(item, ctx)}
       details={ui.details}
     />
   )

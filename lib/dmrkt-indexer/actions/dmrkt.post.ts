@@ -5,7 +5,7 @@ import type { Hex } from '@/domain/shared/eth'
 
 export const baseUrl = process.env.NEXT_PUBLIC_INDEXER_ENDPOINT_URL
 
-export async function postDmrktOrder(order: OrderCore, signature: Hex) {
+export async function postDmrktOrder(chainId: number, order: OrderCore, signature: Hex) {
   const url = `${baseUrl}/api/orders`
 
   // todo: remember to make signature hex (no need to store in parsed fmt)
@@ -16,7 +16,7 @@ export async function postDmrktOrder(order: OrderCore, signature: Hex) {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
-        'x-chain-id': '31337',
+        'x-chain-id': chainId.toString(),
       },
       body: JSON.stringify({
         ...order,

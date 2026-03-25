@@ -23,7 +23,7 @@ export function useCreateOrder(user?: Hex) {
         domain: dmrktDomain,
       })
 
-      const res = await postDmrktOrder(order, sig)
+      const res = await postDmrktOrder(dmrktDomain.chainId, order, sig)
 
       if (!res.ok) {
         throw new Error(res.error ?? `failed to create order`)
