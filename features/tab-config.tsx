@@ -53,7 +53,7 @@ type TabUIConfig = {
   [K in TabName]: {
     galleryItem: (item: TabResource[K]) => ReactNode
     details: (item: TabResource[K]) => ReactNode
-    mainActionBtn: (item: TabResource[K]) => ReactNode
+    mainActionBtn: (item: TabResource[K], ctx?: { ownedTokenIds?: bigint[] }) => ReactNode
   }
 }
 
@@ -67,13 +67,11 @@ export const tabUIConfig: TabUIConfig = {
   explore: {
     galleryItem: (n: NFT) => <NFTRow nft={n} />,
     details: () => <div>placeholder</div>,
-    mainActionBtn: (n: NFT) => (
-      <CreateOrderBtn
-        chainId={n.chainId}
-        collection={n.collection}
-        tokenId={n.tokenId.toString()}
-      />
-    ),
+    mainActionBtn: (n: NFT, ctx) => {
+      const owned = ctx?.ownedTokenIds?.includes(n.tokenId)
+
+      return <CreateOrderBtn chainId={n.chainId} collection={n.collection} tokenId={n.tokenId} />
+    },
   },
 
   sales: {

@@ -24,6 +24,7 @@ export function TxTracker() {
         seen.current.add(tx.hash)
       }
 
+      // todo: failed toast need some failure indicator eg. red title etc.
       if (tx.status === 'failed') {
         toast({
           title: 'Transaction not completed',

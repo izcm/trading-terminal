@@ -12,7 +12,7 @@ import { useCreateOrder } from '../hooks/use-create-order'
 type Props = {
   chainId: number // todo: use this to get dmrkt domain for chain x (prepare for multichain)
   collection: Hex
-  tokenId: string
+  tokenId: bigint
   onOrderCreated?: (id: string) => void
 }
 
@@ -28,7 +28,7 @@ export function CreateOrderBtn({ chainId, collection, tokenId, onOrderCreated }:
       isCollectionBid: false,
       actor: user,
       collection,
-      tokenId,
+      tokenId: tokenId.toString(),
       currency: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
       nonce: Date.now().toString(),
       ...input,
@@ -38,7 +38,7 @@ export function CreateOrderBtn({ chainId, collection, tokenId, onOrderCreated }:
       const id = await create(order)
       onOrderCreated?.(id)
     } catch (err) {
-      console.log(err)
+      console.error(err)
     }
   }
 

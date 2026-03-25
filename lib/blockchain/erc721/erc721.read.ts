@@ -9,10 +9,10 @@ import { mapTokenUriToNFT, type NFT } from '@/domain/nft'
 
 const CHAIN_ID = 31337 // todo: multichain
 
-export async function readOwned(collection: Address, user: Address): Promise<string[]> {
+export async function readOwned(collection: Address, user: Address): Promise<bigint[]> {
   const client = getPublicClient(wagmiConfig, { chainId: CHAIN_ID })
 
-  const ids: string[] = []
+  const ids: bigint[] = []
 
   for (let tokenId = 0; tokenId < 1000; tokenId++) {
     const bigTokenId = BigInt(tokenId)
@@ -25,7 +25,7 @@ export async function readOwned(collection: Address, user: Address): Promise<str
         args: [bigTokenId],
       })
 
-      if (ownerOf.toLowerCase() === user.toLowerCase()) ids.push(tokenId.toString())
+      if (ownerOf.toLowerCase() === user.toLowerCase()) ids.push(bigTokenId)
     } catch {
       continue
     }

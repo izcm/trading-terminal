@@ -1,6 +1,7 @@
 'use client' // boundry is here!
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useAccount } from 'wagmi'
 
 import { connectWs } from '@/lib/realtime/ws'
 import type { Page } from '@/lib/utils/http'
@@ -15,12 +16,14 @@ import { useWsFeed, useWsSales } from './realtime/hooks/use-ws-sub'
 import { useSearchFilters } from './browse/hooks/use-search-filters'
 import { useFresh } from './browse/hooks/use-fresh'
 
-// features
-import { TxTracker } from './realtime/ui/TxTracker'
-
 // tab config
 import { pageGetters, TabResource, tabUIConfig, type TabName } from './tab-config'
 import { Tabs } from './Tabs'
+
+// features
+import { TxTracker } from './realtime/ui/TxTracker'
+import { CreateAskBtn } from './orders/ui/CreateAskBtn'
+import { useMine } from './browse/hooks/use-mine'
 
 type InitialState = {
   [K in TabName]: Page<TabResource[K]>
@@ -37,15 +40,22 @@ export function MarketplaceView(initial: InitialState) {
     e: () => setTab('explore'),
   })
 
+  // --- login ---
+  const { address: user } = useAccount()
+
   // --- state ---
   const [tab, setTab] = useState<TabName>('feed')
   const [state, setState] = useState<TabPages>(initial)
   const { add: addFresh } = useFresh<TabName>()
 
+  // per today marketplace only supports one collection
+  const activeCollection = initial.explore.items[0].collection
+
   // --- search filters + 'mine' flag ---
   const { filters, mine, handleSearch } = useSearchFilters(tab)
 
-  const curr = state[tab]
+  // --- user inventory ---
+  const { isMine, buildMineQuery } = useMine(tab, user, activeCollection)
 
   // --- mutations ---
   const { mergePage, replacePage, addItem } = useTabMutations(setState)
@@ -66,32 +76,43 @@ export function MarketplaceView(initial: InitialState) {
   useWsFeed(addItemAndMarkFresh)
   useWsSales(addItemAndMarkFresh)
 
+  // --- build query ---
+  const query = useMemo(() => {
+    const activeFilters = filters[tab]
+
+    return mine[tab]
+      ? buildMineQuery(activeFilters) // apply mine filters
+      : activeFilters
+  }, [tab, filters, mine, buildMineQuery])
+
   // --- pagination ---
+  const currCursor = state[tab].cursor
+
   useEffect(() => {
-    if (!curr.cursor) return
+    if (!currCursor) return
 
     // merging pages
     const run = async () => {
-      const res = await pageGetters[tab](filters[tab])
+      const res = await pageGetters[tab](query ?? {})
       if (!res.ok) return
 
       mergePage(tab, res.data.items, res.data.cursor)
     }
 
     run()
-  }, [filters, tab, curr.cursor, mergePage])
+  }, [query, tab, currCursor, mergePage])
 
   // --- filter change ---
   useEffect(() => {
     const run = async () => {
-      const res = await pageGetters[tab]({ filters: filters[tab], cursor: null })
+      const res = await pageGetters[tab]({ filters: query, cursor: null })
       if (!res.ok) return
 
       replacePage(tab, res.data)
     }
 
     run()
-  }, [tab, filters, replacePage])
+  }, [tab, filters, query, replacePage])
 
   return (
     <div className="flex gap-4 h-screen max-w-4xl px-2 mx-auto overflow-hidden font-mono">
@@ -99,10 +120,10 @@ export function MarketplaceView(initial: InitialState) {
       <main className="flex-1 flex flex-col mt-4 gap-4">
         <div className="flex items-center">
           <div className="basis-1/4 flex justify-start">
-            {/* <CreateAskBtn
+            <CreateAskBtn
               chainId={31337}
               collection={'0x1Db6f0B4E780c7eccD9736090627e824E4abe83D'}
-            /> */}
+            />
           </div>
           <div className="basis-1/2 flex justify-center gap-4 text-accent">
             <button className="menuBtn">[ Swords ]</button>
@@ -138,9 +159,13 @@ export function MarketplaceView(initial: InitialState) {
         <div className="min-h-0 flex-col flex gap-4 justify-center">
           <TextInput
             key={tab}
-            defaultValue={Object.entries(filters[tab])
-              .map(([k, v]) => `${k}=${v}`)
-              .join('&')}
+            defaultValue={(() => {
+              const base = Object.entries(filters[tab])
+                .map(([k, v]) => `${k}=${v.join(',')}`)
+                .join('&')
+
+              return mine[tab] ? `mine ${base}` : base
+            })()}
             onSubmit={handleSearch}
           />
           <Tabs

@@ -3,11 +3,11 @@ import { useCallback, useEffect, useState } from 'react'
 import { readOwned } from '@/lib/blockchain/erc721/erc721.read'
 import type { Hex } from '@/domain/shared/eth'
 
-export function useOwnedTokenIds(collection: Hex, user?: Hex) {
-  const [ids, setIds] = useState<string[]>([])
+export function useOwnedTokenIds(collection?: Hex, user?: Hex) {
+  const [ids, setIds] = useState<bigint[]>([])
 
   const fetch = useCallback(async () => {
-    if (!user) return
+    if (!user || !collection) return
 
     const res = await readOwned(collection, user)
     setIds(res)

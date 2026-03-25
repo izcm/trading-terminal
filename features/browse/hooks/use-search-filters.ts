@@ -23,7 +23,8 @@ export function useSearchFilters(tab: TabName) {
   }
 
   function handleSearch(value: string) {
-    console.log(value)
+    // set potential 'mine' flag
+    // nb: called of hook is resonsible for including owned tokenIds as query param
     const { mine: hasMine, rest: baseFilters } = extractMine(value)
 
     const rawParams = new URLSearchParams(baseFilters)

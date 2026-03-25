@@ -9,7 +9,7 @@ export type FormInput = {
 }
 
 type Props = {
-  tokenId: string
+  tokenId: bigint
   onSubmit: (formInput: FormInput) => void
   back?: () => void
 }
