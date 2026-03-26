@@ -57,11 +57,13 @@ export function TradeBtn({ listing }: Props) {
       <button disabled={isDisabled} onClick={handlePrimaryAction} className="btn btn-primary">
         {listing.isCollectionBid ? (
           <>
-            <Layers size={16} /> select nft
+            <Layers size={16} />
+            <span>Select nft</span>
           </>
         ) : (
           <>
-            <CreditCard size={16} /> buy now
+            <CreditCard size={16} />
+            <span>Buy loot</span>
           </>
         )}
       </button>

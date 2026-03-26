@@ -32,7 +32,7 @@ export const activity = {
   fromSale(sale: Sale): Activity {
     return {
       source: 'sale',
-      type: sale.order?.type ?? 'unknown',
+      type: sale.listing?.type ?? 'unknown',
       chainId: sale.chainId,
       collection: sale.collection,
       tokenId: sale.tokenId,

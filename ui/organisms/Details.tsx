@@ -56,7 +56,7 @@ export function Details<T>({ item, title, detailsFields, timingFields }: Details
 
       {/* timing */}
       {timingFields && (
-        <div className="pt-2 border-t border-white/5 flex flex-col gap-1">
+        <div className="pt-2 border-t border-white/5 flex flex-col gap-2">
           <DetailFields data={item} fields={timingFields} />
         </div>
       )}

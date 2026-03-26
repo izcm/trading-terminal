@@ -15,10 +15,10 @@ export type NFT = {
   tokenId: bigint
 
   tokenUri?: string
-  name?: string
-  description?: string
-  image?: string
-  attributes?: NFTAttribute[]
+  name: string
+  description: string
+  image: string
+  attributes: NFTAttribute[]
 
   createdAtBlock: bigint
 }

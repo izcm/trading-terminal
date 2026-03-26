@@ -32,5 +32,14 @@ export type Sale = {
   logIndex: number
 
   nftCollection?: NFTCollection | null
-  order?: Listing | null
+  listing?: Listing | null
+
+  txContext?: {
+    txIndex: number
+    functionSelector: Hex
+    functionName: string
+    contractAddress: Hex
+    gasUsed: number
+    gasPrice: number
+  }
 }

@@ -24,24 +24,13 @@ export type SettlementDTO = {
 
   logIndex: number
 
-  callReconstructed: boolean
-  txInputs?: {
-    order?: {
-      signer: Hex
-      collection: Hex
-      tokenId: string
-      currency: Hex
-      price: string
-      start: string
-      end: string
-      nonce: string
-    }
-    fill?: {
-      tokenId: string
-      actor: Hex
-    }
-    gasUsed?: string
-    gasPrice?: string
+  txContext?: {
+    txIndex: number
+    functionSelector: string
+    functionName: string
+    contractAddress: string
+    gasUsed: number
+    gasPrice: number
   }
 
   nftCollection?: NFTCollectionDTO | null
@@ -49,6 +38,7 @@ export type SettlementDTO = {
 }
 
 export function toSale(dto: SettlementDTO): Sale {
+  console.log(dto)
   return {
     id: dto.id,
     chainId: dto.chainId,
@@ -72,6 +62,19 @@ export function toSale(dto: SettlementDTO): Sale {
 
     nftCollection: dto.nftCollection ? toNFTCollection(dto.nftCollection) : null,
 
-    order: dto.order ? toListing(dto.order) : null,
+    listing: dto.order ? toListing(dto.order) : null,
+
+    txContext: dto.txContext
+      ? {
+          txIndex: dto.txContext.txIndex,
+
+          functionSelector: dto.txContext.functionSelector as `0x${string}`,
+          functionName: dto.txContext.functionName,
+          contractAddress: dto.txContext.contractAddress as `0x${string}`,
+
+          gasUsed: dto.txContext.gasUsed,
+          gasPrice: dto.txContext.gasPrice,
+        }
+      : undefined,
   }
 }

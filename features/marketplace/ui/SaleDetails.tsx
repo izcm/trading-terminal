@@ -1,5 +1,5 @@
 import type { Sale } from '@/domain/sale'
-import { addrShort } from '@/domain/shared/utils/fmt/hex'
+import { addrShort, truncateHex } from '@/domain/shared/utils/fmt/hex'
 import { tsShort } from '@/domain/shared/utils/time'
 
 import { Details } from '@/ui/organisms/Details'
@@ -18,10 +18,10 @@ const DETAIL_FIELDS: DetailField<Sale>[] = [
     label: 'seller',
     getValue: s => addrShort(s.seller),
   },
-  // {
-  //   label: 'tx hash',
-  //   getValue: s => truncateHex(s.txHash),
-  // },
+  {
+    label: 'tx hash',
+    getValue: s => truncateHex(s.txHash),
+  },
   {
     label: 'block number',
     getValue: s => s.blockNumber,

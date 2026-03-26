@@ -22,6 +22,7 @@ import { ListingDetails } from './marketplace/ui/ListingDetails'
 import { SaleDetails } from './marketplace/ui/SaleDetails'
 import { TradeBtn } from './trade/ui/TradeBtn'
 import { CreateOrderBtn } from './orders/ui/CreateOrderBtn'
+import { ReceiptBtn } from './marketplace/ui/ReceiptBtn'
 
 export type TabResource = {
   feed: Listing
@@ -96,6 +97,6 @@ export const tabUIConfig: TabUIConfig = {
   sales: {
     galleryItem: (s: Sale) => <ActivityItem activity={activity.fromSale(s)} />,
     details: (s: Sale) => <SaleDetails sale={s} />,
-    mainActionBtn: () => <button className="btn btn-secondary">view full receipt</button>,
+    mainActionBtn: (s: Sale) => <ReceiptBtn sale={s} />,
   },
 }
