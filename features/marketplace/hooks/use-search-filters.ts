@@ -32,11 +32,11 @@ export function useSearchFilters(tab: TabName, user?: Hex) {
     return { mine, rest }
   }
 
+  // set potential 'mine' flag
+  // nb: parent is resonsible for including owned tokenIds in query
   function handleSearch(value: string) {
-    // set potential 'mine' flag
-    // nb: called of hook is resonsible for including owned tokenIds as query param
-    const { mine: hasMine, rest: baseFilters } = extractMine(value)
-    console.log(baseFilters)
+    const { mine: hasMine, rest } = extractMine(value)
+    const baseFilters = rest.trim().replace(/\s+/g, '&')
 
     const rawParams = new URLSearchParams(baseFilters)
     const next: Record<string, string[]> = {}
