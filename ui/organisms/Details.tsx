@@ -1,3 +1,7 @@
+import type { Hex } from '@/domain/shared/eth'
+import { truncateHex } from '@/domain/shared/utils/fmt/hex'
+
+import { Copyable } from '../atoms'
 import { DetailFields, type DetailField } from '../molecules'
 
 // --- badge ---
@@ -12,13 +16,17 @@ type BadgeProps = {
   type: keyof typeof badgeByType
 }
 
-function Badge({ type }: BadgeProps) {
-  return (
-    <span className={`text-xs font-semibold px-2 py-1 rounded ${badgeByType[type]}`}>
-      {type.toUpperCase()}
-    </span>
-  )
-}
+const Badge = ({ type }: BadgeProps) => (
+  <span className={`text-xs font-semibold px-2 py-1 rounded ${badgeByType[type]}`}>
+    {type.toUpperCase()}
+  </span>
+)
+
+// --- copyable field ---
+
+export const HexDetailField = (value: Hex) => (
+  <Copyable value={value}>{truncateHex(value)}</Copyable>
+)
 
 // --- details ---
 

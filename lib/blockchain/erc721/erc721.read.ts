@@ -14,7 +14,7 @@ export async function readOwned(collection: Address, user: Address): Promise<big
 
   const ids: bigint[] = []
 
-  for (let tokenId = 0; tokenId < 1000; tokenId++) {
+  for (let tokenId = 0; tokenId < 500; tokenId++) {
     const bigTokenId = BigInt(tokenId)
 
     try {

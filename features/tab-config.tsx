@@ -72,7 +72,6 @@ export const tabUIConfig: TabUIConfig = {
 
   explore: {
     galleryItem: (n: NFT) => <NFTRow nft={n} />,
-    details: () => <div>placeholder</div>,
     mainActionBtn: (n: NFT, ctx) => {
       const owned = ctx?.isMine(n)
 

@@ -1,7 +1,11 @@
-import { TabName } from '@/features/tab-config'
 import { useState } from 'react'
 
-export function useSearchFilters(tab: TabName) {
+import { normalizeKeys } from '@/lib/dmrkt-indexer/actions/logic/param-mapper'
+import type { TabName } from '@/features/tab-config'
+import type { Hex } from '@/domain/shared/eth'
+
+// user is passed to enable feat replacing "me" with user address in searchstring
+export function useSearchFilters(tab: TabName, user?: Hex) {
   const [filters, setFilters] = useState<Record<TabName, Record<string, string[]>>>({
     feed: { status: ['active'] },
     sales: { status: ['expired'] },
@@ -17,7 +21,13 @@ export function useSearchFilters(tab: TabName) {
 
   function extractMine(value: string) {
     const mine = value.startsWith('mine')
-    const rest = mine ? value.slice(4).trim() : value
+    let rest = mine ? value.slice(4).trim() : value
+
+    if (user) {
+      rest = rest.replace(/\bme\b/g, user)
+    }
+
+    rest = normalizeKeys(rest)
 
     return { mine, rest }
   }
@@ -26,6 +36,7 @@ export function useSearchFilters(tab: TabName) {
     // set potential 'mine' flag
     // nb: called of hook is resonsible for including owned tokenIds as query param
     const { mine: hasMine, rest: baseFilters } = extractMine(value)
+    console.log(baseFilters)
 
     const rawParams = new URLSearchParams(baseFilters)
     const next: Record<string, string[]> = {}

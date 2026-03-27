@@ -19,50 +19,56 @@ export function useMine<K extends TabName>(
     (item: TabResource[K]) => {
       if (!user) return false
 
-      switch (tab) {
-        case 'feed':
-          return (item as TabResource['feed']).actor === user
-        case 'explore':
-          return ids.includes((item as TabResource['explore']).tokenId)
-        case 'sales':
-          return (
-            (item as TabResource['sales']).buyer === user ||
-            (item as TabResource['sales']).seller === user
-          )
-      }
+      return ids.includes(item.tokenId)
+
+      // switch (tab) {
+      //   case 'feed':
+      //     return (item as TabResource['feed']).actor === user
+      //   case 'explore':
+      //     return ids.includes((item as TabResource['explore']).tokenId)
+      //   case 'sales':
+      //     return (
+      //       (item as TabResource['sales']).buyer === user ||
+      //       (item as TabResource['sales']).seller === user
+      //     )
+      // }
     },
-    [tab, user, ids]
+    [user, ids]
   )
 
   const buildMineQuery = useCallback(
     (filters: Record<string, string[]>) => {
       if (!user) return filters
 
-      switch (tab) {
-        case 'feed':
-          return {
-            ...filters,
-            actor: [user],
-          }
-
-        case 'sales':
-          return {
-            ...filters,
-            seller: [user], // or buyer/seller depending on API
-          }
-
-        case 'explore':
-          if (ownedIds.length === 0) return undefined
-          return {
-            ...filters,
-            tokenId: ownedIds,
-          }
-
-        default:
-          return filters
+      return {
+        ...filters,
+        tokenId: ownedIds,
       }
+      // switch (tab) {
+      //   case 'feed':
+      //     return {
+      //       ...filters,
+      //       actor: [user],
+      //     }
+
+      //   case 'sales':
+      //     return {
+      //       ...filters,
+      //       seller: [user], // or buyer/seller depending on API
+      //     }
+
+      //   case 'explore':
+      //     if (ownedIds.length === 0) return undefined
+      //     return {
+      //       ...filters,
+      //       tokenId: ownedIds,
+      //     }
+
+      //   default:
+      //     return filters
+      // }
     },
-    [tab, user, ownedIds]
+    [user, ownedIds]
   )
 
   return { buildMineQuery, isMine }

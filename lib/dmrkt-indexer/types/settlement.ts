@@ -38,7 +38,6 @@ export type SettlementDTO = {
 }
 
 export function toSale(dto: SettlementDTO): Sale {
-  console.log(dto)
   return {
     id: dto.id,
     chainId: dto.chainId,

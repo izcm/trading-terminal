@@ -1,9 +1,8 @@
 import type { Listing } from '@/domain/listing'
 
-import { addrShort } from '@/domain/shared/utils/fmt/hex'
 import { tsShort } from '@/domain/shared/utils/time'
 
-import { Details } from '@/ui/organisms/Details'
+import { Details, HexDetailField } from '@/ui/organisms/Details'
 import type { DetailField } from '@/ui/molecules/DetailFields'
 
 const DETAIL_FIELDS: DetailField<Listing>[] = [
@@ -17,7 +16,7 @@ const DETAIL_FIELDS: DetailField<Listing>[] = [
   },
   {
     label: 'maker',
-    getValue: l => addrShort(l.actor),
+    getValue: l => HexDetailField(l.actor),
   },
 ]
 
@@ -27,10 +26,5 @@ const TIMING_FIELDS: DetailField<Listing>[] = [
 ]
 
 export const ListingDetails = ({ listing }: { listing: Listing }) => (
-  <Details<Listing>
-    item={listing}
-    // title={{ field: TITLE_FIELD, badge: { type: listing.type } }}
-    detailsFields={DETAIL_FIELDS}
-    timingFields={TIMING_FIELDS}
-  />
+  <Details<Listing> item={listing} detailsFields={DETAIL_FIELDS} timingFields={TIMING_FIELDS} />
 )

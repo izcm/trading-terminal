@@ -2,8 +2,9 @@ import type { Sale } from '@/domain/sale'
 import { addrShort, truncateHex } from '@/domain/shared/utils/fmt/hex'
 import { tsShort } from '@/domain/shared/utils/time'
 
-import { Details } from '@/ui/organisms/Details'
+import { Details, HexDetailField } from '@/ui/organisms/Details'
 import type { DetailField } from '@/ui/molecules/DetailFields'
+import { Copyable } from '@/ui/atoms/Copypable'
 
 const DETAIL_FIELDS: DetailField<Sale>[] = [
   {
@@ -12,15 +13,15 @@ const DETAIL_FIELDS: DetailField<Sale>[] = [
   },
   {
     label: 'buyer',
-    getValue: s => addrShort(s.buyer),
+    getValue: s => HexDetailField(s.buyer),
   },
   {
     label: 'seller',
-    getValue: s => addrShort(s.seller),
+    getValue: s => HexDetailField(s.seller),
   },
   {
     label: 'tx hash',
-    getValue: s => truncateHex(s.txHash),
+    getValue: s => HexDetailField(s.txHash),
   },
   {
     label: 'block number',

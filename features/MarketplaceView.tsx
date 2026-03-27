@@ -53,7 +53,7 @@ export function MarketplaceView(initial: InitialState) {
     : undefined
 
   // --- search filters + 'mine' flag ---
-  const { filters, mine, handleSearch } = useSearchFilters(tab)
+  const { filters, mine, handleSearch } = useSearchFilters(tab, user)
 
   // --- user inventory ---
   const { isMine, buildMineQuery } = useMine(tab, user, activeCollection)
@@ -157,7 +157,7 @@ export function MarketplaceView(initial: InitialState) {
           ))}
         </div>
 
-        <div className="min-h-0 flex-col flex gap-4 justify-center">
+        <div className="min-h-0 flex-1 flex-col flex gap-4">
           <TextInput
             key={tab}
             defaultValue={(() => {

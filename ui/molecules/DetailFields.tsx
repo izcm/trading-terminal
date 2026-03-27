@@ -1,6 +1,8 @@
+import { ReactNode } from 'react'
+
 export type DetailField<T> = {
   label: string
-  getValue: (item: T) => string | number
+  getValue: (item: T) => ReactNode
   className?: string
 }
 
@@ -10,7 +12,7 @@ function DetailRow({
   className,
 }: {
   label: string
-  value: string | number
+  value: ReactNode
   className?: string
 }) {
   return (
@@ -24,9 +26,9 @@ function DetailRow({
 export function DetailFields<T>({ data, fields }: { data: T; fields: DetailField<T>[] }) {
   return (
     <>
-      {fields.map(field => (
+      {fields.map((field, i) => (
         <DetailRow
-          key={field.label}
+          key={i}
           label={field.label}
           value={field.getValue(data)}
           className={field.className}

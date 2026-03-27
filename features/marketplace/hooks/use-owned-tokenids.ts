@@ -14,7 +14,7 @@ export function useOwnedTokenIds(collection?: Hex, user?: Hex) {
   }, [collection, user])
 
   useEffect(() => {
-    ;(async () => fetch())()
+    ;(async () => await fetch())()
   }, [fetch])
 
   return { ids, refetch: fetch }

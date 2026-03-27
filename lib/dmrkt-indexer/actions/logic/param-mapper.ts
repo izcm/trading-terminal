@@ -26,3 +26,13 @@ export function toSearchParams(filters: Record<string, string[]>) {
 
   return params
 }
+
+const FIELD_ALIASES: Record<string, string> = {
+  maker: 'actor',
+}
+
+export function normalizeKeys(input: string) {
+  return input.replace(/\b[a-zA-Z0-9_]+\b/g, word => {
+    return FIELD_ALIASES[word] ?? word
+  })
+}

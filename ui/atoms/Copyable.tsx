@@ -1,0 +1,40 @@
+import { useState } from 'react'
+
+type CopyableProps = {
+  value: string
+  children?: React.ReactNode
+}
+
+export function Copyable({ value, children }: CopyableProps) {
+  const [copied, setCopied] = useState<boolean>(false)
+
+  async function handleCopy() {
+    await navigator.clipboard.writeText(value)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 1000)
+  }
+
+  return (
+    <span
+      onClick={handleCopy}
+      tabIndex={0}
+      onKeyDown={e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          handleCopy()
+        }
+      }}
+      className="
+        cursor-pointer
+        text-accent-weak
+        underline underline-offset-2 decoration-dotted
+        hover:decoration-solid
+        hover:text-accent
+        transition-colors
+        "
+      title="Click to copy"
+    >
+      {copied ? 'copied' : (children ?? value)}
+    </span>
+  )
+}

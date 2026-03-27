@@ -24,7 +24,7 @@ export function Tab<T extends { id: string; chainId: number; collection: Hex; to
   details,
 }: TabProps<T>) {
   return (
-    <div className="min-h-0 flex gap-4 justify-center">
+    <div className="min-h-0 flex-1 flex gap-4">
       <div className="flex-1 flex flex-col gap-4">
         <Gallery<T>
           items={items}
@@ -43,11 +43,7 @@ export function Tab<T extends { id: string; chainId: number; collection: Hex; to
             tokenId={selected?.tokenId}
           />
         </div>
-        {selected ? (
-          mainActionBtn(selected)
-        ) : (
-          <button className="btn btn-secondary">view full receipt</button>
-        )}
+        {selected && mainActionBtn(selected)}
         {selected !== undefined && details && (
           <div className="card bg-secondary h-full">
             {selected !== undefined && details && details(selected)}
