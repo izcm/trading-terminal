@@ -23,6 +23,7 @@ import { Tabs } from './Tabs'
 // features
 import { TxTracker } from './realtime/ui/TxTracker'
 import { useMine } from './marketplace/hooks/use-mine'
+import { toSearchParams } from '@/lib/dmrkt-indexer/actions/logic/param-mapper'
 
 type InitialState = {
   [K in TabName]: Page<TabResource[K]>
@@ -161,9 +162,7 @@ export function MarketplaceView(initial: InitialState) {
           <TextInput
             key={tab}
             defaultValue={(() => {
-              const base = Object.entries(filters[tab])
-                .map(([k, v]) => `${k}=${v.join(',')}`)
-                .join('&')
+              const base = decodeURIComponent(toSearchParams(filters[tab]).toString())
 
               return mine[tab] ? `mine ${base}` : base
             })()}

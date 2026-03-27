@@ -41,10 +41,22 @@ export function useSearchFilters(tab: TabName, user?: Hex) {
     const rawParams = new URLSearchParams(baseFilters)
     const next: Record<string, string[]> = {}
 
+    const traits = rawParams.get('trait')?.split(',') ?? []
+    const values = rawParams.get('value')?.split(',') ?? []
+
+    traits.forEach((trait, i) => {
+      const val = values[i]
+      if (!val) return // todo: length mismatch ui indicator
+      ;(next[`trait.${trait}`] ??= []).push(val)
+    })
+
     for (const [key, raw] of rawParams) {
+      if (key === 'trait' || key === 'value') continue
       next[key] = [...new Set(raw.split(','))]
     }
 
+    console.log('handle search')
+    console.log('next: ', next)
     setFilters(prev => ({
       ...prev,
       [tab]: next,

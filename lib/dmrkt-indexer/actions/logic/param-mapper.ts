@@ -7,21 +7,27 @@
 export function toSearchParams(filters: Record<string, string[]>) {
   const params = new URLSearchParams()
 
-  const traits = filters.trait ?? []
-  const values = filters.value ?? []
+  const traits: string[] = []
+  const values: string[] = []
 
   for (const [key, vals] of Object.entries(filters)) {
-    if (key === 'trait' || key === 'value') continue
-    vals.map(v => params.append(key, v))
+    if (key.startsWith('trait.')) {
+      const trait = key.slice(6)
+
+      for (const val of vals) {
+        traits.push(trait)
+        values.push(val)
+      }
+    } else {
+      for (const val of vals) {
+        params.append(key, val)
+      }
+    }
   }
 
-  let lastDefinedTrait = traits[0]
-
-  for (let i = 0; i < Math.max(traits.length, values.length); i++) {
-    if (traits[i]) lastDefinedTrait = traits[i]
-
-    params.append('trait', lastDefinedTrait)
-    if (values[i]) params.append('value', values[i])
+  if (traits.length) {
+    params.set('trait', traits.join(','))
+    params.set('value', values.join(','))
   }
 
   return params
