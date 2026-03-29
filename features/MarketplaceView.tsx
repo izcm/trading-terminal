@@ -33,6 +33,7 @@ type TabPages = {
   [K in TabName]: Page<TabResource[K]>
 }
 
+// todo: useChainId() and filter all responses to active chain
 export function MarketplaceView(initial: InitialState) {
   useKeyboardShortcuts({
     f: () => setTab('feed'),
@@ -57,7 +58,7 @@ export function MarketplaceView(initial: InitialState) {
   const { filters, mine, handleSearch } = useSearchFilters(tab, user)
 
   // --- user inventory ---
-  const { isMine, buildMineQuery } = useMine(tab, user, activeCollection)
+  const { isMyToken, isMyListing, buildMineQuery } = useMine(tab, user, activeCollection)
 
   // --- mutations ---
   const { mergePage, replacePage, addItem } = useTabMutations(setState)
@@ -173,7 +174,7 @@ export function MarketplaceView(initial: InitialState) {
             sales={state.sales.items}
             explore={state.explore.items}
             activeTab={tab}
-            ctx={{ isMine }}
+            ctx={{ isMyToken, isMyListing }}
           />
         </div>
       </main>

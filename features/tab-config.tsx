@@ -12,7 +12,7 @@ import { getDmrktListing, getDmrktNFT, getDmrktSale } from '@/lib/dmrkt-indexer/
 import type { Listing } from '@/domain/listing'
 import type { Sale } from '@/domain/sale'
 import type { NFT } from '@/domain/nft'
-import { activity } from '@/domain/shared/activity'
+import { Activity, activity } from '@/domain/shared/activity'
 
 // shared components
 import { ActivityItem, NFTRow } from '@/ui/molecules'
@@ -23,6 +23,7 @@ import { SaleDetails } from './marketplace/ui/SaleDetails'
 import { TradeBtn } from './trade/ui/TradeBtn'
 import { CreateOrderBtn } from './orders/ui/CreateOrderBtn'
 import { ReceiptBtn } from './marketplace/ui/ReceiptBtn'
+import { CancelOrderBtn } from './orders/ui/CancelOrderBtn'
 
 export type TabResource = {
   feed: Listing
@@ -52,7 +53,8 @@ export const itemGetters: {
 }
 
 export type TabCtx<K extends TabName> = {
-  isMine: (item: TabResource[K]) => boolean
+  isMyToken?: (item: TabResource[K]) => boolean // all items have tokenId
+  isMyListing?: (item: Listing) => boolean
 }
 
 type TabUIConfig = {
@@ -67,18 +69,23 @@ export const tabUIConfig: TabUIConfig = {
   feed: {
     galleryItem: (l: Listing) => <ActivityItem activity={activity.fromListing(l)} />,
     details: (l: Listing) => <ListingDetails listing={l} />,
-    mainActionBtn: (l: Listing) => <TradeBtn listing={l} />,
+    mainActionBtn: (l: Listing, ctx) => {
+      // if isMine (token) && listing is ask => cancelBtn
+      // if isMine (token) && listing is bid => fillBid (tradeBtn)
+      if (ctx?.isMyListing?.(l))
+        return <CancelOrderBtn nonce={BigInt(l.rawOrder.nonce)} listingId={l.id} />
+      return <TradeBtn listing={l} />
+    },
   },
 
   explore: {
     galleryItem: (n: NFT) => <NFTRow nft={n} />,
     mainActionBtn: (n: NFT, ctx) => {
-      const owned = ctx?.isMine(n)
+      const owned = ctx?.isMyToken?.(n)
 
       let side
 
       const btnProps = {
-        chainId: n.chainId,
         collection: n.collection,
         tokenId: n.tokenId,
       }

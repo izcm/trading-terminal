@@ -55,8 +55,6 @@ export function useSearchFilters(tab: TabName, user?: Hex) {
       next[key] = [...new Set(raw.split(','))]
     }
 
-    console.log('handle search')
-    console.log('next: ', next)
     setFilters(prev => ({
       ...prev,
       [tab]: next,

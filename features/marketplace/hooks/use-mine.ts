@@ -3,6 +3,7 @@ import { useCallback, useMemo } from 'react'
 import { Hex } from '@/domain/shared/eth'
 import { TabName, TabResource } from '@/features/tab-config'
 import { useOwnedTokenIds } from './use-owned-tokenids'
+import { Listing } from '@/domain/listing'
 
 // rules per tab for marking a domain item as "mine"
 export function useMine<K extends TabName>(
@@ -12,28 +13,25 @@ export function useMine<K extends TabName>(
 ) {
   const { ids } = useOwnedTokenIds(collection, user)
 
-  // normalize tokenIds for query building
+  // normalize tokenIds
   const ownedIds = useMemo(() => ids?.map(id => id.toString()) ?? [], [ids])
 
-  const isMine = useCallback(
+  // my tokens
+  const isMyToken = useCallback(
     (item: TabResource[K]) => {
       if (!user) return false
-
       return ids.includes(item.tokenId)
-
-      // switch (tab) {
-      //   case 'feed':
-      //     return (item as TabResource['feed']).actor === user
-      //   case 'explore':
-      //     return ids.includes((item as TabResource['explore']).tokenId)
-      //   case 'sales':
-      //     return (
-      //       (item as TabResource['sales']).buyer === user ||
-      //       (item as TabResource['sales']).seller === user
-      //     )
-      // }
     },
     [user, ids]
+  )
+
+  // helps decide whether to show cancel btn
+  const isMyListing = useCallback(
+    (item: TabResource[K]) => {
+      if (!user || tab !== 'feed') return false
+      return (item as Listing).actor === user
+    },
+    [tab, user]
   )
 
   const buildMineQuery = useCallback(
@@ -44,32 +42,9 @@ export function useMine<K extends TabName>(
         ...filters,
         tokenId: ownedIds,
       }
-      // switch (tab) {
-      //   case 'feed':
-      //     return {
-      //       ...filters,
-      //       actor: [user],
-      //     }
-
-      //   case 'sales':
-      //     return {
-      //       ...filters,
-      //       seller: [user], // or buyer/seller depending on API
-      //     }
-
-      //   case 'explore':
-      //     if (ownedIds.length === 0) return undefined
-      //     return {
-      //       ...filters,
-      //       tokenId: ownedIds,
-      //     }
-
-      //   default:
-      //     return filters
-      // }
     },
     [user, ownedIds]
   )
 
-  return { buildMineQuery, isMine }
+  return { buildMineQuery, isMyToken, isMyListing }
 }

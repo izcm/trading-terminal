@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 import { useAccount, useSimulateContract } from 'wagmi'
+import { Address } from 'viem'
 
 import { Order, toOrder712 } from '@/protocol/eip712'
 import { orderbookAbi, orderbookAddress } from '@/protocol/config'
-import { Hex } from 'viem'
 import { ozErc721Errors } from '@/lib/blockchain'
 
 export function useTradeSimulation(order?: Order, tokenIdCb?: bigint) {
@@ -24,7 +24,7 @@ export function useTradeSimulation(order?: Order, tokenIdCb?: bigint) {
 
   const sim = useSimulateContract({
     abi: [...orderbookAbi, ...ozErc721Errors],
-    address: orderbookAddress! as Hex,
+    address: orderbookAddress! as Address,
     functionName: 'settle',
     account: address,
     args,

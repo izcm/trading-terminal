@@ -1,9 +1,7 @@
 import { useWriteContract } from 'wagmi'
 
 import { useTx } from '@/app/providers/TxProvider'
-
 import type { Order } from '@/protocol/eip712'
-
 import { useTradeSimulation } from './use-trade-simulation'
 
 const safeStringify = (obj: unknown) =>
@@ -28,7 +26,7 @@ export function useFillOrder(order?: Order, listingId?: string, tokenIdCb?: bigi
 
   const { writeContractAsync } = useWriteContract()
 
-  const fillOrder = async () => {
+  async function fillOrder() {
     if (!sim.isSuccess) return
     if (sim.isPending) return
     if (!sim.data?.request) return

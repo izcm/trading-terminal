@@ -14,7 +14,6 @@ import { FormInput, OrderForm } from './OrderForm'
 import { useCreateOrder } from '../hooks/use-create-order'
 
 type Props = {
-  chainId: number // todo: use this to get dmrkt domain for chain x (prepare for multichain)
   collection: Hex
   tokenId: bigint
   side: OrderSide
@@ -32,7 +31,7 @@ const btnAttr = {
   },
 } as const
 
-export function CreateOrderBtn({ chainId, collection, tokenId, side, onOrderCreated }: Props) {
+export function CreateOrderBtn({ collection, tokenId, side, onOrderCreated }: Props) {
   const { address: user } = useAccount()
   const { create, canCreate } = useCreateOrder(user)
 
@@ -53,6 +52,8 @@ export function CreateOrderBtn({ chainId, collection, tokenId, side, onOrderCrea
 
     try {
       const id = await create(order)
+      console.log(id)
+
       toast({
         title: 'Order Created',
         description: 'Your signed order is stored at dmrkt. The marketplace should update shortly.',
@@ -60,7 +61,7 @@ export function CreateOrderBtn({ chainId, collection, tokenId, side, onOrderCrea
       })
       onOrderCreated?.(id)
     } catch (err) {
-      console.log(err)
+      console.error(err)
       toast({
         title: 'Order Creation Failed',
         description: `Something happened, order was not processed.`,

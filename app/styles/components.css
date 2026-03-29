@@ -94,6 +94,71 @@
     0 2px 6px color-mix(in oklab, var(--accent) 20%, black 80%);
 }
 
+/* === Danger Button (Cancel Order vibe) === */
+
+.btn-danger {
+  color: color-mix(in oklab, var(--text-primary) 92%, white 8%);
+  font-weight: 600;
+
+  border-color: color-mix(in oklab, crimson 35%, var(--border-default) 65%);
+
+  background: linear-gradient(
+    160deg,
+    color-mix(in oklab, crimson 18%, black 82%),
+    color-mix(in oklab, crimson 14%, black 86%)
+  );
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.35),
+    0 2px 6px color-mix(in oklab, crimson 18%, black 82%);
+}
+
+/* hover */
+.btn-danger:hover {
+  border-color: color-mix(in oklab, crimson 55%, var(--border-default));
+
+  background: linear-gradient(
+    160deg,
+    color-mix(in oklab, crimson 26%, black 74%),
+    color-mix(in oklab, crimson 20%, black 80%)
+  );
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3),
+    0 4px 12px color-mix(in oklab, crimson 28%, black 72%);
+}
+
+/* active */
+.btn-danger:active {
+  transform: translateY(0.5px) scale(0.995);
+
+  background: linear-gradient(
+    160deg,
+    color-mix(in oklab, crimson 22%, black 78%),
+    color-mix(in oklab, crimson 18%, black 82%)
+  );
+
+  border-color: color-mix(in oklab, crimson 60%, var(--border-default));
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.32),
+    0 2px 6px color-mix(in oklab, crimson 24%, black 76%);
+}
+
+/* focus */
+.btn-danger:focus-visible {
+  outline: none;
+  border-color: color-mix(in oklab, crimson 70%, var(--border-default));
+
+  box-shadow:
+    0 0 0 2px var(--bg-primary),
+    0 0 0 5px color-mix(in oklab, crimson 30%, transparent),
+    0 0 14px color-mix(in oklab, crimson 20%, transparent);
+}
+
 .btn-primary:hover {
   color: var(--text-primary);
 

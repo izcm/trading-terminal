@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { CreditCard, Layers } from 'lucide-react'
+import { CreditCard, Handshake, Layers } from 'lucide-react'
 
 import type { Listing } from '@/domain/listing'
 
@@ -58,12 +58,17 @@ export function TradeBtn({ listing }: Props) {
         {listing.isCollectionBid ? (
           <>
             <Layers size={16} />
-            <span>Select nft</span>
+            <span className="px-1">Select nft</span>
+          </>
+        ) : listing.type === 'ask' ? (
+          <>
+            <CreditCard size={16} />
+            <span className="px-1">Buy loot</span>
           </>
         ) : (
           <>
-            <CreditCard size={16} />
-            <span>Buy loot</span>
+            <Handshake size={16} />
+            <span className="px-1">Fill bid</span>
           </>
         )}
       </button>
