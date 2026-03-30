@@ -14,13 +14,10 @@ import { CbFillMenu } from './CbFillMenu'
 import { useAccount } from 'wagmi'
 
 type Props = {
-  listing: Listing | null
+  listing: Listing
 }
 
-/**
- *
- * @param disabled value allows parent to disable trade feature
- */
+// todo: this is getting messy, fix it later
 export function TradeBtn({ listing }: Props) {
   const { address: user } = useAccount()
 
@@ -42,10 +39,18 @@ export function TradeBtn({ listing }: Props) {
     }
   }
 
-  if (!listing || !user) {
+  if (!user) {
     return (
-      <button disabled={true} className="">
-        nobody is connected
+      <button disabled={true} className="btn btn-primary">
+        no wallet
+      </button>
+    )
+  }
+
+  if (listing.status !== 'active') {
+    return (
+      <button disabled={true} className="btn btn-primary">
+        Inactive listing
       </button>
     )
   }
@@ -54,7 +59,11 @@ export function TradeBtn({ listing }: Props) {
 
   return (
     <>
-      <button disabled={isDisabled} onClick={handlePrimaryAction} className="btn btn-primary">
+      <button
+        disabled={isDisabled || listing.isCollectionBid} // collectionBid feature is paused
+        onClick={handlePrimaryAction}
+        className="btn btn-primary"
+      >
         {listing.isCollectionBid ? (
           <>
             <Layers size={16} />

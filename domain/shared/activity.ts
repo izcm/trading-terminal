@@ -10,6 +10,7 @@ export type Activity = {
   tokenId: bigint
   price: bigint
   timestamp: number
+  status?: string
   isCollectionBid?: boolean
   collectionSymbol?: string
 }
@@ -26,6 +27,7 @@ export const activity = {
       timestamp: listing.start,
       isCollectionBid: listing.isCollectionBid,
       collectionSymbol: listing.nftCollection?.symbol ?? 'unknown',
+      status: listing.status,
     }
   },
 

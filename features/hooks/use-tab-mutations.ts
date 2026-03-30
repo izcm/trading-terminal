@@ -1,13 +1,11 @@
-import { Dispatch, SetStateAction } from 'react'
+import { Dispatch, SetStateAction, useCallback } from 'react'
 
 import { Page } from '@/lib/utils/http'
-import { TabName, TabResource } from '../tab-config'
+import { itemGetters, TabName, TabResource } from '../tab-config'
 
 type TabPages = {
   [K in TabName]: Page<TabResource[K]>
 }
-
-import { useCallback } from 'react'
 
 export function useTabMutations(setState: Dispatch<SetStateAction<TabPages>>) {
   const addItem = useCallback(
@@ -23,6 +21,18 @@ export function useTabMutations(setState: Dispatch<SetStateAction<TabPages>>) {
     [setState]
   )
 
+  const updateItem = useCallback(
+    <K extends TabName>(tab: K, id: string, updater: (item: TabResource[K]) => TabResource[K]) => {
+      setState(prev => ({
+        ...prev,
+        [tab]: {
+          ...prev[tab],
+          items: prev[tab].items.map(item => (item.id === id ? updater(item) : item)),
+        },
+      }))
+    },
+    [setState]
+  )
   const mergePage = useCallback(
     <K extends TabName>(tab: K, items: TabResource[K][], cursor: string | null) => {
       setState(prev => {
@@ -50,5 +60,5 @@ export function useTabMutations(setState: Dispatch<SetStateAction<TabPages>>) {
     [setState]
   )
 
-  return { addItem, mergePage, replacePage }
+  return { addItem, updateItem, mergePage, replacePage }
 }

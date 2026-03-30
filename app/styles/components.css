@@ -66,9 +66,16 @@
 .btn:disabled {
   opacity: 0.35;
   cursor: not-allowed;
-  pointer-events: none;
   border-color: var(--border-soft);
   background: var(--bg-surface);
+  box-shadow: none;
+}
+
+/* 🚫 disable hover effects */
+.btn:disabled:hover {
+  transform: none;
+  background: var(--bg-surface);
+  border-color: var(--border-soft);
   box-shadow: none;
 }
 

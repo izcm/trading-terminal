@@ -61,7 +61,7 @@ export function MarketplaceView(initial: InitialState) {
   const { isMyToken, isMyListing, buildMineQuery } = useMine(tab, user, activeCollection)
 
   // --- mutations ---
-  const { mergePage, replacePage, addItem } = useTabMutations(setState)
+  const { mergePage, replacePage, addItem, updateItem } = useTabMutations(setState)
 
   const addItemAndMarkFresh = useCallback(
     <K extends TabName>(tab: K, item: TabResource[K]) => {
@@ -76,8 +76,8 @@ export function MarketplaceView(initial: InitialState) {
     connectWs()
   }, [])
 
-  useWsFeed(addItemAndMarkFresh)
-  useWsSales(addItemAndMarkFresh)
+  useWsFeed({ addItem: addItemAndMarkFresh, updateItem })
+  useWsSales({ addItem: addItemAndMarkFresh })
 
   // --- build query ---
   const query = useMemo(() => {

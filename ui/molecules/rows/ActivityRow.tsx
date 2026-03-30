@@ -50,10 +50,10 @@ function ActivityRow({ item }: { item: Props }) {
     collectionSymbol: symbol,
     tokenId,
     price,
+    status,
   } = item.activity
 
   const nft = item.nft ?? placeholderNFT(item.activity)
-  const rarity = nft.attributes.find(a => a.trait_type === 'rarity')?.value
 
   const badgeClasses = 'absolute -bottom-1 -right-1 text-[10px] px-1 rounded text-black'
 
@@ -76,17 +76,23 @@ function ActivityRow({ item }: { item: Props }) {
         )}
       </div>
 
-      {/* NFT info */}
       <div className="flex flex-col justify-center flex-1 min-h-[56px]">
         <span className="font-semibold truncate">
           {source === 'listing' && isCollectionBid ? `${symbol} collection bid` : nft.name}
         </span>
 
-        <span className="text-xs text-muted">
-          {symbol} {!isCollectionBid && `#${tokenId}`}
-        </span>
-
-        {!isCollectionBid && rarity && <span className="text-[11px] text-accent">{rarity}</span>}
+        <div>
+          <span className="text-xs text-muted inline-block w-[75px]">
+            {symbol} {!isCollectionBid ? `#${tokenId}` : '#any'}
+          </span>
+          {status && status !== 'active' && (
+            <span
+              className={`text-[11px] ${status === 'filled' ? 'text-success-weak' : 'text-failure-weak'}`}
+            >
+              {status.toUpperCase()}
+            </span>
+          )}
+        </div>
 
         {isCollectionBid && <span className="text-xs text-accent/70">any NFT in collection</span>}
       </div>

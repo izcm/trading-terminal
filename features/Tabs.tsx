@@ -11,16 +11,14 @@ export function Tabs(data: Props) {
   const tab = data.activeTab
   const ui = tabUIConfig[tab]
 
-  const [selectedByTab, setSelectedByTab] = useState<Partial<{ [K in TabName]: TabResource[K] }>>(
-    {}
-  )
+  const [selectedByTab, setSelectedByTab] = useState<Partial<{ [K in TabName]: string }>>({})
 
   return (
     <TabContainer
       ui={ui}
       items={data[tab]}
-      selected={selectedByTab[tab]}
-      setSelected={item => setSelectedByTab(prev => ({ ...prev, [tab]: item }))}
+      selectedId={selectedByTab[tab]}
+      setSelectedId={id => setSelectedByTab(prev => ({ ...prev, [tab]: id }))}
       ctx={data.ctx}
     />
   )
@@ -29,31 +27,34 @@ export function Tabs(data: Props) {
 export function TabContainer<K extends TabName>({
   ui,
   items,
-  selected,
-  setSelected,
+  selectedId,
+  setSelectedId,
   ctx,
 }: {
   ui: (typeof tabUIConfig)[K]
   items: TabResource[K][]
-  selected: TabResource[K] | undefined
-  setSelected: (item: TabResource[K]) => void
+  selectedId: string | undefined
+  setSelectedId: (id: string) => void
   ctx?: TabCtx<K>
 }) {
+  const selected = items.find(item => item.id === selectedId)
+
   useEffect(() => {
     if (items.length === 0) return
 
-    const exists = selected && items.some(i => i.id === selected.id)
+    // tab change
+    // const exists = selectedId && items.some(i => i.id === selectedId)
 
-    if (!exists) {
-      setSelected(items[0])
+    if (!selected) {
+      setSelectedId(items[0].id)
     }
-  }, [items, selected, setSelected])
+  }, [items, setSelectedId, selected])
 
   return (
     <Tab
       items={items}
       selected={selected}
-      onSelect={setSelected}
+      onSelect={item => setSelectedId(item.id)}
       galleryItem={ui.galleryItem}
       mainActionBtn={item => ui.mainActionBtn(item, ctx)}
       details={ui.details}

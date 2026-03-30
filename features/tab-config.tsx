@@ -12,7 +12,7 @@ import { getDmrktListing, getDmrktNFT, getDmrktSale } from '@/lib/dmrkt-indexer/
 import type { Listing } from '@/domain/listing'
 import type { Sale } from '@/domain/sale'
 import type { NFT } from '@/domain/nft'
-import { Activity, activity } from '@/domain/shared/activity'
+import { activity } from '@/domain/shared/activity'
 
 // shared components
 import { ActivityItem, NFTRow } from '@/ui/molecules'
@@ -72,7 +72,7 @@ export const tabUIConfig: TabUIConfig = {
     mainActionBtn: (l: Listing, ctx) => {
       // if isMine (token) && listing is ask => cancelBtn
       // if isMine (token) && listing is bid => fillBid (tradeBtn)
-      if (ctx?.isMyListing?.(l))
+      if (ctx?.isMyListing?.(l) && l.status === 'active')
         return <CancelOrderBtn nonce={BigInt(l.rawOrder.nonce)} listingId={l.id} />
       return <TradeBtn listing={l} />
     },
