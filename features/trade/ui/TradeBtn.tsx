@@ -7,11 +7,11 @@ import type { Listing } from '@/domain/listing'
 
 import { Modal } from '@/ui/atoms'
 
+import { useWallet } from '@/features/wallet/hooks/use-wallet'
+
 import { useTradeValidation } from '../hooks/use-trade-validation'
 import { useFillOrder } from '../hooks/use-fill-order'
-
 import { CbFillMenu } from './CbFillMenu'
-import { useAccount } from 'wagmi'
 
 type Props = {
   listing: Listing
@@ -19,7 +19,7 @@ type Props = {
 
 // todo: this is getting messy, fix it later
 export function TradeBtn({ listing }: Props) {
-  const { address: user } = useAccount()
+  const { account } = useWallet()
 
   // modal for selecting token to put into collection bid
   const [showModal, setShowModal] = useState<boolean>(false)
@@ -39,7 +39,7 @@ export function TradeBtn({ listing }: Props) {
     }
   }
 
-  if (!user) {
+  if (!account) {
     return (
       <button disabled={true} className="btn btn-primary">
         no wallet
@@ -88,7 +88,7 @@ export function TradeBtn({ listing }: Props) {
           <CbFillMenu
             chainId={listing.chainId}
             collection={listing.collection}
-            user={user}
+            user={account}
             validation={{
               canConfirm: sim.isFillable,
               checking: sim.checking,

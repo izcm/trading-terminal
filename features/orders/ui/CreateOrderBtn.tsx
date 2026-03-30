@@ -1,15 +1,15 @@
 import { useState } from 'react'
-import { useAccount } from 'wagmi'
 
 import { Gavel, Tag } from 'lucide-react'
-import { parseEther } from 'viem'
+import { parseEther } from 'viem' // todo: decouple here
 
-import { Hex } from '@/domain/shared/eth'
 import { OrderCore, OrderSide } from '@/protocol/eip712'
+import { Hex } from '@/domain/shared/eth'
 
 import { toast } from '@/ui/organisms/core/Toast'
 import { Modal } from '@/ui/atoms'
 
+import { useWallet } from '@/features/wallet/hooks/use-wallet'
 import { FormInput, OrderForm } from './OrderForm'
 import { useCreateOrder } from '../hooks/use-create-order'
 
@@ -32,16 +32,16 @@ const btnAttr = {
 } as const
 
 export function CreateOrderBtn({ collection, tokenId, side, onOrderCreated }: Props) {
-  const { address: user } = useAccount()
-  const { create, canCreate } = useCreateOrder(user)
+  const { account } = useWallet()
+  const { create, canCreate } = useCreateOrder(account)
 
   async function wrapAndSign(input: FormInput) {
-    if (!user) return
+    if (!account) return
 
     const order: OrderCore = {
       side,
       isCollectionBid: false, // feature is paused
-      actor: user,
+      actor: account,
       collection,
       tokenId: tokenId.toString(),
       currency: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',

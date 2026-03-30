@@ -64,8 +64,9 @@ export async function getDmrktListings({
   filters?: Record<string, string[]>
   cursor?: string | null
 } = {}): Promise<Result<Page<Listing>>> {
-  filters['isCollectionBid'] = ['false'] // feature paused
   const query = buildQuery({ filters, cursor, includes: ['nftCollection'] })
+  query.append('isCollectionBid', 'false') // added since collectionBid feature is paused
+
   const res = await getDmrktItems<OrderDTO>({
     params: 'orders',
     query,

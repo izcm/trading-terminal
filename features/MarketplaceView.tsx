@@ -1,7 +1,6 @@
 'use client' // boundry is here!
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useAccount } from 'wagmi'
 
 import { connectWs } from '@/lib/realtime/ws'
 import type { Page } from '@/lib/utils/http'
@@ -24,6 +23,8 @@ import { Tabs } from './Tabs'
 import { TxTracker } from './realtime/ui/TxTracker'
 import { useMine } from './marketplace/hooks/use-mine'
 import { toSearchParams } from '@/lib/dmrkt-indexer/actions/logic/param-mapper'
+import { useWallet } from './wallet/hooks/use-wallet'
+import { WalletWidget } from './wallet/ui/WalletWidget'
 
 type InitialState = {
   [K in TabName]: Page<TabResource[K]>
@@ -42,7 +43,7 @@ export function MarketplaceView(initial: InitialState) {
   })
 
   // --- login ---
-  const { address: user } = useAccount()
+  const { account } = useWallet()
 
   // --- state ---
   const [tab, setTab] = useState<TabName>('feed')
@@ -55,10 +56,10 @@ export function MarketplaceView(initial: InitialState) {
     : undefined
 
   // --- search filters + 'mine' flag ---
-  const { filters, mine, handleSearch } = useSearchFilters(tab, user)
+  const { filters, mineFlag, handleSearch } = useSearchFilters(tab, account)
 
   // --- user inventory ---
-  const { isMyToken, isMyListing, buildMineQuery } = useMine(tab, user, activeCollection)
+  const { isMyToken, isMyListing, buildMineQuery } = useMine(tab, account, activeCollection)
 
   // --- mutations ---
   const { mergePage, replacePage, addItem, updateItem } = useTabMutations(setState)
@@ -83,10 +84,10 @@ export function MarketplaceView(initial: InitialState) {
   const query = useMemo(() => {
     const activeFilters = filters[tab]
 
-    return mine[tab]
+    return mineFlag[tab]
       ? buildMineQuery(activeFilters) // apply mine filters
       : activeFilters
-  }, [tab, filters, mine, buildMineQuery])
+  }, [tab, filters, mineFlag, buildMineQuery])
 
   // --- pagination ---
   const currCursor = state[tab].cursor
@@ -119,26 +120,20 @@ export function MarketplaceView(initial: InitialState) {
 
   return (
     <div className="flex gap-4 h-screen max-w-4xl px-2 mx-auto overflow-hidden font-mono">
-      {/* ---- main content ---- */}
+      {/* ---- header ---- */}
+
       <main className="flex-1 flex flex-col mt-4 gap-4">
         <div className="flex items-center">
           <div className="basis-1/4 flex justify-start">
-            {/* <CreateAskBtn
-              chainId={31337}
-              collection={'0x1Db6f0B4E780c7eccD9736090627e824E4abe83D'}
-            /> */}
+            <WalletWidget />
           </div>
-          <div className="basis-1/2 flex justify-center gap-4 text-accent">
-            <button className="menuBtn">[ Swords ]</button>
-
-            <button className="menuBtn">[ Elixirs ]</button>
-
-            <button className="menuBtn">[ Shields ]</button>
-          </div>
+          <div className="basis-1/2"></div>
           <div className="w-1/4 flex justify-end">
             <TxTracker />
           </div>
         </div>
+
+        {/* ---- tab titles ---- */}
 
         <div className="flex w-full border-b border-soft">
           {(Object.keys(tabUIConfig) as TabName[]).map(title => (
@@ -159,16 +154,21 @@ export function MarketplaceView(initial: InitialState) {
           ))}
         </div>
 
+        {/* ---- searchbar ---- */}
+
         <div className="min-h-0 flex-1 flex-col flex gap-4">
           <TextInput
             key={tab}
             defaultValue={(() => {
               const base = decodeURIComponent(toSearchParams(filters[tab]).toString())
 
-              return mine[tab] ? `mine ${base}` : base
+              return mineFlag[tab] ? `mine ${base}` : base
             })()}
             onSubmit={handleSearch}
           />
+
+          {/* ---- list & tradepanel ---- */}
+
           <Tabs
             feed={state.feed.items}
             sales={state.sales.items}

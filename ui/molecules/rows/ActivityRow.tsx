@@ -87,7 +87,7 @@ function ActivityRow({ item }: { item: Props }) {
           </span>
           {status && status !== 'active' && (
             <span
-              className={`text-[11px] ${status === 'filled' ? 'text-success-weak' : 'text-failure-weak'}`}
+              className={`text-[11px] tracking-wide ${status === 'filled' ? 'text-success-weak' : 'text-failure-weak'}`}
             >
               {status.toUpperCase()}
             </span>

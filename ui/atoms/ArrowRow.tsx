@@ -24,7 +24,7 @@ export function ArrowRow({ isSelected, onSelect, children, className }: ArrowRow
       // default
       !isSelected && 'hover:bg-white/15 bg-secondary/80',
       // selected
-      isSelected && 'bg-accent/30'
+      isSelected && 'bg-accent/20'
     )
 
   return (

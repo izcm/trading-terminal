@@ -13,7 +13,7 @@ export function useSearchFilters(tab: TabName, user?: Hex) {
   })
 
   // tracks which tabs have active "mine" filter
-  const [mine, setMine] = useState<Record<TabName, boolean>>({
+  const [mineFlag, setMineFlag] = useState<Record<TabName, boolean>>({
     feed: false,
     sales: false,
     explore: false,
@@ -32,7 +32,6 @@ export function useSearchFilters(tab: TabName, user?: Hex) {
     return { mine, rest }
   }
 
-  // set potential 'mine' flag
   // nb: parent is resonsible for including owned tokenIds in query
   function handleSearch(value: string) {
     const { mine: hasMine, rest } = extractMine(value)
@@ -60,11 +59,11 @@ export function useSearchFilters(tab: TabName, user?: Hex) {
       [tab]: next,
     }))
 
-    setMine(prev => ({
+    setMineFlag(prev => ({
       ...prev,
       [tab]: hasMine,
     }))
   }
 
-  return { filters, mine, handleSearch }
+  return { filters, mineFlag: mineFlag, handleSearch }
 }

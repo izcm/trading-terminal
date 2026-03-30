@@ -42,13 +42,12 @@ export function TabContainer<K extends TabName>({
   useEffect(() => {
     if (items.length === 0) return
 
-    // tab change
-    // const exists = selectedId && items.some(i => i.id === selectedId)
+    const exists = selectedId && items.some(i => i.id === selectedId)
 
-    if (!selected) {
+    if (!exists) {
       setSelectedId(items[0].id)
     }
-  }, [items, setSelectedId, selected])
+  }, [items, selectedId, setSelectedId])
 
   return (
     <Tab

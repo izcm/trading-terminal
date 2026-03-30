@@ -15,6 +15,10 @@ const DETAIL_FIELDS: DetailField<Listing>[] = [
     getValue: l => `${Number(l.price) / 1e18} ETH`,
   },
   {
+    label: 'orderHash',
+    getValue: l => HexDetailField(l.orderHash),
+  },
+  {
     label: 'maker',
     getValue: l => HexDetailField(l.actor),
   },

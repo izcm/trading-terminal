@@ -272,30 +272,19 @@
   background: color-mix(in oklab, var(--bg-surface) 48%, transparent);
 }
 
-.menuBtn {
+.btn-menu {
   padding: 0.25rem 0.75rem;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-  font-weight: 600;
+  color: var(--accent-weak);
+  font-size: 0.8575rem;
+  letter-spacing: 1.6px;
   border-radius: 0.5rem;
   border: 1px solid var(--border-soft);
-  background: transparent;
-  cursor: pointer;
-  transition:
-    border-color 160ms ease,
-    color 160ms ease;
 }
 
-.menuBtn:hover {
+.btn-menu:hover {
   border-color: var(--accent);
   color: var(--accent);
 }
-
-/* button[data-active='true'] {
-  border-color: var(--accent);
-  color: var(--text-primary);
-  background: color-mix(in oklab, var(--accent) 5%, transparent);
-} */
 
 .btn-accent {
   background-color: color-mix(in oklab, var(--bg-surface) 50%, transparent);

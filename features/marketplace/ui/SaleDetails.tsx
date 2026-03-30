@@ -1,15 +1,17 @@
 import type { Sale } from '@/domain/sale'
-import { addrShort, truncateHex } from '@/domain/shared/utils/fmt/hex'
 import { tsShort } from '@/domain/shared/utils/time'
 
 import { Details, HexDetailField } from '@/ui/organisms/Details'
 import type { DetailField } from '@/ui/molecules/DetailFields'
-import { Copyable } from '@/ui/atoms/Copypable'
 
 const DETAIL_FIELDS: DetailField<Sale>[] = [
   {
-    label: 'chain',
+    label: 'chain id',
     getValue: s => s.chainId,
+  },
+  {
+    label: 'tx hash',
+    getValue: s => HexDetailField(s.txHash),
   },
   {
     label: 'buyer',
@@ -18,10 +20,6 @@ const DETAIL_FIELDS: DetailField<Sale>[] = [
   {
     label: 'seller',
     getValue: s => HexDetailField(s.seller),
-  },
-  {
-    label: 'tx hash',
-    getValue: s => HexDetailField(s.txHash),
   },
   {
     label: 'block number',

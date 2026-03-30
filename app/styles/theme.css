@@ -48,7 +48,7 @@
   --border-soft: rgba(120, 255, 180, 0.15);
 
   --accent: #66ffb2;
-  --accent-weak: rgba(102, 255, 179, 0.541);
+  --accent-weak: rgba(102, 255, 179, 0.65);
 
   --accent-stat: #5ee7ff;
   --accent-bid: #a78bfa; /* arcane violet */
@@ -57,10 +57,10 @@
   --panel-shadow: 0 0 10px rgba(102, 255, 178, 0.25), 0 0 40px rgba(102, 255, 178, 0.1);
 
   --color-success: #4cff9a;
-  --color-success-weak: rgba(76, 255, 154, 0.555);
+  --color-success-weak: rgba(76, 255, 154, 0.65);
 
   --color-failure: #ff5a3d;
-  --color-failure-weak: rgba(255, 90, 61, 0.555);
+  --color-failure-weak: rgba(255, 90, 61, 0.65);
 }
 
 :root[data-theme='cyber-void'] {

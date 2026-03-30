@@ -53,7 +53,7 @@ export function Gallery<T extends { id: string }>({
                 galleryClasses.arrowRow,
 
                 // default
-                !isSelected && !isFresh(item) && 'hover:bg-white/15 bg-secondary/80',
+                !isSelected && !isFresh(item) && 'hover:bg-white/12 bg-secondary/80',
 
                 // fresh
                 !isSelected && isFresh(item) && 'fresh',

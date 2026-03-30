@@ -1,32 +1,33 @@
 import { useMemo } from 'react'
-import { useAccount, useSimulateContract } from 'wagmi'
+import { useSimulateContract } from 'wagmi' // todo: decouple
 import { Address } from 'viem'
 
 import { Order, toOrder712 } from '@/protocol/eip712'
 import { orderbookAbi, orderbookAddress } from '@/protocol/config'
 import { ozErc721Errors } from '@/lib/blockchain'
+import { useWallet } from '@/features/wallet/hooks/use-wallet'
 
 export function useTradeSimulation(order?: Order, tokenIdCb?: bigint) {
-  const { address } = useAccount()
+  const { account } = useWallet()
 
-  const enabled = !!order && !!address && (!order.isCollectionBid || tokenIdCb !== undefined)
+  const enabled = !!order && !!account && (!order.isCollectionBid || tokenIdCb !== undefined)
 
   const args = useMemo(() => {
-    if (!order || !address) return undefined
+    if (!order || !account) return undefined
 
     const { signature, ...orderCore } = order
 
     const order712 = toOrder712(orderCore)
     const tokenIdFill = order.isCollectionBid ? tokenIdCb : order.tokenId
 
-    return [{ tokenId: tokenIdFill, actor: address }, order712, signature] as const
-  }, [order, address, tokenIdCb])
+    return [{ tokenId: tokenIdFill, actor: account }, order712, signature] as const
+  }, [order, account, tokenIdCb])
 
   const sim = useSimulateContract({
     abi: [...orderbookAbi, ...ozErc721Errors],
     address: orderbookAddress! as Address,
     functionName: 'settle',
-    account: address,
+    account: account,
     args,
     query: {
       enabled,
