@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import React from 'react'
 
 type ArrowListProps<T> = {
   items: T[]
@@ -7,6 +8,7 @@ type ArrowListProps<T> = {
   onSelect: (item: T) => void
   children: (args: { item: T; isSelected: boolean; onSelect: () => void }) => ReactNode
   className?: string
+  ref?: React.Ref<HTMLUListElement>
 }
 
 export function ArrowList<T>({
@@ -16,10 +18,12 @@ export function ArrowList<T>({
   onSelect,
   children,
   className = '',
+  ref,
 }: ArrowListProps<T>) {
   const base = 'overflow-y-auto no-scrollbar'
   return (
     <ul
+      ref={ref}
       className={`${base} ${className}`}
       tabIndex={0}
       onKeyDown={e => {

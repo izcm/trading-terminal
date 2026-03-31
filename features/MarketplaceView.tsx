@@ -1,7 +1,8 @@
-'use client' // boundry is here!
+'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
+import { toSearchParams } from '@/lib/dmrkt-indexer/actions/logic/param-mapper'
 import { connectWs } from '@/lib/realtime/ws'
 import type { Page } from '@/lib/utils/http'
 
@@ -17,12 +18,11 @@ import { useFresh } from './marketplace/hooks/use-fresh'
 
 // tab config
 import { pageGetters, TabResource, tabUIConfig, type TabName } from './tab-config'
-import { Tabs } from './Tabs'
+import { TabContainer } from './Tabs'
 
 // features
 import { TxTracker } from './realtime/ui/TxTracker'
 import { useMine } from './marketplace/hooks/use-mine'
-import { toSearchParams } from '@/lib/dmrkt-indexer/actions/logic/param-mapper'
 import { useWallet } from './wallet/hooks/use-wallet'
 import { WalletWidget } from './wallet/ui/WalletWidget'
 
@@ -34,31 +34,45 @@ type TabPages = {
   [K in TabName]: Page<TabResource[K]>
 }
 
-// todo: useChainId() and filter all responses to active chain
 export function MarketplaceView(initial: InitialState) {
-  useKeyboardShortcuts({
-    f: () => setTab('feed'),
-    s: () => setTab('sales'),
-    e: () => setTab('explore'),
-  })
-
-  // --- login ---
-  const { account } = useWallet()
-
   // --- state ---
   const [tab, setTab] = useState<TabName>('feed')
   const [state, setState] = useState<TabPages>(initial)
+
+  // --- selected item per tab ---
+  const [selectedByTab, setSelectedByTab] = useState<Partial<{ [K in TabName]: string }>>({})
+  const selectedItem = state[tab].items.find(i => i.id === selectedByTab[tab])
+
+  const { account, isConnected, connect, disconnect, chainId } = useWallet()
   const { add: addFresh } = useFresh<TabName>()
 
-  // per today marketplace only supports one collection
-  const activeCollection = initial.explore.items.length
-    ? initial.explore.items[0].collection
-    : undefined
+  const walletInteraction = () => (isConnected ? disconnect() : connect())
 
-  // --- search filters + 'mine' flag ---
+  // main section of page (added so marketplaceview controls all shortcuts)
+  const focusActiveTabRef = useRef<() => void>(() => {})
+
+  // --- shortcuts ---
+  useKeyboardShortcuts({
+    // tab switch
+    f: () => setTab('feed'),
+    s: () => setTab('sales'),
+    e: () => setTab('explore'),
+    w: () => walletInteraction(),
+
+    // tab internals
+    // a: () => {
+    //   actionRef.current?.querySelector('button')?.click()
+    // },
+    g: () => focusActiveTabRef.current?.(),
+  })
+
+  // --- collection ---
+  const activeCollection = selectedItem ? selectedItem.collection : undefined
+
+  // --- filters ---
   const { filters, mineFlag, handleSearch } = useSearchFilters(tab, account)
 
-  // --- user inventory ---
+  // --- mine ---
   const { isMyToken, isMyListing, buildMineQuery } = useMine(tab, account, activeCollection)
 
   // --- mutations ---
@@ -72,7 +86,7 @@ export function MarketplaceView(initial: InitialState) {
     [addItem, addFresh]
   )
 
-  // --- ws connect + subs ---
+  // --- ws ---
   useEffect(() => {
     connectWs()
   }, [])
@@ -80,13 +94,10 @@ export function MarketplaceView(initial: InitialState) {
   useWsFeed({ addItem: addItemAndMarkFresh, updateItem })
   useWsSales({ addItem: addItemAndMarkFresh })
 
-  // --- build query ---
+  // --- query ---
   const query = useMemo(() => {
     const activeFilters = filters[tab]
-
-    return mineFlag[tab]
-      ? buildMineQuery(activeFilters) // apply mine filters
-      : activeFilters
+    return mineFlag[tab] ? buildMineQuery(activeFilters) : activeFilters
   }, [tab, filters, mineFlag, buildMineQuery])
 
   // --- pagination ---
@@ -95,11 +106,9 @@ export function MarketplaceView(initial: InitialState) {
   useEffect(() => {
     if (!currCursor) return
 
-    // merging pages
     const run = async () => {
       const res = await pageGetters[tab](query ?? {})
       if (!res.ok) return
-
       mergePage(tab, res.data.items, res.data.cursor)
     }
 
@@ -111,7 +120,6 @@ export function MarketplaceView(initial: InitialState) {
     const run = async () => {
       const res = await pageGetters[tab]({ filters: query, cursor: null })
       if (!res.ok) return
-
       replacePage(tab, res.data)
     }
 
@@ -120,20 +128,25 @@ export function MarketplaceView(initial: InitialState) {
 
   return (
     <div className="flex gap-4 h-screen max-w-4xl px-2 mx-auto overflow-hidden font-mono">
-      {/* ---- header ---- */}
+      <main className="flex-1 flex flex-col gap-4 mt-4">
+        {/* ---- header ---- */}
 
-      <main className="flex-1 flex flex-col mt-4 gap-4">
-        <div className="flex items-center">
-          <div className="basis-1/4 flex justify-start">
+        <div className="flex items-center mb-1">
+          <div className="basis-1/3 items-center flex justify-start">
             <WalletWidget />
+            <span className="px-2 text-sm text-accent-weak">ChainId: {chainId}</span>
           </div>
-          <div className="basis-1/2"></div>
-          <div className="w-1/4 flex justify-end">
+
+          <div className="basis-1/3 flex justify-center">
+            <button className="btn btn-menu w-full max-w-[250px]">dmrkt manual</button>
+          </div>
+
+          <div className="basis-1/3 flex justify-end">
             <TxTracker />
           </div>
         </div>
 
-        {/* ---- tab titles ---- */}
+        {/* ---- tabs ---- */}
 
         <div className="flex w-full border-b border-soft">
           {(Object.keys(tabUIConfig) as TabName[]).map(title => (
@@ -141,41 +154,49 @@ export function MarketplaceView(initial: InitialState) {
               key={title}
               onClick={() => setTab(title)}
               className={`
-            flex-1 py-2 text-center border-b-2 transition cursor-pointer
-        ${
-          title === tab
-            ? 'border-accent-weak text-accent-weak'
-            : 'border-transparent text-muted hover:text-accent/70'
-        }
-      `}
+                flex-1 py-2 text-center border-b-2 transition cursor-pointer
+                ${
+                  title === tab
+                    ? 'border-accent-weak text-accent-weak'
+                    : 'border-transparent text-muted hover:text-accent/70'
+                }
+              `}
             >
               {title.charAt(0).toUpperCase() + title.slice(1)}
             </button>
           ))}
         </div>
 
-        {/* ---- searchbar ---- */}
+        {/* ---- content ---- */}
 
         <div className="min-h-0 flex-1 flex-col flex gap-4">
           <TextInput
             key={tab}
             defaultValue={(() => {
               const base = decodeURIComponent(toSearchParams(filters[tab]).toString())
-
               return mineFlag[tab] ? `mine ${base}` : base
             })()}
             onSubmit={handleSearch}
           />
 
-          {/* ---- list & tradepanel ---- */}
-
-          <Tabs
-            feed={state.feed.items}
-            sales={state.sales.items}
-            explore={state.explore.items}
-            activeTab={tab}
+          <TabContainer
+            ui={tabUIConfig[tab]}
+            items={state[tab].items}
+            selectedId={selectedByTab[tab]}
+            setSelectedId={id => setSelectedByTab(prev => ({ ...prev, [tab]: id }))}
+            focusActiveTabRef={focusActiveTabRef}
             ctx={{ isMyToken, isMyListing }}
           />
+
+          {/* shortcut hack (least painfull way to have parent control shortcuts) */}
+          {/* <div ref={actionRef} className="hidden">
+            {selectedItem &&
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              tabUIConfig[tab].mainActionBtn(selectedItem as any, {
+                isMyToken,
+                isMyListing,
+              })}
+          </div> */}
         </div>
       </main>
     </div>

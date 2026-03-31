@@ -20,7 +20,7 @@ export function ReceiptBtn({ sale }: { sale: Sale }) {
 
   return (
     <>
-      <button className="btn btn-secondary" onClick={() => setShowModal(true)}>
+      <button onClick={() => setShowModal(true)} className="btn btn-secondary">
         Transaction details
       </button>
 

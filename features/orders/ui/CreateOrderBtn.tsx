@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { Gavel, Tag } from 'lucide-react'
+import { Gavel, Tag } from '@/ui/icons'
 import { parseEther } from 'viem' // todo: decouple here
 
 import { OrderCore, OrderSide } from '@/protocol/eip712'
@@ -74,7 +74,7 @@ export function CreateOrderBtn({ collection, tokenId, side, onOrderCreated }: Pr
 
   return (
     <>
-      <button disabled={!canCreate} onClick={() => setShowModal(true)} className="btn btn-primary">
+      <button onClick={() => setShowModal(true)} className="btn btn-primary" disabled={!canCreate}>
         {btnAttr[side].icon}
         <span className="px-1">{btnAttr[side].txt}</span>
       </button>

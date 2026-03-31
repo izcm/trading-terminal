@@ -273,6 +273,7 @@
 }
 
 .btn-menu {
+  height: 25px;
   padding: 0.25rem 0.75rem;
   color: var(--accent-weak);
   font-size: 0.8575rem;

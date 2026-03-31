@@ -20,6 +20,7 @@ export function TxTracker() {
         toast({
           title: 'Transaction confirmed',
           description: 'Your tx is confirmed on-chain. The marketplace should update shortly.',
+          variant: 'success',
         })
         seen.current.add(tx.hash)
       }
@@ -29,6 +30,7 @@ export function TxTracker() {
         toast({
           title: 'Transaction not completed',
           description: 'It may have been rejected, reverted, or out of gas. Please try again.',
+          variant: 'error',
         })
         seen.current.add(tx.hash)
       }

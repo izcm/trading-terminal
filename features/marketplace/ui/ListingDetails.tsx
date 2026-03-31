@@ -7,7 +7,11 @@ import type { DetailField } from '@/ui/molecules/DetailFields'
 
 const DETAIL_FIELDS: DetailField<Listing>[] = [
   {
-    label: 'token id',
+    label: 'chainId',
+    getValue: l => l.chainId,
+  },
+  {
+    label: 'tokenId',
     getValue: l => (l.isCollectionBid ? 'any' : `#${l.tokenId}`),
   },
   {

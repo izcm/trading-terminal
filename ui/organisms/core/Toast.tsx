@@ -1,4 +1,3 @@
-import { X } from 'lucide-react'
 import { toast as sonnerToast } from 'sonner'
 
 type ToastVariant = 'default' | 'success' | 'error'

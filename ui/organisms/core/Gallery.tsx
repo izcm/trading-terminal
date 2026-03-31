@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ReactNode, RefObject } from 'react'
 
 import { ArrowRow } from '@/ui/atoms'
 import { ArrowList } from '@/ui/molecules'
@@ -11,6 +11,7 @@ export type GalleryProps<T> = {
   onSelect: (item: T) => void
   isFresh?: (item: T) => boolean
   galleryView?: 'list' | 'card'
+  ref?: RefObject<HTMLUListElement | null>
 }
 
 export function Gallery<T extends { id: string }>({
@@ -20,6 +21,7 @@ export function Gallery<T extends { id: string }>({
   onSelect,
   isFresh = () => false,
   galleryView = 'list',
+  ref,
 }: GalleryProps<T>) {
   const galleryClasses =
     galleryView === 'list'
@@ -38,6 +40,7 @@ export function Gallery<T extends { id: string }>({
       {/* LEFT COLUMN */}
       <div className="flex min-h-0 flex-1 flex-col gap-4">
         <ArrowList
+          ref={ref}
           items={items}
           getId={c => c.id}
           selectedId={selected?.id}

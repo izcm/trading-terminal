@@ -25,6 +25,8 @@ import { CreateOrderBtn } from './orders/ui/CreateOrderBtn'
 import { ReceiptBtn } from './marketplace/ui/ReceiptBtn'
 import { CancelOrderBtn } from './orders/ui/CancelOrderBtn'
 
+// === BASE INFO ===
+
 export type TabResource = {
   feed: Listing
   explore: NFT
@@ -32,6 +34,8 @@ export type TabResource = {
 }
 
 export type TabName = keyof TabResource
+
+// === ITEM GETTERS ===
 
 type PageGetters<K extends keyof TabResource> = (args: {
   filters?: Record<string, string[]>
@@ -52,10 +56,14 @@ export const itemGetters: {
   explore: getDmrktNFT,
 }
 
+// === CTX ===
+
 export type TabCtx<K extends TabName> = {
   isMyToken?: (item: TabResource[K]) => boolean // all items have tokenId
   isMyListing?: (item: Listing) => boolean
 }
+
+// === UI CONFIG ===
 
 type TabUIConfig = {
   [K in TabName]: {
@@ -70,8 +78,6 @@ export const tabUIConfig: TabUIConfig = {
     galleryItem: (l: Listing) => <ActivityItem activity={activity.fromListing(l)} />,
     details: (l: Listing) => <ListingDetails listing={l} />,
     mainActionBtn: (l: Listing, ctx) => {
-      // if isMine (token) && listing is ask => cancelBtn
-      // if isMine (token) && listing is bid => fillBid (tradeBtn)
       if (ctx?.isMyListing?.(l) && l.status === 'active')
         return <CancelOrderBtn nonce={BigInt(l.rawOrder.nonce)} listingId={l.id} />
       return <TradeBtn listing={l} />

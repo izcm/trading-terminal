@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { CreditCard, Handshake, Layers } from 'lucide-react'
+import { CreditCard, Handshake, Layers, Slash, X } from '@/ui/icons'
 
 import type { Listing } from '@/domain/listing'
 
@@ -17,7 +17,6 @@ type Props = {
   listing: Listing
 }
 
-// todo: this is getting messy, fix it later
 export function TradeBtn({ listing }: Props) {
   const { account } = useWallet()
 
@@ -47,39 +46,31 @@ export function TradeBtn({ listing }: Props) {
     )
   }
 
-  if (listing.status !== 'active') {
-    return (
-      <button disabled={true} className="btn btn-primary">
-        Inactive listing
-      </button>
-    )
-  }
+  const isPending = sim.checking || sim.error === 'pending'
 
-  const isDisabled = !sim.isFillable && !listing.isCollectionBid
+  const isDisabled =
+    listing.status !== 'active' || (!sim.isFillable && !listing.isCollectionBid) || isPending
+
+  const content =
+    listing.status !== 'active'
+      ? { icon: <Slash size={16} />, label: `${listing.status}` }
+      : !sim.isFillable && !listing.isCollectionBid
+        ? { icon: <X size={16} />, label: 'Not fillable' }
+        : listing.isCollectionBid
+          ? { icon: <Layers size={16} />, label: 'Select nft' }
+          : listing.type === 'ask'
+            ? { icon: <CreditCard size={16} />, label: 'Buy loot' }
+            : { icon: <Handshake size={16} />, label: 'Fill bid' }
 
   return (
     <>
       <button
-        disabled={isDisabled || listing.isCollectionBid} // collectionBid feature is paused
         onClick={handlePrimaryAction}
+        disabled={isDisabled || listing.isCollectionBid} // collectionBid feature is paused
         className="btn btn-primary"
       >
-        {listing.isCollectionBid ? (
-          <>
-            <Layers size={16} />
-            <span className="px-1">Select nft</span>
-          </>
-        ) : listing.type === 'ask' ? (
-          <>
-            <CreditCard size={16} />
-            <span className="px-1">Buy loot</span>
-          </>
-        ) : (
-          <>
-            <Handshake size={16} />
-            <span className="px-1">Fill bid</span>
-          </>
-        )}
+        {content.icon}
+        <span className="px-1">{content.label}</span>
       </button>
 
       {/* MODAL */}

@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ReactNode, RefObject } from 'react'
 
 import { Gallery } from './Gallery'
 import { NFTPreview } from '@/features/marketplace/ui/NFTPreview'
@@ -10,6 +10,7 @@ type TabProps<T> = {
   onSelect: (item: T) => void
   galleryItem: (item: T) => ReactNode
   galleryItemIsFresh?: (item: T) => boolean
+  galleryRef?: RefObject<HTMLUListElement | null>
   mainActionBtn: (item: T) => ReactNode
   details?: (item: T) => ReactNode
 }
@@ -19,6 +20,7 @@ export function Tab<T extends { id: string; chainId: number; collection: Hex; to
   selected,
   onSelect,
   galleryItem,
+  galleryRef,
   galleryItemIsFresh,
   mainActionBtn,
   details,
@@ -32,6 +34,7 @@ export function Tab<T extends { id: string; chainId: number; collection: Hex; to
           onSelect={onSelect}
           galleryItem={galleryItem}
           isFresh={galleryItemIsFresh}
+          ref={galleryRef}
         />
       </div>
 
