@@ -1,7 +1,6 @@
 import { ContractFunctionExecutionError, ContractFunctionRevertedError } from 'viem'
 
 import { ORDERBOOK_ERROR_MESSAGES as ERRORS } from '@/protocol/errors'
-import { Order } from '@/protocol/eip712'
 
 import { useTradeSimulation } from './use-trade-simulation'
 

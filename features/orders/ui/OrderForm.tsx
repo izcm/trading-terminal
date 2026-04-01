@@ -14,18 +14,26 @@ type Props = {
   back?: () => void
 }
 
+const durations = [
+  { label: '7d', seconds: 86400 },
+  { label: '30d', seconds: 86400 * 30 },
+  { label: '90d', seconds: 86400 * 90 },
+]
+
 export function OrderForm({ tokenId, onSubmit, back }: Props) {
   const [price, setPrice] = useState('')
-  const [start, setStart] = useState('')
-  const [end, setEnd] = useState('')
-
-  const durations = [
-    { label: '7d', seconds: 86400 },
-    { label: '30d', seconds: 86400 * 30 },
-    { label: '90d', seconds: 86400 * 90 },
-  ]
 
   const [selectedDuration, setSelectedDuration] = useState<number>(durations[0].seconds)
+
+  const [start, setStart] = useState(() => {
+    const now = Math.floor(Date.now() / 1000)
+    return String(now)
+  })
+
+  const [end, setEnd] = useState(() => {
+    const now = Math.floor(Date.now() / 1000)
+    return String(now + durations[0].seconds)
+  })
 
   const formRef = useRef<HTMLFormElement>(null)
 

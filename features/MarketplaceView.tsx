@@ -42,28 +42,24 @@ export function MarketplaceView(initial: InitialState) {
   const [tab, setTab] = useState<TabName>('feed')
   const [state, setState] = useState<TabPages>(initial)
 
-  // --- selected item per tab ---
+  // --- selected item ---
   const [selectedByTab, setSelectedByTab] = useState<Partial<{ [K in TabName]: string }>>({})
+
   const selectedItem = state[tab].items.find(i => i.id === selectedByTab[tab])
+  const activeCollection = selectedItem ? selectedItem.collection : undefined
 
+  // --- wallet stuff ---
   const { account, isConnected, connect, disconnect, chainId } = useWallet()
-  const { add: addFresh } = useFresh<TabName>()
-
   const walletInteraction = () => (isConnected ? disconnect() : connect())
 
-  // main section of page (added so marketplaceview controls all shortcuts)
-  const focusActiveTabRef = useRef<() => void>(() => {})
-
-  // --- collection ---
-  const activeCollection = selectedItem ? selectedItem.collection : undefined
+  // --- selected context ---
+  const { isMyToken, isMyListing, buildMineQuery } = useMine(tab, account, activeCollection)
 
   // --- filters ---
   const { filters, mineFlag, handleSearch } = useSearchFilters(tab, account)
 
-  // --- mine ---
-  const { isMyToken, isMyListing, buildMineQuery } = useMine(tab, account, activeCollection)
-
   // --- mutations ---
+  const { add: addFresh } = useFresh<TabName>()
   const { mergePage, replacePage, addItem, updateItem } = useTabMutations(setState)
 
   const addItemAndMarkFresh = useCallback(
@@ -77,6 +73,9 @@ export function MarketplaceView(initial: InitialState) {
   // --- tab main actions ---
   const { actions: tabActions, modal, closeModal } = useTabActions()
   const resolvedTabAction = useMainAction(tab, selectedItem, { isMyToken, isMyListing }, tabActions)
+
+  // tab gallery focus
+  const focusActiveTabRef = useRef<() => void>(() => {})
 
   // --- keyboard shortcuts ---
   useKeyboardShortcuts({
@@ -109,6 +108,7 @@ export function MarketplaceView(initial: InitialState) {
   }, [tab, filters, mineFlag, buildMineQuery])
 
   // --- pagination ---
+  // todo: actually implement pagination (infinite scroll style)
   const currCursor = state[tab].cursor
 
   useEffect(() => {
