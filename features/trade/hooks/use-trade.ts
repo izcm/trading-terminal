@@ -8,7 +8,12 @@ import { useTradeValidation } from './use-trade-validation'
 // NB: **collection bid feature is paused**
 
 export function useTrade(listing: Listing) {
-  const { fillOrder, isFillable, isChecking, error } = useFillOrder(listing?.rawOrder, listing?.id)
+  const {
+    fill: fillOrder,
+    isFillable,
+    isChecking,
+    error,
+  } = useFillOrder(listing?.rawOrder, listing?.id)
 
   const isDisabled =
     listing.status !== 'active' || (!isFillable && !listing.isCollectionBid) || isChecking

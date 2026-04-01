@@ -4,6 +4,7 @@ import { useTx } from '@/app/providers/TxProvider'
 import type { Order } from '@/protocol/eip712'
 import { useTradeValidation } from './use-trade-validation'
 import { useTradeSimulation } from './use-trade-simulation'
+import { useWallet } from '@/features/wallet/hooks/use-wallet'
 
 // const safeStringify = (obj: unknown) =>
 //   JSON.stringify(obj, (_, value) => (typeof value === 'bigint' ? value.toString() : value), 2)
@@ -16,13 +17,15 @@ import { useTradeSimulation } from './use-trade-simulation'
 
 export function useFillOrder(order?: Order, listingId?: string) {
   const { addTx } = useTx()
-  const sim = useTradeSimulation(order)
+  const { account } = useWallet()
+
+  const sim = useTradeSimulation(account, order)
 
   const { isFillable, isChecking, error } = useTradeValidation(sim)
 
   const { writeContractAsync } = useWriteContract()
 
-  async function fillOrder() {
+  async function fill() {
     if (!isFillable || isChecking || !sim.data?.request) return
 
     const hash = await writeContractAsync(sim.data.request)
@@ -30,7 +33,7 @@ export function useFillOrder(order?: Order, listingId?: string) {
   }
 
   return {
-    fillOrder,
+    fill,
     isFillable,
     isChecking,
     error,

@@ -12,7 +12,7 @@ type TabProps<T> = {
   galleryItem: (item: T) => ReactNode
   galleryItemIsFresh?: (item: T) => boolean
   mainActionBtn: (item: T) => ReactNode
-  mainAction: (item: T) => (() => void) | undefined
+  action: (() => void) | undefined
   details?: (item: T) => ReactNode
 }
 
@@ -24,7 +24,7 @@ export function Tab<T extends { id: string; chainId: number; collection: Hex; to
   galleryItem,
   galleryItemIsFresh,
   mainActionBtn,
-  mainAction,
+  action,
   details,
 }: TabProps<T>) {
   console.log(details)
@@ -52,8 +52,6 @@ export function Tab<T extends { id: string; chainId: number; collection: Hex; to
         <button
           onClick={() => {
             if (!selected) return
-
-            const action = mainAction(selected)
 
             if (action) action()
           }}

@@ -8,27 +8,25 @@ import { orderbookAbi, orderbookAddress } from '@/protocol/config'
 import { ozErc721Errors } from '@/lib/blockchain'
 import { useWallet } from '@/features/wallet/hooks/use-wallet'
 
-export function useTradeSimulation(order?: Order, tokenIdCb?: bigint) {
-  const { account } = useWallet()
-
-  const enabled = !!order && !!account && (!order.isCollectionBid || tokenIdCb !== undefined)
+export function useTradeSimulation(user?: Address, order?: Order, tokenIdCb?: bigint) {
+  const enabled = !!order && !!user && (!order.isCollectionBid || tokenIdCb !== undefined)
 
   const args = useMemo(() => {
-    if (!order || !account) return undefined
+    if (!order || !user) return undefined
 
     const { signature, ...orderCore } = order
 
     const order712 = toOrder712(orderCore)
     const tokenIdFill = order.isCollectionBid ? tokenIdCb : order.tokenId
 
-    return [{ tokenId: tokenIdFill, actor: account }, order712, signature] as const
-  }, [order, account, tokenIdCb])
+    return [{ tokenId: tokenIdFill, actor: user }, order712, signature] as const
+  }, [order, user, tokenIdCb])
 
   const sim = useSimulateContract({
     abi: [...orderbookAbi, ...ozErc721Errors],
     address: orderbookAddress! as Address,
     functionName: 'settle',
-    account: account,
+    account: user,
     args,
     query: {
       enabled,

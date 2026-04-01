@@ -22,7 +22,7 @@ import { ListingDetails } from './marketplace/ui/ListingDetails'
 import { SaleDetails } from './marketplace/ui/SaleDetails'
 import { TradeBtn } from './trade/ui/TradeBtn'
 import { CreateOrderBtn } from './orders/ui/CreateOrderBtn'
-import { Receipt } from './marketplace/ui/ReceiptBtn'
+import { SalesReceipt } from '../ui/organisms/SalesReceipt'
 import { CancelOrderBtn } from './orders/ui/CancelOrderBtn'
 
 // === BASE INFO ===

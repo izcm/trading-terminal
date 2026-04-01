@@ -25,8 +25,9 @@ import { TxTracker } from './realtime/ui/TxTracker'
 import { useMine } from './marketplace/hooks/use-mine'
 import { useWallet } from './wallet/hooks/use-wallet'
 import { WalletWidget } from './wallet/ui/WalletWidget'
-import { useTabActions } from './marketplace/hooks/use-tab-actions'
-import { Receipt } from './marketplace/ui/ReceiptBtn'
+import { useMainAction, useTabActions } from './marketplace/hooks/use-tab-actions'
+import { SalesReceipt } from '../ui/organisms/SalesReceipt'
+import { CreateOrderFlow } from './orders/ui/CreateOrderModal'
 
 type InitialState = {
   [K in TabName]: Page<TabResource[K]>
@@ -53,21 +54,6 @@ export function MarketplaceView(initial: InitialState) {
   // main section of page (added so marketplaceview controls all shortcuts)
   const focusActiveTabRef = useRef<() => void>(() => {})
 
-  // --- shortcuts ---
-  useKeyboardShortcuts({
-    // tab switch
-    f: () => setTab('feed'),
-    s: () => setTab('sales'),
-    e: () => setTab('explore'),
-    W: () => walletInteraction(),
-
-    // tab internals
-    // a: () => {
-    //   actionRef.current?.querySelector('button')?.click()
-    // },
-    g: () => focusActiveTabRef.current?.(),
-  })
-
   // --- collection ---
   const activeCollection = selectedItem ? selectedItem.collection : undefined
 
@@ -90,6 +76,26 @@ export function MarketplaceView(initial: InitialState) {
 
   // --- tab main actions ---
   const { actions: tabActions, modal, closeModal } = useTabActions()
+  const {
+    action: currentTabAction,
+    disabled,
+    loading,
+  } = useMainAction(tab, selectedItem, { isMyToken, isMyListing }, tabActions)
+
+  // --- keyboard shortcuts ---
+  useKeyboardShortcuts({
+    // tab switch
+    f: () => setTab('feed'),
+    s: () => setTab('sales'),
+    e: () => setTab('explore'),
+    W: () => walletInteraction(),
+
+    // tab internals
+    // a: () => {
+    //   actionRef.current?.querySelector('button')?.click()
+    // },
+    g: () => focusActiveTabRef.current?.(),
+  })
 
   // --- ws ---
   useEffect(() => {
@@ -190,14 +196,25 @@ export function MarketplaceView(initial: InitialState) {
             selectedId={selectedByTab[tab]}
             setSelectedId={id => setSelectedByTab(prev => ({ ...prev, [tab]: id }))}
             focusActiveTabRef={focusActiveTabRef}
-            mainAction={tabActions[tab]}
+            mainAction={currentTabAction}
             ctx={{ isMyToken, isMyListing }}
           />
         </div>
       </main>
+
       {modal?.type === 'receipt' && (
         <Modal isOpen onClose={closeModal}>
-          <Receipt sale={modal.data} />
+          <SalesReceipt sale={modal.data} />
+        </Modal>
+      )}
+
+      {modal?.type === 'createOrder' && (
+        <Modal isOpen onClose={closeModal}>
+          <CreateOrderFlow
+            collection={modal.data.collection}
+            tokenId={modal.data.tokenId}
+            side={modal.data.side}
+          />
         </Modal>
       )}
     </div>

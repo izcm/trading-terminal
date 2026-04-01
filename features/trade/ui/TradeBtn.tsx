@@ -17,7 +17,7 @@ export function TradeBtn({ listing }: Props) {
   const { account } = useWallet()
 
   // chain interaction stuff
-  const { fillOrder, isFillable, isChecking } = useFillOrder(listing?.rawOrder, listing?.id)
+  const { fill: fillOrder, isFillable, isChecking } = useFillOrder(listing?.rawOrder, listing?.id)
 
   const handlePrimaryAction = () => {
     if (!listing) return

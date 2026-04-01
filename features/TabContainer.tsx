@@ -1,7 +1,7 @@
 import { RefObject, useEffect, useRef } from 'react'
 
 import { Tab } from '@/ui/organisms/core/Tab'
-import { TabActions, TabCtx, tabUIConfig, type TabName, type TabResource } from './tab-config'
+import { TabCtx, tabUIConfig, type TabName, type TabResource } from './tab-config'
 
 export function TabContainer<K extends TabName>({
   ui,
@@ -17,7 +17,7 @@ export function TabContainer<K extends TabName>({
   selectedId: string | undefined
   setSelectedId: (id: string) => void
   focusActiveTabRef: RefObject<() => void>
-  mainAction: TabActions[K]
+  mainAction: (() => void) | undefined
   ctx?: TabCtx<K>
 }) {
   const selected = items.find(item => item.id === selectedId)
@@ -48,7 +48,7 @@ export function TabContainer<K extends TabName>({
       galleryItem={ui.galleryItem}
       galleryRef={galleryRef}
       mainActionBtn={item => ui.mainActionBtn?.(item, ctx)}
-      mainAction={item => mainAction(item, ctx)}
+      action={mainAction}
       details={ui.details}
     />
   )

@@ -1,9 +1,6 @@
-import { useState } from 'react'
-
 import { addrShort, truncateHex } from '@/domain/shared/utils/fmt/hex'
 
 import { Sale } from '@/domain/sale'
-import { Modal } from '@/ui/atoms'
 
 function Row({ label, value }: { label: string; value: React.ReactNode }) {
   return (
@@ -14,7 +11,7 @@ function Row({ label, value }: { label: string; value: React.ReactNode }) {
   )
 }
 
-export function Receipt({ sale }: { sale: Sale }) {
+export function SalesReceipt({ sale }: { sale: Sale }) {
   const ctx = sale.txContext
 
   {
