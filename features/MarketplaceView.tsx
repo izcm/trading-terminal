@@ -76,11 +76,7 @@ export function MarketplaceView(initial: InitialState) {
 
   // --- tab main actions ---
   const { actions: tabActions, modal, closeModal } = useTabActions()
-  const {
-    action: currentTabAction,
-    disabled,
-    loading,
-  } = useMainAction(tab, selectedItem, { isMyToken, isMyListing }, tabActions)
+  const resolvedTabAction = useMainAction(tab, selectedItem, { isMyToken, isMyListing }, tabActions)
 
   // --- keyboard shortcuts ---
   useKeyboardShortcuts({
@@ -91,9 +87,10 @@ export function MarketplaceView(initial: InitialState) {
     W: () => walletInteraction(),
 
     // tab internals
-    // a: () => {
-    //   actionRef.current?.querySelector('button')?.click()
-    // },
+    a: () => {
+      if (!resolvedTabAction?.run || resolvedTabAction.disabled) return
+      resolvedTabAction.run()
+    },
     g: () => focusActiveTabRef.current?.(),
   })
 
@@ -196,8 +193,8 @@ export function MarketplaceView(initial: InitialState) {
             selectedId={selectedByTab[tab]}
             setSelectedId={id => setSelectedByTab(prev => ({ ...prev, [tab]: id }))}
             focusActiveTabRef={focusActiveTabRef}
-            mainAction={currentTabAction}
-            ctx={{ isMyToken, isMyListing }}
+            tabAction={resolvedTabAction}
+            ctx={{ isMyListing, isMyToken }}
           />
         </div>
       </main>

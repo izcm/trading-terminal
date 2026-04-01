@@ -14,12 +14,6 @@ function Row({ label, value }: { label: string; value: React.ReactNode }) {
 export function SalesReceipt({ sale }: { sale: Sale }) {
   const ctx = sale.txContext
 
-  {
-    /* <button onClick={() => setShowModal(true)} className="btn btn-secondary">
-        Transaction details
-      </button> */
-  }
-
   return (
     <div className="card p-5 w-full max-w-[480px] space-y-4">
       {/* header */}

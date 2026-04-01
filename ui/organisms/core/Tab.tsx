@@ -4,6 +4,8 @@ import { Gallery } from './Gallery'
 import { NFTPreview } from '@/features/marketplace/ui/NFTPreview'
 import { Hex } from '@/domain/shared/eth'
 
+import { BtnProps } from '@/features/tab-config'
+
 type TabProps<T> = {
   items: T[]
   selected: T | undefined
@@ -11,8 +13,8 @@ type TabProps<T> = {
   galleryRef?: RefObject<HTMLUListElement | null>
   galleryItem: (item: T) => ReactNode
   galleryItemIsFresh?: (item: T) => boolean
-  mainActionBtn: (item: T) => ReactNode
   action: (() => void) | undefined
+  actionBtnProps: BtnProps | undefined
   details?: (item: T) => ReactNode
 }
 
@@ -23,11 +25,10 @@ export function Tab<T extends { id: string; chainId: number; collection: Hex; to
   galleryRef,
   galleryItem,
   galleryItemIsFresh,
-  mainActionBtn,
   action,
+  actionBtnProps,
   details,
 }: TabProps<T>) {
-  console.log(details)
   return (
     <div className="min-h-0 flex-1 flex gap-4">
       <div className="flex-1 flex flex-col gap-4">
@@ -55,10 +56,8 @@ export function Tab<T extends { id: string; chainId: number; collection: Hex; to
 
             if (action) action()
           }}
-        >
-          hi
-        </button>
-        {selected && mainActionBtn(selected)}
+          {...actionBtnProps}
+        />
         {selected !== undefined && details !== undefined && (
           <div className="card bg-secondary h-full">{details(selected)}</div>
         )}

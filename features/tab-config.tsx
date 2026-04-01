@@ -1,6 +1,5 @@
-import { ReactNode } from 'react'
+import { ButtonHTMLAttributes, JSX, ReactNode } from 'react'
 
-import { OrderSide } from '@/protocol/eip712'
 import type { Page, Result } from '@/lib/utils/http'
 import {
   getDmrktListings,
@@ -16,14 +15,11 @@ import { activity } from '@/domain/shared/activity'
 
 // shared components
 import { ActivityItem, NFTRow } from '@/ui/molecules'
+import { Ban, CreditCard, Gavel, Handshake, Slash, Tag, X } from '@/ui/icons'
 
 // feature components
 import { ListingDetails } from './marketplace/ui/ListingDetails'
 import { SaleDetails } from './marketplace/ui/SaleDetails'
-import { TradeBtn } from './trade/ui/TradeBtn'
-import { CreateOrderBtn } from './orders/ui/CreateOrderBtn'
-import { SalesReceipt } from '../ui/organisms/SalesReceipt'
-import { CancelOrderBtn } from './orders/ui/CancelOrderBtn'
 
 // === BASE INFO ===
 
@@ -69,51 +65,84 @@ export type TabActions = {
   [K in TabName]: (item: TabResource[K], ctx?: TabCtx<K>) => (() => void) | undefined
 }
 
+export type ResolvedAction = {
+  run: (() => void) | undefined
+  disabled: boolean
+  loading: boolean
+}
+
 // === UI CONFIG ===
+
+export type BtnProps = ButtonHTMLAttributes<HTMLButtonElement>
 
 type TabUIConfig = {
   [K in TabName]: {
     galleryItem: (item: TabResource[K]) => ReactNode
     details?: (item: TabResource[K]) => ReactNode
-    mainActionBtn?: (item: TabResource[K], ctx?: TabCtx<K>) => ReactNode
+    actionBtnProps?: (
+      item: TabResource[K],
+      disabled?: boolean,
+      loading?: boolean,
+      ctx?: TabCtx<K>
+    ) => BtnProps
   }
 }
 
+type IconType = (props: { size?: number }) => JSX.Element
+
+const btnContent = (Icon: IconType, label: string): ReactNode => (
+  <div className="flex items-center gap-1">
+    <Icon size={16} />
+    <span className="px-1">{label}</span>
+  </div>
+)
 export const tabUIConfig: TabUIConfig = {
   feed: {
-    galleryItem: (l: Listing) => <ActivityItem activity={activity.fromListing(l)} />,
-    details: (l: Listing) => <ListingDetails listing={l} />,
-    mainActionBtn: (l: Listing, ctx) => {
-      if (ctx?.isMyListing?.(l) && l.status === 'active')
-        return <CancelOrderBtn nonce={BigInt(l.rawOrder.nonce)} listingId={l.id} />
-      return <TradeBtn listing={l} />
+    galleryItem: l => <ActivityItem activity={activity.fromListing(l)} />,
+    details: l => <ListingDetails listing={l} />,
+    actionBtnProps: (l, disabled, loading, ctx) => {
+      const isCancelAction = ctx?.isMyListing?.(l)
+
+      const content = isCancelAction
+        ? { Icon: Ban, label: 'Cancel order' }
+        : l.status !== 'active'
+          ? { Icon: Slash, label: `${l.status}` }
+          : disabled
+            ? { Icon: X, label: 'Not fillable' }
+            : l.type === 'ask'
+              ? { Icon: CreditCard, label: 'Buy loot' }
+              : { Icon: Handshake, label: 'Fill bid' }
+
+      return {
+        className: isCancelAction ? 'btn btn-danger' : 'btn btn-primary',
+        disabled,
+        children: btnContent(content.Icon as IconType, content.label),
+      }
     },
   },
 
   explore: {
-    galleryItem: (n: NFT) => <NFTRow nft={n} />,
-    mainActionBtn: (n: NFT, ctx) => {
-      const owned = ctx?.isMyToken?.(n)
+    galleryItem: nft => <NFTRow nft={nft} />,
+    actionBtnProps: (nft, _disabled, _loading, ctx) => {
+      const isMyToken = ctx?.isMyToken?.(nft)
 
-      let side
+      const content = isMyToken
+        ? { Icon: Tag, label: 'Sell loot' }
+        : { Icon: Gavel, label: 'Make offer' }
 
-      const btnProps = {
-        collection: n.collection,
-        tokenId: n.tokenId,
+      return {
+        className: 'btn btn-primary',
+        children: btnContent(content.Icon as IconType, content.label),
       }
-
-      if (owned) {
-        side = OrderSide.ASK
-      } else {
-        side = OrderSide.BID
-      }
-
-      return <CreateOrderBtn side={side} {...btnProps} />
     },
   },
 
   sales: {
-    galleryItem: (s: Sale) => <ActivityItem activity={activity.fromSale(s)} />,
-    details: (s: Sale) => <SaleDetails sale={s} />,
+    galleryItem: s => <ActivityItem activity={activity.fromSale(s)} />,
+    details: s => <SaleDetails sale={s} />,
+    actionBtnProps: () => ({
+      className: 'btn btn-secondary',
+      children: 'Transaction details',
+    }),
   },
 }

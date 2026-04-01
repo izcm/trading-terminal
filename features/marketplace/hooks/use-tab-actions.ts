@@ -7,7 +7,13 @@ import type { Hex } from '@/domain/shared/eth'
 
 import { OrderSide } from '@/protocol/eip712'
 
-import type { TabActions, TabCtx, TabName, TabResource } from '@/features/tab-config'
+import type {
+  ResolvedAction,
+  TabActions,
+  TabCtx,
+  TabName,
+  TabResource,
+} from '@/features/tab-config'
 import { useCancelOrder } from '@/features/orders/hooks/use-cancel-order'
 import { useFillOrder } from '@/features/trade/hooks/use-fill-order'
 
@@ -72,27 +78,27 @@ export function useMainAction<K extends TabName>(
   selected: TabResource[K] | undefined,
   ctx: TabCtx<K> | undefined,
   actions: TabActions
-) {
+): ResolvedAction {
   const isFeed = tab === 'feed'
   const listing = isFeed ? (selected as TabResource['feed']) : undefined
 
   const fillOrder = useFillOrder(listing?.rawOrder, listing?.id)
 
   if (!selected) {
-    return { action: undefined, disabled: true, loading: false }
+    return { run: undefined, disabled: true, loading: false }
   }
 
   // if tab is feed + a listing is selected + user is not maker of selected listing
   if (isFeed && listing && !ctx?.isMyListing?.(listing)) {
     return {
-      action: fillOrder.fill,
+      run: fillOrder.fill,
       disabled: !fillOrder.isFillable,
       loading: true,
     }
   }
 
   return {
-    action: actions[tab](selected, ctx),
+    run: actions[tab](selected, ctx),
     disabled: false,
     loading: false,
   }

@@ -1,4 +1,3 @@
-import { Gavel, Tag } from '@/ui/icons'
 import { parseEther } from 'viem' // todo: decouple here
 
 import { OrderCore, OrderSide } from '@/protocol/eip712'
@@ -17,20 +16,9 @@ type Props = {
   onOrderCreated?: (id: string) => void
 }
 
-const btnAttr = {
-  [OrderSide.ASK]: {
-    txt: 'Sell loot',
-    icon: <Tag size={16} />,
-  },
-  [OrderSide.BID]: {
-    txt: 'Make offer',
-    icon: <Gavel size={16} />,
-  },
-} as const
-
 export function CreateOrderFlow({ collection, tokenId, side, onOrderCreated }: Props) {
   const { account } = useWallet()
-  const { canCreate, create } = useCreateOrder(account)
+  const { create } = useCreateOrder(account)
 
   async function wrapAndSign(input: FormInput) {
     if (!account) return
