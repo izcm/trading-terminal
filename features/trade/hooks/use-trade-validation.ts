@@ -5,11 +5,9 @@ import { Order } from '@/protocol/eip712'
 
 import { useTradeSimulation } from './use-trade-simulation'
 
-export function useTradeValidation(order?: Order, tokenIdCb?: bigint) {
-  const sim = useTradeSimulation(order, tokenIdCb)
-
+export function useTradeValidation(sim?: ReturnType<typeof useTradeSimulation>) {
   let errMsg
-  const err = sim.error
+  const err = sim?.error
 
   if (
     err instanceof ContractFunctionExecutionError &&
@@ -24,8 +22,8 @@ export function useTradeValidation(order?: Order, tokenIdCb?: bigint) {
   }
 
   return {
-    isFillable: sim.isSuccess,
-    checking: sim.isPending,
+    isFillable: sim?.isSuccess,
+    isChecking: sim?.isPending,
     error: errMsg,
   }
 }

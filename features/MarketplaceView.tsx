@@ -7,7 +7,7 @@ import { connectWs } from '@/lib/realtime/ws'
 import type { Page } from '@/lib/utils/http'
 
 // shared components
-import { TextInput } from '@/ui/atoms'
+import { Modal, TextInput } from '@/ui/atoms'
 
 // hooks
 import { useKeyboardShortcuts } from './hooks/use-keyboard-shortcuts'
@@ -18,13 +18,15 @@ import { useFresh } from './marketplace/hooks/use-fresh'
 
 // tab config
 import { pageGetters, TabResource, tabUIConfig, type TabName } from './tab-config'
-import { TabContainer } from './Tabs'
+import { TabContainer } from './TabContainer'
 
 // features
 import { TxTracker } from './realtime/ui/TxTracker'
 import { useMine } from './marketplace/hooks/use-mine'
 import { useWallet } from './wallet/hooks/use-wallet'
 import { WalletWidget } from './wallet/ui/WalletWidget'
+import { useTabActions } from './marketplace/hooks/use-tab-actions'
+import { Receipt } from './marketplace/ui/ReceiptBtn'
 
 type InitialState = {
   [K in TabName]: Page<TabResource[K]>
@@ -57,7 +59,7 @@ export function MarketplaceView(initial: InitialState) {
     f: () => setTab('feed'),
     s: () => setTab('sales'),
     e: () => setTab('explore'),
-    w: () => walletInteraction(),
+    W: () => walletInteraction(),
 
     // tab internals
     // a: () => {
@@ -85,6 +87,9 @@ export function MarketplaceView(initial: InitialState) {
     },
     [addItem, addFresh]
   )
+
+  // --- tab main actions ---
+  const { actions: tabActions, modal, closeModal } = useTabActions()
 
   // --- ws ---
   useEffect(() => {
@@ -134,7 +139,7 @@ export function MarketplaceView(initial: InitialState) {
         <div className="flex items-center mb-1">
           <div className="basis-1/3 items-center flex justify-start">
             <WalletWidget />
-            <span className="px-2 text-sm text-accent-weak">ChainId: {chainId}</span>
+            <span className="px-2 text-sm text-accent-weak">chainId: {chainId}</span>
           </div>
 
           <div className="basis-1/3 flex justify-center">
@@ -185,20 +190,16 @@ export function MarketplaceView(initial: InitialState) {
             selectedId={selectedByTab[tab]}
             setSelectedId={id => setSelectedByTab(prev => ({ ...prev, [tab]: id }))}
             focusActiveTabRef={focusActiveTabRef}
+            mainAction={tabActions[tab]}
             ctx={{ isMyToken, isMyListing }}
           />
-
-          {/* shortcut hack (least painfull way to have parent control shortcuts) */}
-          {/* <div ref={actionRef} className="hidden">
-            {selectedItem &&
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              tabUIConfig[tab].mainActionBtn(selectedItem as any, {
-                isMyToken,
-                isMyListing,
-              })}
-          </div> */}
         </div>
       </main>
+      {modal?.type === 'receipt' && (
+        <Modal isOpen onClose={closeModal}>
+          <Receipt sale={modal.data} />
+        </Modal>
+      )}
     </div>
   )
 }

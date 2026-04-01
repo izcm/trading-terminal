@@ -8,10 +8,11 @@ type TabProps<T> = {
   items: T[]
   selected: T | undefined
   onSelect: (item: T) => void
+  galleryRef?: RefObject<HTMLUListElement | null>
   galleryItem: (item: T) => ReactNode
   galleryItemIsFresh?: (item: T) => boolean
-  galleryRef?: RefObject<HTMLUListElement | null>
   mainActionBtn: (item: T) => ReactNode
+  mainAction: (item: T) => (() => void) | undefined
   details?: (item: T) => ReactNode
 }
 
@@ -19,12 +20,14 @@ export function Tab<T extends { id: string; chainId: number; collection: Hex; to
   items,
   selected,
   onSelect,
-  galleryItem,
   galleryRef,
+  galleryItem,
   galleryItemIsFresh,
   mainActionBtn,
+  mainAction,
   details,
 }: TabProps<T>) {
+  console.log(details)
   return (
     <div className="min-h-0 flex-1 flex gap-4">
       <div className="flex-1 flex flex-col gap-4">
@@ -46,11 +49,20 @@ export function Tab<T extends { id: string; chainId: number; collection: Hex; to
             tokenId={selected?.tokenId}
           />
         </div>
+        <button
+          onClick={() => {
+            if (!selected) return
+
+            const action = mainAction(selected)
+
+            if (action) action()
+          }}
+        >
+          hi
+        </button>
         {selected && mainActionBtn(selected)}
-        {selected !== undefined && details && (
-          <div className="card bg-secondary h-full">
-            {selected !== undefined && details && details(selected)}
-          </div>
+        {selected !== undefined && details !== undefined && (
+          <div className="card bg-secondary h-full">{details(selected)}</div>
         )}
       </div>
     </div>

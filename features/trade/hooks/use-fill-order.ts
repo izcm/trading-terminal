@@ -2,17 +2,11 @@ import { useWriteContract } from 'wagmi'
 
 import { useTx } from '@/app/providers/TxProvider'
 import type { Order } from '@/protocol/eip712'
+import { useTradeValidation } from './use-trade-validation'
 import { useTradeSimulation } from './use-trade-simulation'
 
-const safeStringify = (obj: unknown) =>
-  JSON.stringify(obj, (_, value) => (typeof value === 'bigint' ? value.toString() : value), 2)
-
-// Short + useful 🔎
-// * **react global state vs local state**
-// * **nextjs app router root layout provider**
-// * **react context provider persistence navigation**
-// * **wagmi transaction tracking useWaitForTransactionReceipt**
-// * **dapp pending transaction UX patterns**
+// const safeStringify = (obj: unknown) =>
+//   JSON.stringify(obj, (_, value) => (typeof value === 'bigint' ? value.toString() : value), 2)
 
 /**
  * @param order the listing being validated
@@ -20,25 +14,25 @@ const safeStringify = (obj: unknown) =>
  * @returns validation and execution state
  */
 
-export function useFillOrder(order?: Order, listingId?: string, tokenIdCb?: bigint) {
+export function useFillOrder(order?: Order, listingId?: string) {
   const { addTx } = useTx()
-  const sim = useTradeSimulation(order, tokenIdCb)
+  const sim = useTradeSimulation(order)
+
+  const { isFillable, isChecking, error } = useTradeValidation(sim)
 
   const { writeContractAsync } = useWriteContract()
 
   async function fillOrder() {
-    if (!sim.isSuccess) return
-    if (sim.isPending) return
-    if (!sim.data?.request) return
+    if (!isFillable || isChecking || !sim.data?.request) return
 
-    // setTxHash(hash) // global state / tx provider
     const hash = await writeContractAsync(sim.data.request)
-
     addTx(hash, listingId)
   }
 
   return {
     fillOrder,
-    simulation: sim,
+    isFillable,
+    isChecking,
+    error,
   }
 }

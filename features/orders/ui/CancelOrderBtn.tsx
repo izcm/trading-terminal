@@ -1,8 +1,8 @@
 import { Ban } from '@/ui/icons'
-import { useCancelOrder } from '../hooks/use-cancel-order'
+import { useCancelOrderOLD } from '../hooks/use-cancel-order'
 
 export function CancelOrderBtn({ nonce, listingId }: { nonce: bigint; listingId: string }) {
-  const { cancelOrder } = useCancelOrder(nonce, listingId)
+  const { cancelOrder } = useCancelOrderOLD(nonce, listingId)
 
   return (
     <button onClick={cancelOrder} className="btn btn-danger">

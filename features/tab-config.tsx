@@ -22,7 +22,7 @@ import { ListingDetails } from './marketplace/ui/ListingDetails'
 import { SaleDetails } from './marketplace/ui/SaleDetails'
 import { TradeBtn } from './trade/ui/TradeBtn'
 import { CreateOrderBtn } from './orders/ui/CreateOrderBtn'
-import { ReceiptBtn } from './marketplace/ui/ReceiptBtn'
+import { Receipt } from './marketplace/ui/ReceiptBtn'
 import { CancelOrderBtn } from './orders/ui/CancelOrderBtn'
 
 // === BASE INFO ===
@@ -37,19 +37,19 @@ export type TabName = keyof TabResource
 
 // === ITEM GETTERS ===
 
-type PageGetters<K extends keyof TabResource> = (args: {
+type PageGetters<K extends TabName> = (args: {
   filters?: Record<string, string[]>
   cursor?: string | null
 }) => Promise<Result<Page<TabResource[K]>>>
 
-export const pageGetters: { [K in keyof TabResource]: PageGetters<K> } = {
+export const pageGetters: { [K in TabName]: PageGetters<K> } = {
   feed: getDmrktListings,
   sales: getDmrktSales,
   explore: getDmrktNFTs,
 }
 
 export const itemGetters: {
-  [K in keyof TabResource]: (id: string) => Promise<Result<TabResource[K]>>
+  [K in TabName]: (id: string) => Promise<Result<TabResource[K]>>
 } = {
   feed: getDmrktListing,
   sales: getDmrktSale,
@@ -63,13 +63,19 @@ export type TabCtx<K extends TabName> = {
   isMyListing?: (item: Listing) => boolean
 }
 
+// === ACTION CONFIG ===
+
+export type TabActions = {
+  [K in TabName]: (item: TabResource[K], ctx?: TabCtx<K>) => (() => void) | undefined
+}
+
 // === UI CONFIG ===
 
 type TabUIConfig = {
   [K in TabName]: {
     galleryItem: (item: TabResource[K]) => ReactNode
     details?: (item: TabResource[K]) => ReactNode
-    mainActionBtn: (item: TabResource[K], ctx?: TabCtx<K>) => ReactNode
+    mainActionBtn?: (item: TabResource[K], ctx?: TabCtx<K>) => ReactNode
   }
 }
 
@@ -109,6 +115,5 @@ export const tabUIConfig: TabUIConfig = {
   sales: {
     galleryItem: (s: Sale) => <ActivityItem activity={activity.fromSale(s)} />,
     details: (s: Sale) => <SaleDetails sale={s} />,
-    mainActionBtn: (s: Sale) => <ReceiptBtn sale={s} />,
   },
 }

@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 
 import { Hex } from '@/domain/shared/eth'
 import { TabName, TabResource } from '@/features/tab-config'

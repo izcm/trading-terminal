@@ -4,6 +4,7 @@ import { Address } from 'viem'
 
 import { Order, toOrder712 } from '@/protocol/eip712'
 import { orderbookAbi, orderbookAddress } from '@/protocol/config'
+
 import { ozErc721Errors } from '@/lib/blockchain'
 import { useWallet } from '@/features/wallet/hooks/use-wallet'
 
