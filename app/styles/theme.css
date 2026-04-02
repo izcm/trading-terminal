@@ -85,16 +85,31 @@
   --text-primary: rgba(196, 198, 207, 0.94);
   --text-muted: rgba(188, 200, 242, 0.72);
 
-  --border-default: rgba(130, 151, 255, 0.479);
-  --border-soft: rgba(130, 151, 255, 0.39);
+  --border-default: rgba(130, 151, 255, 0.48);
+  --border-soft: rgba(130, 151, 255, 0.25);
 
+  /* core accents */
   --accent: #6e75fa;
   --accent-weak: rgba(109, 117, 255, 0.6);
+  --accent-neutral: #60d7ff;
 
-  --accent-stat: #60d7ff;
-  --accent-bid: #60d7ff;
-  --accent-ask: #e37dec;
+  --accent-bid: #60d7ff; /* cyan */
+  --accent-ask: #e37dec; /* pink/purple */
 
+  /* 🔥 add missing semantic colors */
+  --success: #3bffb0;
+  --success-weak: rgba(59, 255, 176, 0.6);
+
+  --warning: #ffd166;
+  --warning-weak: rgba(255, 209, 102, 0.6);
+
+  --failure: #ff4d6d;
+  --failure-weak: rgba(255, 77, 109, 0.6);
+
+  /* optional but consistent */
+  --color-sale: var(--accent-neutral);
+
+  /* glow / vibe */
   --panel-shadow:
     0 0 20px rgba(109, 117, 255, 0.22), 0 0 60px rgba(109, 117, 255, 0.16),
     0 0 140px rgba(77, 217, 255, 0.12);
@@ -109,7 +124,6 @@
     #04081a 100%
   );
 }
-
 /* optional UI helpers (makes states feel intentional) */
 
 .order-active {

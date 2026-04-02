@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { toSearchParams } from '@/lib/dmrkt-indexer/actions/logic/param-mapper'
 import { connectWs } from '@/lib/realtime/ws'
 import type { Page } from '@/lib/utils/http'
 
@@ -20,10 +19,13 @@ import { useTabMutations } from './hooks/use-tab-mutations'
 
 import { useWsFeed, useWsSales } from './realtime/hooks/use-ws-sub'
 
-import { useSearchFilters } from './marketplace/hooks/use-search-filters'
-import { useFresh } from './marketplace/hooks/use-fresh'
-import { useMainAction, useTabActions } from './marketplace/hooks/use-tab-actions'
-import { useMine } from './marketplace/hooks/use-mine'
+import {
+  useSearchFilters,
+  useFresh,
+  useMainAction,
+  useTabActions,
+  useMine,
+} from './marketplace/hooks'
 
 import { useWallet } from './wallet/hooks/use-wallet'
 
@@ -32,6 +34,8 @@ import { TxTracker } from './realtime/ui/TxTracker'
 import { WalletWidget } from './wallet/ui/WalletWidget'
 import { CreateOrderFlow } from './orders/ui/CreateOrderModal'
 import { Manual } from './marketplace/ui/Manual'
+import { buildSearchDefault } from './marketplace/lib/build-search-default'
+import { Tabs } from './marketplace/ui/Tabs'
 
 type InitialState = {
   [K in TabName]: Page<TabResource[K]>
@@ -171,34 +175,18 @@ export function MarketplaceView(initial: InitialState) {
 
         {/* ---- tabs ---- */}
 
-        <div className="flex w-full border-b border-soft">
-          {(Object.keys(tabUIConfig) as TabName[]).map(title => (
-            <button
-              key={title}
-              onClick={() => setTab(title)}
-              className={`
-                flex-1 py-2 text-center border-b-2 transition cursor-pointer
-                ${
-                  title === tab
-                    ? 'border-accent-weak text-accent-weak'
-                    : 'border-transparent text-muted hover:text-accent/70'
-                }
-              `}
-            >
-              {title.charAt(0).toUpperCase() + title.slice(1)}
-            </button>
-          ))}
-        </div>
+        <Tabs value={tab} onChange={setTab} items={Object.keys(tabUIConfig) as TabName[]} />
 
         {/* ---- content ---- */}
 
         <div className="min-h-0 flex-1 flex-col flex gap-4">
           <TextInput
             key={tab}
-            defaultValue={(() => {
-              const base = decodeURIComponent(toSearchParams(filters[tab]).toString())
-              return mineFlag[tab] ? `mine ${base}` : base
-            })()}
+            defaultValue={buildSearchDefault({
+              activeFilters: filters[tab],
+              account,
+              isMine: mineFlag[tab],
+            })}
             onSubmit={handleSearch}
           />
 

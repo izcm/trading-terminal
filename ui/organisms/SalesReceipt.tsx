@@ -14,6 +14,7 @@ function Row({ label, value }: { label: string; value: React.ReactNode }) {
 const Divider = () => <div className="border-t border-soft" />
 
 const shortMoney = (x: number) => x.toFixed(6)
+
 export function SalesReceipt({ sale }: { sale: Sale }) {
   const ctx = sale.txContext
 
@@ -38,6 +39,7 @@ export function SalesReceipt({ sale }: { sale: Sale }) {
       {ctx ? (
         <>
           <Divider />
+
           <div className="flex flex-col gap-1">
             <Row
               label="contract"

@@ -33,12 +33,22 @@ export function toSearchParams(filters: Record<string, string[]>) {
   return params
 }
 
-const FIELD_ALIASES: Record<string, string> = {
+export const FIELD_ALIASES: Record<string, string> = {
   maker: 'actor',
 }
+
+export const REVERSE_FIELD_ALIASES = Object.fromEntries(
+  Object.entries(FIELD_ALIASES).map(([k, v]) => [v, k])
+)
 
 export function normalizeKeys(input: string) {
   return input.replace(/\b[a-zA-Z0-9_]+\b/g, word => {
     return FIELD_ALIASES[word] ?? word
+  })
+}
+
+export function denormalizeKeys(input: string) {
+  return input.replace(/\b[a-zA-Z0-9_]+\b/g, word => {
+    return REVERSE_FIELD_ALIASES[word] ?? word
   })
 }

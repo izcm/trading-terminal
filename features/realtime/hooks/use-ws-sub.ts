@@ -1,9 +1,10 @@
-// rule: if it listens to events => it lives here
 import { useEffect } from 'react'
+
 import { on } from '@/lib/realtime/ws'
 import { getDmrktListing, getDmrktSale } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
-import { itemGetters, type TabResource } from '../../tab-config'
+
 import { ListingStatus } from '@/domain/listing'
+import { itemGetters, type TabResource } from '../../tab-config'
 
 const statusMap = {
   'order.cancelled': 'cancelled',

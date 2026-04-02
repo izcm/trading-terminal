@@ -20,8 +20,10 @@ export function useSearchFilters(tab: TabName, user?: Hex) {
   })
 
   function extractMine(value: string) {
-    const mine = value.startsWith('mine')
-    let rest = mine ? value.slice(4).trim() : value
+    const keyword = 'myTokens'
+
+    const mine = value.startsWith(keyword)
+    let rest = mine ? value.slice(keyword.length).trim() : value
 
     if (user) {
       rest = rest.replace(/\bme\b/g, user)
