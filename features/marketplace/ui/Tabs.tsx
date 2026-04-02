@@ -18,11 +18,11 @@ export function Tabs<T extends string>({ value, onChange, items }: TabsProps<T>)
             key={item}
             onClick={() => onChange(item)}
             className={`
-              flex-1 py-2 text-center border-b-2 transition-colors duration-200
+              flex-1 py-2 text-center border-b-2 transition-colors duration-200 cursor-pointer
               ${
                 active
-                  ? 'border-accent/60 text-accent-weak'
-                  : 'border-transparent text-muted hover:text-accent hover:border-accent/80'
+                  ? 'border-accent/50 text-accent-weak'
+                  : 'border-transparent text-muted hover:text-accent hover:border-accent/60'
               }
             `}
           >

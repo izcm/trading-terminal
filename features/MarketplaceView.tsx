@@ -30,8 +30,7 @@ import {
 import { useWallet } from './wallet/hooks/use-wallet'
 
 // feature UI
-import { TxTracker } from './realtime/ui/TxTracker'
-import { WalletWidget } from './wallet/ui/WalletWidget'
+import { Header } from './marketplace/ui/Header'
 import { CreateOrderFlow } from './orders/ui/CreateOrderModal'
 import { Manual } from './marketplace/ui/Manual'
 import { buildSearchDefault } from './marketplace/lib/build-search-default'
@@ -153,25 +152,7 @@ export function MarketplaceView(initial: InitialState) {
       <main className="flex-1 flex flex-col gap-4 mt-4">
         {/* ---- header ---- */}
 
-        <div className="flex items-center mb-1">
-          <div className="basis-1/3 items-center flex justify-start">
-            <WalletWidget />
-            <span className="px-2 text-sm text-accent-weak">chainId: {chainId}</span>
-          </div>
-
-          <div className="basis-1/3 flex justify-center">
-            <button
-              onClick={() => setShowManual(true)}
-              className="btn btn-menu w-full max-w-[250px]"
-            >
-              dmrkt manual
-            </button>
-          </div>
-
-          <div className="basis-1/3 flex justify-end">
-            <TxTracker />
-          </div>
-        </div>
+        <Header chainId={chainId} onOpenManual={() => setShowManual(true)} />
 
         {/* ---- tabs ---- */}
 
