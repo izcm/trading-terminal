@@ -5,21 +5,22 @@ import { Sale } from '@/domain/sale'
 function Row({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div className="flex justify-between items-center py-1">
-      <span className="text-xs text-muted">{label}</span>
-      <span className="text-xs font-mono text-right">{value}</span>
+      <span className="text-sm text-muted">{label}</span>
+      <span className="text-sm font-mono text-right">{value}</span>
     </div>
   )
 }
 
+const shortMoney = (x: number) => x.toFixed(6)
 export function SalesReceipt({ sale }: { sale: Sale }) {
   const ctx = sale.txContext
 
   return (
-    <div className="card p-5 w-full max-w-[480px] space-y-4">
+    <div className="card p-5 w-full max-w-[550px] space-y-4">
       {/* header */}
       <div className="flex gap-4 justify-between items-center">
         <h2 className="text-sm font-semibold">Transaction</h2>
-        <span className="text-xs text-muted">#{`${sale.chainId}:${truncateHex(sale.txHash)}`}</span>
+        <span className="text-sm text-muted">#{`${sale.chainId}:${truncateHex(sale.txHash)}`}</span>
       </div>
 
       {/* divider */}
@@ -57,11 +58,11 @@ export function SalesReceipt({ sale }: { sale: Sale }) {
           <div className="border-t border-soft pt-3 space-y-1">
             <Row label="gas used" value={ctx.gasUsed.toString()} />
 
-            <Row label="gas price" value={`${Number(ctx.gasPrice) / 1e9} gwei`} />
+            <Row label="gas price" value={`${shortMoney(Number(ctx.gasPrice) / 1e9)} gwei`} />
 
             <Row
               label="tx cost"
-              value={`${Number(BigInt(ctx.gasUsed) * BigInt(ctx.gasPrice)) / 1e9} gwei`}
+              value={`${shortMoney(Number(BigInt(ctx.gasUsed) * BigInt(ctx.gasPrice)) / 1e9)} gwei`}
             />
           </div>
         </>

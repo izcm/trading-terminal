@@ -1,6 +1,8 @@
-import type { Listing } from '@/domain/listing'
+import type { Listing, ListingStatus } from '@/domain/listing'
 import { Sale } from '../sale'
 import { Hex } from './eth'
+
+type ActivityStatus = ListingStatus
 
 export type Activity = {
   source: 'sale' | 'listing'
@@ -10,7 +12,7 @@ export type Activity = {
   tokenId: bigint
   price: bigint
   timestamp: number
-  status?: string
+  status?: ActivityStatus
   isCollectionBid?: boolean
   collectionSymbol?: string
 }

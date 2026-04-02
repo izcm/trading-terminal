@@ -37,7 +37,6 @@ export function CreateOrderFlow({ collection, tokenId, side, onOrderCreated }: P
 
     try {
       const id = await create(order)
-      console.log(id)
 
       toast({
         title: 'Order Created',

@@ -4,7 +4,7 @@
   --color-surface: var(--bg-surface);
   --color-muted: var(--text-muted);
 
-  --color-stat: var(--accent-stat);
+  --color-sale: var(--accent-neutral);
   --color-ask: var(--accent-ask);
   --color-bid: var(--accent-bid);
 
@@ -19,8 +19,15 @@
   --color-success: var(--success);
   --color-success-weak: var(--success-weak);
 
+  --color-warning: var(--warning);
+  --color-warning-weak: var(--warning-weak);
+
   --color-failure: var(--failure);
   --color-failure-weak: var(--failure-weak);
+
+  --order-active: var(--accent);
+  --order-filled: var(--accent-neutral);
+  --order-dead: var(--failure-weak);
 
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Helvetica, Arial,
@@ -50,17 +57,21 @@
   --accent: #66ffb2;
   --accent-weak: rgba(102, 255, 179, 0.65);
 
-  --accent-stat: #5ee7ff;
-  --accent-bid: #a78bfa; /* arcane violet */
-  --accent-ask: #ff8a3d; /* ember orange */
+  --accent-neutral: #5ee7ff;
+
+  --accent-bid: #a78bfa;
+  --accent-ask: #ff8a3d;
 
   --panel-shadow: 0 0 10px rgba(102, 255, 178, 0.25), 0 0 40px rgba(102, 255, 178, 0.1);
 
-  --color-success: #4cff9a;
-  --color-success-weak: rgba(76, 255, 154, 0.65);
+  --success: #4cff9a;
+  --success-weak: rgba(76, 255, 154, 0.65);
 
-  --color-failure: #ff5a3d;
-  --color-failure-weak: rgba(255, 90, 61, 0.65);
+  --warning: #ffc12f;
+  --warning-weak: #ffc12fb9;
+
+  --failure: #ff5a3d;
+  --failure-weak: rgba(255, 90, 61, 0.65);
 }
 
 :root[data-theme='cyber-void'] {
@@ -97,4 +108,21 @@
     #0e144f 85%,
     #04081a 100%
   );
+}
+
+/* optional UI helpers (makes states feel intentional) */
+
+.order-active {
+  color: var(--order-active);
+}
+
+.order-filled {
+  color: var(--accent-neutral);
+  opacity: 0.7;
+}
+
+.order-dead {
+  color: var(--color-failure-weak);
+  opacity: 0.7;
+  text-decoration: line-through;
 }

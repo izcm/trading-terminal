@@ -10,7 +10,11 @@ export function useKeyboardShortcuts(map: Record<string, () => void>) {
         return
       }
 
-      if (map[e.key]) map[e.key]()
+      const fn = map[e.key]
+      if (!fn) return
+
+      e.preventDefault()
+      fn()
     }
 
     window.addEventListener('keydown', onKey)

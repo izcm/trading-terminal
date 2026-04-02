@@ -9,7 +9,7 @@ export function TabContainer<K extends TabName>({
   selectedId,
   setSelectedId,
   tabAction,
-  focusActiveTabRef,
+  focusGalleryRef,
   ctx,
 }: {
   ui: (typeof tabUIConfig)[K]
@@ -17,7 +17,7 @@ export function TabContainer<K extends TabName>({
   selectedId: string | undefined
   setSelectedId: (id: string) => void
   tabAction: ResolvedAction
-  focusActiveTabRef: RefObject<() => void>
+  focusGalleryRef: RefObject<() => void>
   ctx?: TabCtx<K>
 }) {
   const selected = items.find(item => item.id === selectedId)
@@ -35,10 +35,10 @@ export function TabContainer<K extends TabName>({
   const galleryRef = useRef<HTMLUListElement>(null)
 
   useEffect(() => {
-    focusActiveTabRef.current = () => {
+    focusGalleryRef.current = () => {
       galleryRef.current?.focus()
     }
-  }, [focusActiveTabRef])
+  }, [focusGalleryRef])
 
   const btnProps = selected
     ? ui.actionBtnProps?.(selected, tabAction.disabled, tabAction.loading, ctx)
@@ -53,6 +53,7 @@ export function TabContainer<K extends TabName>({
       galleryRef={galleryRef}
       action={tabAction.run}
       actionBtnProps={btnProps}
+      actionIsLoading={tabAction.loading}
       details={ui.details}
     />
   )

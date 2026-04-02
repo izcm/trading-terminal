@@ -101,7 +101,7 @@ export const tabUIConfig: TabUIConfig = {
     galleryItem: l => <ActivityItem activity={activity.fromListing(l)} />,
     details: l => <ListingDetails listing={l} />,
     actionBtnProps: (l, disabled, loading, ctx) => {
-      const isCancelAction = ctx?.isMyListing?.(l)
+      const isCancelAction = ctx?.isMyListing?.(l) && l.status === 'active'
 
       const content = isCancelAction
         ? { Icon: Ban, label: 'Cancel order' }

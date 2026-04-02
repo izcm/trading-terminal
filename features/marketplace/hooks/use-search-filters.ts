@@ -8,7 +8,7 @@ import type { Hex } from '@/domain/shared/eth'
 export function useSearchFilters(tab: TabName, user?: Hex) {
   const [filters, setFilters] = useState<Record<TabName, Record<string, string[]>>>({
     feed: { status: ['active'] },
-    sales: { status: ['expired'] },
+    sales: {},
     explore: {},
   })
 

@@ -3,9 +3,10 @@ import { useState } from 'react'
 type CopyableProps = {
   value: string
   children?: React.ReactNode
+  className?: string
 }
 
-export function Copyable({ value, children }: CopyableProps) {
+export function Copyable({ value, children, className = '' }: CopyableProps) {
   const [copied, setCopied] = useState<boolean>(false)
 
   async function handleCopy() {
@@ -24,14 +25,15 @@ export function Copyable({ value, children }: CopyableProps) {
           handleCopy()
         }
       }}
-      className="
+      className={`
         cursor-pointer
         text-accent-weak
         underline underline-offset-2 decoration-dotted
         hover:decoration-solid
         hover:text-accent
         transition-colors
-        "
+        ${className}
+        `}
       title="Click to copy"
     >
       {copied ? 'copied' : (children ?? value)}

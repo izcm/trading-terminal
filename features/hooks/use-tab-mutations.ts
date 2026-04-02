@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, useCallback } from 'react'
 
 import { Page } from '@/lib/utils/http'
-import { itemGetters, TabName, TabResource } from '../tab-config'
+import { TabName, TabResource } from '../tab-config'
 
 type TabPages = {
   [K in TabName]: Page<TabResource[K]>

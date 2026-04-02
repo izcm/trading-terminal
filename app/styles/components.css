@@ -20,7 +20,7 @@
   font-weight: 500;
   letter-spacing: 0.01em;
   border-radius: 0.7rem;
-  border: 1px solid;
+  border: 1px solid transparent;
 
   transition:
     transform 120ms ease,
@@ -209,7 +209,7 @@
 
 .btn-secondary {
   color: color-mix(in oklab, var(--text-primary) 80%, var(--text-muted));
-  border-color: color-mix(in oklab, var(--border-default) 55%, transparent);
+  border-color: color-mix(in oklab, var(--border-default) 70%, transparent);
   background: linear-gradient(
     160deg,
     rgba(255, 255, 255, 0.045) 0%,

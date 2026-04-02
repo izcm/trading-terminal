@@ -24,8 +24,10 @@ const Badge = ({ type }: BadgeProps) => (
 
 // --- copyable field ---
 
-export const HexDetailField = (value: Hex) => (
-  <Copyable value={value}>{truncateHex(value)}</Copyable>
+export const HexDetailField = (value: Hex, className?: string) => (
+  <Copyable className={className} value={value}>
+    {truncateHex(value)}
+  </Copyable>
 )
 
 // --- details ---
@@ -37,10 +39,10 @@ export type DetailsProps<T> = {
     badge: BadgeProps
   }
   detailsFields: DetailField<T>[]
-  timingFields?: DetailField<T>[] // are set at bottom of list
+  bottomFields?: DetailField<T>[] // are set at bottom of list
 }
 
-export function Details<T>({ item, title, detailsFields, timingFields }: DetailsProps<T>) {
+export function Details<T>({ item, title, detailsFields, bottomFields }: DetailsProps<T>) {
   if (!item) {
     return <div className={`p-4 text-sm`}>select a BIPBAPBOP</div>
   }
@@ -63,9 +65,9 @@ export function Details<T>({ item, title, detailsFields, timingFields }: Details
       </div>
 
       {/* timing */}
-      {timingFields && (
+      {bottomFields && (
         <div className="pt-2 border-t border-white/5 flex flex-col gap-2">
-          <DetailFields data={item} fields={timingFields} />
+          <DetailFields data={item} fields={bottomFields} />
         </div>
       )}
     </div>

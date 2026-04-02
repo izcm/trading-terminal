@@ -6,11 +6,11 @@ import type { DetailField } from '@/ui/molecules/DetailFields'
 
 const DETAIL_FIELDS: DetailField<Sale>[] = [
   {
-    label: 'chain id',
+    label: 'chainId',
     getValue: s => s.chainId,
   },
   {
-    label: 'tx hash',
+    label: 'txHash',
     getValue: s => HexDetailField(s.txHash),
   },
   {
@@ -22,12 +22,12 @@ const DETAIL_FIELDS: DetailField<Sale>[] = [
     getValue: s => HexDetailField(s.seller),
   },
   {
-    label: 'block number',
+    label: 'blockNumber',
     getValue: s => s.blockNumber,
   },
 ]
 
-const TIMING_FIELDS: DetailField<Sale>[] = [
+const BOTTOM_FIELDS: DetailField<Sale>[] = [
   {
     label: 'timestamp',
     getValue: s => tsShort(s.timestamp),
@@ -44,6 +44,6 @@ export const SaleDetails = ({ sale }: { sale: Sale }) => (
     item={sale}
     // title={{ field: TITLE_FIELD, badge: { type: sale.order ? sale.order.type : 'unknown' } }}
     detailsFields={DETAIL_FIELDS}
-    timingFields={TIMING_FIELDS}
+    bottomFields={BOTTOM_FIELDS}
   />
 )

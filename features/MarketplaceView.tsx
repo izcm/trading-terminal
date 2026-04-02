@@ -28,6 +28,7 @@ import { WalletWidget } from './wallet/ui/WalletWidget'
 import { useMainAction, useTabActions } from './marketplace/hooks/use-tab-actions'
 import { SalesReceipt } from '../ui/organisms/SalesReceipt'
 import { CreateOrderFlow } from './orders/ui/CreateOrderModal'
+import { Manual } from './marketplace/ui/Manual'
 
 type InitialState = {
   [K in TabName]: Page<TabResource[K]>
@@ -52,6 +53,9 @@ export function MarketplaceView(initial: InitialState) {
   const { account, isConnected, connect, disconnect, chainId } = useWallet()
   const walletInteraction = () => (isConnected ? disconnect() : connect())
 
+  // --- display manual ---
+  const [showManual, setShowManual] = useState<boolean>()
+
   // --- selected context ---
   const { isMyToken, isMyListing, buildMineQuery } = useMine(tab, account, activeCollection)
 
@@ -74,8 +78,8 @@ export function MarketplaceView(initial: InitialState) {
   const { actions: tabActions, modal, closeModal } = useTabActions()
   const resolvedTabAction = useMainAction(tab, selectedItem, { isMyToken, isMyListing }, tabActions)
 
-  // tab gallery focus
-  const focusActiveTabRef = useRef<() => void>(() => {})
+  // tab gallery focus (centralizing keyboard shortcuts)
+  const focusGalleryRef = useRef<() => void>(() => {})
 
   // --- keyboard shortcuts ---
   useKeyboardShortcuts({
@@ -83,14 +87,17 @@ export function MarketplaceView(initial: InitialState) {
     f: () => setTab('feed'),
     s: () => setTab('sales'),
     e: () => setTab('explore'),
+
+    // header shortcuts
     W: () => walletInteraction(),
+    m: () => setShowManual(true),
 
     // tab internals
     a: () => {
-      if (!resolvedTabAction?.run || resolvedTabAction.disabled) return
+      if (!resolvedTabAction?.run || resolvedTabAction.disabled || resolvedTabAction.loading) return
       resolvedTabAction.run()
     },
-    g: () => focusActiveTabRef.current?.(),
+    g: () => focusGalleryRef.current?.(),
   })
 
   // --- ws ---
@@ -146,7 +153,12 @@ export function MarketplaceView(initial: InitialState) {
           </div>
 
           <div className="basis-1/3 flex justify-center">
-            <button className="btn btn-menu w-full max-w-[250px]">dmrkt manual</button>
+            <button
+              onClick={() => setShowManual(true)}
+              className="btn btn-menu w-full max-w-[250px]"
+            >
+              dmrkt manual
+            </button>
           </div>
 
           <div className="basis-1/3 flex justify-end">
@@ -192,7 +204,7 @@ export function MarketplaceView(initial: InitialState) {
             items={state[tab].items}
             selectedId={selectedByTab[tab]}
             setSelectedId={id => setSelectedByTab(prev => ({ ...prev, [tab]: id }))}
-            focusActiveTabRef={focusActiveTabRef}
+            focusGalleryRef={focusGalleryRef}
             tabAction={resolvedTabAction}
             ctx={{ isMyListing, isMyToken }}
           />
@@ -212,6 +224,12 @@ export function MarketplaceView(initial: InitialState) {
             tokenId={modal.data.tokenId}
             side={modal.data.side}
           />
+        </Modal>
+      )}
+
+      {showManual && (
+        <Modal isOpen onClose={() => setShowManual(false)}>
+          <Manual />
         </Modal>
       )}
     </div>

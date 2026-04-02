@@ -3,6 +3,8 @@ import type { Order } from '@/protocol/eip712'
 import type { Hex } from './shared/eth'
 import type { NFTCollection } from './nft-collection'
 
+export type ListingStatus = 'active' | 'filled' | 'cancelled' | 'expired'
+
 export type Listing = {
   id: string
 
@@ -27,5 +29,11 @@ export type Listing = {
 
   rawOrder: Order
 
-  status: string
+  status: ListingStatus
+
+  // txHash is only defined when status is not active
+  // onchain statu changes:
+  // cancellation
+  // filled (settlement txHash)
+  txHash?: Hex
 }

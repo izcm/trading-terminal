@@ -73,6 +73,9 @@ export function useTabActions(): UseTabActionsReturn {
   }
 }
 
+/**
+ * Since feed has a special case, this hoook avoids too much inline logic in parent
+ */
 export function useMainAction<K extends TabName>(
   tab: K,
   selected: TabResource[K] | undefined,
@@ -88,12 +91,21 @@ export function useMainAction<K extends TabName>(
     return { run: undefined, disabled: true, loading: false }
   }
 
+  // if listing is inactive => disable and do nothing
+  if (isFeed && listing && listing.status !== 'active') {
+    return {
+      run: undefined,
+      disabled: true,
+      loading: false,
+    }
+  }
+
   // if tab is feed + a listing is selected + user is not maker of selected listing
   if (isFeed && listing && !ctx?.isMyListing?.(listing)) {
     return {
       run: fillOrder.fill,
-      disabled: !fillOrder.isFillable,
-      loading: true,
+      disabled: !fillOrder.isFillable || listing.status !== 'active',
+      loading: !!fillOrder.isChecking,
     }
   }
 

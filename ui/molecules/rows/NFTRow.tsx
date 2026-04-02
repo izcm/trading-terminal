@@ -13,7 +13,6 @@ export function NFTRow({ nft }: { nft: NFT }) {
         <span className="text-xs text-muted">#{nft.tokenId.toString()}</span>
         {/* {rarity && <span className="text-[11px] text-accent">{rarity}</span>} */}
       </div>
-      {rarity && <span className="text-[11px] text-accent px-2">MINE</span>}
     </div>
   )
 }

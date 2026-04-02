@@ -15,16 +15,10 @@ function getDetailsFields(nft: NFT): DetailField<NFT>[] {
 
 const details = (nft: NFT) => <Details<NFT> item={nft} detailsFields={getDetailsFields(nft)} />
 
-export function NFTCard({ nft }: { nft?: NFT }) {
+export function NFTCard({ nft }: { nft: NFT }) {
   const props = nft
     ? { image: nft.image, title: nft.name, details: details(nft) }
     : { image: NFT_LOADING_IMAGE }
 
-  return (
-    <GalleryItem
-      image={props.image}
-      // title={props.title}
-      details={props.details}
-    />
-  )
+  return <GalleryItem image={props.image} details={props.details} />
 }

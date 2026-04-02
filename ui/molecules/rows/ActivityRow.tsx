@@ -7,6 +7,7 @@ import { NFT_LOADING_IMAGE } from '@/domain/constants/placeholders'
 import { tsSuperShort } from '@/domain/shared/utils/time'
 import type { Activity } from '@/domain/shared/activity'
 import { mapTokenUriToNFT, type NFT } from '@/domain/nft'
+import { listingStatusToClass } from '@/features/marketplace/lib/listing-status-ui'
 
 type Props = {
   activity: Activity
@@ -65,7 +66,7 @@ function ActivityRow({ item }: { item: Props }) {
 
         {/* activity indicator */}
         {source === 'sale' ? (
-          <span className={`${badgeClasses} bg-stat/70`}>sale</span>
+          <span className={`${badgeClasses} bg-sale/70`}>sale</span>
         ) : (
           <span
             className={`${badgeClasses} ${activityType === 'ask' ? 'bg-ask text-black' : 'bg-bid text-black'}
@@ -86,9 +87,7 @@ function ActivityRow({ item }: { item: Props }) {
             {symbol} {!isCollectionBid ? `#${tokenId}` : '#any'}
           </span>
           {status && status !== 'active' && (
-            <span
-              className={`text-[11px] tracking-wide ${status === 'filled' ? 'text-success-weak' : 'text-failure-weak'}`}
-            >
+            <span className={`text-[11px] tracking-wide ${listingStatusToClass[status]}`}>
               {status.toUpperCase()}
             </span>
           )}

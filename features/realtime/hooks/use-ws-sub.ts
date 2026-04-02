@@ -2,7 +2,8 @@
 import { useEffect } from 'react'
 import { on } from '@/lib/realtime/ws'
 import { getDmrktListing, getDmrktSale } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
-import type { TabResource } from '../../tab-config'
+import { itemGetters, type TabResource } from '../../tab-config'
+import { ListingStatus } from '@/domain/listing'
 
 const statusMap = {
   'order.cancelled': 'cancelled',
@@ -28,11 +29,18 @@ export function useWsFeed({ addItem, updateItem }: { addItem: AddItem; updateIte
     })
 
     const offs = Object.entries(statusMap).map(([event, status]) =>
-      on(event, p => {
+      on(event, async p => {
         const { chainId, orderHash } = p as { chainId: number; orderHash: string }
         const id = `${chainId}:${orderHash}`
 
-        updateItem('feed', id, item => ({ ...item, status }))
+        updateItem('feed', id, item => ({ ...item, status: status as ListingStatus }))
+
+        const res = await itemGetters['feed'](id)
+
+        if (res.ok) {
+          const { txHash } = res.data
+          if (txHash) updateItem('feed', id, item => ({ ...item, txHash }))
+        }
       })
     )
 

@@ -30,7 +30,9 @@ export type OrderDTO = {
   // raw order for contract interaction
   rawOrder: Order
 
-  status: string
+  status: 'active' | 'filled' | 'cancelled' | 'expired'
+
+  txHash?: Hex
 }
 
 export function toListing(dto: OrderDTO): Listing {

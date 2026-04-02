@@ -5,6 +5,7 @@ import { NFTPreview } from '@/features/marketplace/ui/NFTPreview'
 import { Hex } from '@/domain/shared/eth'
 
 import { BtnProps } from '@/features/tab-config'
+import { Spinner } from '@/ui/atoms/Spinner'
 
 type TabProps<T> = {
   items: T[]
@@ -15,6 +16,7 @@ type TabProps<T> = {
   galleryItemIsFresh?: (item: T) => boolean
   action: (() => void) | undefined
   actionBtnProps: BtnProps | undefined
+  actionIsLoading: boolean
   details?: (item: T) => ReactNode
 }
 
@@ -27,6 +29,7 @@ export function Tab<T extends { id: string; chainId: number; collection: Hex; to
   galleryItemIsFresh,
   action,
   actionBtnProps,
+  actionIsLoading,
   details,
 }: TabProps<T>) {
   return (
@@ -50,14 +53,22 @@ export function Tab<T extends { id: string; chainId: number; collection: Hex; to
             tokenId={selected?.tokenId}
           />
         </div>
-        <button
-          onClick={() => {
-            if (!selected) return
+        {actionIsLoading ? (
+          <button className="btn btn-ghost pointer-events-none">
+            <Spinner />
+            <span className="px-1">Checking...</span>
+          </button>
+        ) : (
+          <button
+            onClick={() => {
+              if (!selected) return
 
-            if (action) action()
-          }}
-          {...actionBtnProps}
-        />
+              if (action) action()
+            }}
+            {...actionBtnProps}
+          />
+        )}
+
         {selected !== undefined && details !== undefined && (
           <div className="card bg-secondary h-full">{details(selected)}</div>
         )}
