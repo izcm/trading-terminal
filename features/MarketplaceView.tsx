@@ -7,26 +7,29 @@ import { connectWs } from '@/lib/realtime/ws'
 import type { Page } from '@/lib/utils/http'
 
 // shared components
+import { SalesReceipt } from '../ui/organisms/SalesReceipt'
 import { Modal, TextInput } from '@/ui/atoms'
-
-// hooks
-import { useKeyboardShortcuts } from './hooks/use-keyboard-shortcuts'
-import { useTabMutations } from './hooks/use-tab-mutations'
-import { useWsFeed, useWsSales } from './realtime/hooks/use-ws-sub'
-import { useSearchFilters } from './marketplace/hooks/use-search-filters'
-import { useFresh } from './marketplace/hooks/use-fresh'
 
 // tab config
 import { pageGetters, TabResource, tabUIConfig, type TabName } from './tab-config'
 import { TabContainer } from './TabContainer'
 
-// features
-import { TxTracker } from './realtime/ui/TxTracker'
-import { useMine } from './marketplace/hooks/use-mine'
-import { useWallet } from './wallet/hooks/use-wallet'
-import { WalletWidget } from './wallet/ui/WalletWidget'
+// feature hooks
+import { useKeyboardShortcuts } from './hooks/use-keyboard-shortcuts'
+import { useTabMutations } from './hooks/use-tab-mutations'
+
+import { useWsFeed, useWsSales } from './realtime/hooks/use-ws-sub'
+
+import { useSearchFilters } from './marketplace/hooks/use-search-filters'
+import { useFresh } from './marketplace/hooks/use-fresh'
 import { useMainAction, useTabActions } from './marketplace/hooks/use-tab-actions'
-import { SalesReceipt } from '../ui/organisms/SalesReceipt'
+import { useMine } from './marketplace/hooks/use-mine'
+
+import { useWallet } from './wallet/hooks/use-wallet'
+
+// feature UI
+import { TxTracker } from './realtime/ui/TxTracker'
+import { WalletWidget } from './wallet/ui/WalletWidget'
 import { CreateOrderFlow } from './orders/ui/CreateOrderModal'
 import { Manual } from './marketplace/ui/Manual'
 
@@ -106,7 +109,7 @@ export function MarketplaceView(initial: InitialState) {
   }, [])
 
   useWsFeed({ addItem: addItemAndMarkFresh, updateItem })
-  useWsSales({ addItem: addItemAndMarkFresh })
+  useWsSales({ addItem: addItemAndMarkFresh, updateItem })
 
   // --- query ---
   const query = useMemo(() => {

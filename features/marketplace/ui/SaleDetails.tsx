@@ -10,8 +10,16 @@ const DETAIL_FIELDS: DetailField<Sale>[] = [
     getValue: s => s.chainId,
   },
   {
+    label: 'tokenId',
+    getValue: s => `#${s.tokenId}`,
+  },
+  {
     label: 'txHash',
     getValue: s => HexDetailField(s.txHash),
+  },
+  {
+    label: 'orderHash',
+    getValue: s => HexDetailField(s.orderHash),
   },
   {
     label: 'buyer',
@@ -20,10 +28,6 @@ const DETAIL_FIELDS: DetailField<Sale>[] = [
   {
     label: 'seller',
     getValue: s => HexDetailField(s.seller),
-  },
-  {
-    label: 'blockNumber',
-    getValue: s => s.blockNumber,
   },
 ]
 

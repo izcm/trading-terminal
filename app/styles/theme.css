@@ -118,11 +118,11 @@
 
 .order-filled {
   color: var(--accent-neutral);
-  opacity: 0.7;
+  opacity: 0.8;
 }
 
 .order-dead {
   color: var(--color-failure-weak);
-  opacity: 0.7;
+  opacity: 0.8;
   text-decoration: line-through;
 }

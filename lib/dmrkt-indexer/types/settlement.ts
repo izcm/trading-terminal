@@ -39,25 +39,10 @@ export type SettlementDTO = {
 
 export function toSale(dto: SettlementDTO): Sale {
   return {
-    id: dto.id,
-    chainId: dto.chainId,
+    ...dto,
 
-    orderHash: dto.orderHash,
-    txHash: dto.txHash,
-
-    collection: dto.collection,
     tokenId: BigInt(dto.tokenId),
-
-    seller: dto.seller,
-    buyer: dto.buyer,
-
-    currency: dto.currency,
     price: BigInt(dto.price),
-
-    blockNumber: dto.blockNumber,
-    timestamp: dto.timestamp,
-
-    logIndex: dto.logIndex,
 
     nftCollection: dto.nftCollection ? toNFTCollection(dto.nftCollection) : null,
 

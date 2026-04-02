@@ -37,10 +37,10 @@ export function useWsFeed({ addItem, updateItem }: { addItem: AddItem; updateIte
 
         const res = await itemGetters['feed'](id)
 
-        if (res.ok) {
-          const { txHash } = res.data
-          if (txHash) updateItem('feed', id, item => ({ ...item, txHash }))
-        }
+        if (!res.ok) return
+
+        const { txHash } = res.data
+        if (txHash) updateItem('feed', id, item => ({ ...item, txHash }))
       })
     )
 
@@ -51,17 +51,30 @@ export function useWsFeed({ addItem, updateItem }: { addItem: AddItem; updateIte
   }, [addItem, updateItem])
 }
 
-export function useWsSales({ addItem }: { addItem: AddItem }) {
+export function useWsSales({ addItem, updateItem }: { addItem: AddItem; updateItem: UpdateItem }) {
   useEffect(() => {
-    const off = on('settlement.created', async p => {
-      const payload = p as { chainId: number; orderHash: string }
+    const offs = [
+      on('settlement.created', async p => {
+        const { chainId, orderHash } = p as { chainId: number; orderHash: string }
 
-      const res = await getDmrktSale(`${payload.chainId}:${payload.orderHash}`)
-      if (!res.ok) return
+        const res = await getDmrktSale(`${chainId}:${orderHash}`)
+        if (!res.ok) return
 
-      addItem('sales', res.data)
-    })
+        addItem('sales', res.data)
+      }),
 
-    return () => off()
-  }, [addItem])
+      on('settlement.callReconstructed', async p => {
+        const { chainId, orderHash } = p as { chainId: number; orderHash: string }
+        const id = `${chainId}:${orderHash}`
+
+        const res = await getDmrktSale(id)
+        if (!res.ok) return
+
+        const { txContext } = res.data
+        if (txContext) updateItem('sales', id, item => ({ ...item, txContext }))
+      }),
+    ]
+
+    return () => offs.forEach(off => off())
+  }, [addItem, updateItem])
 }
