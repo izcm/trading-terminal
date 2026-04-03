@@ -21,7 +21,7 @@ export const activity = {
   fromListing(listing: Listing): Activity {
     return {
       source: 'listing',
-      type: listing.type,
+      type: listing.side,
       chainId: listing.chainId,
       collection: listing.collection,
       tokenId: listing.tokenId,
@@ -36,7 +36,7 @@ export const activity = {
   fromSale(sale: Sale): Activity {
     return {
       source: 'sale',
-      type: sale.listing?.type ?? 'unknown',
+      type: sale.listing?.side ?? 'unknown',
       chainId: sale.chainId,
       collection: sale.collection,
       tokenId: sale.tokenId,

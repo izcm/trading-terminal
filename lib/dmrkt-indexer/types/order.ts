@@ -11,7 +11,7 @@ export type OrderDTO = {
   chainId: number
   orderHash: Hex
 
-  type: 'ask' | 'bid'
+  side: 'ask' | 'bid'
   isCollectionBid: boolean
 
   collection: Hex

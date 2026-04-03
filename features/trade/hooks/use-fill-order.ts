@@ -15,7 +15,7 @@ import { useWallet } from '@/features/wallet/hooks/use-wallet'
  * @returns validation and execution state
  */
 
-export function useFillOrder(order?: Order, listingId?: string) {
+export function useFillOrder(order?: Order, listingId?: string, onConfirmed?: () => void) {
   const { addTx } = useTx()
   const { account } = useWallet()
 
@@ -29,7 +29,7 @@ export function useFillOrder(order?: Order, listingId?: string) {
     if (!isFillable || isChecking || !sim.data?.request) return
 
     const hash = await writeContractAsync(sim.data.request)
-    addTx(hash, listingId)
+    addTx(hash, listingId, onConfirmed)
   }
 
   return {

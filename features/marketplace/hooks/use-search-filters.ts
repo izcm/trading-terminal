@@ -19,11 +19,11 @@ export function useSearchFilters(tab: TabName, user?: Hex) {
     explore: false,
   })
 
-  function extractMine(value: string) {
-    const keyword = 'myTokens'
+  function extractMyTokensFlag(value: string) {
+    const keyword = 'mytokens'
 
-    const mine = value.startsWith(keyword)
-    let rest = mine ? value.slice(keyword.length).trim() : value
+    const hasFlag = value.toLowerCase().startsWith(keyword)
+    let rest = hasFlag ? value.slice(keyword.length).trim() : value
 
     if (user) {
       rest = rest.replace(/\bme\b/g, user)
@@ -31,12 +31,12 @@ export function useSearchFilters(tab: TabName, user?: Hex) {
 
     rest = normalizeKeys(rest)
 
-    return { mine, rest }
+    return { hasFlag, rest }
   }
 
   // nb: parent is resonsible for including owned tokenIds in query
   function handleSearch(value: string) {
-    const { mine: hasMine, rest } = extractMine(value)
+    const { hasFlag, rest } = extractMyTokensFlag(value)
     const baseFilters = rest.trim().replace(/\s+/g, '&')
 
     const rawParams = new URLSearchParams(baseFilters)
@@ -63,7 +63,7 @@ export function useSearchFilters(tab: TabName, user?: Hex) {
 
     setMineFlag(prev => ({
       ...prev,
-      [tab]: hasMine,
+      [tab]: hasFlag,
     }))
   }
 

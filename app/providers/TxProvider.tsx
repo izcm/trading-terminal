@@ -9,11 +9,12 @@ export type Tx = {
   hash: Hex
   status: TxStatus
   listingId?: string
+  onConfirmed?: () => void
 }
 
 type TxContextType = {
   txs: Tx[]
-  addTx: (hash: Hex, listingId?: string) => void
+  addTx: (hash: Hex, listingId?: string, onConfirmed?: () => void) => void
 }
 
 export const TxContext = createContext<TxContextType | null>(null)
@@ -21,8 +22,8 @@ export const TxContext = createContext<TxContextType | null>(null)
 export function TxProvider({ children }: { children: ReactNode }) {
   const [txs, setTxs] = useState<Tx[]>([])
 
-  const addTx = (hash: Hex, listingId?: string) => {
-    setTxs(prev => [...prev, { hash, status: 'pending', listingId }])
+  const addTx: TxContextType['addTx'] = (hash, listingId, onConfirmed) => {
+    setTxs(prev => [...prev, { hash, status: 'pending', listingId, onConfirmed }])
   }
 
   const updateTx = (hash: Hex, status: TxStatus) => {
@@ -35,7 +36,10 @@ export function TxProvider({ children }: { children: ReactNode }) {
         <TxWatcher
           key={tx.hash}
           hash={tx.hash}
-          onSuccess={() => updateTx(tx.hash, 'success')}
+          onSuccess={() => {
+            updateTx(tx.hash, 'success')
+            tx.onConfirmed?.()
+          }}
           onFail={() => updateTx(tx.hash, 'failed')}
         />
       ))}

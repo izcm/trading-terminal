@@ -1,49 +1,47 @@
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { Hex } from '@/domain/shared/eth'
 import { TabName, TabResource } from '@/features/tab-config'
-import { useOwnedTokenIds } from './use-owned-tokenids'
 import { Listing } from '@/domain/listing'
 
 // rules per tab for marking a domain item as "mine"
 export function useMine<K extends TabName>(
   tab: TabName,
-  user: Hex | undefined,
-  collection: Hex | undefined
+  account: Hex | undefined,
+  collection: Hex | undefined,
+  ids: bigint[]
 ) {
-  const { ids } = useOwnedTokenIds(collection, user)
-
   // normalize tokenIds
   const ownedIds = useMemo(() => ids?.map(id => id.toString()) ?? [], [ids])
 
   // my tokens
   const isMyToken = useCallback(
     (item: TabResource[K]) => {
-      if (!user) return false
+      if (!account) return false
       return ids.includes(item.tokenId)
     },
-    [user, ids]
+    [account, ids]
   )
 
   // helps decide whether to show cancel btn
   const isMyListing = useCallback(
     (item: TabResource[K]) => {
-      if (!user || tab !== 'feed') return false
-      return (item as Listing).actor === user
+      if (!account || tab !== 'feed') return false
+      return (item as Listing).actor === account
     },
-    [tab, user]
+    [tab, account]
   )
 
   const buildMineQuery = useCallback(
     (filters: Record<string, string[]>) => {
-      if (!user) return filters
+      if (!account) return filters
 
       return {
         ...filters,
         tokenId: ownedIds,
       }
     },
-    [user, ownedIds]
+    [account, ownedIds]
   )
 
   return { buildMineQuery, isMyToken, isMyListing }

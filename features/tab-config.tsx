@@ -109,7 +109,7 @@ export const tabUIConfig: TabUIConfig = {
           ? { Icon: Slash, label: `${l.status}` }
           : disabled
             ? { Icon: X, label: 'Not fillable' }
-            : l.type === 'ask'
+            : l.side === 'ask'
               ? { Icon: CreditCard, label: 'Buy loot' }
               : { Icon: Handshake, label: 'Fill bid' }
 

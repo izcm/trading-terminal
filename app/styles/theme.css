@@ -13,6 +13,7 @@
   --color-default: var(--border-default);
   --color-soft: var(--border-soft);
 
+  --color-accent-strong: var(--accent-strong);
   --color-accent: var(--accent);
   --color-accent-weak: var(--accent-weak);
 
@@ -54,8 +55,9 @@
   --border-default: rgba(120, 255, 180, 0.35);
   --border-soft: rgba(120, 255, 180, 0.15);
 
-  --accent: #66ffb2;
-  --accent-weak: rgba(102, 255, 179, 0.65);
+  --accent-strong: #66ffb2; /* rare, special */
+  --accent: #5ee6a3; /* normal primary */
+  --accent-weak: rgba(94, 230, 163, 0.65); /* default usage */
 
   --accent-neutral: #5ee7ff;
 

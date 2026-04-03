@@ -76,16 +76,29 @@ export function useTabActions(): UseTabActionsReturn {
 /**
  * Since feed has a special case, this hoook avoids too much inline logic in parent
  */
+
+type OwnedActions = {
+  add: (id: bigint) => void
+  remove: (id: bigint) => void
+}
+
 export function useMainAction<K extends TabName>(
   tab: K,
   selected: TabResource[K] | undefined,
   ctx: TabCtx<K> | undefined,
-  actions: TabActions
+  actions: TabActions,
+  owned: OwnedActions
 ): ResolvedAction {
   const isFeed = tab === 'feed'
   const listing = isFeed ? (selected as TabResource['feed']) : undefined
 
-  const fillOrder = useFillOrder(listing?.rawOrder, listing?.id)
+  const fillOrder = useFillOrder(listing?.rawOrder, listing?.id, () => {
+    if (!listing) return
+
+    // ask => user is selling
+    if (listing.side === 'ask') owned.remove(listing.tokenId)
+    else owned.add(listing.tokenId)
+  })
 
   if (!selected) {
     return { run: undefined, disabled: true, loading: false }

@@ -15,5 +15,5 @@ export function buildSearchDefault({
 
   const withAlias = account ? normalized.replaceAll(account, 'me') : normalized
 
-  return isMine ? `myTokens ${withAlias}` : withAlias
+  return isMine ? `mytokens ${withAlias}` : withAlias
 }

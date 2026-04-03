@@ -25,6 +25,7 @@ import {
   useMainAction,
   useTabActions,
   useMine,
+  useOwnedTokenIds,
 } from './marketplace/hooks'
 
 import { useWallet } from './wallet/hooks/use-wallet'
@@ -62,8 +63,20 @@ export function MarketplaceView(initial: InitialState) {
   // --- display manual ---
   const [showManual, setShowManual] = useState<boolean>()
 
-  // --- selected context ---
-  const { isMyToken, isMyListing, buildMineQuery } = useMine(tab, account, activeCollection)
+  // --- user owned nfts + selected context (is owned token) ---
+  const {
+    ids: ownedIds,
+    isFetching: loadingInventory,
+    add,
+    remove,
+  } = useOwnedTokenIds(activeCollection, account)
+
+  const { isMyToken, isMyListing, buildMineQuery } = useMine(
+    tab,
+    account,
+    activeCollection,
+    ownedIds
+  )
 
   // --- filters ---
   const { filters, mineFlag, handleSearch } = useSearchFilters(tab, account)
@@ -82,7 +95,13 @@ export function MarketplaceView(initial: InitialState) {
 
   // --- tab main actions ---
   const { actions: tabActions, modal, closeModal } = useTabActions()
-  const resolvedTabAction = useMainAction(tab, selectedItem, { isMyToken, isMyListing }, tabActions)
+  const resolvedTabAction = useMainAction(
+    tab,
+    selectedItem,
+    { isMyToken, isMyListing },
+    tabActions,
+    { add, remove }
+  )
 
   // tab gallery focus (centralizing keyboard shortcuts)
   const focusGalleryRef = useRef<() => void>(() => {})
@@ -152,7 +171,11 @@ export function MarketplaceView(initial: InitialState) {
       <main className="flex-1 flex flex-col gap-4 mt-4">
         {/* ---- header ---- */}
 
-        <Header chainId={chainId} onOpenManual={() => setShowManual(true)} />
+        <Header
+          chainId={chainId}
+          onOpenManual={() => setShowManual(true)}
+          inventory={{ count: ownedIds.length, isLoading: loadingInventory }}
+        />
 
         {/* ---- tabs ---- */}
 
