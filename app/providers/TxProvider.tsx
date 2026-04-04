@@ -10,6 +10,7 @@ import {
 
 import type { Hex } from '@/domain/shared/eth'
 import { useWaitForTransactionReceipt } from 'wagmi'
+import { toast } from '@/ui/organisms/core/Toast'
 
 type TxStatus = 'pending' | 'success' | 'failed'
 
@@ -34,33 +35,21 @@ export function TxProvider({ children }: { children: ReactNode }) {
     (hash, listingId, onConfirmed) => {
       setTxs(prev => {
         if (prev.some(tx => tx.hash === hash)) return prev
-
         return [...prev, { hash, status: 'pending', listingId, onConfirmed }]
       })
     },
     [setTxs]
   )
 
-  const updateTx = useCallback(
-    (hash: Hex, status: TxStatus) => {
-      setTxs(prev =>
-        prev.map(tx => {
-          if (tx.hash !== hash) return tx
-          if (tx.status === status) return tx
+  const updateTx = (hash: Hex, status: TxStatus) => {
+    setTxs(prev =>
+      prev.map(tx => (tx.hash !== hash || tx.status === status ? tx : { ...tx, status }))
+    )
+  }
 
-          return { ...tx, status }
-        })
-      )
-    },
-    [setTxs]
-  )
-
-  const removeTx = useCallback(
-    (hash: Hex) => {
-      setTxs(prev => prev.filter(tx => tx.hash !== hash))
-    },
-    [setTxs]
-  )
+  const removeTx = (hash: Hex) => {
+    setTxs(prev => prev.filter(tx => tx.hash !== hash))
+  }
 
   return (
     <TxContext.Provider value={{ txs, addTx }}>
@@ -70,7 +59,6 @@ export function TxProvider({ children }: { children: ReactNode }) {
           tx={tx}
           onSuccess={() => {
             updateTx(tx.hash, 'success')
-            removeTx(tx.hash)
             tx.onConfirmed?.()
           }}
           onFail={() => {
@@ -100,12 +88,26 @@ function TxWatcher({
 
     if (isSuccess) {
       handledRef.current = true
+
+      toast({
+        title: 'Transaction confirmed',
+        description: 'Your tx is confirmed on-chain. The marketplace should update shortly.',
+        variant: 'success',
+      })
+
       onSuccess()
       return
     }
 
     if (isError) {
       handledRef.current = true
+
+      toast({
+        title: 'Transaction not completed',
+        description: 'It may have been rejected, reverted, or out of gas. Please try again.',
+        variant: 'error',
+      })
+
       onFail()
     }
   }, [isSuccess, isError, onSuccess, onFail])

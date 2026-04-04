@@ -24,24 +24,3 @@ export function useCancelOrder() {
     cancelOrder,
   }
 }
-
-export function useCancelOrderOLD(nonce: bigint, listingId?: string) {
-  const { addTx } = useTx()
-
-  const { writeContractAsync } = useWriteContract()
-
-  async function cancelOrder() {
-    const hash = await writeContractAsync({
-      abi: orderbookAbi,
-      address: orderbookAddress! as Address,
-      functionName: 'cancelOrder',
-      args: [nonce],
-    })
-
-    addTx(hash, listingId)
-  }
-
-  return {
-    cancelOrder,
-  }
-}

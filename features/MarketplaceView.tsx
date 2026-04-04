@@ -62,7 +62,6 @@ export function MarketplaceView(initial: InitialState) {
   const [selectedByTab, setSelectedByTab] = useState<Partial<{ [K in TabName]: string }>>({})
 
   const selectedItem = state[tab].items.find(i => i.id === selectedByTab[tab])
-  // const activeCollection = selectedItem ? selectedItem.collection : undefined
 
   // --- wallet stuff ---
   const { account, isConnected, connect, disconnect, chainId } = useWallet()
