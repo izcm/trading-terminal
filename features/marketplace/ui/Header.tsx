@@ -1,7 +1,7 @@
+import { Backpack } from '@/ui/icons'
 import { Spinner } from '@/ui/atoms/Spinner'
 import { TxTracker } from '../../realtime/ui/TxTracker'
 import { WalletWidget } from '../../wallet/ui/WalletWidget'
-import { Backpack } from 'ui/icons'
 
 type InventoryInfo = {
   count: number
@@ -19,7 +19,11 @@ export function Header({ chainId, inventory, onOpenManual }: HeaderProps) {
     <div className="flex items-center mb-1">
       <div className="basis-1/3 flex items-center justify-start gap-4">
         <WalletWidget />
-        <span className="text-sm text-accent">chainId: {chainId}</span>
+        {chainId ? (
+          <span className="text-sm text-accent">chainId: {chainId}</span>
+        ) : (
+          <span className="text-failure">Not connected</span>
+        )}
       </div>
 
       <div className="basis-1/3 flex justify-center">

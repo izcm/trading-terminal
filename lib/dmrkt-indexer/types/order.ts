@@ -33,6 +33,8 @@ export type OrderDTO = {
   status: 'active' | 'filled' | 'cancelled' | 'expired'
 
   txHash?: Hex
+
+  createdAt: number
 }
 
 export function toListing(dto: OrderDTO): Listing {

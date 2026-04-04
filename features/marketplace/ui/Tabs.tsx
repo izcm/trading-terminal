@@ -21,8 +21,8 @@ export function Tabs<T extends string>({ value, onChange, items }: TabsProps<T>)
               flex-1 py-2 text-center border-b-2 transition-colors duration-200 cursor-pointer
               ${
                 active
-                  ? 'border-accent/50 text-accent-weak'
-                  : 'border-transparent text-muted hover:text-accent hover:border-accent/30'
+                  ? 'border-accent/60 text-accent-weak'
+                  : 'border-transparent text-muted hover:text-accent hover:border-accent/40'
               }
             `}
           >

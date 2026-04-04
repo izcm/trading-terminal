@@ -1,6 +1,14 @@
-import { createContext, ReactNode, useContext, useEffect, useState } from 'react'
+import {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 
-import { Hex } from '@/domain/shared/eth'
+import type { Hex } from '@/domain/shared/eth'
 import { useWaitForTransactionReceipt } from 'wagmi'
 
 type TxStatus = 'pending' | 'success' | 'failed'
@@ -22,48 +30,85 @@ export const TxContext = createContext<TxContextType | null>(null)
 export function TxProvider({ children }: { children: ReactNode }) {
   const [txs, setTxs] = useState<Tx[]>([])
 
-  const addTx: TxContextType['addTx'] = (hash, listingId, onConfirmed) => {
-    setTxs(prev => [...prev, { hash, status: 'pending', listingId, onConfirmed }])
-  }
+  const addTx = useCallback<TxContextType['addTx']>(
+    (hash, listingId, onConfirmed) => {
+      setTxs(prev => {
+        if (prev.some(tx => tx.hash === hash)) return prev
 
-  const updateTx = (hash: Hex, status: TxStatus) => {
-    setTxs(prev => prev.map(tx => (tx.hash === hash ? { ...tx, status } : tx)))
-  }
+        return [...prev, { hash, status: 'pending', listingId, onConfirmed }]
+      })
+    },
+    [setTxs]
+  )
+
+  const updateTx = useCallback(
+    (hash: Hex, status: TxStatus) => {
+      setTxs(prev =>
+        prev.map(tx => {
+          if (tx.hash !== hash) return tx
+          if (tx.status === status) return tx
+
+          return { ...tx, status }
+        })
+      )
+    },
+    [setTxs]
+  )
+
+  const removeTx = useCallback(
+    (hash: Hex) => {
+      setTxs(prev => prev.filter(tx => tx.hash !== hash))
+    },
+    [setTxs]
+  )
 
   return (
-    <TxContext value={{ txs, addTx }}>
+    <TxContext.Provider value={{ txs, addTx }}>
       {txs.map(tx => (
         <TxWatcher
           key={tx.hash}
-          hash={tx.hash}
+          tx={tx}
           onSuccess={() => {
             updateTx(tx.hash, 'success')
+            removeTx(tx.hash)
             tx.onConfirmed?.()
           }}
-          onFail={() => updateTx(tx.hash, 'failed')}
+          onFail={() => {
+            updateTx(tx.hash, 'failed')
+          }}
         />
       ))}
       {children}
-    </TxContext>
+    </TxContext.Provider>
   )
 }
 
-export function TxWatcher({
-  hash,
+function TxWatcher({
+  tx,
   onSuccess,
   onFail,
 }: {
-  hash: Hex
+  tx: Tx
   onSuccess: () => void
   onFail: () => void
 }) {
-  const { isError, isSuccess } = useWaitForTransactionReceipt({ hash })
+  const { isError, isSuccess } = useWaitForTransactionReceipt({ hash: tx.hash })
+  const handledRef = useRef(false)
 
-  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
-    if (isSuccess) onSuccess()
-    if (isError) onFail()
-  }, [isSuccess, isError])
+    if (handledRef.current) return
+
+    if (isSuccess) {
+      handledRef.current = true
+      onSuccess()
+      return
+    }
+
+    if (isError) {
+      handledRef.current = true
+      onFail()
+    }
+  }, [isSuccess, isError, onSuccess, onFail])
 
   return null
 }

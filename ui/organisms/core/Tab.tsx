@@ -45,7 +45,7 @@ export function Tab<T extends { id: string; chainId: number; collection: Hex; to
         />
       </div>
 
-      <div className="max-w-1/4 flex flex-col gap-3 mb-2 p-1">
+      <div className="w-1/4 flex flex-col gap-3 mb-2 p-1">
         <div className="pointer-events-none">
           <NFTPreview
             chainId={selected?.chainId}

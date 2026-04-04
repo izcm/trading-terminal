@@ -7,6 +7,8 @@ import { toListing, type OrderDTO } from '../types/order'
 import { toNFT, type NFTDTO } from '../types/nft'
 import { toSearchParams } from './logic/param-mapper'
 import { SettlementDTO, toSale } from '../types/settlement'
+import { NFTCollectionDTO, toNFTCollection } from '../types/nft-collection'
+import { NFTCollection } from '@/domain/nft-collection'
 
 export const baseUrl = process.env.NEXT_PUBLIC_INDEXER_ENDPOINT_URL
 
@@ -38,6 +40,22 @@ function mapResult<TDTO, T>(res: Result<Page<TDTO>>, toDomain: (dto: TDTO) => T)
       cursor: res.data.cursor,
     },
   }
+}
+
+// --- NFT Collections ---
+export async function getDmrktNFTCollections({
+  filters = {},
+  cursor,
+}: {
+  filters?: Record<string, string[]>
+  cursor?: string | null
+} = {}): Promise<Result<Page<NFTCollection>>> {
+  const res = await getDmrktItems<NFTCollectionDTO>({
+    params: 'nft-collections',
+    query: buildQuery({ filters, cursor }),
+  })
+
+  return mapResult(res, toNFTCollection)
 }
 
 // --- NFTs ---

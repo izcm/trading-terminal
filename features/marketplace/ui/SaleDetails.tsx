@@ -6,10 +6,6 @@ import type { DetailField } from '@/ui/molecules/DetailFields'
 
 const DETAIL_FIELDS: DetailField<Sale>[] = [
   {
-    label: 'chainId',
-    getValue: s => s.chainId,
-  },
-  {
     label: 'tokenId',
     getValue: s => `#${s.tokenId}`,
   },

@@ -8,16 +8,16 @@ import { listingStatusToClass } from '../lib/listing-status-ui'
 
 const DETAIL_FIELDS: DetailField<Listing>[] = [
   {
-    label: 'chainId',
-    getValue: l => l.chainId,
-  },
-  {
     label: 'tokenId',
     getValue: l => (l.isCollectionBid ? 'any' : `#${l.tokenId}`),
   },
   {
     label: 'price',
     getValue: l => `${Number(l.price) / 1e18} ETH`,
+  },
+  {
+    label: 'side',
+    getValue: l => l.side,
   },
   {
     label: 'orderHash',

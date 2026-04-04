@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
+import type { Hex } from '@/domain/shared/eth'
+
 import { connectWs } from '@/lib/realtime/ws'
 import type { Page } from '@/lib/utils/http'
 
@@ -39,6 +41,9 @@ import { Tabs } from './marketplace/ui/Tabs'
 
 type InitialState = {
   [K in TabName]: Page<TabResource[K]>
+} & {
+  chainId: number
+  collection: Hex
 }
 
 type TabPages = {
@@ -46,6 +51,9 @@ type TabPages = {
 }
 
 export function MarketplaceView(initial: InitialState) {
+  // --- route params ---
+  const { collection: routeCollection, chainId: routeChainId } = initial
+
   // --- state ---
   const [tab, setTab] = useState<TabName>('feed')
   const [state, setState] = useState<TabPages>(initial)
@@ -54,7 +62,7 @@ export function MarketplaceView(initial: InitialState) {
   const [selectedByTab, setSelectedByTab] = useState<Partial<{ [K in TabName]: string }>>({})
 
   const selectedItem = state[tab].items.find(i => i.id === selectedByTab[tab])
-  const activeCollection = selectedItem ? selectedItem.collection : undefined
+  // const activeCollection = selectedItem ? selectedItem.collection : undefined
 
   // --- wallet stuff ---
   const { account, isConnected, connect, disconnect, chainId } = useWallet()
@@ -67,14 +75,13 @@ export function MarketplaceView(initial: InitialState) {
   const {
     ids: ownedIds,
     isFetching: loadingInventory,
-    add,
-    remove,
-  } = useOwnedTokenIds(activeCollection, account)
+    refetch: fetchOwnedIds,
+  } = useOwnedTokenIds(routeCollection, account)
 
   const { isMyToken, isMyListing, buildMineQuery } = useMine(
     tab,
     account,
-    activeCollection,
+    routeCollection,
     ownedIds
   )
 
@@ -100,7 +107,7 @@ export function MarketplaceView(initial: InitialState) {
     selectedItem,
     { isMyToken, isMyListing },
     tabActions,
-    { add, remove }
+    { refetch: fetchOwnedIds }
   )
 
   // tab gallery focus (centralizing keyboard shortcuts)
@@ -135,25 +142,32 @@ export function MarketplaceView(initial: InitialState) {
 
   // --- query ---
   const query = useMemo(() => {
-    const activeFilters = filters[tab]
+    const base = filters[tab]
+
+    const activeFilters = {
+      ...base,
+      chainId: [routeChainId.toString()],
+      collection: [routeCollection],
+    } satisfies Record<string, string[]>
+
     return mineFlag[tab] ? buildMineQuery(activeFilters) : activeFilters
-  }, [tab, filters, mineFlag, buildMineQuery])
+  }, [tab, filters, mineFlag, routeChainId, routeCollection, buildMineQuery])
 
   // --- pagination ---
   // todo: actually implement pagination (infinite scroll style)
   const currCursor = state[tab].cursor
 
-  useEffect(() => {
-    if (!currCursor) return
+  // useEffect(() => {
+  //   if (!currCursor) return
 
-    const run = async () => {
-      const res = await pageGetters[tab](query ?? {})
-      if (!res.ok) return
-      mergePage(tab, res.data.items, res.data.cursor)
-    }
+  //   const run = async () => {
+  //     const res = await pageGetters[tab]({ filters: query, cursor: currCursor })
+  //     if (!res.ok) return
+  //     mergePage(tab, res.data.items, res.data.cursor)
+  //   }
 
-    run()
-  }, [query, tab, currCursor, mergePage])
+  //   run()
+  // }, [tab, currCursor, mergePage])
 
   // --- filter change ---
   useEffect(() => {

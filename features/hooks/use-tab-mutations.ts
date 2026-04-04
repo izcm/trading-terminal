@@ -33,6 +33,7 @@ export function useTabMutations(setState: Dispatch<SetStateAction<TabPages>>) {
     },
     [setState]
   )
+
   const mergePage = useCallback(
     <K extends TabName>(tab: K, items: TabResource[K][], cursor: string | null) => {
       setState(prev => {
