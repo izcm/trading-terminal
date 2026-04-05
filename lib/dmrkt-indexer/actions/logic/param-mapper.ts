@@ -1,4 +1,5 @@
 import { capitalize } from '@/lib/utils/string'
+import { resolveFieldName } from '@/features/marketplace/lib/field-config'
 
 /**
  * Maps filter on format key=v1,v2 to format server expects key=v1&key=v2
@@ -12,17 +13,18 @@ export function toSearchParams(filters: Record<string, string[]>) {
   const traits: string[] = []
   const values: string[] = []
 
-  for (const [key, vals] of Object.entries(filters)) {
+  for (const [rawKey, vals] of Object.entries(filters)) {
+    const key = resolveFieldName(rawKey)
     if (key.startsWith('trait.')) {
       const trait = key.slice(6)
 
       for (const val of vals) {
         traits.push(capitalize(trait))
-        values.push(capitalize(val))
+        values.push(val.split('_').map(capitalize).join(' '))
       }
     } else {
       for (const val of vals) {
-        params.append(key, val)
+        params.append(key, val.replace(/_/g, ' '))
       }
     }
   }

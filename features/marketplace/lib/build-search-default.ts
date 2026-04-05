@@ -9,11 +9,13 @@ export function buildSearchDefault({
   account?: string
   isMine: boolean
 }) {
-  const base = decodeURIComponent(toSearchParams(activeFilters).toString()).replaceAll('&', ' ')
+  const base = decodeURIComponent(toSearchParams(activeFilters).toString())
+    .replaceAll('+', '_')
+    .replaceAll('&', ' ')
 
   const normalized = denormalizeKeys(base)
 
   const withAlias = account ? normalized.replaceAll(account, 'me') : normalized
 
-  return isMine ? `mytokens ${withAlias}` : withAlias
+  return isMine ? `myTokens ${withAlias}` : withAlias
 }

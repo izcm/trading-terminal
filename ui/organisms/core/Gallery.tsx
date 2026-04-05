@@ -26,7 +26,7 @@ export function Gallery<T extends { id: string }>({
   isLoading,
   hasMore,
 }: GalleryProps<T> & { onLoadMore?: () => void; isLoading?: boolean; hasMore?: boolean }) {
-  // load more on user scroll
+  // load more on 'regular' scroll
   useEffect(() => {
     const el = ref?.current
     if (!el || !onLoadMore) return
@@ -43,7 +43,7 @@ export function Gallery<T extends { id: string }>({
     return () => el.removeEventListener('scroll', handleScroll)
   }, [ref, onLoadMore, isLoading, hasMore])
 
-  // load more on keyboard scroll
+  // load more for keyboard
   useEffect(() => {
     if (!selected || !onLoadMore || isLoading || !hasMore) return
 

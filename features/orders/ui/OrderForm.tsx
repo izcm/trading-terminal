@@ -15,7 +15,7 @@ type Props = {
 }
 
 const durations = [
-  { label: '7d', seconds: 86400 },
+  { label: '7d', seconds: 86400 * 7 },
   { label: '30d', seconds: 86400 * 30 },
   { label: '90d', seconds: 86400 * 90 },
 ]
