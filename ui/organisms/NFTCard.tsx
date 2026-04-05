@@ -1,8 +1,7 @@
-import type { NFT } from '@/domain/nft'
+import { PLACEHOLDER_NFT, type NFT } from '@/domain/nft'
 
 import { DetailField, GalleryItem } from '../molecules'
 import { Details } from './Details'
-import { NFT_LOADING_IMAGE } from '@/domain/constants/placeholders'
 
 function getDetailsFields(nft: NFT): DetailField<NFT>[] {
   return nft.attributes.length > 0
@@ -16,9 +15,7 @@ function getDetailsFields(nft: NFT): DetailField<NFT>[] {
 const details = (nft: NFT) => <Details<NFT> item={nft} detailsFields={getDetailsFields(nft)} />
 
 export function NFTCard({ nft }: { nft?: NFT }) {
-  const props = nft
-    ? { image: nft.image, title: nft.name, details: details(nft) }
-    : { image: NFT_LOADING_IMAGE }
+  const resolved = nft ?? PLACEHOLDER_NFT
 
-  return <GalleryItem image={props.image} details={props.details} />
+  return <GalleryItem image={resolved.image} details={details(resolved)} />
 }

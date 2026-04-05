@@ -36,7 +36,17 @@ export function Tab<T extends { id: string; chainId: number; collection: Hex; to
   actionBtn,
   details,
 }: TabProps<T>) {
-  const { items, selected, onSelect, ref: galleryRef, item: galleryItem, itemIsFresh: galleryItemIsFresh, onLoadMore, isLoading, hasMore } = gallery
+  const {
+    items,
+    selected,
+    onSelect,
+    ref: galleryRef,
+    item,
+    itemIsFresh,
+    onLoadMore,
+    isLoading,
+    hasMore,
+  } = gallery
   const { action, props: actionBtnProps, isLoading: actionIsLoading } = actionBtn
   return (
     <div className="min-h-0 flex-1 flex gap-4">
@@ -45,8 +55,8 @@ export function Tab<T extends { id: string; chainId: number; collection: Hex; to
           items={items}
           selected={selected}
           onSelect={onSelect}
-          galleryItem={galleryItem}
-          isFresh={galleryItemIsFresh}
+          galleryItem={item}
+          // isFresh={galleryItemIsFresh}
           ref={galleryRef}
           onLoadMore={onLoadMore}
           isLoading={isLoading}

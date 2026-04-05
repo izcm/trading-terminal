@@ -34,7 +34,7 @@ import { useWallet } from './wallet/hooks/use-wallet'
 
 // feature UI
 import { Header } from './marketplace/ui/Header'
-import { CreateOrderFlow } from './orders/ui/CreateOrderModal'
+import { CreateOrderFlow } from './orders/ui/CreateOrderFlow'
 import { Manual } from './marketplace/ui/Manual'
 import { buildSearchDefault } from './marketplace/lib/build-search-default'
 import { Tabs } from './marketplace/ui/Tabs'
@@ -205,7 +205,7 @@ export function MarketplaceView(initial: InitialState) {
 
         {/* ---- content ---- */}
 
-        <div className="min-h-0 flex-1 flex-col flex gap-4">
+        <div className="min-h-0 flex-1 flex-col flex gap-4 fade-in">
           <TextInput
             key={tab}
             ref={searchRef}
@@ -244,6 +244,7 @@ export function MarketplaceView(initial: InitialState) {
             collection={modal.data.collection}
             tokenId={modal.data.tokenId}
             side={modal.data.side}
+            onOrderCreated={closeModal}
           />
         </Modal>
       )}
