@@ -4,20 +4,24 @@ import { normalizeKeys } from '@/lib/dmrkt-indexer/actions/logic/param-mapper'
 import type { TabName } from '@/features/tab-config'
 import type { Hex } from '@/domain/shared/eth'
 
+const DEFAULT_FILTERS: Record<TabName, Record<string, string[]>> = {
+  feed: { status: ['active'] },
+  sales: { sortField: ['timestamp'] },
+  explore: {},
+}
+
+const DEFAULT_MINE_FLAG: Record<TabName, boolean> = {
+  feed: false,
+  sales: false,
+  explore: false,
+}
+
 // user is passed to enable feat replacing "me" with user address in searchstring
 export function useSearchFilters(tab: TabName, user?: Hex) {
-  const [filters, setFilters] = useState<Record<TabName, Record<string, string[]>>>({
-    feed: { status: ['active'] },
-    sales: { sortField: ['timestamp'] },
-    explore: {},
-  })
+  const [filters, setFilters] = useState<Record<TabName, Record<string, string[]>>>(DEFAULT_FILTERS)
 
   // tracks which tabs have active "mine" filter
-  const [mineFlag, setMineFlag] = useState<Record<TabName, boolean>>({
-    feed: false,
-    sales: false,
-    explore: false,
-  })
+  const [mineFlag, setMineFlag] = useState<Record<TabName, boolean>>(DEFAULT_MINE_FLAG)
 
   function extractMyTokensFlag(value: string) {
     const keyword = 'mytokens'
@@ -81,5 +85,10 @@ export function useSearchFilters(tab: TabName, user?: Hex) {
     }))
   }
 
-  return { filters, mineFlag: mineFlag, handleSearch }
+  function resetFilters(targetTab: TabName) {
+    setFilters(prev => ({ ...prev, [targetTab]: DEFAULT_FILTERS[targetTab] }))
+    setMineFlag(prev => ({ ...prev, [targetTab]: DEFAULT_MINE_FLAG[targetTab] }))
+  }
+
+  return { filters, mineFlag: mineFlag, handleSearch, resetFilters }
 }

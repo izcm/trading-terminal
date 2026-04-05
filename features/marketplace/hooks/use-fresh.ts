@@ -18,7 +18,7 @@ export function useFresh<T extends string>() {
         next.delete(id)
         return { ...prev, [key]: next }
       })
-    }, 3500)
+    }, 2500)
   }, [])
 
   function has(key: T, id: string) {

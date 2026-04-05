@@ -55,7 +55,6 @@ export function Gallery<T extends { id: string }>({
     }
   }, [selected?.id, items.length, hasMore, isLoading, items, onLoadMore, selected])
 
-  // used to find this row via `[data-id="..."]` and scroll into view
   useEffect(() => {
     if (!selected || !ref?.current) return
 

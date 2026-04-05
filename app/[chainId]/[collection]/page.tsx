@@ -7,7 +7,6 @@ import {
 } from '@/lib/dmrkt-indexer/actions/dmrkt-page.get'
 
 import { MarketplaceView } from '@/features/MarketplaceView'
-import { IndexingGate } from '@/features/IndexingGate'
 
 export default async function Page({
   params,

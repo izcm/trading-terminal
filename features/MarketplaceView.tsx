@@ -61,20 +61,24 @@ export function MarketplaceView(initial: InitialState) {
   // --- selected item ---
   const [selectedByTab, setSelectedByTab] = useState<Partial<{ [K in TabName]: string }>>({})
 
-  const selectedItem = state[tab].items.find(i => i.id === selectedByTab[tab])
+  const selectedItem = useMemo(
+    () => state[tab].items.find(i => i.id === selectedByTab[tab]),
+    [state, tab, selectedByTab]
+  )
 
   // --- wallet stuff ---
   const { account, isConnected, connect, disconnect, chainId } = useWallet()
   const walletInteraction = () => (isConnected ? disconnect() : connect())
 
   // --- display manual ---
-  const [showManual, setShowManual] = useState<boolean>()
+  const [showManual, setShowManual] = useState(false)
 
   // --- user owned nfts + selected context (is owned token) ---
   const {
     ids: ownedIds,
     isFetching: loadingInventory,
-    refetch: fetchOwnedIds,
+    add: addOwnedId,
+    remove: removeOwnedId,
   } = useOwnedTokenIds(routeCollection, account)
 
   const { isMyToken, isMyListing, buildMineQuery } = useMine(
@@ -85,7 +89,7 @@ export function MarketplaceView(initial: InitialState) {
   )
 
   // --- filters ---
-  const { filters, mineFlag, handleSearch } = useSearchFilters(tab, account)
+  const { filters, mineFlag, handleSearch, resetFilters } = useSearchFilters(tab, account)
 
   // --- mutations ---
   const { add: addFresh, has: isFresh } = useFresh<TabName>()
@@ -106,7 +110,7 @@ export function MarketplaceView(initial: InitialState) {
     selectedItem,
     { isMyToken, isMyListing },
     tabActions,
-    { refetch: fetchOwnedIds }
+    { add: addOwnedId }
   )
 
   // ui focus
@@ -119,6 +123,20 @@ export function MarketplaceView(initial: InitialState) {
     f: () => setTab('feed'),
     s: () => setTab('sales'),
     e: () => setTab('explore'),
+
+    // tab switch + reset filters
+    F: () => {
+      setTab('feed')
+      resetFilters('feed')
+    },
+    S: () => {
+      setTab('sales')
+      resetFilters('sales')
+    },
+    E: () => {
+      setTab('explore')
+      resetFilters('explore')
+    },
 
     // header shortcuts
     W: () => walletInteraction(),
@@ -186,7 +204,7 @@ export function MarketplaceView(initial: InitialState) {
     }
 
     run()
-  }, [tab, filters, query, replacePage])
+  }, [tab, query, replacePage])
 
   return (
     <div className="flex gap-4 h-screen max-w-4xl px-2 mx-auto overflow-hidden font-mono">
@@ -223,12 +241,12 @@ export function MarketplaceView(initial: InitialState) {
             selectedId={selectedByTab[tab]}
             setSelectedId={id => setSelectedByTab(prev => ({ ...prev, [tab]: id }))}
             focusGalleryRef={focusGalleryRef}
+            isFresh={item => isFresh(tab, item.id)}
             onLoadMore={loadMore}
             isLoading={isLoadingMore}
             hasMore={state[tab].cursor !== null}
             tabAction={resolvedTabAction}
             ctx={{ isMyListing, isMyToken }}
-            isFresh={item => isFresh(tab, item.id)}
           />
         </div>
       </main>

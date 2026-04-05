@@ -34,10 +34,11 @@ export default function Page() {
   useEffect(() => {
     let id: ReturnType<typeof setTimeout>
     const poll = () => {
+
       getDmrktNFTCollections({ filters: { chainId: [String(CHAIN_ID)] } }).then(res => {
         if (res.ok && res.data.items.length > 0) setNFTCollections(res.data.items)
         else if (!res.ok) setError(res.error)
-        else id = setTimeout(poll, 2000)
+        else id = setTimeout(poll, 5000)
       })
     }
     poll()
@@ -49,7 +50,7 @@ export default function Page() {
     status?.nfts.done &&
     status.settlements.total > 0 &&
     status.settlements.reconstructed === status.settlements.total
-
+  console.log(status)
   useEffect(() => {
     if (!first || isDone) return
     const poll = async () => {

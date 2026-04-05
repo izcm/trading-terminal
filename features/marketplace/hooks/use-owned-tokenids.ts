@@ -13,7 +13,10 @@ export function useOwnedTokenIds(collection?: Hex, account?: Hex) {
     setIsFetching(true)
 
     const res = await readOwned(collection, account)
-    setIds(res)
+    setIds(prev => {
+      if (prev.length === res.length && prev.every((id, i) => id === res[i])) return prev
+      return res
+    })
 
     setIsFetching(false)
   }, [collection, account])

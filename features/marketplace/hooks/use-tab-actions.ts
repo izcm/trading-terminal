@@ -78,7 +78,8 @@ export function useTabActions(): UseTabActionsReturn {
  */
 
 type OwnedActions = {
-  refetch: () => void
+  add: (id: bigint) => void
+  // refetch: () => void
 }
 
 export function useMainAction<K extends TabName>(
@@ -92,7 +93,10 @@ export function useMainAction<K extends TabName>(
   const listing = isFeed ? (selected as TabResource['feed']) : undefined
 
   // const fillOrder = useFillOrder(listing?.rawOrder, listing?.id, owned.refetch)
-  const fillOrder = useFillOrder(listing?.rawOrder, listing?.id)
+  const fillOrder = useFillOrder(listing?.rawOrder, listing?.id, () => {
+    console.log('at least im logged')
+    listing && owned.add(listing.tokenId)
+  })
 
   if (!selected) {
     return { run: undefined, disabled: true, loading: false }

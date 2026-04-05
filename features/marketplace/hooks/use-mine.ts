@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { Hex } from '@/domain/shared/eth'
 import { TabName, TabResource } from '@/features/tab-config'
@@ -13,6 +13,8 @@ export function useMine<K extends TabName>(
 ) {
   // normalize tokenIds
   const ownedIds = useMemo(() => ids?.map(id => id.toString()) ?? [], [ids])
+  const ownedIdsRef = useRef(ownedIds)
+  useEffect(() => { ownedIdsRef.current = ownedIds }, [ownedIds])
 
   // my tokens
   const isMyToken = useCallback(
@@ -38,10 +40,10 @@ export function useMine<K extends TabName>(
 
       return {
         ...filters,
-        tokenId: ownedIds,
+        tokenId: ownedIdsRef.current,
       }
     },
-    [account, ownedIds]
+    [account]
   )
 
   return { buildMineQuery, isMyToken, isMyListing }
