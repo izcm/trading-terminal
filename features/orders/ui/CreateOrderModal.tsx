@@ -3,7 +3,7 @@ import { parseEther } from 'viem' // todo: decouple here
 import { OrderCore, OrderSide } from '@/protocol/eip712'
 import { Hex } from '@/domain/shared/eth'
 
-import { toast } from '@/ui/organisms/core/Toast'
+import { toast } from '@/ui/organisms'
 
 import { useWallet } from '@/features/wallet/hooks/use-wallet'
 import { FormInput, OrderForm } from './OrderForm'

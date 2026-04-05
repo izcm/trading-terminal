@@ -1,6 +1,6 @@
 import { RefObject, useEffect, useRef } from 'react'
 
-import { Tab } from '@/ui/organisms/core/Tab'
+import { Tab } from '@/ui/organisms'
 import { ResolvedAction, TabCtx, tabUIConfig, type TabName, type TabResource } from './tab-config'
 
 export function TabContainer<K extends TabName>({
@@ -52,18 +52,22 @@ export function TabContainer<K extends TabName>({
 
   return (
     <Tab
-      items={items}
-      selected={selected}
-      onSelect={item => setSelectedId(item.id)}
-      galleryItem={ui.galleryItem}
-      galleryRef={galleryRef}
-      action={tabAction.run}
-      actionBtnProps={btnProps}
-      actionIsLoading={tabAction.loading}
+      gallery={{
+        items,
+        selected,
+        onSelect: item => setSelectedId(item.id),
+        item: ui.galleryItem,
+        ref: galleryRef,
+        onLoadMore,
+        isLoading,
+        hasMore,
+      }}
+      actionBtn={{
+        action: tabAction.run,
+        props: btnProps,
+        isLoading: tabAction.loading,
+      }}
       details={ui.details}
-      onLoadMore={onLoadMore}
-      isLoading={isLoading}
-      hasMore={hasMore}
     />
   )
 }

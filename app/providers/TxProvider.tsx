@@ -10,7 +10,7 @@ import {
 
 import type { Hex } from '@/domain/shared/eth'
 import { useWaitForTransactionReceipt } from 'wagmi'
-import { toast } from '@/ui/organisms/core/Toast'
+import { toast } from '@/ui/organisms'
 
 type TxStatus = 'pending' | 'success' | 'failed'
 

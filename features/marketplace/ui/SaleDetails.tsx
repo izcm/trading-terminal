@@ -1,7 +1,7 @@
 import type { Sale } from '@/domain/sale'
 import { tsShort } from '@/domain/shared/utils/time'
 
-import { Details, HexDetailField } from '@/ui/organisms/Details'
+import { Details, HexDetailField } from '@/ui/organisms'
 import type { DetailField } from '@/ui/molecules/DetailFields'
 
 const DETAIL_FIELDS: DetailField<Sale>[] = [

@@ -7,37 +7,37 @@ import { Hex } from '@/domain/shared/eth'
 import { BtnProps } from '@/features/tab-config'
 import { Spinner } from '@/ui/atoms/Spinner'
 
-type TabProps<T> = {
+type GalleryConfig<T> = {
   items: T[]
   selected: T | undefined
   onSelect: (item: T) => void
-  galleryRef?: RefObject<HTMLUListElement | null>
-  galleryItem: (item: T) => ReactNode
-  galleryItemIsFresh?: (item: T) => boolean
-  action: (() => void) | undefined
-  actionBtnProps: BtnProps | undefined
-  actionIsLoading: boolean
-  details?: (item: T) => ReactNode
+  ref?: RefObject<HTMLUListElement | null>
+  item: (item: T) => ReactNode
+  itemIsFresh?: (item: T) => boolean
   onLoadMore?: () => void
   isLoading?: boolean
   hasMore?: boolean
 }
 
+type ActionBtnConfig = {
+  action: (() => void) | undefined
+  props: BtnProps | undefined
+  isLoading: boolean
+}
+
+type TabProps<T> = {
+  gallery: GalleryConfig<T>
+  actionBtn: ActionBtnConfig
+  details?: (item: T) => ReactNode
+}
+
 export function Tab<T extends { id: string; chainId: number; collection: Hex; tokenId: bigint }>({
-  items,
-  selected,
-  onSelect,
-  galleryRef,
-  galleryItem,
-  galleryItemIsFresh,
-  action,
-  actionBtnProps,
-  actionIsLoading,
+  gallery,
+  actionBtn,
   details,
-  onLoadMore,
-  isLoading,
-  hasMore,
 }: TabProps<T>) {
+  const { items, selected, onSelect, ref: galleryRef, item: galleryItem, itemIsFresh: galleryItemIsFresh, onLoadMore, isLoading, hasMore } = gallery
+  const { action, props: actionBtnProps, isLoading: actionIsLoading } = actionBtn
   return (
     <div className="min-h-0 flex-1 flex gap-4">
       <div className="flex-1 flex flex-col gap-4">

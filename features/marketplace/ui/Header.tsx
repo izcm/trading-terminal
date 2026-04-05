@@ -1,7 +1,14 @@
+'use client'
+import dynamic from 'next/dynamic'
+
 import { Backpack } from '@/ui/icons'
 import { Spinner } from '@/ui/atoms/Spinner'
 import { TxTracker } from '../../realtime/ui/TxTracker'
-import { WalletWidget } from '../../wallet/ui/WalletWidget'
+
+const WalletWidget = dynamic(
+  () => import('../../wallet/ui/WalletWidget').then(m => m.WalletWidget),
+  { ssr: false }
+)
 
 type InventoryInfo = {
   count: number

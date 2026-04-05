@@ -2,7 +2,7 @@ import type { Listing } from '@/domain/listing'
 
 import { tsShort } from '@/domain/shared/utils/time'
 
-import { Details, HexDetailField } from '@/ui/organisms/Details'
+import { Details, HexDetailField } from '@/ui/organisms'
 import type { DetailField } from '@/ui/molecules/DetailFields'
 import { listingStatusToClass } from '../lib/listing-status-ui'
 

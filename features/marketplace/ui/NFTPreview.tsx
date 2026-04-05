@@ -6,7 +6,7 @@ import { useTokenURI } from '@/lib/blockchain'
 import { Hex } from '@/domain/shared/eth'
 import { mapTokenUriToNFT, NFT } from '@/domain/nft'
 
-import { NFTCard } from '@/ui/organisms/NFTCard'
+import { NFTCard } from '@/ui/organisms'
 
 type Props = {
   chainId?: number
