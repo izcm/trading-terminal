@@ -1,14 +1,18 @@
+import React from 'react'
+
 type Props = {
   placeholder?: string
   defaultValue?: string
   value?: string
   onChange?: (value: string) => void
   onSubmit?: (value: string) => void
+  ref?: React.Ref<HTMLInputElement>
 }
 
-export function TextInput({ placeholder, defaultValue, value, onChange, onSubmit }: Props) {
+export function TextInput({ placeholder, defaultValue, value, onChange, onSubmit, ref }: Props) {
   return (
     <input
+      ref={ref}
       className="card px-4 py-2 w-full bg-black/10 text-muted"
       placeholder={placeholder}
       defaultValue={defaultValue}

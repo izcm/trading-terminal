@@ -20,6 +20,7 @@ import { Ban, CreditCard, Gavel, Handshake, Slash, Tag, X } from '@/ui/icons'
 // feature components
 import { ListingDetails } from './marketplace/ui/ListingDetails'
 import { SaleDetails } from './marketplace/ui/SaleDetails'
+import { capitalize } from '@/lib/utils/string'
 
 // === BASE INFO ===
 
@@ -106,7 +107,7 @@ export const tabUIConfig: TabUIConfig = {
       const content = isCancelAction
         ? { Icon: Ban, label: 'Cancel order' }
         : l.status !== 'active'
-          ? { Icon: Slash, label: `${l.status}` }
+          ? { Icon: Slash, label: `${capitalize(l.status)}` }
           : disabled
             ? { Icon: X, label: 'Not fillable' }
             : l.side === 'ask'

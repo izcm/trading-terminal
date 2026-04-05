@@ -1,4 +1,5 @@
 // todo: decouple
+import Image from 'next/image'
 import { formatEth2 } from '@/lib/blockchain/utils/bigint'
 import { useTokenURI } from '@/lib/blockchain'
 
@@ -7,6 +8,7 @@ import { NFT_LOADING_IMAGE } from '@/domain/constants/placeholders'
 import { tsSuperShort } from '@/domain/shared/utils/time'
 import type { Activity } from '@/domain/shared/activity'
 import { mapTokenUriToNFT, type NFT } from '@/domain/nft'
+
 import { listingStatusToClass } from '@/features/marketplace/lib/listing-status-ui'
 
 type Props = {
@@ -62,7 +64,13 @@ function ActivityRow({ item }: { item: Props }) {
     <div className="base-row gap-4 py-1 px-2">
       {/* NFT image */}
       <div className="relative shrink-0 rounded-xl">
-        <img src={nft.image} alt={nft.name} className="w-12 h-12 rounded object-cover" />
+        <Image
+          src={nft.image}
+          alt={nft.name}
+          width={48}
+          height={48}
+          className="w-12 h-12 rounded object-cover"
+        />
 
         {/* activity indicator */}
         {source === 'sale' ? (

@@ -10,6 +10,9 @@ export function TabContainer<K extends TabName>({
   setSelectedId,
   tabAction,
   focusGalleryRef,
+  onLoadMore,
+  isLoading,
+  hasMore,
   ctx,
 }: {
   ui: (typeof tabUIConfig)[K]
@@ -18,6 +21,9 @@ export function TabContainer<K extends TabName>({
   setSelectedId: (id: string) => void
   tabAction: ResolvedAction
   focusGalleryRef: RefObject<() => void>
+  onLoadMore?: () => void
+  isLoading?: boolean
+  hasMore?: boolean
   ctx?: TabCtx<K>
 }) {
   const selected = items.find(item => item.id === selectedId)
@@ -55,6 +61,9 @@ export function TabContainer<K extends TabName>({
       actionBtnProps={btnProps}
       actionIsLoading={tabAction.loading}
       details={ui.details}
+      onLoadMore={onLoadMore}
+      isLoading={isLoading}
+      hasMore={hasMore}
     />
   )
 }

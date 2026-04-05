@@ -16,7 +16,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" data-theme="rpg-loot" suppressHydrationWarning>
+    <html lang="en" data-theme="runtime" suppressHydrationWarning>
       <body suppressHydrationWarning>
         {/* <a
           href="#forward-main"

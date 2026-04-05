@@ -1,3 +1,5 @@
+import { capitalize } from '@/lib/utils/string'
+
 /**
  * Maps filter on format key=v1,v2 to format server expects key=v1&key=v2
  *
@@ -15,8 +17,8 @@ export function toSearchParams(filters: Record<string, string[]>) {
       const trait = key.slice(6)
 
       for (const val of vals) {
-        traits.push(trait)
-        values.push(val)
+        traits.push(capitalize(trait))
+        values.push(capitalize(val))
       }
     } else {
       for (const val of vals) {

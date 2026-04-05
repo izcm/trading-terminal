@@ -18,6 +18,9 @@ type TabProps<T> = {
   actionBtnProps: BtnProps | undefined
   actionIsLoading: boolean
   details?: (item: T) => ReactNode
+  onLoadMore?: () => void
+  isLoading?: boolean
+  hasMore?: boolean
 }
 
 export function Tab<T extends { id: string; chainId: number; collection: Hex; tokenId: bigint }>({
@@ -31,6 +34,9 @@ export function Tab<T extends { id: string; chainId: number; collection: Hex; to
   actionBtnProps,
   actionIsLoading,
   details,
+  onLoadMore,
+  isLoading,
+  hasMore,
 }: TabProps<T>) {
   return (
     <div className="min-h-0 flex-1 flex gap-4">
@@ -42,6 +48,9 @@ export function Tab<T extends { id: string; chainId: number; collection: Hex; to
           galleryItem={galleryItem}
           isFresh={galleryItemIsFresh}
           ref={galleryRef}
+          onLoadMore={onLoadMore}
+          isLoading={isLoading}
+          hasMore={hasMore}
         />
       </div>
 

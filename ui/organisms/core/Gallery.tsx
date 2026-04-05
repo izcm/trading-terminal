@@ -1,4 +1,4 @@
-import { ReactNode, RefObject } from 'react'
+import { ReactNode, RefObject, useEffect } from 'react'
 
 import { ArrowRow } from '@/ui/atoms'
 import { ArrowList } from '@/ui/molecules'
@@ -19,10 +19,42 @@ export function Gallery<T extends { id: string }>({
   galleryItem,
   selected,
   onSelect,
-  isFresh = () => false,
+  isFresh,
   galleryView = 'list',
   ref,
-}: GalleryProps<T>) {
+  onLoadMore,
+  isLoading,
+  hasMore,
+}: GalleryProps<T> & { onLoadMore?: () => void; isLoading?: boolean; hasMore?: boolean }) {
+  // load more on user scroll
+  useEffect(() => {
+    const el = ref?.current
+    if (!el || !onLoadMore) return
+
+    const handleScroll = () => {
+      const distance = el.scrollHeight - (el.scrollTop + el.clientHeight)
+
+      if (distance < 100 && !isLoading && hasMore) {
+        onLoadMore()
+      }
+    }
+
+    el.addEventListener('scroll', handleScroll)
+    return () => el.removeEventListener('scroll', handleScroll)
+  }, [ref, onLoadMore, isLoading, hasMore])
+
+  // load more on keyboard scroll
+  useEffect(() => {
+    if (!selected || !onLoadMore || isLoading || !hasMore) return
+
+    const index = items.findIndex(i => i.id === selected.id)
+    if (index === -1) return
+
+    if (items.length - index < 5) {
+      onLoadMore()
+    }
+  }, [selected?.id, items.length, hasMore, isLoading, items, onLoadMore, selected])
+
   const galleryClasses =
     galleryView === 'list'
       ? {
@@ -56,10 +88,10 @@ export function Gallery<T extends { id: string }>({
                 galleryClasses.arrowRow,
 
                 // default
-                !isSelected && !isFresh(item) && 'hover:bg-white/12 bg-secondary/80',
+                !isSelected && !isFresh?.(item) && 'hover:bg-white/12 bg-secondary/80',
 
                 // fresh
-                !isSelected && isFresh(item) && 'fresh',
+                !isSelected && isFresh?.(item) && 'fresh',
 
                 // selected
                 isSelected && 'bg-accent/30'

@@ -10,6 +10,10 @@ const DETAIL_FIELDS: DetailField<Sale>[] = [
     getValue: s => `#${s.tokenId}`,
   },
   {
+    label: 'price',
+    getValue: s => `${Number(s.price) / 1e18} ETH`,
+  },
+  {
     label: 'txHash',
     getValue: s => HexDetailField(s.txHash),
   },

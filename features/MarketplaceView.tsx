@@ -109,8 +109,9 @@ export function MarketplaceView(initial: InitialState) {
     { refetch: fetchOwnedIds }
   )
 
-  // tab gallery focus (centralizing keyboard shortcuts)
+  // ui focus
   const focusGalleryRef = useRef<() => void>(() => {})
+  const searchRef = useRef<HTMLInputElement>(null)
 
   // --- keyboard shortcuts ---
   useKeyboardShortcuts({
@@ -129,6 +130,7 @@ export function MarketplaceView(initial: InitialState) {
       resolvedTabAction.run()
     },
     g: () => focusGalleryRef.current?.(),
+    i: () => searchRef.current?.focus(),
   })
 
   // --- ws ---
@@ -154,19 +156,26 @@ export function MarketplaceView(initial: InitialState) {
 
   // --- pagination ---
   // todo: actually implement pagination (infinite scroll style)
-  const currCursor = state[tab].cursor
+  const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false)
 
-  // useEffect(() => {
-  //   if (!currCursor) return
+  const loadMore = useCallback(async () => {
+    const currCursor = state[tab].cursor
 
-  //   const run = async () => {
-  //     const res = await pageGetters[tab]({ filters: query, cursor: currCursor })
-  //     if (!res.ok) return
-  //     mergePage(tab, res.data.items, res.data.cursor)
-  //   }
+    if (!currCursor || isLoadingMore) return
 
-  //   run()
-  // }, [tab, currCursor, mergePage])
+    setIsLoadingMore(true)
+
+    const res = await pageGetters[tab]({
+      filters: query,
+      cursor: currCursor,
+    })
+
+    if (res.ok) {
+      mergePage(tab, res.data.items, res.data.cursor)
+    }
+
+    setIsLoadingMore(false)
+  }, [state, tab, isLoadingMore, query, mergePage])
 
   // --- filter change ---
   useEffect(() => {
@@ -199,6 +208,7 @@ export function MarketplaceView(initial: InitialState) {
         <div className="min-h-0 flex-1 flex-col flex gap-4">
           <TextInput
             key={tab}
+            ref={searchRef}
             defaultValue={buildSearchDefault({
               activeFilters: filters[tab],
               account,
@@ -213,6 +223,9 @@ export function MarketplaceView(initial: InitialState) {
             selectedId={selectedByTab[tab]}
             setSelectedId={id => setSelectedByTab(prev => ({ ...prev, [tab]: id }))}
             focusGalleryRef={focusGalleryRef}
+            onLoadMore={loadMore}
+            isLoading={isLoadingMore}
+            hasMore={state[tab].cursor !== null}
             tabAction={resolvedTabAction}
             ctx={{ isMyListing, isMyToken }}
           />

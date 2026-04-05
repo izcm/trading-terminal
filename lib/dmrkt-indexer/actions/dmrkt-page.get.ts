@@ -116,7 +116,7 @@ export async function getDmrktItems<T>({
   params: string
   query: URLSearchParams
 }): Promise<Result<Page<T>>> {
-  const url = `${baseUrl}/api/${params}?${query.toString()}`
+  const url = `${baseUrl}/api/${params}?${query.toString()}&limit=25`
 
   try {
     const res = await fetch(url)

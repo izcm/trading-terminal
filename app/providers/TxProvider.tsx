@@ -47,10 +47,6 @@ export function TxProvider({ children }: { children: ReactNode }) {
     )
   }
 
-  const removeTx = (hash: Hex) => {
-    setTxs(prev => prev.filter(tx => tx.hash !== hash))
-  }
-
   return (
     <TxContext.Provider value={{ txs, addTx }}>
       {txs.map(tx => (

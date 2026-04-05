@@ -37,6 +37,7 @@ export function useSearchFilters(tab: TabName, user?: Hex) {
   // nb: parent is resonsible for including owned tokenIds in query
   function handleSearch(value: string) {
     const { hasFlag, rest } = extractMyTokensFlag(value)
+
     const baseFilters = rest.trim().replace(/\s+/g, '&')
 
     const rawParams = new URLSearchParams(baseFilters)
@@ -53,6 +54,19 @@ export function useSearchFilters(tab: TabName, user?: Hex) {
 
     for (const [key, raw] of rawParams) {
       if (key === 'trait' || key === 'value') continue
+
+      const values = raw.split(',')
+
+      if (key === 'side') {
+        const v = values[0]?.toLowerCase()
+
+        if (v !== 'ask' && v !== 'bid' && v !== '0' && v !== '1') continue
+
+        const mapped = v === 'ask' ? '0' : v === 'bid' ? '1' : v
+        next[key] = [mapped]
+        continue
+      }
+
       next[key] = [...new Set(raw.split(','))]
     }
 

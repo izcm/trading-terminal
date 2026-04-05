@@ -27,7 +27,7 @@
   --color-failure-weak: var(--failure-weak);
 
   --order-active: var(--accent);
-  --order-filled: var(--accent-neutral);
+  --order-filled: var(--color-sale);
   --order-dead: var(--failure-weak);
 
   --font-sans:
@@ -41,7 +41,7 @@
   --text-h2: clamp(1.25rem, 1.1rem + 0.8vw, 1.875rem);
 }
 
-:root[data-theme='rpg-loot'] {
+:root[data-theme='runtime'] {
   color-scheme: dark;
 
   --bg-primary: #0b0b0e;
@@ -64,8 +64,6 @@
   --accent-bid: #a78bfa;
   --accent-ask: #ff8a3d;
 
-  --panel-shadow: 0 0 10px rgba(102, 255, 178, 0.25), 0 0 40px rgba(102, 255, 178, 0.1);
-
   --success: #4cff9a;
   --success-weak: rgba(76, 255, 154, 0.65);
 
@@ -74,9 +72,13 @@
 
   --failure: #ff5a3d;
   --failure-weak: rgba(255, 90, 61, 0.65);
+
+  --color-sale: #5ee7ff; /* crisp cyan */
+
+  --panel-shadow: 0 0 10px rgba(102, 255, 178, 0.25), 0 0 40px rgba(102, 255, 178, 0.1);
 }
 
-:root[data-theme='cyber-void'] {
+:root[data-theme='void'] {
   color-scheme: dark;
 
   --bg-primary: #010208;
@@ -91,14 +93,14 @@
   --border-soft: rgba(130, 151, 255, 0.25);
 
   /* core accents */
-  --accent: #6e75fa;
-  --accent-weak: rgba(109, 117, 255, 0.6);
-  --accent-neutral: #60d7ff;
+  --accent: #7c84ff;
+  --accent-weak: rgba(124, 132, 255, 0.7);
+  --accent-strong: #a29bff;
 
   --accent-bid: #60d7ff; /* cyan */
   --accent-ask: #e37dec; /* pink/purple */
 
-  /* 🔥 add missing semantic colors */
+  /* add missing semantic colors */
   --success: #3bffb0;
   --success-weak: rgba(59, 255, 176, 0.6);
 
@@ -109,23 +111,14 @@
   --failure-weak: rgba(255, 77, 109, 0.6);
 
   /* optional but consistent */
-  --color-sale: var(--accent-neutral);
+  --color-sale: #60d7ff; /* keep your vibe */
 
   /* glow / vibe */
   --panel-shadow:
     0 0 20px rgba(109, 117, 255, 0.22), 0 0 60px rgba(109, 117, 255, 0.16),
     0 0 140px rgba(77, 217, 255, 0.12);
-
-  --bg-hero: linear-gradient(
-    135deg,
-    #000000 0%,
-    #01030a 15%,
-    #04071b 40%,
-    #080d3a 65%,
-    #0e144f 85%,
-    #04081a 100%
-  );
 }
+
 /* optional UI helpers (makes states feel intentional) */
 
 .order-active {

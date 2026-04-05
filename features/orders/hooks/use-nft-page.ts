@@ -21,22 +21,22 @@ export function useNFTPage(filters: Record<string, string[]>) {
     setInitialLoading(false)
   }, [filters])
 
-  // // --- next page (append)
-  // const fetchNextPage = useCallback(async () => {
-  //   if (!cursor) return
+  // --- next page (append)
+  const fetchNextPage = useCallback(async () => {
+    if (!cursor) return
 
-  //   const res = await getDmrktNFTs({ ...filters, cursor })
-  //   if (res.ok) {
-  //     setItems(prev => [...prev, ...res.data.items])
-  //     setCursor(res.data.cursor ?? null)
-  //   }
-  // }, [filters, cursor])
+    const res = await getDmrktNFTs({ ...filters, cursor })
+    if (res.ok) {
+      setItems(prev => [...prev, ...res.data.items])
+      setCursor(res.data.cursor ?? null)
+    }
+  }, [filters, cursor])
 
   return {
     items,
     cursor,
     initialLoading,
     fetchFirstPage,
-    // fetchNextPage,
+    fetchNextPage,
   }
 }
