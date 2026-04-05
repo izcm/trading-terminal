@@ -94,7 +94,7 @@
 
   /* core accents */
   --accent: #7c84ff;
-  --accent-weak: rgba(124, 132, 255, 0.7);
+  --accent-weak: rgba(124, 132, 255, 0.75);
   --accent-strong: #a29bff;
 
   --accent-bid: #60d7ff; /* cyan */

@@ -14,6 +14,7 @@ export function TabContainer<K extends TabName>({
   isLoading,
   hasMore,
   ctx,
+  isFresh,
 }: {
   ui: (typeof tabUIConfig)[K]
   items: TabResource[K][]
@@ -25,6 +26,7 @@ export function TabContainer<K extends TabName>({
   isLoading?: boolean
   hasMore?: boolean
   ctx?: TabCtx<K>
+  isFresh?: (item: TabResource[K]) => boolean
 }) {
   const selected = items.find(item => item.id === selectedId)
 
@@ -57,6 +59,7 @@ export function TabContainer<K extends TabName>({
         selected,
         onSelect: item => setSelectedId(item.id),
         item: ui.galleryItem,
+        itemIsFresh: isFresh,
         ref: galleryRef,
         onLoadMore,
         isLoading,

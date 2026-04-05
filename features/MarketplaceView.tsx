@@ -88,7 +88,7 @@ export function MarketplaceView(initial: InitialState) {
   const { filters, mineFlag, handleSearch } = useSearchFilters(tab, account)
 
   // --- mutations ---
-  const { add: addFresh } = useFresh<TabName>()
+  const { add: addFresh, has: isFresh } = useFresh<TabName>()
   const { mergePage, replacePage, addItem, updateItem } = useTabMutations(setState)
 
   const addItemAndMarkFresh = useCallback(
@@ -228,6 +228,7 @@ export function MarketplaceView(initial: InitialState) {
             hasMore={state[tab].cursor !== null}
             tabAction={resolvedTabAction}
             ctx={{ isMyListing, isMyToken }}
+            isFresh={item => isFresh(tab, item.id)}
           />
         </div>
       </main>

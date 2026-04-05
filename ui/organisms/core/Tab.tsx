@@ -56,7 +56,7 @@ export function Tab<T extends { id: string; chainId: number; collection: Hex; to
           selected={selected}
           onSelect={onSelect}
           galleryItem={item}
-          // isFresh={galleryItemIsFresh}
+          isFresh={itemIsFresh}
           ref={galleryRef}
           onLoadMore={onLoadMore}
           isLoading={isLoading}
