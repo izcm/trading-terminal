@@ -79,6 +79,7 @@ export function MarketplaceView(initial: InitialState) {
     isFetching: loadingInventory,
     add: addOwnedId,
     remove: removeOwnedId,
+    refetch: refetchOwnedIds,
   } = useOwnedTokenIds(routeCollection, account)
 
   const { isMyToken, isMyListing, buildMineQuery } = useMine(
@@ -110,7 +111,7 @@ export function MarketplaceView(initial: InitialState) {
     selectedItem,
     { isMyToken, isMyListing },
     tabActions,
-    { add: addOwnedId }
+    { add: addOwnedId, remove: removeOwnedId, refetch: refetchOwnedIds }
   )
 
   // ui focus
@@ -126,16 +127,13 @@ export function MarketplaceView(initial: InitialState) {
 
     // tab switch + reset filters
     F: () => {
-      setTab('feed')
-      resetFilters('feed')
+      resetFiltersAndSelected('feed')
     },
     S: () => {
-      setTab('sales')
-      resetFilters('sales')
+      resetFiltersAndSelected('sales')
     },
     E: () => {
-      setTab('explore')
-      resetFilters('explore')
+      resetFiltersAndSelected('explore')
     },
 
     // header shortcuts
@@ -150,6 +148,12 @@ export function MarketplaceView(initial: InitialState) {
     g: () => focusGalleryRef.current?.(),
     i: () => searchRef.current?.focus(),
   })
+
+  const resetFiltersAndSelected = (tab: TabName) => {
+    setTab(tab)
+    resetFilters(tab)
+    setSelectedByTab(prev => ({ ...prev, tab: undefined }))
+  }
 
   // --- ws ---
   useEffect(() => {

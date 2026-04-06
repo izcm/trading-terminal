@@ -82,41 +82,44 @@
   color-scheme: dark;
 
   --bg-primary: #010208;
-  --bg-secondary: #090b1d;
-  --bg-surface: #06071a;
-  --bg-muted: rgba(140, 160, 255, 0.09);
+  --bg-secondary: #07091a;
+  --bg-surface: #050617;
+  --bg-muted: rgba(120, 140, 255, 0.08);
 
-  --text-primary: rgba(196, 198, 207, 0.94);
-  --text-muted: rgba(188, 200, 242, 0.72);
+  --text-primary: rgba(210, 212, 225, 0.92);
+  --text-muted: rgba(170, 180, 220, 0.65);
 
-  --border-default: rgba(130, 151, 255, 0.48);
-  --border-soft: rgba(130, 151, 255, 0.25);
+  --border-default: rgba(120, 140, 255, 0.35);
+  --border-soft: rgba(120, 140, 255, 0.18);
 
-  /* core accents */
+  /* core accents (anchor everything here) */
   --accent: #7c84ff;
-  --accent-weak: rgba(124, 132, 255, 0.75);
-  --accent-strong: #a29bff;
+  --accent-weak: rgba(124, 132, 255, 0.7);
+  --accent-strong: #a5abff;
 
-  --accent-bid: #60d7ff; /* cyan */
-  --accent-ask: #e37dec; /* pink/purple */
+  /* 🔵 trading semantics (derived, not random) */
+  --accent-bid: #7cf7d4ce; /* cyan → close to blue */
+  --accent-ask: #c77dff; /* purple → same family */
+  --color-sale: #3ad1ff; /* teal → midpoint between bid + success */
 
-  /* add missing semantic colors */
-  --success: #3bffb0;
-  --success-weak: rgba(59, 255, 176, 0.6);
+  /* ⚡ neutral = controlled contrast (NOT random yellow) */
+  --accent-neutral: #d6ff6b;
+  --accent-neutral-weak: rgba(214, 255, 107, 0.55);
 
-  --warning: #ffd166;
-  --warning-weak: rgba(255, 209, 102, 0.6);
+  /* semantic */
+  --success: #7cf7d4; /* reuse sale tone → consistency */
+  --success-weak: rgba(124, 247, 212, 0.6);
 
-  --failure: #ff4d6d;
-  --failure-weak: rgba(255, 77, 109, 0.6);
+  --warning: #d6ff6b; /* reuse neutral → less palette chaos */
+  --warning-weak: rgba(214, 255, 107, 0.5);
 
-  /* optional but consistent */
-  --color-sale: #60d7ff; /* keep your vibe */
+  --failure: #ff6b8a;
+  --failure-weak: rgba(255, 107, 138, 0.6);
 
-  /* glow / vibe */
+  /* glow */
   --panel-shadow:
-    0 0 20px rgba(109, 117, 255, 0.22), 0 0 60px rgba(109, 117, 255, 0.16),
-    0 0 140px rgba(77, 217, 255, 0.12);
+    0 0 20px rgba(124, 132, 255, 0.18), 0 0 60px rgba(124, 132, 255, 0.12),
+    0 0 140px rgba(58, 209, 255, 0.08);
 }
 
 /* optional UI helpers (makes states feel intentional) */

@@ -34,11 +34,10 @@ export default function Page() {
   useEffect(() => {
     let id: ReturnType<typeof setTimeout>
     const poll = () => {
-
       getDmrktNFTCollections({ filters: { chainId: [String(CHAIN_ID)] } }).then(res => {
         if (res.ok && res.data.items.length > 0) setNFTCollections(res.data.items)
         else if (!res.ok) setError(res.error)
-        else id = setTimeout(poll, 5000)
+        else id = setTimeout(poll, 3200)
       })
     }
     poll()
@@ -50,7 +49,7 @@ export default function Page() {
     status?.nfts.done &&
     status.settlements.total > 0 &&
     status.settlements.reconstructed === status.settlements.total
-  console.log(status)
+
   useEffect(() => {
     if (!first || isDone) return
     const poll = async () => {
@@ -94,7 +93,7 @@ export default function Page() {
               <div className="flex justify-between text-sm">
                 <span className={status.nfts.done ? 'text-accent' : 'opacity-40'}>nfts</span>
                 <span className="opacity-25 tabular-nums">
-                  {status.nfts.done ? 'done' : `${status.nfts.indexed} / ${status.nfts.total}`}
+                  {`${status.nfts.indexed} / ${status.nfts.total}`}
                 </span>
               </div>
               <Bar current={status.nfts.indexed} total={status.nfts.total} />
