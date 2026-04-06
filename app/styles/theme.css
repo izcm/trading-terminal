@@ -113,8 +113,8 @@
   --warning: #d6ff6b; /* reuse neutral → less palette chaos */
   --warning-weak: rgba(214, 255, 107, 0.5);
 
-  --failure: #ff6b8a;
-  --failure-weak: rgba(255, 107, 138, 0.6);
+  --failure: #f3486d;
+  --failure-weak: rgba(245, 80, 115, 0.75);
 
   /* glow */
   --panel-shadow:

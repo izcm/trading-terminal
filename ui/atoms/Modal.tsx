@@ -65,7 +65,7 @@ export function Modal({ isOpen, onClose, children }: ModalProps) {
           bg-primary/60  backdrop-blur-lg
           border border-default
           rounded-lg
-          shadow-lg p-4"
+          shadow-lg p-2"
         onClick={e => e.stopPropagation()}
       >
         {children}

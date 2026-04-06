@@ -145,7 +145,7 @@ export function MarketplaceView(initial: InitialState) {
       if (!resolvedTabAction?.run || resolvedTabAction.disabled || resolvedTabAction.loading) return
       resolvedTabAction.run()
     },
-    g: () => focusGalleryRef.current?.(),
+    l: () => focusGalleryRef.current?.(),
     i: () => searchRef.current?.focus(),
   })
 
