@@ -86,7 +86,7 @@ export function MarketplaceView(initial: InitialState) {
     tab,
     account,
     routeCollection,
-    ownedIds
+    ownedIds // hook is responsible to handle stableness
   )
 
   // --- filters ---
@@ -152,11 +152,11 @@ export function MarketplaceView(initial: InitialState) {
   const resetFiltersAndSelected = (tab: TabName) => {
     setTab(tab)
     resetFilters(tab)
-    setSelectedByTab(prev => ({ ...prev, tab: undefined }))
+    setSelectedByTab(prev => ({ ...prev, [tab]: undefined }))
   }
 
-  // --- ws ---
   useEffect(() => {
+    // --- ws ---
     connectWs()
   }, [])
 

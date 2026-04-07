@@ -5,6 +5,9 @@ export function useKeyboardShortcuts(map: Record<string, () => void>) {
     const onKey = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement
 
+      // disable on cntrl / cmd
+      if (e.ctrlKey || e.metaKey || e.altKey) return
+
       // don't trigger while typing
       if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
         return

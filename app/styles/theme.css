@@ -98,7 +98,7 @@
   --accent-strong: #a5abff;
 
   /* 🔵 trading semantics (derived, not random) */
-  --accent-bid: #7cf7d4ce; /* cyan → close to blue */
+  --accent-bid: #51d8b2ce; /* cyan → close to blue */
   --accent-ask: #c77dff; /* purple → same family */
   --color-sale: #3ad1ff; /* teal → midpoint between bid + success */
 

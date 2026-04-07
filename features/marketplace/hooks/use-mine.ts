@@ -1,35 +1,43 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
 import { Hex } from '@/domain/shared/eth'
 import { TabName, TabResource } from '@/features/tab-config'
 import { Listing } from '@/domain/listing'
 
 // rules per tab for marking a domain item as "mine"
-export function useMine<K extends TabName>(
+export function useMine(
   tab: TabName,
   account: Hex | undefined,
   collection: Hex | undefined,
   ids: bigint[]
 ) {
   // normalize tokenIds
-  const ownedIds = useMemo(() => ids?.map(id => id.toString()) ?? [], [ids])
-  const ownedIdsRef = useRef(ownedIds)
-  useEffect(() => { ownedIdsRef.current = ownedIds }, [ownedIds])
+  const ownedIdsRef = useRef<string[]>([])
+
+  useEffect(() => {
+    ownedIdsRef.current = ids.map(id => id.toString())
+  }, [ids])
 
   // my tokens
   const isMyToken = useCallback(
-    (item: TabResource[K]) => {
+    (item: TabResource[TabName]) => {
       if (!account) return false
       return ids.includes(item.tokenId)
     },
     [account, ids]
   )
 
+  function isListing(item: TabResource[TabName]): item is Listing {
+    return 'actor' in item
+  }
+
   // helps decide whether to show cancel btn
   const isMyListing = useCallback(
-    (item: TabResource[K]) => {
+    (item: TabResource[TabName]) => {
       if (!account || tab !== 'feed') return false
-      return (item as Listing).actor === account
+      if (!isListing(item)) return false
+
+      return item.actor === account
     },
     [tab, account]
   )

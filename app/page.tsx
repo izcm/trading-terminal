@@ -111,9 +111,7 @@ export default function Page() {
                   settlements
                 </span>
                 <span className="opacity-25 tabular-nums">
-                  {status.settlements.reconstructed === status.settlements.total
-                    ? 'done'
-                    : `${status.settlements.reconstructed} / ${status.settlements.total}`}
+                  {status.settlements.reconstructed} / {status.settlements.total}
                 </span>
               </div>
               <Bar current={status.settlements.reconstructed} total={status.settlements.total} />

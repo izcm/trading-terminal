@@ -37,5 +37,6 @@ export function useFillOrder(order?: Order, listingId?: string, onConfirmed?: ()
     isFillable,
     isChecking,
     error,
+    hasAccount: !!account,
   }
 }

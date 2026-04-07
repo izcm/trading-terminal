@@ -94,16 +94,13 @@ export function useMainAction<K extends TabName>(
   const listing = isFeed ? (selected as TabResource['feed']) : undefined
 
   const fillOrder = useFillOrder(listing?.rawOrder, listing?.id, owned.refetch)
-  // if (!listing) return
-  // return listing.side === 'bid' ? owned.add(listing.tokenId) : owned.remove(listing.tokenId)
-  // })
 
   if (!selected) {
     return { run: undefined, disabled: true, loading: false }
   }
 
   // if listing is inactive => disable and do nothing
-  if (isFeed && listing && listing.status !== 'active') {
+  if (!fillOrder.hasAccount || (isFeed && listing && listing.status !== 'active')) {
     return {
       run: undefined,
       disabled: true,
