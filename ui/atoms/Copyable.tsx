@@ -27,10 +27,10 @@ export function Copyable({ value, children, className = '' }: CopyableProps) {
       }}
       className={`
         cursor-pointer
-        text-accent-weak
+        text-accent
         underline underline-offset-2 decoration-dotted
         hover:decoration-solid
-        hover:text-accent
+        hover:text-accent-strong
         transition-colors
         ${className}
         `}

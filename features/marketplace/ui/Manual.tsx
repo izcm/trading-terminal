@@ -7,7 +7,7 @@ function Row({ label, value, copy }: { label: string; value: React.ReactNode; co
     <div
       className={`
         flex justify-between items-center py-1 gap-4
-        ${copy ? ' hover:text-accent/80 transition' : ''}
+        ${copy ? ' hover:text-accent-string transition' : ''}
       `}
       onClick={() => copy && navigator.clipboard.writeText(copy)}
     >
@@ -55,8 +55,8 @@ export function Manual() {
             <button
               key={key}
               onClick={() => setTab(key)}
-              className={`text-sm font-semibold transition ${
-                tab === key ? 'text-accent' : 'text-muted hover:text-accent/70'
+              className={`text-sm cursor-pointer font-semibold transition ${
+                tab === key ? 'text-accent' : 'text-muted hover:text-accent-strong'
               }`}
             >
               <span className="text-muted font-mono">{shortcut}.</span> {label}
@@ -87,7 +87,7 @@ export function Manual() {
           <Section title="AVAILABLE FIELDS">
             <div className="flex flex-col gap-1 text-sm text-muted pb-1">
               <span>sidepanel fields per tab — match casing or use lowercase</span>
-              <span className="text-accent/60 text-xs">
+              <span className="text-accent/80 text-xs">
                 explore: token attributes only (trait, value)
               </span>
             </div>

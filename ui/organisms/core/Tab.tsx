@@ -89,7 +89,7 @@ export function Tab<T extends { id: string; chainId: number; collection: Hex; to
         )}
 
         {selected !== undefined && details !== undefined && (
-          <div className="card bg-secondary h-full">{details(selected)}</div>
+          <div className="card h-full">{details(selected)}</div>
         )}
       </div>
     </div>

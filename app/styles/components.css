@@ -6,7 +6,7 @@
 }
 
 .hero-kicker {
-  color: var(--color-text-muted);
+  color: var(--text-muted);
 }
 
 .btn {
@@ -35,15 +35,19 @@
   border: 1px solid transparent;
 
   background: transparent;
-  color: var(--color-text-muted);
+  color: var(--text-muted);
 
-  transition: all 120ms ease;
+  transition:
+    border-color 140ms ease,
+    background 140ms ease,
+    color 140ms ease,
+    box-shadow 140ms ease;
 }
 
 /* hover (subtle hint) */
 .btn-rounded:hover {
   border-color: var(--border-default);
-  color: var(--color-text);
+  color: var(--text-primary);
 }
 
 /* selected */
@@ -51,7 +55,7 @@
   border-color: var(--accent-weak);
   color: var(--accent-weak);
 
-  background: color-mix(in oklab, var(--accent) 5%, transparent);
+  background: color-mix(in oklab, var(--accent) 9%, transparent);
 }
 
 .btn:focus-visible {
@@ -84,21 +88,63 @@
 }
 
 .btn-primary {
-  color: color-mix(in oklab, var(--text-primary) 92%, white 8%);
+  color: var(--text-primary);
   font-weight: 600;
 
-  border-color: color-mix(in oklab, var(--accent) 40%, var(--border-default) 40%);
+  border-color: color-mix(in oklab, var(--accent) 42%, transparent);
 
   background: linear-gradient(
     160deg,
-    color-mix(in oklab, var(--accent) 40%, black 18%),
-    color-mix(in oklab, var(--accent) 35%, black 35%)
+    color-mix(in oklab, var(--accent) 44%, black),
+    color-mix(in oklab, var(--accent) 50%, black)
   );
 
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.18),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.35),
-    0 2px 6px color-mix(in oklab, var(--accent) 20%, black 80%);
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+    0 2px 8px color-mix(in oklab, var(--accent) 12%, black);
+}
+
+.btn-primary:hover {
+  color: var(--text-primary);
+
+  border-color: color-mix(in oklab, var(--accent) 55%, transparent);
+
+  background: linear-gradient(
+    160deg,
+    color-mix(in oklab, var(--accent-strong) 32%, black),
+    color-mix(in oklab, var(--accent) 38%, black)
+  );
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.32),
+    0 4px 12px color-mix(in oklab, var(--accent) 18%, black),
+    0 0 8px color-mix(in oklab, var(--accent) 8%, transparent);
+}
+
+.btn-primary:active {
+  background: linear-gradient(
+    160deg,
+    color-mix(in oklab, var(--accent) 44%, black),
+    color-mix(in oklab, var(--accent) 34%, black)
+  );
+  border-color: color-mix(in oklab, var(--accent) 55%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.36),
+    0 2px 6px color-mix(in oklab, var(--accent) 16%, black);
+}
+
+.btn-primary:active:focus-visible {
+  border-color: color-mix(in oklab, var(--accent) 70%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.36),
+    0 2px 6px color-mix(in oklab, var(--accent) 16%, black),
+    0 0 0 2px var(--bg-primary),
+    0 0 0 5px color-mix(in oklab, var(--accent) 46%, transparent),
+    0 0 16px color-mix(in oklab, var(--accent) 30%, transparent);
 }
 
 /* === Danger Button (Cancel Order vibe) === */
@@ -107,34 +153,34 @@
   color: color-mix(in oklab, var(--text-primary) 92%, white 8%);
   font-weight: 600;
 
-  border-color: color-mix(in oklab, crimson 35%, var(--border-default) 65%);
+  border-color: color-mix(in oklch, var(--failure) 40%, transparent);
 
   background: linear-gradient(
     160deg,
-    color-mix(in oklab, crimson 18%, black 82%),
-    color-mix(in oklab, crimson 14%, black 86%)
+    color-mix(in oklch, var(--failure) 30%, black 70%),
+    color-mix(in oklch, var(--failure) 22%, black 78%)
   );
 
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.14),
     inset 0 -1px 0 rgba(0, 0, 0, 0.35),
-    0 2px 6px color-mix(in oklab, crimson 18%, black 82%);
+    0 2px 6px color-mix(in oklch, var(--failure) 22%, black 78%);
 }
 
 /* hover */
 .btn-danger:hover {
-  border-color: color-mix(in oklab, crimson 55%, var(--border-default));
+  border-color: color-mix(in oklch, var(--failure) 70%, transparent);
 
   background: linear-gradient(
     160deg,
-    color-mix(in oklab, crimson 26%, black 74%),
-    color-mix(in oklab, crimson 20%, black 80%)
+    color-mix(in oklch, var(--failure) 38%, black 62%),
+    color-mix(in oklch, var(--failure) 30%, black 70%)
   );
 
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.18),
     inset 0 -1px 0 rgba(0, 0, 0, 0.3),
-    0 4px 12px color-mix(in oklab, crimson 28%, black 72%);
+    0 4px 12px color-mix(in oklch, var(--failure) 30%, black 70%);
 }
 
 /* active */
@@ -143,111 +189,50 @@
 
   background: linear-gradient(
     160deg,
-    color-mix(in oklab, crimson 22%, black 78%),
-    color-mix(in oklab, crimson 18%, black 82%)
+    color-mix(in oklch, var(--failure) 32%, black 68%),
+    color-mix(in oklch, var(--failure) 25%, black 75%)
   );
 
-  border-color: color-mix(in oklab, crimson 60%, var(--border-default));
+  border-color: color-mix(in oklch, var(--failure) 60%, transparent);
 
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.12),
     inset 0 -1px 0 rgba(0, 0, 0, 0.32),
-    0 2px 6px color-mix(in oklab, crimson 24%, black 76%);
+    0 2px 6px color-mix(in oklch, var(--failure) 26%, black 74%);
 }
 
 /* focus */
 .btn-danger:focus-visible {
   outline: none;
-  border-color: color-mix(in oklab, crimson 70%, var(--border-default));
+  border-color: color-mix(in oklch, var(--failure) 70%, transparent);
 
   box-shadow:
     0 0 0 2px var(--bg-primary),
-    0 0 0 5px color-mix(in oklab, crimson 30%, transparent),
-    0 0 14px color-mix(in oklab, crimson 20%, transparent);
-}
-
-.btn-primary:hover {
-  color: var(--text-primary);
-
-  background: linear-gradient(
-    160deg,
-    color-mix(in oklab, var(--accent) 50%, black 12%),
-    color-mix(in oklab, var(--accent) 42%, black 28%)
-  );
-
-  border-color: color-mix(in oklab, var(--accent) 55%, var(--border-default));
-
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.25),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.28),
-    0 4px 12px color-mix(in oklab, var(--accent) 30%, black 70%);
-}
-
-.btn-primary:active {
-  background: linear-gradient(
-    160deg,
-    color-mix(in oklab, var(--accent) 46%, black 14%),
-    color-mix(in oklab, var(--accent) 40%, black 30%)
-  );
-  border-color: color-mix(in oklab, var(--accent) 62%, var(--border-default));
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.16),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.3),
-    0 2px 6px color-mix(in oklab, var(--accent) 26%, black 74%);
-}
-
-.btn-primary:active:focus-visible {
-  border-color: color-mix(in oklab, var(--accent) 74%, white 26%);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.16),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.3),
-    0 2px 6px color-mix(in oklab, var(--accent) 26%, black 74%),
-    0 0 0 2px var(--bg-primary),
-    0 0 0 5px color-mix(in oklab, var(--accent) 46%, transparent),
-    0 0 16px color-mix(in oklab, var(--accent) 30%, transparent);
+    0 0 0 5px color-mix(in oklch, var(--failure) 30%, transparent),
+    0 0 14px color-mix(in oklch, var(--failure) 20%, transparent);
 }
 
 .btn-secondary {
-  color: color-mix(in oklab, var(--text-primary) 92%, var(--text-muted));
-  border-color: color-mix(in oklab, var(--border-default) 90%, transparent);
-  background: linear-gradient(
-    160deg,
-    rgba(255, 255, 255, 0.08) 0%,
-    rgba(255, 255, 255, 0.03) 50%,
-    rgba(0, 0, 0, 0.04) 100%
-  );
-  backdrop-filter: blur(4px);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.14),
-    0 2px 6px rgba(0, 0, 0, 0.18);
+  color: var(--text-primary);
+  border-color: var(--border-default);
+  background: color-mix(in oklab, var(--accent) 5%, transparent);
 }
 
 .btn-secondary:hover {
-  color: var(--text-primary);
-  border-color: color-mix(in oklab, var(--accent) 18%, var(--border-default) 82%);
-  background: linear-gradient(
-    160deg,
-    rgba(255, 255, 255, 0.07) 0%,
-    rgba(255, 255, 255, 0.02) 50%,
-    rgba(0, 0, 0, 0.04) 100%
-  );
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.09),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.12),
-    0 4px 12px rgba(0, 0, 0, 0.18),
-    0 0 8px color-mix(in oklab, var(--accent) 6%, transparent);
+  border-color: color-mix(in oklab, var(--accent) 40%, var(--border-default) 60%);
+  background: color-mix(in oklab, var(--accent) 9%, transparent);
+  box-shadow: 0 0 8px color-mix(in oklab, var(--accent) 8%, transparent);
 }
 
 .btn-secondary:active {
-  background: linear-gradient(160deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.09) 100%);
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.13);
+  background: color-mix(in oklab, var(--accent) 12%, transparent);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25);
 }
 
 .btn-secondary:active:focus-visible {
   border-color: color-mix(in oklab, var(--accent) 62%, var(--border-default));
   box-shadow:
-    inset 0 1px 3px rgba(0, 0, 0, 0.13),
+    inset 0 1px 3px rgba(0, 0, 0, 0.25),
     0 0 0 2px var(--bg-primary),
     0 0 0 5px color-mix(in oklab, var(--accent) 40%, transparent),
     0 0 14px color-mix(in oklab, var(--accent) 24%, transparent);
@@ -258,13 +243,18 @@
   border: 1px solid var(--border-default);
   color: var(--text-muted);
 
-  transition: all 160ms ease;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    color 160ms ease,
+    box-shadow 160ms ease;
 }
 
 .btn-ghost:hover {
   background: color-mix(in oklab, var(--bg-surface) 40%, transparent);
-  border-color: color-mix(in oklab, var(--accent) 20%, var(--border-default) 80%);
+  border-color: color-mix(in oklab, var(--accent) 25%, var(--border-default) 75%);
   color: var(--text-primary);
+  box-shadow: 0 0 6px color-mix(in oklab, var(--accent) 8%, transparent);
 }
 
 .btn-ghost:active {
@@ -275,41 +265,23 @@
 .btn-menu {
   height: 25px;
   padding: 0.25rem 0.75rem;
-  color: var(--accent-weak);
+  background: transparent;
+  color: var(--accent);
   font-size: 0.8575rem;
   letter-spacing: 1.6px;
   border-radius: 0.5rem;
   border: 1px solid var(--border-soft);
+
+  transition:
+    border-color 160ms ease,
+    color 160ms ease,
+    box-shadow 160ms ease;
 }
 
 .btn-menu:hover {
   border-color: var(--accent);
-  color: var(--accent);
-}
-
-.btn-accent {
-  background-color: color-mix(in oklab, var(--bg-surface) 50%, transparent);
-  color: var(--accent-weak);
-
-  border: 1px solid color-mix(in oklab, var(--accent) 20%, var(--border-soft));
-
-  transition:
-    border-color 160ms ease,
-    box-shadow 160ms ease,
-    transform 120ms ease,
-    background 120ms ease;
-}
-
-.btn-accent:hover {
-  border-color: color-mix(in oklab, var(--accent) 18%, var(--border-default));
-  box-shadow: 0 0 4px color-mix(in oklab, var(--accent) 10%, transparent);
-  background: color-mix(in oklab, var(--bg-surface) 60%, var(--accent) 4%);
-}
-
-.btn-accent:active {
-  transform: translateY(0.5px) scale(0.995);
-  box-shadow: 0 0 2px color-mix(in oklab, var(--accent) 8%, transparent);
-  background: color-mix(in oklab, var(--bg-surface) 60%, var(--accent) 8%);
+  color: var(--accent-strong);
+  box-shadow: 0 0 6px color-mix(in oklab, var(--accent) 18%, transparent);
 }
 
 @keyframes pulseGlow {
@@ -328,7 +300,9 @@
   color: var(--accent);
   cursor: pointer;
   font-weight: 500;
-  transition: color 0.2s ease;
+  transition:
+    color 200ms ease,
+    text-shadow 200ms ease;
 }
 
 .token-action:hover {
@@ -336,7 +310,10 @@
 }
 
 .hover-lift {
-  transition: all 160ms ease;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease;
 }
 
 .hover-lift:hover {
@@ -347,6 +324,7 @@
 .card {
   border: 1px solid;
   border-color: var(--border-default);
+  background-color: var(--bg-surface);
   border-radius: 0.5rem;
   overflow: hidden;
 }

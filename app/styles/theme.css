@@ -45,8 +45,8 @@
   color-scheme: dark;
 
   --bg-primary: #0b0b0e;
-  --bg-secondary: #141418;
-  --bg-surface: #1a1a20;
+  --bg-secondary: #1a1a20;
+  --bg-surface: #141418;
   --bg-muted: rgba(120, 255, 180, 0.05);
 
   --text-primary: rgba(230, 235, 240, 0.94);
@@ -56,7 +56,7 @@
   --border-soft: rgba(120, 255, 180, 0.15);
 
   --accent-strong: #66ffb2; /* rare, special */
-  --accent: #5ee6a3; /* normal primary */
+  --accent: #49ca8a; /* normal primary */
   --accent-weak: rgba(94, 230, 163, 0.65); /* default usage */
 
   --accent-neutral: #5ee7ff;
@@ -70,8 +70,8 @@
   --warning: #ffc12f;
   --warning-weak: #ffc12fb9;
 
-  --failure: #ff5a3d;
-  --failure-weak: rgba(255, 90, 61, 0.65);
+  --failure: #ff2d55;
+  --failure-weak: rgba(255, 45, 85, 0.65);
 
   --color-sale: #5ee7ff; /* crisp cyan */
 
@@ -113,8 +113,8 @@
   --warning: #d6ff6b; /* reuse neutral → less palette chaos */
   --warning-weak: rgba(214, 255, 107, 0.5);
 
-  --failure: #f3486d;
-  --failure-weak: rgba(245, 80, 115, 0.75);
+  --failure: #f0356a;
+  --failure-weak: rgba(240, 53, 106, 0.75);
 
   /* glow */
   --panel-shadow:

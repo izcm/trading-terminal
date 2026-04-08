@@ -11,11 +11,11 @@ export function GalleryItem({
       <Image
         src={image}
         alt={title ?? ''}
-        className="border-b border-default object-cover"
+        className="border-b border-default object-cover bg-primary"
         width={500}
         height={500}
       />
-      <div className="bg-secondary flex flex-col">
+      <div className="flex flex-col">
         {title && (
           <span className="h-[40px] grid place-items-center border-b border-default">{title}</span>
         )}

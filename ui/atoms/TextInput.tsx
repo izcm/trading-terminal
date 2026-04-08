@@ -13,7 +13,7 @@ export function TextInput({ placeholder, defaultValue, value, onChange, onSubmit
   return (
     <input
       ref={ref}
-      className="card px-4 py-2 w-full bg-black/10 text-muted"
+      className="px-4 py-2 w-full bg-black/10 text-muted rounded-lg border border-default"
       placeholder={placeholder}
       defaultValue={defaultValue}
       value={value}
