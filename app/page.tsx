@@ -130,7 +130,7 @@ export default function Page() {
               <Link
                 key={`${c.chainId}:${c.address}`}
                 href={`/${c.chainId}/${c.address}`}
-                className="btn btn-accent text-center"
+                className="btn btn-primary text-center"
               >
                 enter {c.name ?? c.address.slice(0, 6) + '...'} →
               </Link>

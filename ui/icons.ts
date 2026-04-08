@@ -9,4 +9,5 @@ export {
   Unplug,
   X,
   Backpack,
+  Receipt,
 } from 'lucide-react'

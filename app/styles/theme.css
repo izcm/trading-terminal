@@ -46,7 +46,7 @@
 
   --bg-primary: #0b0b0e;
   --bg-secondary: #1a1a20;
-  --bg-surface: #141418;
+  --bg-surface: #131316;
   --bg-muted: rgba(120, 255, 180, 0.05);
 
   --text-primary: rgba(230, 235, 240, 0.94);
@@ -81,45 +81,45 @@
 :root[data-theme='void'] {
   color-scheme: dark;
 
+  /* push separation a bit more */
   --bg-primary: #010208;
-  --bg-secondary: #07091a;
-  --bg-surface: #050617;
-  --bg-muted: rgba(120, 140, 255, 0.08);
+  --bg-secondary: #060826; /* more blue */
+  --bg-surface: #0b0f29; /* noticeably lifted */
+  --bg-muted: rgba(120, 140, 255, 0.12); /* slightly stronger */
 
-  --text-primary: rgba(210, 212, 225, 0.92);
+  /* text stays mostly fine */
+  --text-primary: rgba(220, 222, 235, 0.95);
   --text-muted: rgba(170, 180, 220, 0.65);
 
-  --border-default: rgba(120, 140, 255, 0.35);
-  --border-soft: rgba(120, 140, 255, 0.18);
+  /* borders → more readable layering */
+  --border-default: rgba(120, 140, 255, 0.45);
+  --border-soft: rgba(120, 140, 255, 0.22);
 
-  /* core accents (anchor everything here) */
+  /* accents untouched (your palette is good) */
   --accent: #7c84ff;
   --accent-weak: rgba(124, 132, 255, 0.7);
   --accent-strong: #a5abff;
 
-  /* 🔵 trading semantics (derived, not random) */
-  --accent-bid: #51d8b2ce; /* cyan → close to blue */
-  --accent-ask: #c77dff; /* purple → same family */
-  --color-sale: #3ad1ff; /* teal → midpoint between bid + success */
+  --accent-bid: #51d8b2ce;
+  --accent-ask: #c77dff;
+  --color-sale: #3ad1ff;
 
-  /* ⚡ neutral = controlled contrast (NOT random yellow) */
   --accent-neutral: #d6ff6b;
   --accent-neutral-weak: rgba(214, 255, 107, 0.55);
 
-  /* semantic */
-  --success: #7cf7d4; /* reuse sale tone → consistency */
+  --success: #7cf7d4;
   --success-weak: rgba(124, 247, 212, 0.6);
 
-  --warning: #d6ff6b; /* reuse neutral → less palette chaos */
+  --warning: #d6ff6b;
   --warning-weak: rgba(214, 255, 107, 0.5);
 
   --failure: #f0356a;
   --failure-weak: rgba(240, 53, 106, 0.75);
 
-  /* glow */
+  /* slightly stronger glow so surfaces pop */
   --panel-shadow:
-    0 0 20px rgba(124, 132, 255, 0.18), 0 0 60px rgba(124, 132, 255, 0.12),
-    0 0 140px rgba(58, 209, 255, 0.08);
+    0 0 24px rgba(124, 132, 255, 0.22), 0 0 80px rgba(124, 132, 255, 0.14),
+    0 0 160px rgba(58, 209, 255, 0.1);
 }
 
 /* optional UI helpers (makes states feel intentional) */

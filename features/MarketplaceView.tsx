@@ -85,7 +85,6 @@ export function MarketplaceView(initial: InitialState) {
   const { isMyToken, isMyListing, buildMineQuery } = useMine(
     tab,
     account,
-    routeCollection,
     ownedIds // hook is responsible to handle stableness
   )
 
@@ -93,7 +92,7 @@ export function MarketplaceView(initial: InitialState) {
   const { filters, mineFlag, handleSearch, resetFilters } = useSearchFilters(tab, account)
 
   // --- mutations ---
-  const { add: addFresh, has: isFresh } = useFresh<TabName>()
+  const { add: addFresh, has: isFresh } = useFresh(tab)
   const { mergePage, replacePage, addItem, updateItem } = useTabMutations(setState)
 
   const addItemAndMarkFresh = useCallback(
@@ -225,35 +224,37 @@ export function MarketplaceView(initial: InitialState) {
 
         <Tabs value={tab} onChange={setTab} items={Object.keys(tabUIConfig) as TabName[]} />
 
-        {/* ---- content ---- */}
+        {/* ---- search ---- */}
 
-        <div className="min-h-0 flex-1 flex-col flex gap-4 fade-in">
-          <TextInput
-            key={tab}
-            ref={searchRef}
-            defaultValue={buildSearchDefault({
-              activeFilters: filters[tab],
-              account,
-              isMine: mineFlag[tab],
-            })}
-            onSubmit={handleSearch}
-          />
+        <TextInput
+          key={tab}
+          ref={searchRef}
+          defaultValue={buildSearchDefault({
+            activeFilters: filters[tab],
+            account,
+            isMine: mineFlag[tab],
+          })}
+          onSubmit={handleSearch}
+        />
 
-          <TabContainer
-            ui={tabUIConfig[tab]}
-            items={state[tab].items}
-            selectedId={selectedByTab[tab]}
-            setSelectedId={id => setSelectedByTab(prev => ({ ...prev, [tab]: id }))}
-            focusGalleryRef={focusGalleryRef}
-            isFresh={item => isFresh(tab, item.id)}
-            onLoadMore={loadMore}
-            isLoading={isLoadingMore}
-            hasMore={state[tab].cursor !== null}
-            tabAction={resolvedTabAction}
-            ctx={{ isMyListing, isMyToken }}
-          />
-        </div>
+        {/* ---- tab gallery + sidepanel ---- */}
+
+        <TabContainer
+          ui={tabUIConfig[tab]}
+          items={state[tab].items}
+          selectedId={selectedByTab[tab]}
+          setSelectedId={id => setSelectedByTab(prev => ({ ...prev, [tab]: id }))}
+          focusGalleryRef={focusGalleryRef}
+          isFresh={item => isFresh(tab, item.id)}
+          onLoadMore={loadMore}
+          isLoading={isLoadingMore}
+          hasMore={state[tab].cursor !== null}
+          tabAction={resolvedTabAction}
+          ctx={{ isMyListing, isMyToken }}
+        />
       </main>
+
+      {/* ---- modals ---- */}
 
       {modal?.type === 'receipt' && (
         <Modal isOpen onClose={closeModal}>

@@ -47,7 +47,7 @@ export function Manual() {
   }, [])
 
   return (
-    <div className="card p-5 cursor-pointer w-full max-w-[550px] space-y-4">
+    <div className="p-5 cursor-pointer w-full max-w-[550px] space-y-4 rounded-border">
       {/* header / tabs */}
       <div className="flex justify-between items-center">
         <div className="flex gap-3">

@@ -1,7 +1,7 @@
 'use client'
 import dynamic from 'next/dynamic'
 
-import { Backpack } from '@/ui/icons'
+import { Backpack, Receipt } from '@/ui/icons'
 import { Spinner } from '@/ui/atoms/Spinner'
 import { TxTracker } from '../../realtime/ui/TxTracker'
 

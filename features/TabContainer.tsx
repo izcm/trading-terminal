@@ -53,24 +53,26 @@ export function TabContainer<K extends TabName>({
     : undefined
 
   return (
-    <Tab
-      gallery={{
-        items,
-        selected,
-        onSelect: item => setSelectedId(item.id),
-        item: ui.galleryItem,
-        itemIsFresh: isFresh,
-        ref: galleryRef,
-        onLoadMore,
-        isLoading,
-        hasMore,
-      }}
-      actionBtn={{
-        action: tabAction.run,
-        props: btnProps,
-        isLoading: tabAction.loading,
-      }}
-      details={ui.details}
-    />
+    <div className="flex min-h-0 fade-in">
+      <Tab
+        gallery={{
+          items,
+          selected,
+          onSelect: item => setSelectedId(item.id),
+          item: ui.galleryItem,
+          itemIsFresh: isFresh,
+          ref: galleryRef,
+          onLoadMore,
+          isLoading,
+          hasMore,
+        }}
+        actionBtn={{
+          action: tabAction.run,
+          props: btnProps,
+          isLoading: tabAction.loading,
+        }}
+        details={ui.details}
+      />
+    </div>
   )
 }

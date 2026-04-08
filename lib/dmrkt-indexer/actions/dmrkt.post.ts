@@ -3,7 +3,7 @@ import { parseSignature } from 'viem'
 import type { OrderCore } from '@/protocol/eip712'
 import type { Hex } from '@/domain/shared/eth'
 
-export const baseUrl = process.env.NEXT_PUBLIC_INDEXER_ENDPOINT_URL
+export const baseUrl = process.env.NEXT_PUBLIC_INDEXER_API
 
 export async function postDmrktOrder(chainId: number, order: OrderCore, signature: Hex) {
   const url = `${baseUrl}/api/orders`

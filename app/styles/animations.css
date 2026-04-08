@@ -40,20 +40,16 @@
 }
 
 .fresh {
-  animation: freshPulse 2s ease-out forwards;
+  animation: freshPulse 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 @keyframes freshPulse {
   0% {
-    background-color: transparent;
-    box-shadow: inset 2px 0 0 transparent;
-  }
-  10% {
-    background-color: color-mix(in oklab, var(--color-accent-strong) 18%, transparent);
-    box-shadow: inset 2px 0 0 var(--color-accent-strong);
+    background-color: color-mix(in oklab, var(--accent-strong) 18%, var(--bg-surface));
+    box-shadow: inset 2px 0 0 var(--accent-strong);
   }
   100% {
-    background-color: transparent;
+    background-color: var(--bg-surface);
     box-shadow: inset 2px 0 0 transparent;
   }
 }

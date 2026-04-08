@@ -7,7 +7,7 @@ type ArrowRowProps = {
   onSelect: () => void
   children: ReactNode
   className?: string
-  dataId: string
+  dataId?: string
 }
 
 export function ArrowRow({ isSelected, onSelect, children, className, dataId }: ArrowRowProps) {

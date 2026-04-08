@@ -1,4 +1,4 @@
-const contractAddr = process.env.NEXT_PUBLIC_ORDERBOOK_CONTRACT_ADDR
+const contractAddr = process.env.NEXT_PUBLIC_MARKETPLACE_ADDR
 
 export const dmrktDomain = {
   name: 'dmrkt',

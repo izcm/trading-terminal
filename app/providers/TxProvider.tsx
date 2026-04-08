@@ -78,33 +78,37 @@ function TxWatcher({
 }) {
   const { isError, isSuccess } = useWaitForTransactionReceipt({ hash: tx.hash })
   const handledRef = useRef(false)
-
   useEffect(() => {
     if (handledRef.current) return
 
+    // setTimeout is for demo purposes to make experience more realistic (local fork executes blocks very fast)
+    // + could solve it by setting --block-time as param to fork
+    // but that made demo pipeline run way too slow
+
     if (isSuccess) {
       handledRef.current = true
-
-      toast({
-        title: 'Transaction confirmed',
-        description: 'Your tx is confirmed on-chain. The marketplace should update shortly.',
-        variant: 'success',
-      })
-
-      onSuccess()
-      return
+      const timer = setTimeout(() => {
+        toast({
+          title: 'Transaction confirmed',
+          description: 'Your tx is confirmed on-chain. The marketplace should update shortly.',
+          variant: 'success',
+        })
+        onSuccess()
+      }, 1500)
+      return () => clearTimeout(timer)
     }
 
     if (isError) {
       handledRef.current = true
-
-      toast({
-        title: 'Transaction not completed',
-        description: 'It may have been rejected, reverted, or out of gas. Please try again.',
-        variant: 'error',
-      })
-
-      onFail()
+      const timer = setTimeout(() => {
+        toast({
+          title: 'Transaction not completed',
+          description: 'It may have been rejected, reverted, or out of gas. Please try again.',
+          variant: 'error',
+        })
+        onFail()
+      }, 1500)
+      return () => clearTimeout(timer)
     }
   }, [isSuccess, isError, onSuccess, onFail])
 

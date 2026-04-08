@@ -4,10 +4,14 @@ type Handler = (payload: unknown) => void
 
 const handlers: Record<string, Set<Handler>> = {}
 
-export function connectWs() {
-  if (ws) return
+const wsURL = process.env.NEXT_PUBLIC_INDEXER_WS
 
-  ws = new WebSocket('ws://localhost:5001')
+if (!wsURL) throw new Error('Missing NEXT_PUBLIC_INDEXER_WS')
+
+export function connectWs() {
+  if (ws || !wsURL) return
+
+  ws = new WebSocket(wsURL)
 
   ws.onmessage = e => {
     const parsed = JSON.parse(e.data)

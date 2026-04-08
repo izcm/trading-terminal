@@ -19,7 +19,7 @@ export function SalesReceipt({ sale }: { sale: Sale }) {
   const ctx = sale.txContext
 
   return (
-    <div className="card flex flex-col gap-4 p-6 w-full max-w-[550px]">
+    <div className="flex flex-col gap-4 rounded-border p-6">
       {/* header */}
       <div className="flex gap-4 justify-between items-center">
         <h2 className="text-sm font-semibold">Transaction</h2>

@@ -10,7 +10,7 @@ import { SettlementDTO, toSale } from '../types/settlement'
 import { NFTCollectionDTO, toNFTCollection } from '../types/nft-collection'
 import { NFTCollection } from '@/domain/nft-collection'
 
-export const baseUrl = process.env.NEXT_PUBLIC_INDEXER_ENDPOINT_URL
+export const baseUrl = process.env.NEXT_PUBLIC_INDEXER_API
 
 function buildQuery({
   filters,

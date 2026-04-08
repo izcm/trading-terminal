@@ -105,13 +105,13 @@ export function Gallery<T extends { id: string }>({
                 galleryClasses.arrowRow,
 
                 // default
-                !isSelected && !isFresh?.(item) && 'hover:bg-white/12 bg-surface/80',
+                !isSelected && !isFresh?.(item) && 'hover:bg-white/16 bg-surface/75',
 
                 // fresh
                 !isSelected && isFresh?.(item) && 'fresh',
 
                 // selected
-                isSelected && 'bg-accent/40'
+                isSelected && 'bg-accent/35'
               )}
             >
               {galleryItem(item)}

@@ -5,12 +5,7 @@ import { TabName, TabResource } from '@/features/tab-config'
 import { Listing } from '@/domain/listing'
 
 // rules per tab for marking a domain item as "mine"
-export function useMine(
-  tab: TabName,
-  account: Hex | undefined,
-  collection: Hex | undefined,
-  ids: bigint[]
-) {
+export function useMine(tab: TabName, account: Hex | undefined, ids: bigint[]) {
   // normalize tokenIds
   const ownedIdsRef = useRef<string[]>([])
 
