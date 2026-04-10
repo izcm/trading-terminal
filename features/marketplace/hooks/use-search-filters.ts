@@ -6,7 +6,7 @@ import type { Hex } from '@/domain/shared/eth'
 
 const DEFAULT_FILTERS: Record<TabName, Record<string, string[]>> = {
   feed: { status: ['active'] },
-  sales: { sortField: ['timestamp'] },
+  sales: {},
   explore: {},
 }
 
@@ -24,7 +24,7 @@ export function useSearchFilters(tab: TabName, user?: Hex) {
   const [mineFlag, setMineFlag] = useState<Record<TabName, boolean>>(DEFAULT_MINE_FLAG)
 
   function extractMyTokensFlag(value: string) {
-    const keyword = 'mytokens'
+    const keyword = 'mine'
 
     const hasFlag = value.toLowerCase().startsWith(keyword)
     let rest = hasFlag ? value.slice(keyword.length).trim() : value

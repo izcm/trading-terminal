@@ -88,11 +88,7 @@ export function MarketplaceView(initial: InitialState) {
     refetch: refetchOwnedIds,
   } = useOwnedTokenIds(routeCollection, account)
 
-  const { isMyToken, isMyListing, buildMineQuery } = useMine(
-    tab,
-    account,
-    ownedIds // hook is responsible to handle stableness
-  )
+  const { isMyToken, isMyListing, buildMineQuery } = useMine(tab, account, ownedIds)
 
   // --- filters ---
   const { filters, setFilters, mineFlag, handleSearch, resetFilters } = useSearchFilters(
@@ -171,7 +167,7 @@ export function MarketplaceView(initial: InitialState) {
   function resetFiltersAndSelected(tab: TabName) {
     setTab(tab)
     resetFilters(tab)
-    setSelectedByTab(prev => ({ ...prev, [tab]: undefined }))
+    // setSelectedByTab(prev => ({ ...prev, [tab]: undefined }))
   }
 
   // --- ws ---
@@ -232,18 +228,28 @@ export function MarketplaceView(initial: InitialState) {
   // --- text input default value---
   const [searchValue, setSearchValue] = useState('')
 
+  // avoid jumpy input: only react to tab/account,
+  // but read latest filters via refs
+
+  const filtersRef = useRef(filters)
+  const mineFlagRef = useRef(mineFlag)
+
   useEffect(() => {
-    const run = () => {
-      setSearchValue(
-        buildSearchDefault({
-          activeFilters: filters[tab],
-          account,
-          isMine: mineFlag[tab],
-        })
-      )
-    }
-    run()
-  }, [filters, tab, account, mineFlag])
+    filtersRef.current = filters
+  }, [filters])
+  useEffect(() => {
+    mineFlagRef.current = mineFlag
+  }, [mineFlag])
+
+  useEffect(() => {
+    setSearchValue(
+      buildSearchDefault({
+        activeFilters: filtersRef.current[tab],
+        account,
+        isMine: mineFlagRef.current[tab],
+      })
+    )
+  }, [tab, account])
 
   return (
     <div className="flex gap-4 h-screen max-w-4xl px-2 mx-auto overflow-hidden font-mono">

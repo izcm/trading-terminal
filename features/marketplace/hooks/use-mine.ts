@@ -41,12 +41,18 @@ export function useMine(tab: TabName, account: Hex | undefined, ids: bigint[]) {
     (filters: Record<string, string[]>) => {
       if (!account) return filters
 
+      const mineFilters: Record<TabName, object> = {
+        feed: { ['or.tokenId']: ownedIdsRef.current, ['or.side']: ['0'] }, // is of type ask or owned by user
+        sales: { ['or.buyer']: [account], ['or.seller']: [account] }, // is buyer or seller
+        explore: { tokenId: ownedIdsRef.current }, // is owned by user
+      }
+
       return {
         ...filters,
-        tokenId: ownedIdsRef.current,
+        ...mineFilters[tab],
       }
     },
-    [account]
+    [account, tab]
   )
 
   return { buildMineQuery, isMyToken, isMyListing }
