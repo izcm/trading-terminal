@@ -29,7 +29,7 @@ export function useFillOrder(order?: Order, listingId?: string, onConfirmed?: ()
     if (!isFillable || isChecking || !sim.data?.request) return
 
     const hash = await writeContractAsync(sim.data.request)
-    addTx(hash, listingId, onConfirmed)
+    addTx(hash, listingId, 'order filled', onConfirmed)
   }
 
   return {

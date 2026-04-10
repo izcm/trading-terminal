@@ -49,6 +49,7 @@ export function ArrowList<T>({
         if (index === -1) return
 
         let next = index
+
         if (e.key === 'ArrowDown') next = Math.min(index + 1, items.length - 1)
         if (e.key === 'ArrowUp') next = Math.max(index - 1, 0)
 

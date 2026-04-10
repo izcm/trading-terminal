@@ -93,7 +93,7 @@ export function Gallery<T extends { id: string }>({
           getId={c => c.id}
           selectedId={selected?.id}
           onSelect={onSelect}
-          className={`${galleryClasses.arrowList} min-h-0 flex-1 p-1`}
+          className={`${galleryClasses.arrowList} min-h-0 flex-1 rounded-lg p-1`}
         >
           {({ item, isSelected, onSelect }) => (
             <ArrowRow
@@ -105,7 +105,7 @@ export function Gallery<T extends { id: string }>({
                 galleryClasses.arrowRow,
 
                 // default
-                !isSelected && !isFresh?.(item) && 'hover:bg-white/16 bg-surface/75',
+                !isSelected && !isFresh?.(item) && 'hover:bg-white/12 bg-surface/75',
 
                 // fresh
                 !isSelected && isFresh?.(item) && 'fresh',

@@ -22,7 +22,7 @@ export function Tabs<T extends string>({ value, onChange, items }: TabsProps<T>)
               ${
                 active
                   ? 'border-accent/60 text-accent-weak'
-                  : 'border-transparent text-muted hover:border-accent/40'
+                  : 'border-transparent text-muted hover:border-accent/30'
               }
             `}
           >

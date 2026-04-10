@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { KeyboardEvent, MouseEvent, useState } from 'react'
 
 type CopyableProps = {
   value: string
@@ -9,7 +9,9 @@ type CopyableProps = {
 export function Copyable({ value, children, className = '' }: CopyableProps) {
   const [copied, setCopied] = useState<boolean>(false)
 
-  async function handleCopy() {
+  async function handleCopy(e: KeyboardEvent | MouseEvent) {
+    e.stopPropagation()
+
     await navigator.clipboard.writeText(value)
     setCopied(true)
     setTimeout(() => setCopied(false), 1000)
@@ -22,7 +24,7 @@ export function Copyable({ value, children, className = '' }: CopyableProps) {
       onKeyDown={e => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault()
-          handleCopy()
+          handleCopy(e)
         }
       }}
       className={`

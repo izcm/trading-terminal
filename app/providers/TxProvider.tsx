@@ -1,54 +1,72 @@
-import {
-  createContext,
-  ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import { createContext, ReactNode, useContext, useEffect, useRef, useState } from 'react'
+import { useWaitForTransactionReceipt } from 'wagmi'
 
 import type { Hex } from '@/domain/shared/eth'
-import { useWaitForTransactionReceipt } from 'wagmi'
-import { toast } from '@/ui/organisms'
 
-type TxStatus = 'pending' | 'success' | 'failed'
+import { toast } from '@/ui/organisms'
+import { ArrowList, TxRow } from '@/ui/molecules'
+import { ArrowRow, Modal } from '@/ui/atoms'
+
+export type TxStatus = 'pending' | 'success' | 'failed'
+export type TxLabel = 'order filled' | 'order cancelled' | 'transaction'
 
 export type Tx = {
   hash: Hex
   status: TxStatus
+  label: TxLabel
   listingId?: string
   onConfirmed?: () => void
+  createdAt: number
 }
 
 type TxContextType = {
   txs: Tx[]
-  addTx: (hash: Hex, listingId?: string, onConfirmed?: () => void) => void
+  addTx: (hash: Hex, listingId?: string, label?: TxLabel, onConfirmed?: () => void) => void
+  showTxs: (cb: (tx: Tx) => void) => void
 }
 
 export const TxContext = createContext<TxContextType | null>(null)
 
 export function TxProvider({ children }: { children: ReactNode }) {
   const [txs, setTxs] = useState<Tx[]>([])
+  const [open, setOpen] = useState(false)
+  const [selectedHash, setSelectedHash] = useState<string | undefined>()
 
-  const addTx = useCallback<TxContextType['addTx']>(
-    (hash, listingId, onConfirmed) => {
-      setTxs(prev => {
-        if (prev.some(tx => tx.hash === hash)) return prev
-        return [...prev, { hash, status: 'pending', listingId, onConfirmed }]
-      })
-    },
-    [setTxs]
-  )
+  const callbackRef = useRef<(tx: Tx) => void>(() => {})
 
-  const updateTx = (hash: Hex, status: TxStatus) => {
+  function addTx(
+    hash: Hex,
+    listingId?: string,
+    label: TxLabel = 'transaction',
+    onConfirmed?: () => void
+  ) {
+    setTxs(prev => {
+      if (prev.some(tx => tx.hash === hash)) return prev
+      return [
+        ...prev,
+        { hash, status: 'pending', listingId, label: label, onConfirmed, createdAt: Date.now() },
+      ]
+    })
+  }
+
+  function updateTx(hash: Hex, status: TxStatus) {
     setTxs(prev =>
       prev.map(tx => (tx.hash !== hash || tx.status === status ? tx : { ...tx, status }))
     )
   }
 
+  function showTxs(cb: (tx: Tx) => void) {
+    callbackRef.current = cb ?? (() => {})
+
+    if (txs.length > 0) {
+      setSelectedHash(txs[txs.length - 1].hash)
+    }
+
+    setOpen(true)
+  }
+
   return (
-    <TxContext.Provider value={{ txs, addTx }}>
+    <TxContext.Provider value={{ txs, addTx, showTxs }}>
       {txs.map(tx => (
         <TxWatcher
           key={tx.hash}
@@ -62,6 +80,34 @@ export function TxProvider({ children }: { children: ReactNode }) {
           }}
         />
       ))}
+      {open && (
+        <Modal isOpen onClose={() => setOpen(false)}>
+          <ArrowList
+            items={[...txs].reverse()}
+            getId={tx => tx.hash}
+            selectedId={selectedHash}
+            onSelect={tx => setSelectedHash(tx.hash)}
+            className="rounded-lg p-1 border border-default"
+          >
+            {({ item, isSelected, onSelect }) => (
+              <ArrowRow
+                key={item.hash}
+                isSelected={isSelected}
+                onSelect={() => {
+                  onSelect()
+                  callbackRef.current(item)
+                  setOpen(false)
+                }}
+                className="transition rounded-lg"
+              >
+                <div className="cursor-pointer">
+                  <TxRow tx={item} />
+                </div>
+              </ArrowRow>
+            )}
+          </ArrowList>
+        </Modal>
+      )}
       {children}
     </TxContext.Provider>
   )

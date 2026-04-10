@@ -53,3 +53,26 @@
     box-shadow: inset 2px 0 0 transparent;
   }
 }
+
+.border-highlight {
+  animation: borderHighlight 2s ease-in-out forwards;
+}
+
+@keyframes borderHighlight {
+  0% {
+    outline: 2.5px solid transparent;
+    outline-offset: -1px;
+  }
+  25% {
+    outline: 2.5px solid var(--accent-strong);
+    outline-offset: -1px;
+  }
+  65% {
+    outline: 2.5px solid var(--accent-strong);
+    outline-offset: -1px;
+  }
+  100% {
+    outline: 2.5px solid transparent;
+    outline-offset: -1px;
+  }
+}

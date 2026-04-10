@@ -1,19 +1,41 @@
+import type { Tx } from '@/app/providers/TxProvider'
 import { useTx } from '@/app/providers/TxProvider'
 
-export function TxTracker() {
-  const { txs } = useTx()
+export function TxTracker({ onNavigateToTx }: { onNavigateToTx: (tx: Tx) => void }) {
+  const { txs, showTxs } = useTx()
 
   const pending = txs.filter(tx => tx.status === 'pending')
+  const executed = txs.filter(tx => tx.status !== 'pending')
+
+  const disabled = txs.length === 0
 
   return (
-    <div className="inline-flex items-center gap-2 rounded-full border border-default bg-surface px-3 py-1">
+    <button
+      key={executed.length}
+      disabled={disabled}
+      className={`
+        flex items-center gap-2
+        rounded-full border border-default
+        bg-surface/90 backdrop-blur
+        px-3 py-1 text-xs text-muted
+
+        cursor-pointer
+        transition-all duration-150
+
+        hover:border-accent/40
+        hover:text-primary
+        hover:bg-accent/25
+
+        active:scale-[0.97]
+        ${executed.length === 1 ? 'border-highlight' : ''}
+
+        ${disabled ? 'pointer-events-none' : ''}
+        `}
+      onClick={() => showTxs(onNavigateToTx)}
+    >
       <PulseDot active={pending.length > 0} />
-      <span
-        className={`text-xs ${pending.length > 0 ? 'text-muted animate-pulse' : 'text-muted/60'}`}
-      >
-        {pending.length > 0 ? `${pending.length} pending` : '0 pending'}
-      </span>
-    </div>
+      <span>{executed.length} txs</span>
+    </button>
   )
 }
 

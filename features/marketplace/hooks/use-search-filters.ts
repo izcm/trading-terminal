@@ -90,5 +90,5 @@ export function useSearchFilters(tab: TabName, user?: Hex) {
     setMineFlag(prev => ({ ...prev, [targetTab]: DEFAULT_MINE_FLAG[targetTab] }))
   }
 
-  return { filters, mineFlag: mineFlag, handleSearch, resetFilters }
+  return { filters, setFilters, mineFlag: mineFlag, handleSearch, resetFilters }
 }

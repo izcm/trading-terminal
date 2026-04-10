@@ -1,8 +1,9 @@
 'use client'
 import dynamic from 'next/dynamic'
 
-import { Backpack, Receipt } from '@/ui/icons'
+import { Backpack } from '@/ui/icons'
 import { Spinner } from '@/ui/atoms/Spinner'
+import type { Tx } from '@/app/providers/TxProvider'
 import { TxTracker } from '../../realtime/ui/TxTracker'
 
 const WalletWidget = dynamic(
@@ -19,9 +20,10 @@ type HeaderProps = {
   chainId: number | undefined
   inventory: InventoryInfo
   onOpenManual: () => void
+  onNavigateToTx: (tx: Tx) => void
 }
 
-export function Header({ chainId, inventory, onOpenManual }: HeaderProps) {
+export function Header({ chainId, inventory, onOpenManual, onNavigateToTx }: HeaderProps) {
   return (
     <div className="flex items-center mb-1">
       <div className="basis-1/3 flex items-center justify-start gap-4">
@@ -54,7 +56,7 @@ export function Header({ chainId, inventory, onOpenManual }: HeaderProps) {
           )}
         </div>
 
-        <TxTracker />
+        <TxTracker onNavigateToTx={onNavigateToTx} />
       </div>
     </div>
   )

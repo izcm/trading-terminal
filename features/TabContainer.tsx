@@ -53,7 +53,7 @@ export function TabContainer<K extends TabName>({
     : undefined
 
   return (
-    <div className="flex min-h-0 fade-in">
+    <div className="flex-1 flex min-h-0 fade-in">
       <Tab
         gallery={{
           items,

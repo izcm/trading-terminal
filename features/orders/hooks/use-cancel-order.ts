@@ -17,7 +17,7 @@ export function useCancelOrder() {
       args: [nonce],
     })
 
-    addTx(hash, listingId)
+    addTx(hash, listingId, 'order cancelled')
   }
 
   return {

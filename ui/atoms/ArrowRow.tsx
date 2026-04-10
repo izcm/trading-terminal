@@ -34,6 +34,12 @@ export function ArrowRow({ isSelected, onSelect, children, className, dataId }: 
       data-id={dataId}
       tabIndex={isSelected ? 0 : -1}
       onClick={onSelect}
+      onKeyDown={e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          onSelect()
+        }
+      }}
       className={appliedClasses}
     >
       {children}

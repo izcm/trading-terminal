@@ -7,6 +7,9 @@ import type { Hex } from '@/domain/shared/eth'
 import { connectWs } from '@/lib/realtime/ws'
 import type { Page } from '@/lib/utils/http'
 
+import type { Tx } from '@/app/providers/TxProvider'
+import { useTx } from '@/app/providers/TxProvider'
+
 // shared components
 import { SalesReceipt } from '../ui/organisms/SalesReceipt'
 import { Modal, TextInput } from '@/ui/atoms'
@@ -54,6 +57,9 @@ export function MarketplaceView(initial: InitialState) {
   // --- route params ---
   const { collection: routeCollection, chainId: routeChainId } = initial
 
+  // --- txx overview ---
+  const { showTxs } = useTx()
+
   // --- state ---
   const [tab, setTab] = useState<TabName>('feed')
   const [state, setState] = useState<TabPages>(initial)
@@ -89,7 +95,10 @@ export function MarketplaceView(initial: InitialState) {
   )
 
   // --- filters ---
-  const { filters, mineFlag, handleSearch, resetFilters } = useSearchFilters(tab, account)
+  const { filters, setFilters, mineFlag, handleSearch, resetFilters } = useSearchFilters(
+    tab,
+    account
+  )
 
   // --- mutations ---
   const { add: addFresh, has: isFresh } = useFresh(tab)
@@ -116,6 +125,14 @@ export function MarketplaceView(initial: InitialState) {
   // ui focus
   const focusGalleryRef = useRef<() => void>(() => {})
   const searchRef = useRef<HTMLInputElement>(null)
+
+  // when user clicks a tx in txTracker => navigate to sales receipt
+  function onNavigateToTx(tx: Tx) {
+    const tab = tx.label === 'order filled' ? 'sales' : 'feed'
+
+    setTab(tab)
+    setFilters(prev => ({ ...prev, [tab]: { txHash: [tx.hash] } }))
+  }
 
   // --- keyboard shortcuts ---
   useKeyboardShortcuts({
@@ -146,16 +163,19 @@ export function MarketplaceView(initial: InitialState) {
     },
     l: () => focusGalleryRef.current?.(),
     i: () => searchRef.current?.focus(),
+
+    // open provider tx overview
+    t: () => showTxs(onNavigateToTx),
   })
 
-  const resetFiltersAndSelected = (tab: TabName) => {
+  function resetFiltersAndSelected(tab: TabName) {
     setTab(tab)
     resetFilters(tab)
     setSelectedByTab(prev => ({ ...prev, [tab]: undefined }))
   }
 
+  // --- ws ---
   useEffect(() => {
-    // --- ws ---
     connectWs()
   }, [])
 
@@ -209,6 +229,22 @@ export function MarketplaceView(initial: InitialState) {
     run()
   }, [tab, query, replacePage])
 
+  // --- text input default value---
+  const [searchValue, setSearchValue] = useState('')
+
+  useEffect(() => {
+    const run = () => {
+      setSearchValue(
+        buildSearchDefault({
+          activeFilters: filters[tab],
+          account,
+          isMine: mineFlag[tab],
+        })
+      )
+    }
+    run()
+  }, [filters, tab, account, mineFlag])
+
   return (
     <div className="flex gap-4 h-screen max-w-4xl px-2 mx-auto overflow-hidden font-mono">
       <main className="flex-1 flex flex-col gap-4 mt-4">
@@ -216,8 +252,9 @@ export function MarketplaceView(initial: InitialState) {
 
         <Header
           chainId={chainId}
-          onOpenManual={() => setShowManual(true)}
           inventory={{ count: ownedIds.length, isLoading: loadingInventory }}
+          onOpenManual={() => setShowManual(true)}
+          onNavigateToTx={onNavigateToTx}
         />
 
         {/* ---- tabs ---- */}
@@ -226,16 +263,7 @@ export function MarketplaceView(initial: InitialState) {
 
         {/* ---- search ---- */}
 
-        <TextInput
-          key={tab}
-          ref={searchRef}
-          defaultValue={buildSearchDefault({
-            activeFilters: filters[tab],
-            account,
-            isMine: mineFlag[tab],
-          })}
-          onSubmit={handleSearch}
-        />
+        <TextInput key={tab} ref={searchRef} value={searchValue} onSubmit={handleSearch} />
 
         {/* ---- tab gallery + sidepanel ---- */}
 
