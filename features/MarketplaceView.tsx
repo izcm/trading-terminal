@@ -169,8 +169,8 @@ export function MarketplaceView(initial: InitialState) {
   function resetFiltersAndSelected(tab: TabName) {
     setTab(tab)
     resetFilters(tab)
-    setResetTick(t => t + 1)
     // setSelectedByTab(prev => ({ ...prev, [tab]: undefined }))
+    setResetTick(t => t + 1)
   }
 
   // --- ws ---
@@ -228,8 +228,10 @@ export function MarketplaceView(initial: InitialState) {
     run()
   }, [tab, query, replacePage])
 
-  // --- text input default value---
-  const [searchValue, setSearchValue] = useState('')
+  // --- text input default value ---
+
+  // this state is only to track reset of search value
+  const [inputSeed, setInputSeed] = useState('')
 
   // avoid jumpy input: only react to tab/account,
   // but read latest filters via refs
@@ -245,7 +247,7 @@ export function MarketplaceView(initial: InitialState) {
   }, [mineFlag])
 
   useEffect(() => {
-    setSearchValue(
+    setInputSeed(
       buildSearchDefault({
         activeFilters: filtersRef.current[tab],
         account,
@@ -272,7 +274,12 @@ export function MarketplaceView(initial: InitialState) {
 
         {/* ---- search ---- */}
 
-        <TextInput key={tab} ref={searchRef} value={searchValue} onSubmit={handleSearch} />
+        <TextInput
+          key={`${tab}-${resetTick}`}
+          ref={searchRef}
+          value={inputSeed}
+          onSubmit={handleSearch}
+        />
 
         {/* ---- tab gallery + sidepanel ---- */}
 
