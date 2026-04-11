@@ -6,7 +6,6 @@ import { Order, toOrder712 } from '@/protocol/eip712'
 import { orderbookAbi, orderbookAddress } from '@/protocol/config'
 
 import { ozErc721Errors } from '@/lib/blockchain'
-import { useWallet } from '@/features/wallet/hooks/use-wallet'
 
 export function useTradeSimulation(user?: Address, order?: Order, tokenIdCb?: bigint) {
   const enabled = !!order && !!user && (!order.isCollectionBid || tokenIdCb !== undefined)

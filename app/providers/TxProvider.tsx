@@ -16,12 +16,20 @@ export type Tx = {
   label: TxLabel
   listingId?: string
   onConfirmed?: () => void
+  decodeError?: (error: unknown) => string | undefined
+  error?: string
   createdAt: number
 }
 
 type TxContextType = {
   txs: Tx[]
-  addTx: (hash: Hex, listingId?: string, label?: TxLabel, onConfirmed?: () => void) => void
+  addTx: (
+    hash: Hex,
+    listingId?: string,
+    label?: TxLabel,
+    onConfirmed?: () => void,
+    decodeError?: (error: unknown) => string | undefined
+  ) => void
   showTxs: (cb: (tx: Tx) => void) => void
 }
 
@@ -34,28 +42,37 @@ export function TxProvider({ children }: { children: ReactNode }) {
 
   const callbackRef = useRef<(tx: Tx) => void>(() => {})
 
-  function addTx(
-    hash: Hex,
-    listingId?: string,
-    label: TxLabel = 'transaction',
-    onConfirmed?: () => void
-  ) {
+  const addTx: TxContextType['addTx'] = (
+    hash,
+    listingId,
+    label = 'transaction',
+    onConfirmed,
+    decodeError
+  ) => {
     setTxs(prev => {
       if (prev.some(tx => tx.hash === hash)) return prev
       return [
         ...prev,
-        { hash, status: 'pending', listingId, label: label, onConfirmed, createdAt: Date.now() },
+        {
+          hash,
+          status: 'pending',
+          listingId,
+          label: label,
+          onConfirmed,
+          decodeError,
+          createdAt: Date.now(),
+        },
       ]
     })
   }
 
-  function updateTx(hash: Hex, status: TxStatus) {
+  const updateTx = (hash: Hex, status: TxStatus, error?: string) => {
     setTxs(prev =>
-      prev.map(tx => (tx.hash !== hash || tx.status === status ? tx : { ...tx, status }))
+      prev.map(tx => (tx.hash !== hash || tx.status === status ? tx : { ...tx, status, error }))
     )
   }
 
-  function showTxs(cb: (tx: Tx) => void) {
+  const showTxs: TxContextType['showTxs'] = cb => {
     callbackRef.current = cb ?? (() => {})
 
     if (txs.length > 0) {
@@ -72,11 +89,29 @@ export function TxProvider({ children }: { children: ReactNode }) {
           key={tx.hash}
           tx={tx}
           onSuccess={() => {
-            updateTx(tx.hash, 'success')
-            tx.onConfirmed?.()
+            // setTimeout is for demo purposes — local fork mines blocks very fast
+            setTimeout(() => {
+              toast({
+                title: 'Transaction confirmed',
+                description:
+                  'Your tx is confirmed on-chain. The marketplace should update shortly.',
+                variant: 'success',
+              })
+              updateTx(tx.hash, 'success')
+              tx.onConfirmed?.()
+            }, 1500)
           }}
-          onFail={() => {
-            updateTx(tx.hash, 'failed')
+          onFail={(decoded?: string) => {
+            setTimeout(() => {
+              toast({
+                title: 'Transaction not completed',
+                description:
+                  decoded ??
+                  'It may have been rejected, reverted, or out of gas. Please try again.',
+                variant: 'error',
+              })
+              updateTx(tx.hash, 'failed', decoded)
+            }, 1500)
           }}
         />
       ))}
@@ -120,43 +155,24 @@ function TxWatcher({
 }: {
   tx: Tx
   onSuccess: () => void
-  onFail: () => void
+  onFail: (decoded?: string) => void
 }) {
-  const { isError, isSuccess } = useWaitForTransactionReceipt({ hash: tx.hash })
+  const { isError, isSuccess, error } = useWaitForTransactionReceipt({ hash: tx.hash })
   const handledRef = useRef(false)
+
   useEffect(() => {
     if (handledRef.current) return
 
-    // setTimeout is for demo purposes to make experience more realistic (local fork executes blocks very fast)
-    // + could solve it by setting --block-time as param to fork
-    // but that made demo pipeline run way too slow
-
     if (isSuccess) {
       handledRef.current = true
-      const timer = setTimeout(() => {
-        toast({
-          title: 'Transaction confirmed',
-          description: 'Your tx is confirmed on-chain. The marketplace should update shortly.',
-          variant: 'success',
-        })
-        onSuccess()
-      }, 1500)
-      return () => clearTimeout(timer)
+      onSuccess()
     }
 
     if (isError) {
       handledRef.current = true
-      const timer = setTimeout(() => {
-        toast({
-          title: 'Transaction not completed',
-          description: 'It may have been rejected, reverted, or out of gas. Please try again.',
-          variant: 'error',
-        })
-        onFail()
-      }, 1500)
-      return () => clearTimeout(timer)
+      onFail(tx.decodeError?.(error))
     }
-  }, [isSuccess, isError, onSuccess, onFail])
+  }, [isSuccess, isError, onSuccess, onFail, error, tx])
 
   return null
 }

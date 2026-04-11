@@ -1,13 +1,13 @@
 export const ORDERBOOK_ERROR_MESSAGES: Record<string, string> = {
   // orderbook
-  CurrencyNotWhitelisted: 'this payment token is not supported',
-  InvalidNonce: 'this order was already used or cancelled',
-  InvalidOrderSide: 'this order type is invalid',
-  InvalidSignature: 'the order signature is invalid',
-  InvalidTimestamp: 'this order has expired or is not active yet',
-  UnauthorizedFillActor: 'you are not allowed to fill this order',
-  UnsupportedCollection: 'this nft collection is not supported',
-  ZeroActor: 'order creator address is invalid',
+  CurrencyNotWhitelisted: 'This payment token is not supported',
+  InvalidNonce: 'This order was already used or cancelled',
+  InvalidOrderSide: 'This order type is invalid',
+  InvalidSignature: 'The order signature is invalid',
+  InvalidTimestamp: 'This order has expired or is not active yet',
+  UnauthorizedFillActor: 'You are not allowed to fill this order',
+  UnsupportedCollection: 'This NFT collection is not supported',
+  ZeroActor: 'Order creator address is invalid',
 
   // signature validation
   InvalidSParameter: 'signature failed validation (s parameter)',

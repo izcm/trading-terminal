@@ -1,6 +1,10 @@
+import { useState } from 'react'
+
 import type { Tx, TxLabel } from '@/app/providers/TxProvider'
 import { hhmm } from '@/domain/shared/utils/time'
 import { Copyable } from '@/ui/atoms'
+
+const ERROR_TRUNCATE = 80
 
 type Props = {
   tx: Tx
@@ -9,41 +13,65 @@ type Props = {
 
 export const LINK_LABELS: Record<TxLabel, string> = {
   'order filled': 'view sale',
-  'order cancelled': 'view cancelled',
+  'order cancelled': 'view order',
   transaction: 'view receipt',
 }
 export function TxRow({ tx, onClick }: Props) {
+  const [expanded, setExpanded] = useState(false)
   const shortHash = `${tx.hash.slice(0, 6)}…${tx.hash.slice(-4)}`
+  const error = tx.status === 'failed' ? tx.error : undefined
+  const isTruncated = error && error.length > ERROR_TRUNCATE
 
   return (
-    <div className="flex text-start gap-6 justify-between p-4 text-sm" onClick={onClick}>
-      <StatusIcon status={tx.status} />
+    <div className="text-start text-sm" onClick={onClick}>
+      <div className="flex gap-6 justify-between p-4">
+        <StatusIcon status={tx.status} />
 
-      <div className="shrink-0 w-22">
-        <Copyable value={tx.hash} className="text-accent">
-          {shortHash}
-        </Copyable>
+        <div className="shrink-0 w-22">
+          <Copyable value={tx.hash} className="text-accent">
+            {shortHash}
+          </Copyable>
+        </div>
+
+        <span className="text-muted">{hhmm(tx.createdAt)}</span>
+
+        <span className="flex-1 text-muted">{tx.label}</span>
+
+        <button
+          className={`basis-[110px] flex items-center justify-between gap-2 shrink-0 cursor-pointer ${tx.status !== 'success' ? 'invisible' : ''}`}
+        >
+          <div className="text-accent">{LINK_LABELS[tx.label]}</div>
+
+          <svg
+            className="w-3.5 h-3.5 text-accent"
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M6 3l5 5-5 5" />
+          </svg>
+        </button>
       </div>
 
-      <span className="text-muted">{hhmm(tx.createdAt)}</span>
-
-      <span className="flex-1 text-muted">{tx.label}</span>
-
-      <button className="basis-[150px] flex items-center justify-between gap-2 shrink-0 cursor-pointer">
-        <div className="text-accent">{LINK_LABELS[tx.label]}</div>
-
-        <svg
-          className="w-3.5 h-3.5 text-accent"
-          viewBox="0 0 16 16"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M6 3l5 5-5 5" />
-        </svg>
-      </button>
+      {error && (
+        <p className="px-4 pb-3 text-xs text-red-400/80 leading-relaxed">
+          {expanded || !isTruncated ? error : `${error.slice(0, ERROR_TRUNCATE)}…`}
+          {isTruncated && (
+            <button
+              className="ml-1 text-red-400 underline underline-offset-2 cursor-pointer"
+              onClick={e => {
+                e.stopPropagation()
+                setExpanded(v => !v)
+              }}
+            >
+              {expanded ? 'see less' : 'see more'}
+            </button>
+          )}
+        </p>
+      )}
     </div>
   )
 }

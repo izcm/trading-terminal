@@ -164,9 +164,12 @@ export function MarketplaceView(initial: InitialState) {
     t: () => showTxs(onNavigateToTx),
   })
 
+  const [resetTick, setResetTick] = useState(0)
+
   function resetFiltersAndSelected(tab: TabName) {
     setTab(tab)
     resetFilters(tab)
+    setResetTick(t => t + 1)
     // setSelectedByTab(prev => ({ ...prev, [tab]: undefined }))
   }
 
@@ -249,7 +252,7 @@ export function MarketplaceView(initial: InitialState) {
         isMine: mineFlagRef.current[tab],
       })
     )
-  }, [tab, account])
+  }, [tab, account, resetTick])
 
   return (
     <div className="flex gap-4 h-screen max-w-4xl px-2 mx-auto overflow-hidden font-mono">
@@ -297,7 +300,7 @@ export function MarketplaceView(initial: InitialState) {
       )}
 
       {modal?.type === 'createOrder' && (
-        <Modal isOpen onClose={closeModal}>
+        <Modal isOpen onClose={closeModal} escTxt="Cancel">
           <CreateOrderFlow
             collection={modal.data.collection}
             tokenId={modal.data.tokenId}

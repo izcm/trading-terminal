@@ -5,6 +5,9 @@ import type { Order } from '@/protocol/eip712'
 import { useTradeValidation } from './use-trade-validation'
 import { useTradeSimulation } from './use-trade-simulation'
 import { useWallet } from '@/features/wallet/hooks/use-wallet'
+import { orderbookAbi } from '@/protocol/config'
+import { ORDERBOOK_ERROR_MESSAGES } from '@/protocol/errors'
+import { decodeContractError } from '@/lib/blockchain/utils/error'
 
 // const safeStringify = (obj: unknown) =>
 //   JSON.stringify(obj, (_, value) => (typeof value === 'bigint' ? value.toString() : value), 2)
@@ -29,7 +32,9 @@ export function useFillOrder(order?: Order, listingId?: string, onConfirmed?: ()
     if (!isFillable || isChecking || !sim.data?.request) return
 
     const hash = await writeContractAsync(sim.data.request)
-    addTx(hash, listingId, 'order filled', onConfirmed)
+    addTx(hash, listingId, 'order filled', onConfirmed,
+      err => decodeContractError(err, orderbookAbi, ORDERBOOK_ERROR_MESSAGES)
+    )
   }
 
   return {

@@ -4,10 +4,11 @@ import { useEffect, useRef } from 'react'
 type ModalProps = {
   isOpen: boolean
   onClose: () => void
+  escTxt?: string
   children: ReactNode
 }
 
-export function Modal({ isOpen, onClose, children }: ModalProps) {
+export function Modal({ isOpen, onClose, children, escTxt = 'Close' }: ModalProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const lastFocusedRef = useRef<HTMLElement>(null)
 
@@ -25,11 +26,6 @@ export function Modal({ isOpen, onClose, children }: ModalProps) {
       lastFocusedRef.current?.focus()
     }
   }, [onClose, isOpen])
-
-  // useEffect(() => {
-  //   if (!isOpen) return
-  //   lastFocusedRef.current = document.activeElement as HTMLElement | null
-  // }, [isOpen])
 
   // focus on first elegible item in modal
   useEffect(() => {
@@ -70,7 +66,7 @@ export function Modal({ isOpen, onClose, children }: ModalProps) {
       >
         {children}
         <button className="btn btn-secondary" onClick={onClose}>
-          Cancel
+          {escTxt}
         </button>
       </div>
     </div>

@@ -22,7 +22,7 @@ export function TxTracker({ onNavigateToTx }: { onNavigateToTx: (tx: Tx) => void
         cursor-pointer
         transition-all duration-150
 
-        hover:border-accent/40
+          hover:border-accent/40
         hover:text-primary
         hover:bg-accent/25
 

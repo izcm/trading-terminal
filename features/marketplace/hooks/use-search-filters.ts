@@ -23,11 +23,12 @@ export function useSearchFilters(tab: TabName, user?: Hex) {
   // tracks which tabs have active "mine" filter
   const [mineFlag, setMineFlag] = useState<Record<TabName, boolean>>(DEFAULT_MINE_FLAG)
 
-  function extractMyTokensFlag(value: string) {
+  function extractMineFlag(value: string) {
     const keyword = 'mine'
 
-    const hasFlag = value.toLowerCase().startsWith(keyword)
-    let rest = hasFlag ? value.slice(keyword.length).trim() : value
+    const regex = new RegExp(`\\b${keyword}\\b`, 'i')
+    const hasFlag = regex.test(value)
+    let rest = hasFlag ? value.replace(regex, '').trim() : value
 
     if (user) {
       rest = rest.replace(/\bme\b/g, user)
@@ -40,7 +41,7 @@ export function useSearchFilters(tab: TabName, user?: Hex) {
 
   // nb: parent is resonsible for including owned tokenIds in query
   function handleSearch(value: string) {
-    const { hasFlag, rest } = extractMyTokensFlag(value)
+    const { hasFlag, rest } = extractMineFlag(value)
 
     const baseFilters = rest.trim().replace(/\s+/g, '&')
 
