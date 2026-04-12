@@ -1,4 +1,4 @@
-import { denormalizeKeys, toSearchParams } from '@/lib/dmrkt-indexer/actions/logic/param-mapper'
+import { resolveValue } from '@/lib/dmrkt-indexer/actions/logic/param-mapper'
 
 export function buildSearchDefault({
   activeFilters,
@@ -9,13 +9,11 @@ export function buildSearchDefault({
   account?: string
   isMine: boolean
 }) {
-  const base = decodeURIComponent(toSearchParams(activeFilters).toString())
-    .replaceAll('+', '_')
-    .replaceAll('&', ' ')
+  const resolved = Object.entries(activeFilters)
+    .map(([k, vals]) => `${k}=${vals.map(v => resolveValue(k, v)).join(',')}`)
+    .join(' ')
 
-  const normalized = denormalizeKeys(base)
-
-  const withAlias = account ? normalized.replaceAll(account, 'me') : normalized
+  const withAlias = account ? resolved.replaceAll(account, 'me') : resolved
 
   return isMine ? `mine ${withAlias}` : withAlias
 }

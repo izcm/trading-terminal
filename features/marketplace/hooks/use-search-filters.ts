@@ -1,6 +1,5 @@
 import { useState } from 'react'
 
-import { normalizeKeys } from '@/lib/dmrkt-indexer/actions/logic/param-mapper'
 import type { TabName } from '@/features/tab-config'
 import type { Hex } from '@/domain/shared/eth'
 
@@ -34,46 +33,22 @@ export function useSearchFilters(tab: TabName, user?: Hex) {
       rest = rest.replace(/\bme\b/g, user)
     }
 
-    rest = normalizeKeys(rest)
-
     return { hasFlag, rest }
   }
 
-  // nb: parent is resonsible for including owned tokenIds in query
   function handleSearch(value: string) {
     const { hasFlag, rest } = extractMineFlag(value)
 
-    const baseFilters = rest.trim().replace(/\s+/g, '&')
-
-    const rawParams = new URLSearchParams(baseFilters)
-    const next: Record<string, string[]> = {}
-
-    const traits = rawParams.get('trait')?.split(',') ?? []
-    const values = rawParams.get('value')?.split(',') ?? []
-
-    traits.forEach((trait, i) => {
-      const val = values[i]
-      if (!val) return // todo: length mismatch ui indicator
-      ;(next[`trait.${trait}`] ??= []).push(val)
-    })
-
-    for (const [key, raw] of rawParams) {
-      if (key === 'trait' || key === 'value') continue
-
-      const values = raw.split(',')
-
-      if (key === 'side') {
-        const v = values[0]?.toLowerCase()
-
-        if (v !== 'ask' && v !== 'bid' && v !== '0' && v !== '1') continue
-
-        const mapped = v === 'ask' ? '0' : v === 'bid' ? '1' : v
-        next[key] = [mapped]
-        continue
-      }
-
-      next[key] = [...new Set(raw.split(','))]
-    }
+    // parse raw string into key: [values]
+    const next: Record<string, string[]> = Object.fromEntries(
+      rest
+        .trim()
+        .split(/\s+/)
+        .map(pair => {
+          const [key, raw] = pair.split('=')
+          return [key, raw ? raw.split(',') : []]
+        })
+    )
 
     setFilters(prev => ({
       ...prev,
