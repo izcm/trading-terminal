@@ -3,37 +3,47 @@ import { RefObject, useEffect, useRef } from 'react'
 import { Tab } from '@/ui/organisms'
 import { ResolvedAction, TabCtx, tabUIConfig, type TabName, type TabResource } from './tab-config'
 
+type Props<K extends TabName> = {
+  // ui
+  ui: (typeof tabUIConfig)[K]
+  focusGalleryRef: RefObject<() => void>
+
+  // items and selection
+  items: TabResource[K][]
+  selectedId: string | undefined
+  setSelectedId: (id: string) => void
+
+  // action + pagination
+  tabAction: ResolvedAction
+  onLoadMore?: () => void
+  isLoading?: boolean
+  hasMore?: boolean
+
+  // ctx
+  ctx?: TabCtx<K>
+  isFresh?: (item: TabResource[K]) => boolean
+}
+
 export function TabContainer<K extends TabName>({
   ui,
+  focusGalleryRef,
   items,
   selectedId,
   setSelectedId,
   tabAction,
-  focusGalleryRef,
   onLoadMore,
   isLoading,
   hasMore,
   ctx,
   isFresh,
-}: {
-  ui: (typeof tabUIConfig)[K]
-  items: TabResource[K][]
-  selectedId: string | undefined
-  setSelectedId: (id: string) => void
-  tabAction: ResolvedAction
-  focusGalleryRef: RefObject<() => void>
-  onLoadMore?: () => void
-  isLoading?: boolean
-  hasMore?: boolean
-  ctx?: TabCtx<K>
-  isFresh?: (item: TabResource[K]) => boolean
-}) {
-  const selected = items.find(item => item.id === selectedId)
+}: Props<K>) {
+  const effectiveSelectedId = selectedId ?? items[0]?.id
+  const selected = items.find(item => item.id === effectiveSelectedId)
 
   useEffect(() => {
     if (!items.length) return
 
-    const exists = selectedId && items.some(i => i.id === selectedId)
+    const exists = selectedId !== undefined && items.some(i => i.id === selectedId)
 
     if (!exists) {
       setSelectedId(items[0].id)

@@ -5,12 +5,17 @@ import { ArrowList } from '@/ui/molecules'
 import clsx from 'clsx'
 
 export type GalleryProps<T> = {
+  // items and selection
   items: T[]
-  galleryItem: (item: T) => ReactNode
   selected?: T
   onSelect: (item: T) => void
+
+  // render
+  galleryItem: (item: T) => ReactNode
   isFresh?: (item: T) => boolean
   galleryView?: 'list' | 'card'
+
+  // ref
   ref?: RefObject<HTMLUListElement | null>
 }
 

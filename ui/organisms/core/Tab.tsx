@@ -8,12 +8,17 @@ import { BtnProps } from '@/features/tab-config'
 import { Spinner } from '@/ui/atoms/Spinner'
 
 type GalleryConfig<T> = {
+  // items and selection
   items: T[]
   selected: T | undefined
   onSelect: (item: T) => void
-  ref?: RefObject<HTMLUListElement | null>
+
+  // render
   item: (item: T) => ReactNode
   itemIsFresh?: (item: T) => boolean
+
+  // ref + pagination
+  ref?: RefObject<HTMLUListElement | null>
   onLoadMore?: () => void
   isLoading?: boolean
   hasMore?: boolean
@@ -47,7 +52,9 @@ export function Tab<T extends { id: string; chainId: number; collection: Hex; to
     isLoading,
     hasMore,
   } = gallery
+
   const { action, props: actionBtnProps, isLoading: actionIsLoading } = actionBtn
+
   return (
     <div className="min-h-0 flex-1 flex gap-4">
       <div className="flex-1 flex flex-col gap-4">

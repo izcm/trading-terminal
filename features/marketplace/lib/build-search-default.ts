@@ -9,11 +9,14 @@ export function buildSearchDefault({
   account?: string
   isMine: boolean
 }) {
+  console.log(Object.entries(activeFilters))
   const resolved = Object.entries(activeFilters)
     .map(([k, vals]) => `${k}=${vals.map(v => resolveValue(k, v)).join(',')}`)
     .join(' ')
 
+  // console.log(resolved)
   const withAlias = account ? resolved.replaceAll(account, 'me') : resolved
+  // console.log(withAlias)
 
   return isMine ? `mine ${withAlias}` : withAlias
 }

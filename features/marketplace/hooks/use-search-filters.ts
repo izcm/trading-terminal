@@ -40,15 +40,18 @@ export function useSearchFilters(tab: TabName, user?: Hex) {
     const { hasFlag, rest } = extractMineFlag(value)
 
     // parse raw string into key: [values]
-    const next: Record<string, string[]> = Object.fromEntries(
-      rest
-        .trim()
-        .split(/\s+/)
-        .map(pair => {
-          const [key, raw] = pair.split('=')
-          return [key, raw ? raw.split(',') : []]
-        })
-    )
+    const next: Record<string, string[]> =
+      rest.length === 0
+        ? {}
+        : Object.fromEntries(
+            rest
+              .trim()
+              .split(/\s+/)
+              .map(pair => {
+                const [key, raw] = pair.split('=')
+                return [key, raw ? raw.split(',') : []]
+              })
+          )
 
     setFilters(prev => ({
       ...prev,

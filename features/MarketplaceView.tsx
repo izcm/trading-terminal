@@ -169,8 +169,8 @@ export function MarketplaceView(initial: InitialState) {
   function resetFiltersAndSelected(tab: TabName) {
     setTab(tab)
     resetFilters(tab)
-    // setSelectedByTab(prev => ({ ...prev, [tab]: undefined }))
     setResetTick(t => t + 1)
+    setSelectedByTab(prev => ({ ...prev, [tab]: undefined }))
   }
 
   // --- ws ---
@@ -221,8 +221,12 @@ export function MarketplaceView(initial: InitialState) {
   useEffect(() => {
     const run = async () => {
       const res = await pageGetters[tab]({ filters: query, cursor: null })
+
       if (!res.ok) return
       replacePage(tab, res.data)
+
+      // I personally like filter change reseting tab selected
+      setSelectedByTab(prev => ({ ...prev, [tab]: undefined }))
     }
 
     run()
