@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+
 import { useTheme } from '@/lib/hooks/use-theme'
 import { GalleryItem } from './GalleryItem'
 
@@ -24,7 +25,7 @@ export function ThemePicker({ themes }: { themes: string[] }) {
           onClick={() => setTheme(t)}
           aria-pressed={theme === t}
           className="
-            rounded-lg p-1 outline-none
+            rounded-lg p-1 outline-none cursor-pointer
             focus-visible:ring-2 focus-visible:ring-white/40"
         >
           <GalleryItem image={`/themes/${t}.png`} title={t} />

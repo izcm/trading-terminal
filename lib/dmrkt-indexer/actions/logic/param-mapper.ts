@@ -24,7 +24,7 @@ export function toSearchParams(filters: Record<string, string[]>) {
       }
     } else {
       for (const val of vals) {
-        params.append(key, val.replace(/_/g, ' '))
+        params.append(key, resolveValue(key, val).replace(/_/g, ' '))
       }
     }
   }
@@ -40,12 +40,8 @@ export function toSearchParams(filters: Record<string, string[]>) {
 // --- VALUE ALIAS ---
 
 export const VALUE_ALIASES: Record<string, Record<string, string>> = {
-  side: { '0': 'ask', '1': 'bid' },
+  side: { ask: '0', bid: '1' },
 }
-
-export const REVERSE_VALUE_ALIASES = Object.fromEntries(
-  Object.entries(VALUE_ALIASES).map(([k, v]) => [v, k])
-)
 
 export function resolveValue(key: string, value: string): string {
   return VALUE_ALIASES[key]?.[value] ?? value
@@ -57,18 +53,6 @@ export const FIELD_ALIASES: Record<string, string> = {
   maker: 'actor',
 }
 
-export const REVERSE_FIELD_ALIASES = Object.fromEntries(
-  Object.entries(FIELD_ALIASES).map(([k, v]) => [v, k])
-)
-
 export function normalizeKeys(input: Record<string, string[]>): Record<string, string[]> {
-  return Object.fromEntries(
-    Object.entries(input).map(([k, v]) => [FIELD_ALIASES[k] ?? k, v])
-  )
-}
-
-export function denormalizeKeys(input: string) {
-  return input.replace(/\b[a-zA-Z0-9_]+\b/g, word => {
-    return REVERSE_FIELD_ALIASES[word] ?? word
-  })
+  return Object.fromEntries(Object.entries(input).map(([k, v]) => [FIELD_ALIASES[k] ?? k, v]))
 }

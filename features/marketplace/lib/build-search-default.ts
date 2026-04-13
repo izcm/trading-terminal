@@ -1,5 +1,3 @@
-import { resolveValue } from '@/lib/dmrkt-indexer/actions/logic/param-mapper'
-
 export function buildSearchDefault({
   activeFilters,
   account,
@@ -10,7 +8,7 @@ export function buildSearchDefault({
   isMine: boolean
 }) {
   const resolved = Object.entries(activeFilters)
-    .map(([k, vals]) => `${k}=${vals.map(v => resolveValue(k, v)).join(',')}`)
+    .map(([k, vals]) => `${k}=${vals}`)
     .join(' ')
 
   const withAlias = account ? resolved.replaceAll(account, 'me') : resolved
