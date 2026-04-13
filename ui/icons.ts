@@ -10,4 +10,5 @@ export {
   X,
   Backpack,
   Receipt,
+  Settings,
 } from 'lucide-react'

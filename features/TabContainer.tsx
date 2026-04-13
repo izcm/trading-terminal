@@ -37,8 +37,7 @@ export function TabContainer<K extends TabName>({
   ctx,
   isFresh,
 }: Props<K>) {
-  const effectiveSelectedId = selectedId ?? items[0]?.id
-  const selected = items.find(item => item.id === effectiveSelectedId)
+  const selected = items.find(item => item.id === selectedId)
 
   useEffect(() => {
     if (!items.length) return

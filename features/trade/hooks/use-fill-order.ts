@@ -14,7 +14,6 @@ import { decodeContractError } from '@/lib/blockchain/utils/error'
 
 /**
  * @param order the listing being validated
- * @param tokenIdCb tokenId to pass when listing is a collection_bid
  * @returns validation and execution state
  */
 
@@ -32,8 +31,8 @@ export function useFillOrder(order?: Order, listingId?: string, onConfirmed?: ()
     if (!isFillable || isChecking || !sim.data?.request) return
 
     const hash = await writeContractAsync(sim.data.request)
-    addTx(hash, listingId, 'order filled', onConfirmed,
-      err => decodeContractError(err, orderbookAbi, ORDERBOOK_ERROR_MESSAGES)
+    addTx(hash, listingId, 'order filled', onConfirmed, err =>
+      decodeContractError(err, orderbookAbi, ORDERBOOK_ERROR_MESSAGES)
     )
   }
 

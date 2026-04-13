@@ -1,6 +1,7 @@
 import { addrShort, truncateHex } from '@/domain/shared/utils/fmt/hex'
 
 import type { Sale } from '@/domain/sale'
+import { Copyable } from '../atoms'
 
 function Row({ label, value }: { label: string; value: React.ReactNode }) {
   return (
@@ -30,7 +31,10 @@ export function SalesReceipt({ sale }: { sale: Sale }) {
 
       {/* tx info */}
       <div className="flex flex-col gap-1">
-        <Row label="tx hash" value={truncateHex(sale.txHash)} />
+        <Row
+          label="tx hash"
+          value={<Copyable value={sale.txHash}>{truncateHex(sale.txHash)}</Copyable>}
+        />
         <Row label="block" value={sale.blockNumber} />
         <Row label="log index" value={sale.logIndex} />
       </div>
@@ -43,7 +47,9 @@ export function SalesReceipt({ sale }: { sale: Sale }) {
           <div className="flex flex-col gap-1">
             <Row
               label="contract"
-              value={<span className="text-accent">{addrShort(ctx.contractAddress)}</span>}
+              value={
+                <Copyable value={ctx.contractAddress}>{addrShort(ctx.contractAddress)}</Copyable>
+              }
             />
 
             <Row

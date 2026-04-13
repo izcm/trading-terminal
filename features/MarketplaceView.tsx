@@ -1,46 +1,39 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import type { Hex } from '@/domain/shared/eth'
-
-import { connectWs } from '@/lib/realtime/ws'
 import type { Page } from '@/lib/utils/http'
-
-import type { Tx } from '@/app/providers/TxProvider'
-import { useTx } from '@/app/providers/TxProvider'
+import { type Tx, useTx } from '@/app/providers/TxProvider'
 
 // shared components
-import { SalesReceipt } from '../ui/organisms/SalesReceipt'
+import { SalesReceipt } from '@/ui/organisms'
 import { Modal, TextInput } from '@/ui/atoms'
 
 // tab config
-import { pageGetters, TabResource, tabUIConfig, type TabName } from './tab-config'
+import { TabResource, tabUIConfig, type TabName } from './tab-config'
 import { TabContainer } from './TabContainer'
 
 // feature hooks
-import { useKeyboardShortcuts } from './hooks/use-keyboard-shortcuts'
-import { useTabMutations } from './hooks/use-tab-mutations'
-
-import { useWsFeed, useWsSales } from './realtime/hooks/use-ws-sub'
-
+import { useKeyboardShortcuts } from '../lib/hooks/use-keyboard-shortcuts'
+import { useWallet } from './wallet/hooks/use-wallet'
 import {
   useSearchFilters,
-  useFresh,
   useMainAction,
   useTabActions,
   useMine,
   useOwnedTokenIds,
 } from './marketplace/hooks'
-
-import { useWallet } from './wallet/hooks/use-wallet'
+import { useMarketplaceData } from './marketplace/hooks/use-marketplace-data'
 
 // feature UI
-import { Header } from './marketplace/ui/Header'
 import { CreateOrderFlow } from './orders/ui/CreateOrderFlow'
+import { Header } from './marketplace/ui/Header'
 import { Manual } from './marketplace/ui/Manual'
-import { buildSearchDefault } from './marketplace/lib/build-search-default'
 import { Tabs } from './marketplace/ui/Tabs'
+import { buildSearchDefault } from './marketplace/lib/build-search-default'
+import { dmrktDomain } from '@/protocol/eip712/domain'
+import { ThemePicker } from '@/ui/molecules/ThemePicker'
 
 type InitialState = {
   [K in TabName]: Page<TabResource[K]>
@@ -49,37 +42,40 @@ type InitialState = {
   collection: Hex
 }
 
-type TabPages = {
-  [K in TabName]: Page<TabResource[K]>
+type InfoModalType = 'manual' | 'settings'
+
+type InfoModalState = { open: true; type: InfoModalType } | { open: false }
+
+const infoModalContent: { [K in InfoModalType]: ReactNode } = {
+  manual: <Manual />,
+  settings: <ThemePicker themes={['runtime', 'void']} />,
 }
 
 export function MarketplaceView(initial: InitialState) {
   // --- route params ---
   const { collection: routeCollection, chainId: routeChainId } = initial
 
-  // --- txx overview ---
+  // --- wallet ---
+  const { account, isConnected, connect, disconnect, chainId } = useWallet()
   const { showTxs } = useTx()
+  const walletInteraction = () => (isConnected ? disconnect() : connect())
 
   // --- state ---
   const [tab, setTab] = useState<TabName>('feed')
-  const [state, setState] = useState<TabPages>(initial)
-
-  // --- selected item ---
   const [selectedByTab, setSelectedByTab] = useState<Partial<{ [K in TabName]: string }>>({})
+  const [resetTick, setResetTick] = useState(0)
 
-  const selectedItem = useMemo(
-    () => state[tab].items.find(i => i.id === selectedByTab[tab]),
-    [state, tab, selectedByTab]
+  const [infoModal, setInfoModal] = useState<InfoModalState>({
+    open: false,
+  })
+
+  // --- filters ---
+  const { filters, setFilters, mineFlag, handleSearch, resetFilters } = useSearchFilters(
+    tab,
+    account
   )
 
-  // --- wallet stuff ---
-  const { account, isConnected, connect, disconnect, chainId } = useWallet()
-  const walletInteraction = () => (isConnected ? disconnect() : connect())
-
-  // --- display manual ---
-  const [showManual, setShowManual] = useState(false)
-
-  // --- user owned nfts + selected context (is owned token) ---
+  // --- ownership ---
   const {
     ids: ownedIds,
     isFetching: loadingInventory,
@@ -90,26 +86,42 @@ export function MarketplaceView(initial: InitialState) {
 
   const { isMyToken, isMyListing, buildMineQuery } = useMine(tab, account, ownedIds)
 
-  // --- filters ---
-  const { filters, setFilters, mineFlag, handleSearch, resetFilters } = useSearchFilters(
-    tab,
-    account
-  )
+  // --- data ---
+  const tabRef = useRef(tab)
 
-  // --- mutations ---
-  const { add: addFresh, has: isFresh } = useFresh(tab)
-  const { mergePage, replacePage, addItem, updateItem } = useTabMutations(setState)
+  const handlePageReplaced = useCallback(
+    <K extends TabName>(tab: K, data: Page<TabResource[K]>) => {
+      const tabChanged = tabRef.current !== tab
+      tabRef.current = tab
 
-  const addItemAndMarkFresh = useCallback(
-    <K extends TabName>(tab: K, item: TabResource[K]) => {
-      addItem(tab, item)
-      addFresh(tab, item.id)
+      if (tabChanged) return
+
+      setSelectedByTab(prev => ({
+        ...prev,
+        [tab]: data.items[0]?.id,
+      }))
     },
-    [addItem, addFresh]
+    []
   )
 
-  // --- tab main actions ---
-  const { actions: tabActions, modal, closeModal } = useTabActions()
+  const { state, isFresh, isLoadingMore, loadMore } = useMarketplaceData(
+    initial,
+    tab,
+    filters,
+    mineFlag,
+    routeChainId,
+    routeCollection,
+    buildMineQuery,
+    handlePageReplaced
+  )
+
+  const selectedItem = useMemo(
+    () => state[tab].items.find(i => i.id === selectedByTab[tab]),
+    [state, tab, selectedByTab]
+  )
+
+  // --- tab actions ---
+  const { actions: tabActions, modal: actionModal, closeModal } = useTabActions()
   const resolvedTabAction = useMainAction(
     tab,
     selectedItem,
@@ -118,17 +130,53 @@ export function MarketplaceView(initial: InitialState) {
     { add: addOwnedId, remove: removeOwnedId, refetch: refetchOwnedIds }
   )
 
-  // ui focus
-  const focusGalleryRef = useRef<() => void>(() => {})
-  const searchRef = useRef<HTMLInputElement>(null)
+  // --- navigation helpers ---
+  function resetFiltersAndSelected(tab: TabName) {
+    setTab(tab)
+    resetFilters(tab)
+    setResetTick(t => t + 1)
+    // setSelectedByTab(prev => ({ ...prev, [tab]: undefined }))
+  }
 
-  // when user clicks a tx in txTracker => navigate to sales receipt
+  // when user clicks a tx in txTracker => navigate to sales receipt / order row
   function onNavigateToTx(tx: Tx) {
     const tab = tx.label === 'order filled' ? 'sales' : 'feed'
 
     setTab(tab)
     setFilters(prev => ({ ...prev, [tab]: { txHash: [tx.hash] } }))
+    setResetTick(t => t + 1)
   }
+
+  // --- search input default value ---
+
+  // this state is only to track reset of search value
+  const [inputSeed, setInputSeed] = useState('')
+
+  // avoid jumpy input: only react to tab/account,
+  // but read latest filters via refs
+  const filtersRef = useRef(filters)
+  const mineFlagRef = useRef(mineFlag)
+
+  useEffect(() => {
+    filtersRef.current = filters
+  }, [filters])
+  useEffect(() => {
+    mineFlagRef.current = mineFlag
+  }, [mineFlag])
+
+  useEffect(() => {
+    setInputSeed(
+      buildSearchDefault({
+        activeFilters: filtersRef.current[tab],
+        account,
+        isMine: mineFlagRef.current[tab],
+      })
+    )
+  }, [tab, account, resetTick])
+
+  // --- ui focus refs ---
+  const focusGalleryRef = useRef<() => void>(() => {})
+  const searchRef = useRef<HTMLInputElement>(null)
 
   // --- keyboard shortcuts ---
   useKeyboardShortcuts({
@@ -150,7 +198,9 @@ export function MarketplaceView(initial: InitialState) {
 
     // header shortcuts
     W: () => walletInteraction(),
-    m: () => setShowManual(true),
+    m: () => setInfoModal({ open: true, type: 'manual' }),
+    '.': () => setInfoModal({ open: true, type: 'settings' }),
+    t: () => showTxs(onNavigateToTx), // open provider tx overview
 
     // tab internals
     a: () => {
@@ -159,106 +209,7 @@ export function MarketplaceView(initial: InitialState) {
     },
     l: () => focusGalleryRef.current?.(),
     i: () => searchRef.current?.focus(),
-
-    // open provider tx overview
-    t: () => showTxs(onNavigateToTx),
   })
-
-  const [resetTick, setResetTick] = useState(0)
-
-  function resetFiltersAndSelected(tab: TabName) {
-    setTab(tab)
-    resetFilters(tab)
-    setResetTick(t => t + 1)
-    setSelectedByTab(prev => ({ ...prev, [tab]: undefined }))
-  }
-
-  // --- ws ---
-  useEffect(() => {
-    connectWs()
-  }, [])
-
-  useWsFeed({ addItem: addItemAndMarkFresh, updateItem })
-  useWsSales({ addItem: addItemAndMarkFresh, updateItem })
-
-  // --- query ---
-  const query = useMemo(() => {
-    const base = filters[tab]
-
-    const activeFilters = {
-      ...base,
-      chainId: [routeChainId.toString()],
-      collection: [routeCollection],
-    } satisfies Record<string, string[]>
-
-    return mineFlag[tab] ? buildMineQuery(activeFilters) : activeFilters
-  }, [tab, filters, mineFlag, routeChainId, routeCollection, buildMineQuery])
-
-  // --- pagination ---
-  // todo: actually implement pagination (infinite scroll style)
-  const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false)
-
-  const loadMore = useCallback(async () => {
-    const currCursor = state[tab].cursor
-
-    if (!currCursor || isLoadingMore) return
-
-    setIsLoadingMore(true)
-
-    const res = await pageGetters[tab]({
-      filters: query,
-      cursor: currCursor,
-    })
-
-    if (res.ok) {
-      mergePage(tab, res.data.items, res.data.cursor)
-    }
-
-    setIsLoadingMore(false)
-  }, [state, tab, isLoadingMore, query, mergePage])
-
-  // --- filter change ---
-  useEffect(() => {
-    const run = async () => {
-      const res = await pageGetters[tab]({ filters: query, cursor: null })
-
-      if (!res.ok) return
-      replacePage(tab, res.data)
-
-      // I personally like filter change reseting tab selected
-      setSelectedByTab(prev => ({ ...prev, [tab]: undefined }))
-    }
-
-    run()
-  }, [tab, query, replacePage])
-
-  // --- text input default value ---
-
-  // this state is only to track reset of search value
-  const [inputSeed, setInputSeed] = useState('')
-
-  // avoid jumpy input: only react to tab/account,
-  // but read latest filters via refs
-
-  const filtersRef = useRef(filters)
-  const mineFlagRef = useRef(mineFlag)
-
-  useEffect(() => {
-    filtersRef.current = filters
-  }, [filters])
-  useEffect(() => {
-    mineFlagRef.current = mineFlag
-  }, [mineFlag])
-
-  useEffect(() => {
-    setInputSeed(
-      buildSearchDefault({
-        activeFilters: filtersRef.current[tab],
-        account,
-        isMine: mineFlagRef.current[tab],
-      })
-    )
-  }, [tab, account, resetTick])
 
   return (
     <div className="flex gap-4 h-screen max-w-4xl px-2 mx-auto overflow-hidden font-mono">
@@ -268,7 +219,9 @@ export function MarketplaceView(initial: InitialState) {
         <Header
           chainId={chainId}
           inventory={{ count: ownedIds.length, isLoading: loadingInventory }}
-          onOpenManual={() => setShowManual(true)}
+          contractAddress={dmrktDomain.verifyingContract}
+          collection={routeCollection}
+          onOpenManual={() => setInfoModal({ open: true, type: 'manual' })}
           onNavigateToTx={onNavigateToTx}
         />
 
@@ -304,26 +257,26 @@ export function MarketplaceView(initial: InitialState) {
 
       {/* ---- modals ---- */}
 
-      {modal?.type === 'receipt' && (
+      {actionModal?.type === 'receipt' && (
         <Modal isOpen onClose={closeModal}>
-          <SalesReceipt sale={modal.data} />
+          <SalesReceipt sale={actionModal.data} />
         </Modal>
       )}
 
-      {modal?.type === 'createOrder' && (
+      {actionModal?.type === 'createOrder' && (
         <Modal isOpen onClose={closeModal} escTxt="Cancel">
           <CreateOrderFlow
-            collection={modal.data.collection}
-            tokenId={modal.data.tokenId}
-            side={modal.data.side}
+            collection={actionModal.data.collection}
+            tokenId={actionModal.data.tokenId}
+            side={actionModal.data.side}
             onOrderCreated={closeModal}
           />
         </Modal>
       )}
 
-      {showManual && (
-        <Modal isOpen onClose={() => setShowManual(false)}>
-          <Manual />
+      {infoModal.open && (
+        <Modal isOpen onClose={() => setInfoModal({ open: false })}>
+          {infoModalContent[infoModal.type]}
         </Modal>
       )}
     </div>

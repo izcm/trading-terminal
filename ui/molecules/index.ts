@@ -10,3 +10,4 @@ export * from './rows/TxRow'
 // root
 export * from './ArrowList'
 export * from './DetailFields'
+export * from './Popover'
