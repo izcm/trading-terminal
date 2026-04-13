@@ -33,7 +33,7 @@ import { Manual } from './marketplace/ui/Manual'
 import { Tabs } from './marketplace/ui/Tabs'
 import { buildSearchDefault } from './marketplace/lib/build-search-default'
 import { dmrktDomain } from '@/protocol/eip712/domain'
-import { ThemePicker } from '@/ui/molecules/ThemePicker'
+import { SettingsMenu } from '@/ui/molecules/SettingsMenu'
 
 type InitialState = {
   [K in TabName]: Page<TabResource[K]>
@@ -48,7 +48,7 @@ type InfoModalState = { open: true; type: InfoModalType } | { open: false }
 
 const infoModalContent: { [K in InfoModalType]: ReactNode } = {
   manual: <Manual />,
-  settings: <ThemePicker themes={['runtime', 'void']} />,
+  settings: <SettingsMenu />,
 }
 
 export function MarketplaceView(initial: InitialState) {
@@ -222,6 +222,7 @@ export function MarketplaceView(initial: InitialState) {
           contractAddress={dmrktDomain.verifyingContract}
           collection={routeCollection}
           onOpenManual={() => setInfoModal({ open: true, type: 'manual' })}
+          onOpenSettings={() => setInfoModal({ open: true, type: 'settings' })}
           onNavigateToTx={onNavigateToTx}
         />
 

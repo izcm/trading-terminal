@@ -28,6 +28,7 @@ type HeaderProps = {
   contractAddress: Hex | undefined
   collection: Hex
   onOpenManual: () => void
+  onOpenSettings: () => void
   onNavigateToTx: (tx: Tx) => void
 }
 
@@ -37,6 +38,7 @@ export function Header({
   contractAddress,
   collection,
   onOpenManual,
+  onOpenSettings,
   onNavigateToTx,
 }: HeaderProps) {
   return (
@@ -78,26 +80,28 @@ export function Header({
         </button>
       </div>
 
-      <div className="basis-1/3 flex items-center justify-end gap-4">
-        <button className="btn btn-menu">
+      <div className="basis-1/3 flex items-center justify-between gap-4">
+        <button className="btn btn-menu" onClick={onOpenSettings}>
           <Settings size={16} />
         </button>
 
-        <div className="flex items-center justify-center gap-2 text-accent text-sm">
-          {inventory.isLoading ? (
-            <>
-              <Spinner size={16} />
-              <span>inventory...</span>
-            </>
-          ) : (
-            <>
-              <Backpack size={16} />
-              <span>{inventory.count}</span>
-            </>
-          )}
-        </div>
+        <div className="flex gap-4">
+          <div className="flex items-center justify-center gap-2 text-accent text-sm">
+            {inventory.isLoading ? (
+              <>
+                <Spinner size={16} />
+                <span>inventory...</span>
+              </>
+            ) : (
+              <>
+                <Backpack size={16} />
+                <span>{inventory.count}</span>
+              </>
+            )}
+          </div>
 
-        <TxTracker onNavigateToTx={onNavigateToTx} />
+          <TxTracker onNavigateToTx={onNavigateToTx} />
+        </div>
       </div>
     </div>
   )
