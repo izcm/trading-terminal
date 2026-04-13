@@ -26,7 +26,7 @@ export const activity = {
       collection: listing.collection,
       tokenId: listing.tokenId,
       price: listing.price,
-      timestamp: listing.start,
+      timestamp: listing.end,
       isCollectionBid: listing.isCollectionBid,
       collectionSymbol: listing.nftCollection?.symbol ?? 'unknown',
       status: listing.status,

@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { useEffect, useRef } from 'react'
+import { FocusTrap } from 'focus-trap-react'
 
 type ModalProps = {
   isOpen: boolean
@@ -9,8 +10,7 @@ type ModalProps = {
 }
 
 export function Modal({ isOpen, onClose, children, escTxt = 'Close' }: ModalProps) {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const lastFocusedRef = useRef<HTMLElement>(null)
+  const lastFocusedRef = useRef<HTMLElement | null>(null)
 
   // Close on ESC key
   useEffect(() => {
@@ -27,48 +27,32 @@ export function Modal({ isOpen, onClose, children, escTxt = 'Close' }: ModalProp
     }
   }, [onClose, isOpen])
 
-  // focus on first elegible item in modal
-  useEffect(() => {
-    if (!isOpen) return
-
-    lastFocusedRef.current = document.activeElement as HTMLElement | null
-
-    const el = containerRef.current
-    if (!el) return
-
-    const focusable = el.querySelector<HTMLElement>(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-    )
-
-    focusable?.focus()
-  }, [isOpen])
-
   if (!isOpen) return null
 
   return (
     <div
       className="
-        fixed inset-0 z-50 flex items-center justify-center
-        bg-black/50 backdrop-blur-sm
-        animate-fadeIn fixed z-[999]
+        fixed inset-0 z-[999] flex items-center justify-center
+        bg-black/50 backdrop-blur-sm animate-fadeIn
       "
       onClick={onClose}
     >
-      <div
-        ref={containerRef}
-        className="
-          flex flex-col gap-2
-          bg-primary/60  backdrop-blur-lg
-          border border-default
-          rounded-lg
-          shadow-lg p-2"
-        onClick={e => e.stopPropagation()}
-      >
-        {children}
-        <button className="btn btn-secondary" onClick={onClose}>
-          {escTxt}
-        </button>
-      </div>
+      <FocusTrap>
+        <div
+          className="
+            flex flex-col gap-2
+            bg-primary/60 backdrop-blur-lg
+            border border-default
+            rounded-lg
+            shadow-lg p-2"
+          onClick={e => e.stopPropagation()}
+        >
+          {children}
+          <button className="btn btn-secondary" onClick={onClose}>
+            {escTxt}
+          </button>
+        </div>
+      </FocusTrap>
     </div>
   )
 }

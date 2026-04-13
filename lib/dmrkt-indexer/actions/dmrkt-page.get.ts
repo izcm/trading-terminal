@@ -12,6 +12,10 @@ import { NFTCollection } from '@/domain/nft-collection'
 
 export const baseUrl = process.env.NEXT_PUBLIC_INDEXER_API
 
+function setDefault(q: URLSearchParams, key: string, value: string) {
+  if (!q.has(key)) q.set(key, value)
+}
+
 function buildQuery({
   filters,
   cursor,
@@ -84,6 +88,9 @@ export async function getDmrktListings({
 } = {}): Promise<Result<Page<Listing>>> {
   const query = buildQuery({ filters, cursor, includes: ['nftCollection'] })
   query.append('isCollectionBid', 'false') // added since collectionBid feature is paused
+
+  setDefault(query, 'sortField', 'end')
+  setDefault(query, 'sortDir', 'asc')
 
   const res = await getDmrktItems<OrderDTO>({
     params: 'orders',

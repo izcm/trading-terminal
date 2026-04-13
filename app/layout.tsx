@@ -16,14 +16,24 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" data-theme="runtime" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+            (function () {
+              try {
+                const t = localStorage.getItem('theme') || 'runtime';
+                document.documentElement.setAttribute('data-theme', t);
+              } catch (e) {
+                document.documentElement.setAttribute('data-theme', 'runtime');
+              }
+            })();`,
+          }}
+        />
+      </head>
+
       <body suppressHydrationWarning>
-        {/* <a
-          href="#forward-main"
-          className="sr-only focus:not-sr-only focus:underline absolute top-2 left-2 z-50"
-        >
-          Skip Header
-        </a> */}
         <Providers>
           {children}
           <Toaster position="top-center" />

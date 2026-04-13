@@ -108,7 +108,10 @@ function ActivityRow({ item }: { item: Props }) {
       <div className="text-right flex flex-col px-1">
         <span className="font-semibold">{formatEth2(price)} ETH</span>
 
-        <span className="text-xs text-muted">{tsSuperShort(timestamp)}</span>
+        <span className="text-xs text-muted">
+          {source === 'listing' ? 'exp ' : ''}
+          {tsSuperShort(timestamp)}
+        </span>
       </div>
     </div>
   )
