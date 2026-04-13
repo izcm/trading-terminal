@@ -18,6 +18,7 @@ export function GalleryItem({ image, imgWidth = 250, imgHeight = 250, title, det
         className="border-b border-default object-cover bg-primary"
         width={imgWidth}
         height={imgHeight}
+        loading="eager"
       />
       <div className="flex flex-col">
         {title && (
