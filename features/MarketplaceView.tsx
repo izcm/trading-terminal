@@ -70,10 +70,8 @@ export function MarketplaceView(initial: InitialState) {
   })
 
   // --- filters ---
-  const { filters, setFilters, mineFlag, handleSearch, resetFilters } = useSearchFilters(
-    tab,
-    account
-  )
+  const { filters, setFilters, mineFlag, handleSearch, resetFilters, resetMineFlag } =
+    useSearchFilters(tab, account)
 
   // --- ownership ---
   const {
@@ -134,8 +132,8 @@ export function MarketplaceView(initial: InitialState) {
   function resetFiltersAndSelected(tab: TabName) {
     setTab(tab)
     resetFilters(tab)
+    resetMineFlag(tab)
     setResetTick(t => t + 1)
-    // setSelectedByTab(prev => ({ ...prev, [tab]: undefined }))
   }
 
   // when user clicks a tx in txTracker => navigate to sales receipt / order row
@@ -143,6 +141,7 @@ export function MarketplaceView(initial: InitialState) {
     const tab = tx.label === 'order filled' ? 'sales' : 'feed'
 
     setTab(tab)
+    resetMineFlag(tab)
     setFilters(prev => ({ ...prev, [tab]: { txHash: [tx.hash] } }))
     setResetTick(t => t + 1)
   }

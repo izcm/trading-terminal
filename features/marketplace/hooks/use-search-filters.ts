@@ -10,12 +10,19 @@ const DEFAULT_FILTERS: Record<TabName, Record<string, string[]>> = {
 }
 
 const DEFAULT_MINE_FLAG: Record<TabName, boolean> = {
-  feed: false,
-  sales: false,
+  feed: true,
+  sales: true,
   explore: false,
 }
 
-// user is passed to enable feat replacing "me" with user address in searchstring
+/**
+ * Parses user search input to filters key value pairs.
+ * This is the middlelayer between UI search input and parsing to API format.
+ *
+ * eg. user inputs the raw string tokenId=1,2,3
+ *  - handleSearch takes string, parses it to { tokenId: ["1", "2", "3"]}
+ *  - handleSearch updates filters to include the new pair
+ */
 export function useSearchFilters(tab: TabName, user?: Hex) {
   const [filters, setFilters] = useState<Record<TabName, Record<string, string[]>>>(DEFAULT_FILTERS)
 
@@ -41,7 +48,7 @@ export function useSearchFilters(tab: TabName, user?: Hex) {
 
     // parse raw string into key: [values]
     const next: Record<string, string[]> =
-      rest.length === 0
+      rest.trim().length === 0
         ? {}
         : Object.fromEntries(
             rest
@@ -69,5 +76,9 @@ export function useSearchFilters(tab: TabName, user?: Hex) {
     setMineFlag(prev => ({ ...prev, [targetTab]: DEFAULT_MINE_FLAG[targetTab] }))
   }
 
-  return { filters, setFilters, mineFlag, handleSearch, resetFilters }
+  function resetMineFlag(targetTab: TabName) {
+    setMineFlag(prev => ({ ...prev, [targetTab]: false }))
+  }
+
+  return { filters, setFilters, mineFlag, handleSearch, resetFilters, resetMineFlag }
 }
