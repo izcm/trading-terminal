@@ -3,13 +3,13 @@ import { useState } from 'react'
 import type { TabName } from '@/features/tab-config'
 import type { Hex } from '@/domain/shared/eth'
 
-const DEFAULT_FILTERS: Record<TabName, Record<string, string[]>> = {
+export const DEFAULT_FILTERS: Record<TabName, Record<string, string[]>> = {
   feed: { status: ['active'] },
   sales: {},
   explore: {},
 }
 
-const DEFAULT_MINE_FLAG: Record<TabName, boolean> = {
+export const DEFAULT_MINE_FLAG: Record<TabName, boolean> = {
   feed: true,
   sales: true,
   explore: false,
