@@ -15,6 +15,9 @@ export function toSearchParams(filters: Record<string, string[]>) {
 
   for (const [rawKey, vals] of Object.entries(normalizeKeys(filters))) {
     const key = resolveFieldName(rawKey)
+
+    // special handling for (trait,value) pair
+    // API expects format trait=Rarity,Rarity,Color&value=Epic,Rare,Magenta
     if (key.startsWith('trait.')) {
       const trait = key.slice(6)
 

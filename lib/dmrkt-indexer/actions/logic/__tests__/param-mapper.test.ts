@@ -41,7 +41,7 @@ describe('toSearchParams', () => {
     it('appends a single key=value pair', () => {
       const params = toSearchParams({ status: ['active'] })
 
-      expect(params.has('status'))
+      expect(params.has('status')).toBe(true)
       expect(params.getAll('status')).toEqual(['active'])
     })
 
@@ -89,11 +89,33 @@ describe('toSearchParams', () => {
     })
   })
 })
-//   describe('trait fields', () => {
-//     it('routes trait.* keys into trait/value params', ...)
-//     it('capitalizes trait name', ...)
-//     it('capitalizes and spaces trait value (aqua_mint -> Aqua Mint)', ...)
-//     it('joins multiple traits into comma-separated format trait=value1,value2', ...)
-//     it('handles trait and regular filters together', ...)
-//   })
-// })
+
+describe('trait fields', () => {
+  it('converts trait.color=value into format expected by API (eg. trait=Color & value=Blue)', () => {
+    const params = toSearchParams({ 'trait.color': ['blue'] })
+
+    expect(params.has('trait.color')).toBe(false)
+    expect(params.has('trait')).toBe(true)
+
+    expect(params.getAll('trait')).toEqual(['Color'])
+    expect(params.getAll('value')).toEqual(['Blue'])
+  })
+
+  it('capitalizes and spaces trait value (aqua_mint -> Aqua Mint)', () => {
+    const params = toSearchParams({ 'trait.color': ['aqua_mint'] })
+    expect(params.getAll('value')).toEqual(['Aqua Mint'])
+  })
+
+  it('joins multiple trait values into comma-separated format value=value1,value2', () => {
+    const params = toSearchParams({ 'trait.color': ['blue', 'red', 'yellow'] })
+    expect(params.getAll('value')).toEqual(['Blue,Red,Yellow'])
+  })
+
+  it('handles trait and regular filters together', () => {
+    const params = toSearchParams({ 'trait.color': ['blue'], status: ['active'] })
+
+    expect(params.getAll('trait')).toEqual(['Color'])
+    expect(params.getAll('value')).toEqual(['Blue'])
+    expect(params.getAll('status')).toEqual(['active'])
+  })
+})
