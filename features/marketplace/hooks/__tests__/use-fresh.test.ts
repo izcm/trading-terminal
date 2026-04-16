@@ -7,10 +7,9 @@ import { useFresh } from '../use-fresh'
 import { TabName } from '@/features/tab-config'
 
 describe('useFresh', () => {
-  type HookProps = { tab: TabName }
+  type HookProps = Parameters<typeof useFresh>
 
-  let result: RenderHookResult<ReturnType<typeof useFresh>, HookProps>['result']
-  let rerender: RenderHookResult<ReturnType<typeof useFresh>, HookProps>['rerender']
+  let hook: RenderHookResult<ReturnType<typeof useFresh>, HookProps>
 
   const defaultTab = 'feed'
   const otherTabs: TabName[] = ['sales', 'explore']
@@ -18,17 +17,17 @@ describe('useFresh', () => {
   beforeEach(() => {
     vi.useFakeTimers()
 
-    const hook = renderHook(({ tab }: { tab: TabName }) => useFresh(tab), {
-      initialProps: { tab: 'feed' },
+    hook = renderHook((props: HookProps) => useFresh(...props), {
+      initialProps: ['feed' as TabName],
     })
-
-    result = hook.result
-    rerender = hook.rerender
   })
 
-  const add = (tab: TabName, id: string) => result.current.add(tab, id)
-  const isFresh = (tab: TabName, id: string) => result.current.isFresh(tab, id)
-  const isPending = (tab: TabName, id: string) => result.current.isPending(tab, id)
+  const add = (tab: TabName, id: string) => hook.result.current.add(tab, id)
+
+  const isFresh = (tab: TabName, id: string) => hook.result.current.isFresh(tab, id)
+  const isPending = (tab: TabName, id: string) => hook.result.current.isPending(tab, id)
+
+  const rerender = (props: HookProps) => hook.rerender(props)
 
   const base = {
     tab: defaultTab as TabName,
@@ -84,7 +83,7 @@ describe('useFresh', () => {
     expect(isFresh(tab, id)).toBe(false)
 
     // rerender with tab as activeTab
-    act(() => rerender({ tab }))
+    act(() => rerender([tab]))
 
     // should flush pending and mark item as fresh
     expect(isPending(tab, id)).toBe(false)
@@ -106,7 +105,7 @@ describe('useFresh', () => {
     })
 
     // switch tab
-    act(() => rerender({ tab }))
+    act(() => rerender([tab]))
 
     ids.forEach(id => {
       expect(isPending(tab, id)).toBe(false)

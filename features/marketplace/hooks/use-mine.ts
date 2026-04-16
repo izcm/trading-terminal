@@ -8,33 +8,10 @@ import { Sale } from '@/domain/sale'
 // rules per tab for marking a domain item as "mine"
 export function useMine(tab: TabName, account: Hex | undefined, ids: bigint[]) {
   const ownedIdsRef = useRef<bigint[]>(ids)
+
   useEffect(() => {
     ownedIdsRef.current = ids
   }, [ids])
-
-  // my tokens
-  const isMyToken = useCallback(
-    (item: TabResource[TabName]) => {
-      if (!account) return false
-      return ownedIdsRef.current.includes(item.tokenId)
-    },
-    [account, ownedIdsRef]
-  )
-
-  function isListing(item: TabResource[TabName]): item is Listing {
-    return 'actor' in item
-  }
-
-  // helps decide whether to show cancel btn
-  const isMyListing = useCallback(
-    (item: TabResource[TabName]) => {
-      if (!account || tab !== 'feed') return false
-      if (!isListing(item)) return false
-
-      return item.actor === account
-    },
-    [tab, account]
-  )
 
   const isMine = useCallback(
     (item: TabResource[TabName]) => {
@@ -70,5 +47,5 @@ export function useMine(tab: TabName, account: Hex | undefined, ids: bigint[]) {
     [account, tab, ownedIdsRef]
   )
 
-  return { buildMineQuery, isMyToken, isMyListing, isMine }
+  return { buildMineQuery, isMine }
 }
