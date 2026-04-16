@@ -1,4 +1,4 @@
-import { addrShort, truncateHex } from '@/domain/shared/utils/fmt/hex'
+import { addrShort, truncateHex } from '@/lib/utils/hex'
 
 import type { Sale } from '@/domain/sale'
 import { Copyable } from '../atoms'

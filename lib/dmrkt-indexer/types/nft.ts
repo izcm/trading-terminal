@@ -19,6 +19,8 @@ export type NFTDTO = {
   }[]
 
   createdAtBlock: number
+
+  createdAt: number
 }
 
 export function toNFT(dto: NFTDTO): NFT {

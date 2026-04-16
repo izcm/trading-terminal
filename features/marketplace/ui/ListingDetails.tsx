@@ -1,6 +1,6 @@
 import type { Listing } from '@/domain/listing'
 
-import { tsShort } from '@/domain/shared/utils/time'
+import { tsShort } from '@/lib/utils/time'
 
 import { Details, HexDetailField } from '@/ui/organisms'
 import type { DetailField } from '@/ui/molecules/DetailFields'

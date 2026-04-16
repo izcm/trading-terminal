@@ -8,16 +8,15 @@ import { DEFAULT_FILTERS, useSearchFilters } from '../use-search-filters'
 describe('useSearchFilters', () => {
   let result: RenderHookResult<ReturnType<typeof useSearchFilters>, unknown>['result']
 
-  const testTab = 'feed'
-
+  const defaultTab = 'feed'
   const otherTabs: TabName[] = ['sales', 'explore']
 
   beforeEach(() => {
-    const hook = renderHook(() => useSearchFilters(testTab))
+    const hook = renderHook(() => useSearchFilters(defaultTab))
     result = hook.result
   })
 
-  const filters = (tab: TabName = testTab) => result.current.filters[tab]
+  const filters = (tab: TabName = defaultTab) => result.current.filters[tab]
 
   describe('handleSearch', () => {
     it('parses a single key=value pair', () => {
@@ -52,7 +51,7 @@ describe('useSearchFilters', () => {
   })
 
   describe('mine keyword', () => {
-    const mineFlag = (tab: TabName = testTab) => result.current.mineFlag[tab]
+    const mineFlag = (tab: TabName = defaultTab) => result.current.mineFlag[tab]
 
     it('sets mineFlag when "mine" is in the search string', () => {
       act(() => result.current.handleSearch('mine'))
@@ -81,11 +80,11 @@ describe('useSearchFilters', () => {
     const USER_ADDRESS = '0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef' as const
 
     it('replaces "me" with the user address when user is provided', () => {
-      const withUser = renderHook(() => useSearchFilters(testTab, USER_ADDRESS)).result
+      const withUser = renderHook(() => useSearchFilters(defaultTab, USER_ADDRESS)).result
 
       act(() => withUser.current.handleSearch('maker=me'))
 
-      expect(withUser.current.filters[testTab]).toEqual({ maker: [USER_ADDRESS] })
+      expect(withUser.current.filters[defaultTab]).toEqual({ maker: [USER_ADDRESS] })
     })
 
     it('does not replace "me" when no user is provided', () => {
@@ -97,9 +96,9 @@ describe('useSearchFilters', () => {
   describe('resetFilters', () => {
     it('restores the default filters for the target tab', () => {
       act(() => result.current.handleSearch('status=cancelled'))
-      act(() => result.current.resetFilters(testTab))
+      act(() => result.current.resetFilters(defaultTab))
 
-      expect(result.current.filters.feed).toEqual(DEFAULT_FILTERS[testTab])
+      expect(result.current.filters.feed).toEqual(DEFAULT_FILTERS[defaultTab])
     })
 
     it('does not affect other tabs', () => {
@@ -111,7 +110,7 @@ describe('useSearchFilters', () => {
         }))
       )
 
-      act(() => result.current.resetFilters(testTab))
+      act(() => result.current.resetFilters(defaultTab))
 
       expect(result.current.filters.sales).toEqual({ status: ['expired'] })
       expect(result.current.filters.explore).toEqual({ tokenId: ['2'] })

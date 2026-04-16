@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic'
 import type { Tx } from '@/app/providers/TxProvider'
 
 import type { Hex } from '@/domain/shared/eth'
-import { truncateHex } from '@/domain/shared/utils/fmt/hex'
+import { truncateHex } from '@/lib/utils/hex'
 
 import { Backpack, Settings } from '@/ui/icons'
 import { Spinner, Copyable } from '@/ui/atoms'

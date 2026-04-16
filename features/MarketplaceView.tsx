@@ -82,7 +82,7 @@ export function MarketplaceView(initial: InitialState) {
     refetch: refetchOwnedIds,
   } = useOwnedTokenIds(routeCollection, account)
 
-  const { isMyToken, isMyListing, buildMineQuery } = useMine(tab, account, ownedIds)
+  const { isMyToken, isMyListing, isMine, buildMineQuery } = useMine(tab, account, ownedIds)
 
   // --- data ---
   const tabRef = useRef(tab)
@@ -109,6 +109,7 @@ export function MarketplaceView(initial: InitialState) {
     mineFlag,
     routeChainId,
     routeCollection,
+    isMine,
     buildMineQuery,
     handlePageReplaced
   )

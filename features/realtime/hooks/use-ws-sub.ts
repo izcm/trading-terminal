@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
 
 import { on } from '@/lib/realtime/ws'
 import { getDmrktListing, getDmrktSale } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
@@ -19,6 +19,16 @@ type UpdateItem = <K extends keyof TabResource>(
 ) => void
 
 export function useWsFeed({ addItem, updateItem }: { addItem: AddItem; updateItem: UpdateItem }) {
+  const addItemRef = useRef(addItem)
+  const updateItemRef = useRef(updateItem)
+
+  // addItem (addItemAndMarkFresh) has a lot of dependencies
+  // refs avoid frequent re-subsribing
+  useLayoutEffect(() => {
+    addItemRef.current = addItem
+    updateItemRef.current = updateItem
+  }, [addItem, updateItem])
+
   useEffect(() => {
     const off = on('order.created', async p => {
       const { chainId, orderHash } = p as { chainId: number; orderHash: string }
@@ -26,7 +36,7 @@ export function useWsFeed({ addItem, updateItem }: { addItem: AddItem; updateIte
       const res = await getDmrktListing(`${chainId}:${orderHash}`)
       if (!res.ok) return
 
-      addItem('feed', res.data)
+      addItemRef.current('feed', res.data)
     })
 
     const offs = Object.entries(statusMap).map(([event, status]) =>
@@ -34,14 +44,14 @@ export function useWsFeed({ addItem, updateItem }: { addItem: AddItem; updateIte
         const { chainId, orderHash } = p as { chainId: number; orderHash: string }
         const id = `${chainId}:${orderHash}`
 
-        updateItem('feed', id, item => ({ ...item, status: status as ListingStatus }))
+        updateItemRef.current('feed', id, item => ({ ...item, status: status as ListingStatus }))
 
         const res = await itemGetters['feed'](id)
 
         if (!res.ok) return
 
         const { txHash } = res.data
-        if (txHash) updateItem('feed', id, item => ({ ...item, txHash }))
+        if (txHash) updateItemRef.current('feed', id, item => ({ ...item, txHash }))
       })
     )
 
@@ -49,10 +59,18 @@ export function useWsFeed({ addItem, updateItem }: { addItem: AddItem; updateIte
       off()
       offs.forEach(off => off())
     }
-  }, [addItem, updateItem])
+  }, [])
 }
 
 export function useWsSales({ addItem, updateItem }: { addItem: AddItem; updateItem: UpdateItem }) {
+  const addItemRef = useRef(addItem)
+  const updateItemRef = useRef(updateItem)
+
+  useLayoutEffect(() => {
+    addItemRef.current = addItem
+    updateItemRef.current = updateItem
+  }, [addItem, updateItem])
+
   useEffect(() => {
     const offs = [
       on('settlement.created', async p => {
@@ -61,7 +79,7 @@ export function useWsSales({ addItem, updateItem }: { addItem: AddItem; updateIt
         const res = await getDmrktSale(`${chainId}:${orderHash}`)
         if (!res.ok) return
 
-        addItem('sales', res.data)
+        addItemRef.current('sales', res.data)
       }),
 
       on('settlement.callReconstructed', async p => {
@@ -72,10 +90,10 @@ export function useWsSales({ addItem, updateItem }: { addItem: AddItem; updateIt
         if (!res.ok) return
 
         const { txContext } = res.data
-        if (txContext) updateItem('sales', id, item => ({ ...item, txContext }))
+        if (txContext) updateItemRef.current('sales', id, item => ({ ...item, txContext }))
       }),
     ]
 
     return () => offs.forEach(off => off())
-  }, [addItem, updateItem])
+  }, [])
 }

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import type { Tx, TxLabel } from '@/app/providers/TxProvider'
-import { hhmm } from '@/domain/shared/utils/time'
+import { hhmm } from '@/lib/utils/time'
 import { Copyable } from '@/ui/atoms'
 
 const ERROR_TRUNCATE = 80

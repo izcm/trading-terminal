@@ -42,4 +42,6 @@ export type Sale = {
     gasUsed: number
     gasPrice: number
   }
+
+  createdAt: number
 }

@@ -35,6 +35,8 @@ export type SettlementDTO = {
 
   nftCollection?: NFTCollectionDTO | null
   order?: OrderDTO | null
+
+  createdAt: number
 }
 
 export function toSale(dto: SettlementDTO): Sale {

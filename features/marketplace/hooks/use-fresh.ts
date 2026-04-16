@@ -2,49 +2,63 @@ import { TabName } from '@/features/tab-config'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 export function useFresh(activeTab: TabName) {
-  const [fresh, setFresh] = useState<Record<string, Set<string> | undefined>>({})
-  const pending = useRef<Record<string, Set<string> | undefined>>({})
+  const [fresh, setFresh] = useState<Record<string, Set<string>>>({})
+  const pending = useRef<Record<string, Set<string>>>({})
 
-  function startTimer(key: string) {
+  function startTimer(tab: TabName) {
     setTimeout(() => {
-      setFresh(prev => ({ ...prev, [key]: new Set() }))
+      setFresh(prev => ({ ...prev, [tab]: new Set() }))
     }, 2000)
   }
 
   const add = useCallback(
-    (key: string, id: string) => {
-      setFresh(prev => {
-        // create a new set and copy over (useEffect detects new reference)
-        const next = new Set(prev[key])
-        next.add(id)
-        return { ...prev, [key]: next }
-      })
+    (tab: TabName, id: string) => {
+      if (tab === activeTab) {
+        // active → fresh immediately
+        setFresh(prev => {
+          const next = new Set(prev[tab] ?? [])
+          next.add(id)
+          return { ...prev, [tab]: next }
+        })
 
-      if (key === activeTab) {
-        // run timer
-        startTimer(key)
+        startTimer(tab)
       } else {
-        // park it for when user visits tab
-        const parked = pending.current[key] ?? new Set<string>()
-        parked.add(id)
-        pending.current = { ...pending.current, [key]: parked }
+        // inactive → pending
+        const nextPending = new Set(pending.current[tab] ?? [])
+        nextPending.add(id)
+        pending.current = { ...pending.current, [tab]: nextPending }
       }
     },
     [activeTab]
   )
 
-  useEffect(() => {
-    // flush pending on tab switch
-    const parked = pending.current[activeTab]
+  // manual flush
+  const flush = useCallback((tab: TabName) => {
+    const parked = pending.current[tab]
     if (!parked?.size) return
 
-    parked.forEach(() => startTimer(activeTab))
-    pending.current = { ...pending.current, [activeTab]: new Set() }
-  }, [activeTab])
+    pending.current = { ...pending.current, [tab]: new Set() }
 
-  function has(key: string, id: string) {
-    return fresh[key]?.has(id) ?? false
+    setFresh(prev => {
+      const next = new Set(prev[tab] ?? [])
+      parked.forEach(id => next.add(id))
+      return { ...prev, [tab]: next }
+    })
+
+    startTimer(tab)
+  }, [])
+
+  useEffect(() => {
+    flush(activeTab)
+  }, [activeTab, flush])
+
+  function isFresh(tab: string, id: string) {
+    return fresh[tab]?.has(id) ?? false
   }
 
-  return { add, has }
+  function isPending(tab: string, id: string) {
+    return pending.current[tab]?.has(id) ?? false
+  }
+
+  return { add, flush, isFresh, isPending }
 }

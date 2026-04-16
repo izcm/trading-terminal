@@ -36,4 +36,6 @@ export type Listing = {
   // cancellation
   // filled (settlement txHash)
   txHash?: Hex
+
+  createdAt: number
 }

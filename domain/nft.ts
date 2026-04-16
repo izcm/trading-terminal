@@ -23,6 +23,8 @@ export type NFT = {
   attributes: NFTAttribute[]
 
   createdAtBlock: bigint
+
+  createdAt: number
 }
 
 type NFTMetadata = {
@@ -47,6 +49,7 @@ export function mapTokenUriToNFT(
     tokenId,
     tokenUri,
     createdAtBlock: 0n,
+    createdAt: 0,
     ...meta,
   }
 }

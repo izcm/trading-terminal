@@ -31,6 +31,9 @@ function buildQuery({
 
   includes.forEach(inc => query.append('include', inc))
 
+  if (!filters.sortField) setDefault(query, 'sortField', 'createdAt')
+  if (!filters.sortDir) setDefault(query, 'sortDir', 'desc')
+
   return query
 }
 
@@ -88,9 +91,6 @@ export async function getDmrktListings({
 } = {}): Promise<Result<Page<Listing>>> {
   const query = buildQuery({ filters, cursor, includes: ['nftCollection'] })
   query.append('isCollectionBid', 'false') // added since collectionBid feature is paused
-
-  setDefault(query, 'sortField', 'end')
-  setDefault(query, 'sortDir', 'asc')
 
   const res = await getDmrktItems<OrderDTO>({
     params: 'orders',

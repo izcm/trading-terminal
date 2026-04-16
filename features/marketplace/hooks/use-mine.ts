@@ -3,23 +3,22 @@ import { useCallback, useEffect, useRef } from 'react'
 import { Hex } from '@/domain/shared/eth'
 import { TabName, TabResource } from '@/features/tab-config'
 import { Listing } from '@/domain/listing'
+import { Sale } from '@/domain/sale'
 
 // rules per tab for marking a domain item as "mine"
 export function useMine(tab: TabName, account: Hex | undefined, ids: bigint[]) {
-  // normalize tokenIds
-  const ownedIdsRef = useRef<string[]>([])
-
+  const ownedIdsRef = useRef<bigint[]>(ids)
   useEffect(() => {
-    ownedIdsRef.current = ids.map(id => id.toString())
+    ownedIdsRef.current = ids
   }, [ids])
 
   // my tokens
   const isMyToken = useCallback(
     (item: TabResource[TabName]) => {
       if (!account) return false
-      return ids.includes(item.tokenId)
+      return ownedIdsRef.current.includes(item.tokenId)
     },
-    [account, ids]
+    [account, ownedIdsRef]
   )
 
   function isListing(item: TabResource[TabName]): item is Listing {
@@ -37,14 +36,30 @@ export function useMine(tab: TabName, account: Hex | undefined, ids: bigint[]) {
     [tab, account]
   )
 
+  const isMine = useCallback(
+    (item: TabResource[TabName]) => {
+      switch (tab) {
+        case 'feed':
+          return (item as Listing).actor === account
+        case 'explore':
+          return ownedIdsRef.current.includes(item.tokenId)
+        case 'sales':
+          return (item as Sale).seller === account || (item as Sale).buyer === account
+      }
+    },
+    [account, tab]
+  )
+
   const buildMineQuery = useCallback(
     (filters: Record<string, string[]>) => {
       if (!account) return filters
 
+      const ownedIds = ownedIdsRef.current.map(id => id.toString())
+
       const mineFilters: Record<TabName, object> = {
-        feed: { ['or.tokenId']: ownedIdsRef.current, ['or.side']: ['0'] }, // is of type ask or owned by user
+        feed: { ['or.tokenId']: ownedIds, ['or.side']: ['0'] }, // is of type ask or owned by user
         sales: { ['or.buyer']: [account], ['or.seller']: [account] }, // is buyer or seller
-        explore: { tokenId: ownedIdsRef.current }, // is owned by user
+        explore: { tokenId: ownedIds }, // is owned by user
       }
 
       return {
@@ -52,8 +67,8 @@ export function useMine(tab: TabName, account: Hex | undefined, ids: bigint[]) {
         ...mineFilters[tab],
       }
     },
-    [account, tab]
+    [account, tab, ownedIdsRef]
   )
 
-  return { buildMineQuery, isMyToken, isMyListing }
+  return { buildMineQuery, isMyToken, isMyListing, isMine }
 }

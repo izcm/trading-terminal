@@ -5,7 +5,7 @@ import { useTokenURI } from '@/lib/blockchain'
 
 import { NFT_LOADING_IMAGE } from '@/domain/constants/placeholders'
 
-import { tsSuperShort } from '@/domain/shared/utils/time'
+import { tsSuperShort } from '@/lib/utils/time'
 import type { Activity } from '@/domain/shared/activity'
 import { mapTokenUriToNFT, type NFT } from '@/domain/nft'
 

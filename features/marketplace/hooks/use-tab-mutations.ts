@@ -21,6 +21,49 @@ export function useTabMutations(setState: Dispatch<SetStateAction<TabPages>>) {
     [setState]
   )
 
+  const addItemSorted = useCallback(
+    <K extends TabName>(
+      tab: K,
+      item: TabResource[K],
+      sort?: { field?: string; dir?: 'asc' | 'desc' }
+    ) => {
+      const field = sort?.field ?? 'createdAt'
+      const dir = sort?.dir ?? 'desc'
+
+      function isSortableKey(
+        item: TabResource[K],
+        key: string
+      ): key is keyof TabResource[K] & string {
+        return key in item
+      }
+
+      if (!isSortableKey(item, field)) return // ignore if user inputs invalid sort config in searchbar
+
+      const sortField = field // capture narrowed key
+
+      setState(prev => {
+        const items = prev[tab].items
+
+        const idx = items.findIndex(i =>
+          dir === 'asc' ? i[sortField] > item[sortField] : i[sortField] < item[sortField]
+        )
+
+        console.log(idx)
+
+        // idx === -1 => the item belongs at end
+        const next =
+          idx === -1 ? [...items, item] : [...items.slice(0, idx), item, ...items.slice(idx)]
+
+        return {
+          ...prev,
+          [tab]: { ...prev[tab], items: next },
+        }
+      })
+    },
+
+    [setState]
+  )
+
   const updateItem = useCallback(
     <K extends TabName>(tab: K, id: string, updater: (item: TabResource[K]) => TabResource[K]) => {
       setState(prev => ({
@@ -61,5 +104,5 @@ export function useTabMutations(setState: Dispatch<SetStateAction<TabPages>>) {
     [setState]
   )
 
-  return { addItem, updateItem, mergePage, replacePage }
+  return { addItem, addItemSorted, updateItem, mergePage, replacePage }
 }

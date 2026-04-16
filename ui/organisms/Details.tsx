@@ -1,5 +1,5 @@
 import type { Hex } from '@/domain/shared/eth'
-import { truncateHex } from '@/domain/shared/utils/fmt/hex'
+import { truncateHex } from '@/lib/utils/hex'
 
 import { Copyable } from '../atoms'
 import { DetailFields, type DetailField } from '../molecules'

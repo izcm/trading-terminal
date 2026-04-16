@@ -21,42 +21,49 @@ export function useMarketplaceData(
   mineFlag: Record<TabName, boolean>,
   chainId: number,
   collection: Hex,
+  isMine: (item: TabResource[TabName]) => boolean,
   buildMineQuery: (filters: Record<string, string[]>) => Record<string, string[]>,
   onPageReplaced?: <K extends TabName>(tab: K, page: Page<TabResource[K]>) => void
 ) {
   const [state, setState] = useState<TabPages>(initialPages)
-  const { add: addFresh, has: isFresh } = useFresh(tab)
-  const { mergePage, replacePage, addItem, updateItem } = useTabMutations(setState)
+  const { add: addFresh, isFresh: isFresh } = useFresh(tab)
+  const { mergePage, replacePage, addItemSorted, updateItem } = useTabMutations(setState)
 
-  const addItemAndMarkFresh = useCallback(
-    <K extends TabName>(tab: K, item: TabResource[K]) => {
-      addItem(tab, item)
-      addFresh(tab, item.id)
-    },
-    [addItem, addFresh]
-  )
+  // --- query ---
+  const query = useMemo(() => {
+    const base: Record<string, string[]> = {
+      ...filters[tab],
+      chainId: [chainId.toString()],
+      collection: [collection],
+    }
+
+    return mineFlag[tab] ? buildMineQuery(base) : base
+  }, [tab, filters, chainId, collection, mineFlag, buildMineQuery])
 
   // --- ws ---
   useEffect(() => {
     connectWs()
   }, [])
 
+  const addItemAndMarkFresh = useCallback(
+    <K extends TabName>(tab: K, item: TabResource[K]) => {
+      // if mine flag is active and fresh is not mine => don't do anything
+      if (!isMine(item) && mineFlag[tab]) return
+
+      const tabFilters = filters[tab]
+      addItemSorted(tab, item, {
+        field: tabFilters.sortField?.[0] ?? 'createdAt',
+        dir: (tabFilters.sortDir?.[0] ?? 'desc') as 'asc' | 'desc',
+      })
+      addFresh(tab, item.id)
+    },
+    [addItemSorted, addFresh, isMine, mineFlag, filters]
+  )
+
   useWsFeed({ addItem: addItemAndMarkFresh, updateItem })
   useWsSales({ addItem: addItemAndMarkFresh, updateItem })
 
-  // --- query ---
-  const query = useMemo(() => {
-    const base = filters[tab]
-
-    const activeFilters = {
-      ...base,
-      chainId: [chainId.toString()],
-      collection: [collection],
-    } satisfies Record<string, string[]>
-
-    return mineFlag[tab] ? buildMineQuery(activeFilters) : activeFilters
-  }, [tab, filters, mineFlag, chainId, collection, buildMineQuery])
-
+  // --- pagination ---
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false)
 
   const loadMore = useCallback(async () => {
@@ -78,7 +85,7 @@ export function useMarketplaceData(
     setIsLoadingMore(false)
   }, [state, tab, isLoadingMore, query, mergePage])
 
-  //   const tabRef = useRef(tab)
+  // --- page fetch trigger ---
 
   useEffect(() => {
     const run = async () => {
