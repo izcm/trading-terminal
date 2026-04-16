@@ -121,13 +121,11 @@ export function MarketplaceView(initial: InitialState) {
 
   // --- tab actions ---
   const { actions: tabActions, modal: actionModal, closeModal } = useTabActions()
-  const resolvedTabAction = useMainAction(
-    tab,
-    selectedItem,
-    { isMyToken, isMyListing },
-    tabActions,
-    { add: addOwnedId, remove: removeOwnedId, refetch: refetchOwnedIds }
-  )
+  const resolvedTabAction = useMainAction(tab, selectedItem, { isMine }, tabActions, {
+    add: addOwnedId,
+    remove: removeOwnedId,
+    refetch: refetchOwnedIds,
+  })
 
   // --- navigation helpers ---
   function resetFiltersAndSelected(tab: TabName) {

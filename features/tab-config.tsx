@@ -55,15 +55,16 @@ export const itemGetters: {
 
 // === CTX ===
 
-export type TabCtx<K extends TabName> = {
-  isMyToken?: (item: TabResource[K]) => boolean // all items have tokenId
-  isMyListing?: (item: Listing) => boolean
+export type TabCtx = {
+  isMine: (item: TabResource[TabName]) => boolean
+  // isMyToken?: (item: TabResource[K]) => boolean // all items have tokenId
+  // isMyListing?: (item: Listing) => boolean
 }
 
 // === ACTION CONFIG ===
 
 export type TabActions = {
-  [K in TabName]: (item: TabResource[K], ctx?: TabCtx<K>) => (() => void) | undefined
+  [K in TabName]: (item: TabResource[K], ctx?: TabCtx) => (() => void) | undefined
 }
 
 export type ResolvedAction = {
@@ -84,7 +85,7 @@ type TabUIConfig = {
       item: TabResource[K],
       disabled?: boolean,
       loading?: boolean,
-      ctx?: TabCtx<K>
+      ctx?: TabCtx
     ) => BtnProps
   }
 }
@@ -102,7 +103,7 @@ export const tabUIConfig: TabUIConfig = {
     galleryItem: l => <ActivityItem activity={activity.fromListing(l)} />,
     details: l => <ListingDetails listing={l} />,
     actionBtnProps: (l, disabled, loading, ctx) => {
-      const isCancelAction = ctx?.isMyListing?.(l) && l.status === 'active'
+      const isCancelAction = ctx?.isMine?.(l) && l.status === 'active'
 
       const content = isCancelAction
         ? { Icon: Ban, label: 'Cancel order' }
@@ -125,7 +126,7 @@ export const tabUIConfig: TabUIConfig = {
   explore: {
     galleryItem: nft => <NFTRow nft={nft} />,
     actionBtnProps: (nft, _disabled, _loading, ctx) => {
-      const isMyToken = ctx?.isMyToken?.(nft)
+      const isMyToken = ctx?.isMine?.(nft)
 
       const content = isMyToken
         ? { Icon: Tag, label: 'Sell loot' }

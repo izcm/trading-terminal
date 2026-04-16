@@ -55,14 +55,14 @@ export function useTabActions(): UseTabActionsReturn {
 
   return {
     actions: {
-      feed: (l: Listing, ctx?: TabCtx<'feed'>) => {
-        if (ctx?.isMyListing?.(l) && l.status === 'active')
+      feed: (l: Listing, ctx?: TabCtx) => {
+        if (ctx?.isMine?.(l) && l.status === 'active')
           return () => cancelOrder(BigInt(l.rawOrder.nonce), l.id)
 
         return undefined // special case
       },
-      explore: (n: NFT, ctx?: TabCtx<'explore'>) => () => {
-        const owned = ctx?.isMyToken?.(n)
+      explore: (n: NFT, ctx?: TabCtx) => () => {
+        const owned = ctx?.isMine?.(n)
 
         openCreateOrderModal(n, owned ?? false)
       },
@@ -86,7 +86,7 @@ type OwnedActions = {
 export function useMainAction<K extends TabName>(
   tab: K,
   selected: TabResource[K] | undefined,
-  ctx: TabCtx<K> | undefined,
+  ctx: TabCtx | undefined,
   actions: TabActions,
   owned: OwnedActions
 ): ResolvedAction {
@@ -109,7 +109,7 @@ export function useMainAction<K extends TabName>(
   }
 
   // if tab is feed + a listing is selected + user is not maker of selected listing
-  if (isFeed && listing && !ctx?.isMyListing?.(listing)) {
+  if (isFeed && listing && !ctx?.isMine(listing as TabResource[K])) {
     return {
       run: fillOrder.fill,
       disabled: !fillOrder.isFillable || listing.status !== 'active',
