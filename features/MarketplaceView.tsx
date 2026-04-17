@@ -82,7 +82,7 @@ export function MarketplaceView(initial: InitialState) {
     refetch: refetchOwnedIds,
   } = useOwnedTokenIds(routeCollection, account)
 
-  const { isMine, buildMineQuery } = useMine(tab, account, ownedIds)
+  const { isMine, isMyListing, buildMineQuery } = useMine(tab, account, ownedIds)
 
   // --- data ---
   const tabRef = useRef(tab)
@@ -250,7 +250,7 @@ export function MarketplaceView(initial: InitialState) {
           isLoading={isLoadingMore}
           hasMore={state[tab].cursor !== null}
           tabAction={resolvedTabAction}
-          ctx={{ isMine }}
+          ctx={{ isMine, isMyListing }}
         />
       </main>
 

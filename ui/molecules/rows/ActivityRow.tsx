@@ -27,6 +27,7 @@ function placeholderNFT(activity: Activity): NFT {
     image: NFT_LOADING_IMAGE,
     createdAtBlock: 0n,
     attributes: [],
+    createdAt: 0,
   }
 }
 

@@ -1,10 +1,10 @@
 import { act } from 'react'
-
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { renderHook, RenderHookResult } from '@testing-library/react'
 
-import { useFresh } from '../use-fresh'
 import { TabName } from '@/features/tab-config'
+
+import { useFresh } from '../use-fresh'
 
 describe('useFresh', () => {
   type HookProps = Parameters<typeof useFresh>

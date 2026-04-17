@@ -56,7 +56,7 @@ export function useTabActions(): UseTabActionsReturn {
   return {
     actions: {
       feed: (l: Listing, ctx?: TabCtx) => {
-        if (ctx?.isMine?.(l) && l.status === 'active')
+        if (ctx?.isMyListing?.(l) && l.status === 'active')
           return () => cancelOrder(BigInt(l.rawOrder.nonce), l.id)
 
         return undefined // special case

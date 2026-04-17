@@ -1,65 +1,112 @@
-import { describe, it, beforeEach, expect } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { renderHook, RenderHookResult } from '@testing-library/react'
 
+import { Hex } from '@/domain/shared/eth'
 import { TabName, TabResource } from '@/features/tab-config'
 
 import { useMine } from '../use-mine'
 
 describe('useMine', () => {
   type HookProps = Parameters<typeof useMine>
-
-  let hook: RenderHookResult<ReturnType<typeof useMine>, HookProps>
+  type FreshHook = RenderHookResult<ReturnType<typeof useMine>, HookProps>
 
   const ACCOUNT = '0xaaaa'
-  const OTHER = '0xbbbb'
-  const TOKEN_ID = 44n
+  const DIFFERENT_ACCOUNT = '0xbbbb'
+  const TOKEN_IDS = [1n, 2n, 3n]
 
-  const defaultTab: TabName = 'feed'
-  // const otherTabs: TabName[] = ['sales', 'explore']
+  const anyTab: TabName = 'feed' // for tests where tab is irrelevant
 
   describe('buildMineQuery', () => {
-    beforeEach(() => {
-      const initialProps: HookProps = [defaultTab, ACCOUNT, [TOKEN_ID]] as HookProps
-
-      hook = renderHook((props: HookProps) => useMine(...props), {
-        initialProps,
-      })
-    })
-
-    const buildMineQuery = (filters: Record<string, string[]>) =>
+    const buildMineQuery = (filters: Record<string, string[]>, hook: FreshHook) =>
       hook.result.current.buildMineQuery(filters)
 
     const baseFilters = () => ({
       status: ['active'],
     })
 
-    it.each([['feed'], ['sales'], ['explore']])('appends correct mineFilters to %s', tab => {})
-
-    it('appends correct mineFilters on tab %s', () => {})
-
     it('returns unaltered filters when account undefined', () => {
-      const noAccountHook = renderHook((props: HookProps) => useMine(...props), {
-        initialProps: [defaultTab, undefined, []] as HookProps,
-      })
+      const hook = renderHook(() => useMine(anyTab, undefined, []))
 
-      const mineQuery = noAccountHook.result.current.buildMineQuery(baseFilters())
+      const mineQuery = buildMineQuery(baseFilters(), hook)
 
       expect(mineQuery).toEqual(baseFilters())
     })
+
+    it.each([
+      ['feed', { 'or.tokenId': TOKEN_IDS.map(String), 'or.side': ['0'] }],
+      ['explore', { tokenId: TOKEN_IDS.map(String) }],
+      ['sales', { 'or.buyer': [ACCOUNT], 'or.seller': [ACCOUNT] }],
+    ] as [TabName, Record<string, string[]>][])(
+      'returns correct mineFilters for %s along with base filters',
+      (tab, expected) => {
+        const hook = renderHook(() => useMine(tab, ACCOUNT, TOKEN_IDS))
+
+        const mineQuery = buildMineQuery(baseFilters(), hook)
+
+        expect(mineQuery).toEqual({
+          ...baseFilters(),
+          ...expected,
+        })
+      }
+    )
   })
 
   describe('isMine', () => {
-    function givenResource<T extends TabName>(tab: T, mine: boolean): Partial<TabResource[T]> {
-      const r: { [K in keyof TabResource]: Partial<TabResource[K]> } = {
-        feed: { actor: mine ? ACCOUNT : OTHER, tokenId: TOKEN_ID },
-        explore: { tokenId: mine ? TOKEN_ID : TOKEN_ID + 1n },
-        sales: { seller: mine ? ACCOUNT : OTHER, buyer: OTHER },
-      }
+    const isMine = (item: TabResource[TabName], hook: FreshHook) => hook.result.current.isMine(item)
 
-      return r[tab]
+    const notMineTokenId = BigInt(Math.max(...TOKEN_IDS.map(tid => Number(tid))) + 1)
+
+    const mineVariants: { [K in TabName]: Array<Partial<TabResource[K]>> } = {
+      feed: [
+        { actor: ACCOUNT, tokenId: notMineTokenId }, // actor clause
+        { actor: DIFFERENT_ACCOUNT, tokenId: TOKEN_IDS[0] }, // owned-id clause
+      ],
+      explore: [{ tokenId: TOKEN_IDS[0] }],
+      sales: [
+        { seller: ACCOUNT, buyer: DIFFERENT_ACCOUNT }, // seller clause
+        { seller: DIFFERENT_ACCOUNT, buyer: ACCOUNT }, // buyer clause
+      ],
     }
 
-    it('returns true when item satisfies isMine rules', () => {})
-    it('returns false when item does not satisfy isMine rules')
+    it.each(['feed', 'explore', 'sales'] as TabName[])(
+      'returns true for all %s `mine` variants',
+      tab => {
+        const hook = renderHook(() => useMine(tab, ACCOUNT, TOKEN_IDS))
+        mineVariants[tab].forEach(variant =>
+          expect(isMine(variant as TabResource[TabName], hook)).toBe(true)
+        )
+      }
+    )
+
+    it.each([
+      ['feed', { actor: DIFFERENT_ACCOUNT, tokenId: notMineTokenId }],
+      ['explore', { tokenId: notMineTokenId }],
+      ['sales', { buyer: DIFFERENT_ACCOUNT, seller: DIFFERENT_ACCOUNT }],
+    ] as [TabName, Partial<TabResource[TabName]>][])(
+      'returns false when item is not a %s `mine` variant',
+      (tab, item) => {
+        const hook = renderHook(() => useMine(tab, ACCOUNT, TOKEN_IDS))
+        expect(isMine(item as TabResource[TabName], hook)).toBe(false)
+      }
+    )
+  })
+
+  describe('isMyListing', () => {
+    const isMyListing = (actor: Hex, account: Hex | undefined) => {
+      const hook = renderHook(() => useMine(anyTab, account, []))
+      return hook.result.current.isMyListing({ actor })
+    }
+
+    it('returns true when account is listing actor', () => {
+      expect(isMyListing(ACCOUNT, ACCOUNT)).toBe(true)
+    })
+
+    it('returns false when account is not listing actor', () => {
+      expect(isMyListing(DIFFERENT_ACCOUNT, ACCOUNT)).toBe(false)
+    })
+
+    it('returns false when account is undefined', () => {
+      expect(isMyListing('0xwhatever', undefined)).toBe(false)
+    })
   })
 })
