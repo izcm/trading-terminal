@@ -77,8 +77,6 @@ export function MarketplaceView(initial: InitialState) {
   const {
     ids: ownedIds,
     isFetching: loadingInventory,
-    add: addOwnedId,
-    remove: removeOwnedId,
     refetch: refetchOwnedIds,
   } = useOwnedTokenIds(routeCollection, account)
 
@@ -122,8 +120,6 @@ export function MarketplaceView(initial: InitialState) {
   // --- tab actions ---
   const { actions: tabActions, modal: actionModal, closeModal } = useTabActions()
   const resolvedTabAction = useMainAction(tab, selectedItem, { isMine }, tabActions, {
-    add: addOwnedId,
-    remove: removeOwnedId,
     refetch: refetchOwnedIds,
   })
 

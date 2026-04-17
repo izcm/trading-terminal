@@ -3,7 +3,11 @@ import { useCallback, useEffect, useState } from 'react'
 import { readOwned } from '@/lib/blockchain/erc721/erc721.read'
 import type { Hex } from '@/domain/shared/eth'
 
-export function useOwnedTokenIds(collection?: Hex, account?: Hex) {
+export function useOwnedTokenIds(
+  collection: Hex | undefined,
+  account: Hex | undefined,
+  readOwnedFn: (collection: Hex, account: Hex) => Promise<bigint[]> = readOwned // soft di
+) {
   const [ids, setIds] = useState<bigint[]>([])
   const [isFetching, setIsFetching] = useState<boolean>(false)
 
@@ -12,14 +16,14 @@ export function useOwnedTokenIds(collection?: Hex, account?: Hex) {
 
     setIsFetching(true)
 
-    const res = await readOwned(collection, account)
+    const res = await readOwnedFn(collection, account)
     setIds(prev => {
       if (prev.length === res.length && prev.every((id, i) => id === res[i])) return prev
       return res
     })
 
     setIsFetching(false)
-  }, [collection, account])
+  }, [collection, account, readOwnedFn])
 
   useEffect(() => {
     ;(async () => await fetch())()
@@ -33,6 +37,7 @@ export function useOwnedTokenIds(collection?: Hex, account?: Hex) {
     [setIds]
   )
 
+  // on token sell
   const remove = useCallback(
     (id: bigint) => {
       setIds(prev => prev.filter(owned => owned !== id))

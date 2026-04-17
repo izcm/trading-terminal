@@ -78,8 +78,6 @@ export function useTabActions(): UseTabActionsReturn {
  */
 
 type OwnedActions = {
-  add: (id: bigint) => void
-  remove: (id: bigint) => void
   refetch: () => void
 }
 
