@@ -15,8 +15,8 @@ export function useOwnedTokenIds(
     if (!account || !collection) return
 
     setIsFetching(true)
-
     const res = await readOwnedFn(collection, account)
+
     setIds(prev => {
       if (prev.length === res.length && prev.every((id, i) => id === res[i])) return prev
       return res
