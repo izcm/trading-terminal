@@ -22,10 +22,14 @@ describe('useOwnedTokenIds', () => {
     readMock?: Mock<(collection: Hex, account: Hex) => Promise<bigint[]>>
   } = {}) => renderHook(() => useOwnedTokenIds(collection, account, readMock))
 
-  it('auto fetches on mount when inputs are valid', async () => {
-    const readMock = vi.fn().mockResolvedValue([])
-    renderHookWith({ readMock })
-    await waitFor(() => expect(readMock).toHaveBeenCalled())
+  describe('mount', () => {
+    it('auto fetches on mount when inputs are valid', async () => {
+      const readMock = vi.fn().mockResolvedValue([])
+
+      renderHookWith({ readMock })
+
+      await waitFor(() => expect(readMock).toHaveBeenCalled())
+    })
   })
 
   const getHookMember = <K extends keyof HookReturns>(hook: OwnedTokenIdsHook, member: K) =>
@@ -42,8 +46,7 @@ describe('useOwnedTokenIds', () => {
       const readMock = vi.fn()
       const hook = renderHook(() => useOwnedTokenIds(collection, account, readMock))
 
-      const refetch = getRefetch(hook)
-      await refetch()
+      await getRefetch(hook)()
 
       expect(readMock).not.toHaveBeenCalled()
     })
@@ -57,8 +60,36 @@ describe('useOwnedTokenIds', () => {
       expect(getIds(hook)).toEqual(TOKEN_IDS)
     })
 
-    it('sets isFetching while fetching and resets after')
+    it('sets isFetching while fetching and resets after', async () => {
+      // readMock returns a pending promise — we grab resolve as finishFetch
+      // so we control exactly when the fetch completes
+      let finishFetch: (v: bigint[]) => void
+      const readMock = vi.fn(() => new Promise<bigint[]>(resolve => (finishFetch = resolve)))
 
-    it('calls readOwned with correct params') // optional
+      const hook = renderHookWith({ readMock })
+
+      // mount fired the fetch, promise is still pending → isFetching is true
+      expect(getHookMember(hook, 'isFetching')).toBe(true)
+
+      // finish the promise → hook resumes → setIsFetching(false)
+      // When act receives a function that returns a Promise, it waits for it.
+      // When it receives a function returning void, it doesn't wait for anything
+      // — so the state updates from the resolved Promise never flush.
+      // Adding async makes the function return a Promise (even though it resolves immediately),
+      await act(async () => finishFetch([]))
+
+      expect(getHookMember(hook, 'isFetching')).toBe(false)
+    })
+
+    it('calls readOwned with correct params', () => {
+      const readMock = vi.fn().mockResolvedValue([])
+
+      const hook = renderHookWith({ collection: '0xmyC', account: '0xmyA', readMock })
+
+      const refetch = getRefetch(hook)
+      refetch()
+
+      expect(readMock).toHaveBeenCalledWith('0xmyC', '0xmyA')
+    })
   })
 })
