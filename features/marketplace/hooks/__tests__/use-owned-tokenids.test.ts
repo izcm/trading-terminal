@@ -11,6 +11,7 @@ describe('useOwnedTokenIds', () => {
   type OwnedTokenIdsHook = RenderHookResult<HookReturns, HookProps>
 
   const TOKEN_IDS = [1n, 2n, 3n]
+  const NOT_IN_TOKEN_IDS = 4n
 
   const renderHookWith = ({
     collection = '0xabc' as Hex,
@@ -90,6 +91,49 @@ describe('useOwnedTokenIds', () => {
       refetch()
 
       expect(readMock).toHaveBeenCalledWith('0xmyC', '0xmyA')
+    })
+  })
+
+  async function renderHookAndAct(
+    tokenIds: bigint[],
+    id: bigint,
+    hookMember: 'add' | 'remove'
+  ): Promise<OwnedTokenIdsHook> {
+    const hook = renderHookWith({ readMock: vi.fn().mockResolvedValue(tokenIds) })
+    await waitFor(() => expect(getIds(hook)).toEqual(tokenIds))
+
+    await act(async () => getHookMember(hook, hookMember)(id))
+
+    return hook
+  }
+
+  describe('add', () => {
+    const renderHookAndActAdd = (tokenIds: bigint[], id: bigint) =>
+      renderHookAndAct(tokenIds, id, 'add')
+
+    it('appends a new id to the list', async () => {
+      const hook = await renderHookAndActAdd(TOKEN_IDS, NOT_IN_TOKEN_IDS)
+      expect(getIds(hook)).toEqual([...TOKEN_IDS, NOT_IN_TOKEN_IDS])
+    })
+
+    it('does not add a duplicate id', async () => {
+      const hook = await renderHookAndActAdd(TOKEN_IDS, TOKEN_IDS[0])
+      expect(getIds(hook)).toEqual(TOKEN_IDS)
+    })
+  })
+
+  describe('remove', () => {
+    const renderHookAndActRemove = (tokenIds: bigint[], id: bigint) =>
+      renderHookAndAct(tokenIds, id, 'remove')
+
+    it('removes an existing id from the list', async () => {
+      const hook = await renderHookAndActRemove(TOKEN_IDS, TOKEN_IDS[0])
+      expect(getIds(hook)).toEqual([2n, 3n])
+    })
+
+    it('is a no-op when the id is not in the list', async () => {
+      const hook = await renderHookAndActRemove(TOKEN_IDS, NOT_IN_TOKEN_IDS)
+      expect(getIds(hook)).toEqual(TOKEN_IDS)
     })
   })
 })
