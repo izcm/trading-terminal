@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Page } from '@/lib/utils/http'
 import { connectWs } from '@/lib/realtime/ws'
 
-import { useTabMutations } from '@/features/marketplace/hooks/use-tab-mutations'
+import { useTabMutations } from '../tabs/use-tab-mutations'
 import { useWsFeed, useWsSales } from '@/features/realtime/hooks/use-ws-sub'
 import { pageGetters, TabName, TabResource } from '@/features/tab-config'
 

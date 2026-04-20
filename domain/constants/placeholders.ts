@@ -20,4 +20,5 @@ export const PLACEHOLDER_NFT: NFT = {
     { trait_type: '---', value: '---' },
   ],
   createdAtBlock: 0n,
+  createdAt: 0,
 }

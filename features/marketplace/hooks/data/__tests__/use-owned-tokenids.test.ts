@@ -1,8 +1,9 @@
-import { describe, expect, it, Mock, vi } from 'vitest'
-import { useOwnedTokenIds } from '../use-owned-tokenids'
-import { renderHook, RenderHookResult, waitFor } from '@testing-library/react'
-import { Hex } from '@/domain/shared/eth'
 import { act } from 'react'
+import { describe, expect, it, Mock, vi } from 'vitest'
+import { renderHook, RenderHookResult, waitFor } from '@testing-library/react'
+
+import { Hex } from '@/domain/shared/eth'
+import { useOwnedTokenIds } from '../use-owned-tokenids'
 
 describe('useOwnedTokenIds', () => {
   type HookProps = Parameters<typeof useOwnedTokenIds>
@@ -82,13 +83,12 @@ describe('useOwnedTokenIds', () => {
       expect(getHookMember(hook, 'isFetching')).toBe(false)
     })
 
-    it('calls readOwned with correct params', () => {
+    it('calls readOwned with correct params', async () => {
       const readMock = vi.fn().mockResolvedValue([])
 
       const hook = renderHookWith({ collection: '0xmyC', account: '0xmyA', readMock })
 
-      const refetch = getRefetch(hook)
-      refetch()
+      await act(async () => getRefetch(hook)())
 
       expect(readMock).toHaveBeenCalledWith('0xmyC', '0xmyA')
     })
@@ -102,7 +102,7 @@ describe('useOwnedTokenIds', () => {
     const hook = renderHookWith({ readMock: vi.fn().mockResolvedValue(tokenIds) })
     await waitFor(() => expect(getIds(hook)).toEqual(tokenIds))
 
-    await act(async () => getHookMember(hook, hookMember)(id))
+    act(() => getHookMember(hook, hookMember)(id))
 
     return hook
   }

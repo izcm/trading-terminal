@@ -24,7 +24,7 @@ import {
   useMine,
   useOwnedTokenIds,
 } from './marketplace/hooks'
-import { useMarketplaceData } from './marketplace/hooks/use-marketplace-data'
+import { useMarketplaceData } from './marketplace/hooks/data/use-marketplace-data'
 
 // feature UI
 import { CreateOrderFlow } from './orders/ui/CreateOrderFlow'

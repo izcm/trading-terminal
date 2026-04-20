@@ -1,9 +1,9 @@
 import { Dispatch, SetStateAction, useCallback } from 'react'
 
 import { Page } from '@/lib/utils/http'
-import { TabName, TabResource } from '../../tab-config'
+import { TabName, TabResource } from '@/features/tab-config'
 
-type TabPages = {
+export type TabPages = {
   [K in TabName]: Page<TabResource[K]>
 }
 
@@ -47,8 +47,6 @@ export function useTabMutations(setState: Dispatch<SetStateAction<TabPages>>) {
         const idx = items.findIndex(i =>
           dir === 'asc' ? i[sortField] > item[sortField] : i[sortField] < item[sortField]
         )
-
-        console.log(idx)
 
         // idx === -1 => the item belongs at end
         const next =
