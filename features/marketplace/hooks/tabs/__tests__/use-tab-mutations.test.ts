@@ -90,8 +90,7 @@ describe('use-tab-mutations', () => {
         withState: { ...populatedFeed, ...populatedSales, ...populatedExplore },
       })
 
-      expect(getState().explore).toEqual(populatedExplore.explore)
-      expect(getState().sales).toEqual(populatedSales.sales)
+      expect(getState()).toMatchObject({ ...populatedSales, ...populatedExplore })
     })
   })
 
@@ -104,6 +103,47 @@ describe('use-tab-mutations', () => {
   })
 
   describe('updateItem', () => {
-    it('')
+    const updatedItem = { id: '2', title: 'updated' } as unknown as TabResource['feed']
+
+    it('applies updater to the matching item', () => {
+      const getState = renderHookAndAct({
+        run: m => m.updateItem('feed', '2', () => updatedItem),
+        withState: populatedFeed,
+      })
+
+      expect(getState().feed.items.find(i => i.id === '2')).toBe(updatedItem)
+    })
+
+    it('leaves non-matching items unchanged', () => {
+      const getState = renderHookAndAct({
+        run: m => m.updateItem('feed', '2', () => updatedItem),
+        withState: populatedFeed,
+      })
+
+      const nonMatchingBefore = populatedFeed.feed.items.filter(item => item.id !== '2')
+      const nonMatchingAfter = getState().feed.items.filter(item => item.id !== '2')
+
+      expect(nonMatchingAfter).toEqual(nonMatchingBefore)
+    })
+
+    it('does nothing when id is not found', () => {
+      const getState = renderHookAndAct({
+        run: m => m.updateItem('feed', 'nonexistent', () => updatedItem),
+        withState: populatedFeed,
+      })
+
+      expect(getState().feed.items).toEqual(populatedFeed.feed.items)
+    })
+
+    it('does not affect other tabs', () => {
+      const getState = renderHookAndAct({
+        run: m => m.updateItem('feed', '2', () => updatedItem),
+        withState: { ...populatedFeed, ...populatedSales, ...populatedExplore },
+      })
+
+      expect(getState()).toMatchObject({ ...populatedSales, ...populatedExplore })
+    })
   })
+
+  describe('mergePage', () => {})
 })
