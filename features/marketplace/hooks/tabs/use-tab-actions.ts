@@ -20,6 +20,7 @@ type UseTabActionsReturn = {
   modal: ModalState
   closeModal: () => void
 }
+
 export function useTabActions(): UseTabActionsReturn {
   const [modal, setModal] = useState<ModalState>(null)
 
@@ -65,4 +66,3 @@ export function useTabActions(): UseTabActionsReturn {
     closeModal: () => setModal(null),
   }
 }
-
