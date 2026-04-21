@@ -96,7 +96,7 @@ describe('use-tab-mutations', () => {
 
   describe('addItemSorted', () => {
     const itemsAsc = [{ createdAt: 1 }, { createdAt: 3 }, { createdAt: 5 }] as TabResource['feed'][]
-    const itemsDesc = itemsAsc.sort((a, b) => b.createdAt - a.createdAt)
+    const itemsDesc = [...itemsAsc].sort((a, b) => b.createdAt - a.createdAt)
 
     const addedItem = { createdAt: 2 } as TabResource['feed']
 
@@ -115,20 +115,23 @@ describe('use-tab-mutations', () => {
 
     it('inserts item in correct position (createdAt, asc)', () => {
       const getState = renderHookAndAct({
-        run: m => m.addItemSorted('feed', addedItem),
+        run: m => m.addItemSorted('feed', addedItem, { dir: 'asc' }),
         withState: sortedFeed('asc'),
       })
 
-      expect(getState().feed.items[2]).toEqual(addedItem) // 1, 2, 3, 5
+      expect(getState().feed.items[1]).toEqual(addedItem) // 1, 2, 3, 5
     })
 
     it('inserts item in correct position non-defaults (start, asc)', () => {
+      const items = [{ start: 1 }, { start: 3 }, { start: 5 }] as TabResource['feed'][]
+      const added = { start: 2 } as TabResource['feed']
+
       const getState = renderHookAndAct({
-        run: m => m.addItemSorted('feed', addedItem),
-        withState: sortedFeed('asc'),
+        run: m => m.addItemSorted('feed', added, { field: 'start', dir: 'asc' }),
+        withState: { feed: { items, cursor: null } },
       })
 
-      expect(getState().feed.items[2]).toEqual(addedItem) // 1, 2, 3, 5
+      expect(getState().feed.items[1]).toEqual(added) // 1, 2, 3, 5
     })
 
     it.each([
@@ -147,15 +150,6 @@ describe('use-tab-mutations', () => {
       expect(getState().feed.items[sortedFeed(dir as 'asc' | 'desc').feed.items.length]).toEqual(
         item
       )
-    })
-
-    it('appends item when it belongs at the end', () => {
-      const getState = renderHookAndAct({
-        run: m => m.addItemSorted('feed', addedItem),
-        withState: sortedFeed('asc'),
-      })
-
-      expect(getState().feed.items[2]).toEqual(addedItem) // 1, 2, 3, 5
     })
 
     it('does nothing if sort field is invalid', () => {
