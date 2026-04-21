@@ -28,7 +28,7 @@ describe('use-tab-mutations', () => {
     })
 
     const { result } = renderHook(() => useTabMutations(setState))
-    return { result, getState: () => state }
+    return { result, getState: () => state, setState }
   }
 
   function renderHookAndAct({
@@ -46,25 +46,25 @@ describe('use-tab-mutations', () => {
   }
 
   const populatedFeed = {
-    feed: { items: [{ id: '1' }, { id: '2' }, { id: '3' }] as TabResource['feed'][], cursor: null },
+    feed: { items: [{ id: 'a' }, { id: 'b' }, { id: 'c' }] as TabResource['feed'][], cursor: null },
   }
 
   const populatedSales = {
     sales: {
-      items: [{ id: '4' }, { id: '5' }, { id: '6' }] as TabResource['sales'][],
+      items: [{ id: 'd' }, { id: 'e' }, { id: 'f' }] as TabResource['sales'][],
       cursor: null,
     },
   }
 
   const populatedExplore = {
     explore: {
-      items: [{ id: '7' }, { id: '8' }, { id: '9' }] as TabResource['explore'][],
+      items: [{ id: 'g' }, { id: 'h' }, { id: 'j' }] as TabResource['explore'][],
       cursor: null,
     },
   }
 
   describe('addItem', () => {
-    const addedItem = { id: '999' } as TabResource['feed']
+    const addedItem = { id: 'aaa' } as TabResource['feed']
 
     it('prepends new item to tab items', () => {
       const getState = renderHookAndAct({
@@ -95,33 +95,99 @@ describe('use-tab-mutations', () => {
   })
 
   describe('addItemSorted', () => {
-    it('inserts item in correct position (desc default)')
-    it('inserts item in correct position (asc)')
-    it('appends item when it belongs at the end')
-    it('does nothing if sort field is invalid')
-    it('does not affect other tabs')
+    const itemsAsc = [{ createdAt: 1 }, { createdAt: 3 }, { createdAt: 5 }] as TabResource['feed'][]
+    const itemsDesc = itemsAsc.sort((a, b) => b.createdAt - a.createdAt)
+
+    const addedItem = { createdAt: 2 } as TabResource['feed']
+
+    const sortedFeed = (dir: 'asc' | 'desc' = 'desc') => ({
+      feed: { items: dir === 'asc' ? itemsAsc : itemsDesc, cursor: null },
+    })
+
+    it('inserts item in correct position with default sort (createdAt, desc)', () => {
+      const getState = renderHookAndAct({
+        run: m => m.addItemSorted('feed', addedItem),
+        withState: sortedFeed('desc'),
+      })
+
+      expect(getState().feed.items[2]).toEqual(addedItem) // 5, 3, 2, 1
+    })
+
+    it('inserts item in correct position (createdAt, asc)', () => {
+      const getState = renderHookAndAct({
+        run: m => m.addItemSorted('feed', addedItem),
+        withState: sortedFeed('asc'),
+      })
+
+      expect(getState().feed.items[2]).toEqual(addedItem) // 1, 2, 3, 5
+    })
+
+    it('inserts item in correct position non-defaults (start, asc)', () => {
+      const getState = renderHookAndAct({
+        run: m => m.addItemSorted('feed', addedItem),
+        withState: sortedFeed('asc'),
+      })
+
+      expect(getState().feed.items[2]).toEqual(addedItem) // 1, 2, 3, 5
+    })
+
+    it.each([
+      ['asc', { createdAt: 999 }],
+      ['desc', { createdAt: 0 }],
+    ])('appends item when it belongs at the end (%s)', (dir, item) => {
+      const getState = renderHookAndAct({
+        run: m =>
+          m.addItemSorted('feed', item as unknown as TabResource['feed'], {
+            dir: dir as 'asc' | 'desc',
+          }),
+        withState: sortedFeed(dir as 'asc' | 'desc'),
+      })
+
+      console.log(getState().feed.items)
+      expect(getState().feed.items[sortedFeed(dir as 'asc' | 'desc').feed.items.length]).toEqual(
+        item
+      )
+    })
+
+    it('appends item when it belongs at the end', () => {
+      const getState = renderHookAndAct({
+        run: m => m.addItemSorted('feed', addedItem),
+        withState: sortedFeed('asc'),
+      })
+
+      expect(getState().feed.items[2]).toEqual(addedItem) // 1, 2, 3, 5
+    })
+
+    it('does nothing if sort field is invalid', () => {
+      const { result, setState } = renderHookWith(sortedFeed())
+
+      act(() => result.current.addItemSorted('feed', addedItem, { field: 'invalid' }))
+
+      expect(setState).not.toHaveBeenCalled()
+    })
   })
 
   describe('updateItem', () => {
-    const updatedItem = { id: '2', title: 'updated' } as unknown as TabResource['feed']
+    const updatedItem = { id: 'b', title: 'updated' } as unknown as TabResource['feed']
+    const updatedId = updatedItem.id
 
     it('applies updater to the matching item', () => {
       const getState = renderHookAndAct({
-        run: m => m.updateItem('feed', '2', () => updatedItem),
+        run: m => m.updateItem('feed', updatedId, () => updatedItem),
         withState: populatedFeed,
       })
 
-      expect(getState().feed.items.find(i => i.id === '2')).toBe(updatedItem)
+      expect(getState().feed.items.find(i => i.id === updatedId)).toBe(updatedItem)
     })
 
     it('leaves non-matching items unchanged', () => {
       const getState = renderHookAndAct({
-        run: m => m.updateItem('feed', '2', () => updatedItem),
+        run: m => m.updateItem('feed', updatedId, () => updatedItem),
         withState: populatedFeed,
       })
 
-      const nonMatchingBefore = populatedFeed.feed.items.filter(item => item.id !== '2')
-      const nonMatchingAfter = getState().feed.items.filter(item => item.id !== '2')
+      const nonMatchingBefore = populatedFeed.feed.items.filter(item => item.id !== updatedId)
+      const nonMatchingAfter = getState().feed.items.filter(item => item.id !== updatedId)
 
       expect(nonMatchingAfter).toEqual(nonMatchingBefore)
     })
@@ -137,7 +203,7 @@ describe('use-tab-mutations', () => {
 
     it('does not affect other tabs', () => {
       const getState = renderHookAndAct({
-        run: m => m.updateItem('feed', '2', () => updatedItem),
+        run: m => m.updateItem('feed', updatedId, () => updatedItem),
         withState: { ...populatedFeed, ...populatedSales, ...populatedExplore },
       })
 
@@ -146,7 +212,7 @@ describe('use-tab-mutations', () => {
   })
 
   describe('mergePage', () => {
-    const newItems = [{ id: 'm_1' }, { id: 'm_2' }, { id: 'm_3' }] as TabResource['feed'][]
+    const newItems = [{ id: 'm_a' }, { id: 'm_b' }, { id: 'm_c' }] as TabResource['feed'][]
     const newCursor = 'cursor_123'
 
     it('merges new items into existing page', () => {
@@ -206,7 +272,7 @@ describe('use-tab-mutations', () => {
 
   describe('replacePage', () => {
     const newPage = {
-      items: [{ id: 'r_1' }, { id: 'r_2' }, { id: 'r_3' }] as TabResource['feed'][],
+      items: [{ id: 'r_a' }, { id: 'r_b' }, { id: 'r_c' }] as TabResource['feed'][],
       cursor: 'cursor_123',
     }
 
