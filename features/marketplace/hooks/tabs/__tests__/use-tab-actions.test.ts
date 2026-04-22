@@ -1,16 +1,15 @@
 import { act } from 'react'
 
 import { vi, describe, it, expect, beforeEach } from 'vitest'
-import { renderHook, RenderHookResult } from '@testing-library/react'
+import { renderHook } from '@testing-library/react'
 
-import { Listing } from '@/domain/listing'
-import { Sale } from '@/domain/sale'
-import { NFT } from '@/domain/nft'
+import type { Sale } from '@/domain/sale'
+import type { NFT } from '@/domain/nft'
 
-import { TabCtx } from '@/features/tab-config'
 import { OrderSide } from '@/protocol/eip712'
 
 import { useTabActions } from '../use-tab-actions'
+import { fakeListing, fakeCtx } from './fakes'
 
 const { cancelOrderMock } = vi.hoisted(() => ({
   cancelOrderMock: vi.fn(),
@@ -21,9 +20,6 @@ vi.mock('@/features/orders/hooks/use-cancel-order', () => {
 })
 
 describe('useTabActions', () => {
-  type HookReturns = ReturnType<typeof useTabActions>
-  type TabActionsHook = RenderHookResult<HookReturns, void>
-
   beforeEach(() => {
     vi.clearAllMocks()
   })
@@ -42,21 +38,7 @@ describe('useTabActions', () => {
   }
 
   describe('actions', () => {
-    const fakeCtx = (overrides: Partial<TabCtx> = {}): TabCtx => ({
-      isMyListing: () => false,
-      isMine: () => false,
-      ...overrides,
-    })
-
     describe('feed', () => {
-      const fakeListing = (overrides: Partial<Listing> = {}): Listing =>
-        ({
-          id: '123',
-          status: 'active',
-          rawOrder: { nonce: 1 },
-          ...overrides,
-        }) as Listing
-
       it('returns cancel function for my active listing', () => {
         const { actions } = setup()
 

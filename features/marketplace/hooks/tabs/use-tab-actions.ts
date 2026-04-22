@@ -21,6 +21,18 @@ type UseTabActionsReturn = {
   closeModal: () => void
 }
 
+/**
+ * Provides the default action for each tab and the modal state it may trigger.
+ *
+ * Tab action logic:
+ * - `feed`    — cancels an active listing the user owns; returns `undefined` otherwise
+ *               (the buy/fill-order path is the special case handled in `useMainAction`)
+ * - `explore` — opens the create-order modal (ASK if user owns the NFT, BID otherwise)
+ * - `sales`   — opens the sale receipt modal
+ *
+ * @returns `actions` map, current `modal` state, and `closeModal` callback
+ */
+
 export function useTabActions(): UseTabActionsReturn {
   const [modal, setModal] = useState<ModalState>(null)
 

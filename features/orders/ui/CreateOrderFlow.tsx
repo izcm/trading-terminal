@@ -18,7 +18,7 @@ type Props = {
 
 export function CreateOrderFlow({ collection, tokenId, side, onOrderCreated }: Props) {
   const { account } = useWallet()
-  const { create } = useCreateOrder(account)
+  const { create } = useCreateOrder()
 
   async function wrapAndSign(input: FormInput) {
     if (!account) return

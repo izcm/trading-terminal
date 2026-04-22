@@ -20,7 +20,7 @@ type Props<K extends TabName> = {
   hasMore?: boolean
 
   // ctx
-  ctx?: TabCtx<K>
+  ctx?: TabCtx
   isFresh?: (item: TabResource[K]) => boolean
 }
 
@@ -57,9 +57,7 @@ export function TabContainer<K extends TabName>({
     }
   }, [focusGalleryRef])
 
-  const btnProps = selected
-    ? ui.actionBtnProps?.(selected, tabAction.disabled, tabAction.loading, ctx)
-    : undefined
+  const btnProps = selected ? ui.actionBtnProps?.(selected, tabAction.disabled, ctx) : undefined
 
   return (
     <div className="flex-1 flex min-h-0 fade-in">

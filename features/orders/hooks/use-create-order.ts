@@ -1,19 +1,14 @@
 import { useCallback } from 'react'
 import { useSignTypedData } from 'wagmi'
 
-import { Hex } from '@/domain/shared/eth'
 import { dmrktDomain, eip712Types, OrderCore, toOrder712 } from '@/protocol/eip712'
 import { postDmrktOrder } from '@/lib/dmrkt-indexer/actions/dmrkt.post'
 
-export function useCreateOrder(user?: Hex) {
+export function useCreateOrder() {
   const { signTypedDataAsync } = useSignTypedData()
-
-  const canCreate = !!user
 
   const create = useCallback(
     async (order: OrderCore) => {
-      if (!user) throw new Error('no wallet')
-
       const order712 = toOrder712(order)
 
       const sig = await signTypedDataAsync({
@@ -31,8 +26,8 @@ export function useCreateOrder(user?: Hex) {
 
       return res.data.id as string
     },
-    [signTypedDataAsync, user]
+    [signTypedDataAsync]
   )
 
-  return { create, canCreate }
+  return { create }
 }
