@@ -32,12 +32,12 @@ export function useMainAction<K extends TabName>(
   selected: TabResource[K] | undefined,
   ctx: TabCtx | undefined,
   actions: TabActions,
-  owned: OwnedActions
+  owned?: OwnedActions
 ): ResolvedAction {
   const isFeed = tab === 'feed'
   const listing = isFeed ? (selected as TabResource['feed']) : undefined
 
-  const fillOrder = useFillOrder(listing?.rawOrder, listing?.id, owned.refetch)
+  const fillOrder = useFillOrder(listing?.rawOrder, listing?.id, owned?.refetch)
 
   if (!selected) {
     return { run: undefined, disabled: true, loading: false }

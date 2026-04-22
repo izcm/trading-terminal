@@ -1,48 +1,32 @@
-import { vi, describe, it } from 'vitest'
-import { useMainAction } from '../use-main-action'
-import { TabActions, TabCtx, TabName, TabResource } from '@/features/tab-config'
+import { vi, describe, it, expect, beforeEach } from 'vitest'
 import { renderHook } from '@testing-library/react'
 
-// DESCRIBE: NON ACTIONABLE PATHS
+import { TabActions, TabCtx, TabName, TabResource } from '@/features/tab-config'
 
-// empty action def: { run: undefined, disabled: true, loading: false }
+import { useMainAction } from '../use-main-action'
+import { fakeListing } from './fakes'
 
-// returns empty action if selected is undefined
-
-// returns empty action when useFillOrder says account is undefined
-
-// returns empty action when tab is feed and selected is inactive
-
-// ------------------------------------------------------------------
-
-// DESCRIBE: ORDER FILL ACTIONS
-
-//
-
-const { fillMock } = vi.hoisted(() => ({
-  fillMock: vi.fn(),
+const { useFillOrder } = vi.hoisted(() => ({
+  useFillOrder: { fill: vi.fn(), hasAccount: true, isFillable: true, isChecking: false },
 }))
 
 vi.mock('@/features/trade/hooks/use-fill-order', () => {
-  return { useFillOrder: () => ({ fill: fillMock }) }
+  return { useFillOrder: () => useFillOrder }
 })
 
 describe('useMainAction', () => {
-  type HookProps = Parameters<typeof useMainAction>
-  type HookReturns = ReturnType<typeof useMainAction>
-
-  const makeTabActions = (): TabActions => ({
-    feed: () => vi.fn(),
-    sales: () => vi.fn(),
-    explore: () => vi.fn(),
-  })
+  const stubActions: TabActions = {
+    feed: () => undefined,
+    sales: () => undefined,
+    explore: () => undefined,
+  }
 
   const renderHookWith = ({
     tab = 'feed' as TabName,
     selected = undefined,
     ctx = undefined,
-    actions = makeTabActions(),
-    owned = { refetch: vi.fn() },
+    actions = stubActions,
+    owned = undefined,
   }: {
     tab?: TabName
     selected?: TabResource[TabName]
@@ -51,6 +35,13 @@ describe('useMainAction', () => {
     owned?: { refetch: () => void }
   } = {}) => renderHook(() => useMainAction(tab, selected, ctx, actions, owned)).result.current
 
+  beforeEach(() => {
+    useFillOrder.hasAccount = true
+    useFillOrder.isFillable = true
+    useFillOrder.isChecking = false
+    vi.clearAllMocks()
+  })
+
   describe('when prerequisites are not met', () => {
     const NOOP_ACTION = {
       run: undefined,
@@ -58,14 +49,28 @@ describe('useMainAction', () => {
       loading: false,
     }
 
-    it('returns disabled when no selected item')
+    it('returns disabled when no selected item', () => {
+      const action = renderHookWith() // default selected is undefined
 
-    it('returns disabled when user has no account')
+      expect(action).toEqual(NOOP_ACTION)
+    })
 
-    it('returns disabled when listing is not active')
+    it('returns disabled when no wallet / account', () => {
+      useFillOrder.hasAccount = false
+
+      const action = renderHookWith({ selected: fakeListing({ status: 'active' }) })
+
+      expect(action).toEqual(NOOP_ACTION)
+    })
+
+    it('returns disabled when listing is not active', () => {
+      const action = renderHookWith({ selected: fakeListing({ status: 'cancelled' }) })
+
+      expect(action).toEqual(NOOP_ACTION)
+    })
   })
 
-  it('uses fillOrder when on feed and listing is not mine')
+  it('uses fillOrder when on feed and listing is not mine', () => {})
 
   it('disables fillOrder when not fillable or inactive')
 
