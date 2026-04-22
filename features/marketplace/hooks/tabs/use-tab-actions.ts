@@ -26,21 +26,9 @@ export function useTabActions(): UseTabActionsReturn {
 
   const { cancelOrder } = useCancelOrder()
 
-  const openCreateOrderModal = (n: NFT, owned: boolean) => {
-    let side
-
-    const props = {
-      collection: n.collection,
-      tokenId: n.tokenId,
-    }
-
-    if (owned) {
-      side = OrderSide.ASK
-    } else {
-      side = OrderSide.BID
-    }
-
-    setModal({ type: 'createOrder', data: { ...props, side } })
+  const openCreateOrderModal = (collection: Hex, tokenId: bigint, owned: boolean) => {
+    const side = owned ? OrderSide.ASK : OrderSide.BID
+    setModal({ type: 'createOrder', data: { collection, tokenId, side } })
   }
 
   const openSalesReceipt = (s: Sale) => {
@@ -58,7 +46,7 @@ export function useTabActions(): UseTabActionsReturn {
       explore: (n: NFT, ctx?: TabCtx) => () => {
         const owned = ctx?.isMine?.(n)
 
-        openCreateOrderModal(n, owned ?? false)
+        openCreateOrderModal(n.collection, n.tokenId, owned ?? false)
       },
       sales: (s: Sale) => () => openSalesReceipt(s),
     },

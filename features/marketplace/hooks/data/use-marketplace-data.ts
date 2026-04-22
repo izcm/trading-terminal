@@ -1,14 +1,15 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { Page } from '@/lib/utils/http'
+import type { Hex } from '@/domain/shared/eth'
+
+import type { Page } from '@/lib/utils/http'
 import { connectWs } from '@/lib/realtime/ws'
 
-import { useTabMutations } from '../tabs/use-tab-mutations'
-import { useWsFeed, useWsSales } from '@/features/realtime/hooks/use-ws-sub'
 import { pageGetters, TabName, TabResource } from '@/features/tab-config'
+import { useWsFeed, useWsSales } from '@/features/realtime/hooks/use-ws-sub'
 
 import { useFresh } from './use-fresh'
-import { Hex } from '@/domain/shared/eth'
+import { useTabMutations } from '../tabs/use-tab-mutations'
 
 type TabPages = {
   [K in TabName]: Page<TabResource[K]>

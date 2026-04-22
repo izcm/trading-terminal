@@ -1,4 +1,4 @@
-import { NFT_LOADING_IMAGE, NFT_PLACEHOLDER_IMAGE } from './constants/placeholders'
+import { NFT_PLACEHOLDER_IMAGE } from './constants/placeholders'
 
 export { PLACEHOLDER_NFT } from './constants/placeholders'
 
