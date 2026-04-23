@@ -18,6 +18,8 @@ type UpdateItem = <K extends keyof TabResource>(
   updater: (item: TabResource[K]) => TabResource[K]
 ) => void
 
+// https://vitest.dev/guide/mocking/requests.html
+// ws mocks
 export function useWsFeed({ addItem, updateItem }: { addItem: AddItem; updateItem: UpdateItem }) {
   const addItemRef = useRef(addItem)
   const updateItemRef = useRef(updateItem)

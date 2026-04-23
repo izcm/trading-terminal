@@ -38,6 +38,6 @@ export async function getDmrktItem<T>({
       data: data as T,
     }
   } catch (err) {
-    return { ok: false, error: `HTTP ${err}` }
+    return { ok: false, error: `Network Error: ${err}` }
   }
 }
