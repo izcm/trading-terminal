@@ -38,7 +38,6 @@ describe('useMainAction', () => {
     fillOrder.hasAccount = true
     fillOrder.isFillable = true
     fillOrder.isChecking = false
-    vi.clearAllMocks()
   })
 
   describe('when prerequisites are not met', () => {

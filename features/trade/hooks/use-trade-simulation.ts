@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useSimulateContract } from 'wagmi' // todo: decouple
+import { useSimulateContract } from 'wagmi'
 import { Address } from 'viem'
 
 import { Order, toOrder712 } from '@/protocol/eip712'

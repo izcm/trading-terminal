@@ -1,6 +1,6 @@
 import { erc721Abi, type Address } from 'viem'
 
-import type { Page, Result } from '@/lib/utils/http'
+import type { Result } from '@/lib/utils/http'
 
 import { getPublicClient } from 'wagmi/actions'
 import { wagmiConfig } from '../wagmi'
@@ -51,43 +51,5 @@ export async function readNFT(address: Address, tokenId: bigint): Promise<Result
     }
   } catch (err) {
     return { ok: false, error: `error reading item: ${err}` }
-  }
-}
-
-// works only with sequential tokenIds (will switch this stuff out with indexing nfts soon)
-// only for dev!!
-export async function readNFTBatch(
-  address: Address,
-  limit: number,
-  cursor: number = 0 // i know this is absolutely wild (will remove asap)
-): Promise<Result<Page<NFT>>> {
-  const client = getPublicClient(wagmiConfig, { chainId: CHAIN_ID })
-
-  const calls = Array.from({ length: limit }, (_, tokenId) =>
-    client.readContract({
-      address,
-      abi: erc721Abi,
-      functionName: 'tokenURI',
-      args: [BigInt(tokenId + cursor)],
-    })
-  )
-
-  try {
-    const result = await Promise.all(calls)
-
-    const items = result.map((tokenUri, i) => {
-      const tokenId = i + cursor // i know this is absolutely wild (will remove asap)
-      return mapTokenUriToNFT(CHAIN_ID, address, BigInt(tokenId), tokenUri)
-    })
-
-    return {
-      ok: true,
-      data: {
-        items,
-        cursor: null, // todo: make this less clumsy
-      },
-    }
-  } catch (err) {
-    return { ok: false, error: `error reading items: ${err}` }
   }
 }

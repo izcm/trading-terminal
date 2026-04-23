@@ -1,6 +1,6 @@
 import { act } from 'react'
 
-import { vi, describe, it, expect, beforeEach } from 'vitest'
+import { vi, describe, it, expect } from 'vitest'
 import { renderHook } from '@testing-library/react'
 
 import type { Sale } from '@/domain/sale'
@@ -20,10 +20,6 @@ vi.mock('@/features/orders/hooks/use-cancel-order', () => {
 })
 
 describe('useTabActions', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
   const initHook = () => renderHook(() => useTabActions())
 
   const setup = () => {

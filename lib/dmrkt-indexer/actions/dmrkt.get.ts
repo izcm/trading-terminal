@@ -3,8 +3,6 @@ import { Listing } from '@/domain/listing'
 import { Sale } from '@/domain/sale'
 import { NFT } from '@/domain/nft'
 
-export const baseUrl = process.env.NEXT_PUBLIC_INDEXER_API
-
 export function getDmrktListing(id: string): Promise<Result<Listing>> {
   return getDmrktItem({ params: 'orders', id })
 }
@@ -24,7 +22,7 @@ export async function getDmrktItem<T>({
   params: string
   id: string
 }): Promise<Result<T>> {
-  const url = `${baseUrl}/api/${params}/${id}`
+  const url = `${process.env.NEXT_PUBLIC_INDEXER_API}/api/${params}/${id}`
 
   try {
     const res = await fetch(url)
