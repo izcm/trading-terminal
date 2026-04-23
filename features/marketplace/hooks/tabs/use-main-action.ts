@@ -32,7 +32,7 @@ export function useMainAction<K extends TabName>(
   selected: TabResource[K] | undefined,
   ctx: TabCtx | undefined,
   actions: TabActions,
-  owned?: OwnedActions
+  owned: OwnedActions
 ): ResolvedAction {
   const isFeed = tab === 'feed'
   const listing = isFeed ? (selected as TabResource['feed']) : undefined

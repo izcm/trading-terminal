@@ -67,7 +67,7 @@ describe('useFresh', () => {
     expect(isFresh(tab, base.id)).toBe(false)
   })
 
-  it.each(otherTabs)('marks item as pending if added to an inactive tab', tab => {
+  it.each(otherTabs)('marks item as pending if added to inactive tab: %s', tab => {
     act(() => add(tab, base.id))
     expect(isPending(tab, base.id)).toBe(true)
   })

@@ -9,7 +9,7 @@ import type { NFT } from '@/domain/nft'
 import { OrderSide } from '@/protocol/eip712'
 
 import { useTabActions } from '../use-tab-actions'
-import { fakeListing, fakeCtx } from './fakes'
+import { fakeListing, fakeCtx } from '../../../../../lib/utils/fakes'
 
 const { cancelOrderMock } = vi.hoisted(() => ({
   cancelOrderMock: vi.fn(),
