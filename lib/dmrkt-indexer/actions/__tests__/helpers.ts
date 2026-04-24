@@ -1,36 +1,60 @@
-import { it, expect } from 'vitest'
+import { it, expect, vi } from 'vitest'
 
 import { Result } from '@/lib/utils/http'
 
-export function testResponseHandling<TInput>(
-  fetchWith: (args?: {
+export function fetchWith<TArgs extends unknown[], TResult>(
+  fn: (...args: TArgs) => Promise<TResult>,
+  {
+    fetchImpl = () => Promise.resolve({} as Response),
+    input,
+  }: {
     fetchImpl?: () => Promise<Response>
-    input?: TInput
-  }) => Promise<Result<unknown>>
+    input?: TArgs
+  } = {}
+) {
+  const mock = vi.fn(fetchImpl)
+  vi.stubGlobal('fetch', mock)
+
+  return fn(...(input ?? ([] as unknown as TArgs)))
+}
+
+export function testSuccessHandling(
+  action: (fetchImpl?: () => Promise<Response>) => Promise<Result<unknown>>
 ) {
   it('handles ok response', async () => {
     const mockResponse = { foo: 'bar' }
-
-    const data = await fetchWith({
-      fetchImpl: () => Promise.resolve({ ok: true, json: async () => mockResponse } as Response),
-    })
+    const data = await action(() =>
+      Promise.resolve({
+        ok: true,
+        json: async () => mockResponse,
+      } as Response)
+    )
 
     expect(data).toEqual({ ok: true, data: mockResponse })
   })
+}
 
+export function testErrorHandling(
+  action: (fetchImpl?: () => Promise<Response>) => Promise<Result<unknown>>
+) {
   it('handles non-ok response', async () => {
-    const data = await fetchWith({
-      fetchImpl: () => Promise.resolve({ ok: false, text: async () => 'error' } as Response),
-    })
+    const data = await action(() =>
+      Promise.resolve({ ok: false, text: async () => 'error' } as Response)
+    )
 
     expect(data).toEqual({ ok: false, error: 'error' })
   })
 
   it('handles fetch error', async () => {
-    const data = await fetchWith({
-      fetchImpl: () => Promise.reject('API DOWN'),
-    })
+    const data = await action(() => Promise.reject('API DOWN'))
 
     expect(data).toEqual({ ok: false, error: 'Network Error: API DOWN' })
   })
+}
+
+export function testResponseHandling(
+  action: (fetchImpl?: () => Promise<Response>) => Promise<Result<unknown>>
+) {
+  testSuccessHandling(action)
+  testErrorHandling(action)
 }

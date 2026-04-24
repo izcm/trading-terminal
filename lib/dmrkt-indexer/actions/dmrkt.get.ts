@@ -5,6 +5,7 @@ import { Sale } from '@/domain/sale'
 import { NFT } from '@/domain/nft'
 
 import { getBaseUrl } from '../config'
+import { getResponseError } from './logic/get-error'
 
 export function getDmrktListing(id: string): Promise<Result<Listing>> {
   return getDmrktItem('orders', id)
@@ -25,7 +26,9 @@ export async function getDmrktItem<T>(params: string, id: string): Promise<Resul
     const res = await fetch(url)
 
     if (!res.ok) {
-      return { ok: false, error: await res.text() }
+      const error = await getResponseError(res)
+
+      return { ok: false, error }
     }
 
     const data = await res.json()

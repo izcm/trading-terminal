@@ -4,38 +4,14 @@ import type { Listing } from '@/domain/listing'
 import type { NFT } from '@/domain/nft'
 import type { NFTCollection } from '@/domain/nft-collection'
 
-import { toListing, type OrderDTO } from '../types/order'
-import { toNFT, type NFTDTO } from '../types/nft'
-import { NFTCollectionDTO, toNFTCollection } from '../types/nft-collection'
-import { SettlementDTO, toSale } from '../types/settlement'
+import { toListing, type OrderDTO } from '../dtos/order'
+import { toNFT, type NFTDTO } from '../dtos/nft'
+import { NFTCollectionDTO, toNFTCollection } from '../dtos/nft-collection'
+import { SettlementDTO, toSale } from '../dtos/settlement'
 
-import { toSearchParams } from './logic/param-mapper'
 import { getBaseUrl } from '../config'
-
-function setDefault(q: URLSearchParams, key: string, value: string) {
-  if (!q.has(key)) q.set(key, value)
-}
-
-function buildQuery({
-  filters,
-  cursor,
-  includes = [],
-}: {
-  filters: Record<string, string[]>
-  cursor?: string | null
-  includes?: string[]
-}) {
-  const query = toSearchParams(filters)
-
-  if (cursor) query.append('cursor', cursor)
-
-  includes.forEach(inc => query.append('include', inc))
-
-  if (!filters.sortField) setDefault(query, 'sortField', 'createdAt')
-  if (!filters.sortDir) setDefault(query, 'sortDir', 'desc')
-
-  return query
-}
+import { buildQuery } from './logic/build-query'
+import { getResponseError } from './logic/get-error'
 
 function mapResult<TDTO, T>(res: Result<Page<TDTO>>, toDomain: (dto: TDTO) => T): Result<Page<T>> {
   if (!res.ok) return res
@@ -129,14 +105,7 @@ export async function getDmrktItems<T>({
     const res = await fetch(url)
 
     if (!res.ok) {
-      let error: string
-
-      try {
-        const json = await res.json()
-        error = json.message ?? JSON.stringify(json)
-      } catch {
-        error = await res.text()
-      }
+      const error = await getResponseError(res)
 
       return { ok: false, error }
     }
@@ -151,6 +120,6 @@ export async function getDmrktItems<T>({
       },
     }
   } catch (err) {
-    return { ok: false, error: `error getting items: ${err}` }
+    return { ok: false, error: `Network Error: ${err}` }
   }
 }

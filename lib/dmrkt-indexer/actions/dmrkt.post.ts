@@ -7,6 +7,7 @@ import type { Hex } from '@/domain/shared/eth'
 import { getBaseUrl } from '../config'
 
 import { Result } from '@/lib/utils/http'
+import { getResponseError } from './logic/get-error'
 
 export async function postDmrktOrder(
   chainId: number,
@@ -35,7 +36,9 @@ export async function postDmrktOrder(
     })
 
     if (!res.ok) {
-      return { ok: false, error: await res.text() }
+      const error = await getResponseError(res)
+
+      return { ok: false, error }
     }
 
     const data = await res.json()

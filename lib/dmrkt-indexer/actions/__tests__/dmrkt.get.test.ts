@@ -1,13 +1,13 @@
-import { describe, it, vi, expect, beforeAll, beforeEach, afterEach } from 'vitest'
+import { describe, it, vi, expect, beforeEach, afterEach } from 'vitest'
 
 import { getDmrktItem, getDmrktListing, getDmrktNFT, getDmrktSale } from '../dmrkt.get'
-import { testResponseHandling } from './helpers'
+import { fetchWith, testResponseHandling } from './helpers'
 
-describe('dmrkt getters', () => {
-  beforeAll(() => {
-    process.env.NEXT_PUBLIC_INDEXER_API = 'http://test-api'
-  })
+vi.mock('../../config', () => ({
+  getBaseUrl: () => 'http://test-api',
+}))
 
+describe('dmrkt item getters', () => {
   beforeEach(() => {
     vi.stubGlobal('fetch', vi.fn())
   })
@@ -36,18 +36,13 @@ describe('dmrkt getters', () => {
   describe('getDmrktItem', () => {
     const baseUrlParams = () => ({ params: 'params', id: 'id_123' }) // new reference on each call
 
-    function fetchWith({
-      fetchImpl = () => Promise.resolve({} as Response),
-      input = baseUrlParams(),
-    } = {}) {
-      const mock = vi.fn(fetchImpl)
-      vi.stubGlobal('fetch', mock)
-
-      return getDmrktItem(input.params, input.id)
+    const fetchItemWith = (fetchImpl?: () => Promise<Response>) => {
+      const { params, id } = baseUrlParams()
+      return fetchWith(getDmrktItem, { input: [params, id], fetchImpl })
     }
 
     it('calls fetch with correct url', async () => {
-      fetchWith()
+      fetchItemWith()
 
       expect(fetch).toHaveBeenCalledExactlyOnceWith('http://test-api/api/params/id_123')
     })
@@ -55,7 +50,7 @@ describe('dmrkt getters', () => {
     // --- RESPONSE HANDLING ---
 
     describe('response handling', () => {
-      testResponseHandling(fetchWith)
+      testResponseHandling(fetchItemWith)
     })
   })
 })

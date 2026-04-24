@@ -5,7 +5,7 @@ import { Hex } from '@/domain/shared/eth'
 import { fakeOrderCore } from '@/lib/utils/fakes'
 
 import { postDmrktOrder } from '../dmrkt.post'
-import { testResponseHandling } from './helpers'
+import { fetchWith, testResponseHandling } from './helpers'
 
 vi.mock('viem', () => ({
   parseSignature: vi.fn().mockReturnValue({ r: '0xa', s: '0xb', v: 27n }),
@@ -31,20 +31,13 @@ describe('postDmrktOrder', () => {
     ...overrides,
   })
 
-  function fetchWith({
-    fetchImpl = () => Promise.resolve({} as Response),
-    input = makeOrderInput(),
-  } = {}) {
-    const { chainId, order, signature } = input
-
-    const mock = vi.fn(fetchImpl)
-    vi.stubGlobal('fetch', mock)
-
-    return postDmrktOrder(chainId, order, signature)
-  }
-
   describe('response handling', () => {
-    testResponseHandling(fetchWith)
+    const fetchOrderWith = (fetchImpl?: () => Promise<Response>) => {
+      const { chainId, order, signature } = makeOrderInput()
+      return fetchWith(postDmrktOrder, { input: [chainId, order, signature], fetchImpl })
+    }
+
+    testResponseHandling(fetchOrderWith)
   })
 
   it('calls parseSignature with hex signature', async () => {
