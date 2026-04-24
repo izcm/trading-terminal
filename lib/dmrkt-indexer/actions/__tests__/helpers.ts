@@ -1,6 +1,7 @@
 import { it, expect, vi } from 'vitest'
 
 import { Result } from '@/lib/utils/http'
+import { describe } from 'node:test'
 
 export function fetchWith<TArgs extends unknown[], TResult>(
   fn: (...args: TArgs) => Promise<TResult>,
@@ -37,12 +38,27 @@ export function testSuccessHandling(
 export function testErrorHandling(
   action: (fetchImpl?: () => Promise<Response>) => Promise<Result<unknown>>
 ) {
-  it('handles non-ok response', async () => {
-    const data = await action(() =>
-      Promise.resolve({ ok: false, text: async () => 'error' } as Response)
-    )
+  describe('non-ok response', () => {
+    it('sets error to json message when defined', async () => {
+      const data = await action(() =>
+        Promise.resolve({
+          ok: false,
+          json: async () => ({
+            message: 'json error',
+          }),
+        } as Response)
+      )
 
-    expect(data).toEqual({ ok: false, error: 'error' })
+      expect(data).toEqual({ ok: false, error: 'json error' })
+    })
+
+    it('sets error to response text when json message undefined', async () => {
+      const data = await action(() =>
+        Promise.resolve({ ok: false, text: async () => 'error' } as Response)
+      )
+
+      expect(data).toEqual({ ok: false, error: 'error' })
+    })
   })
 
   it('handles fetch error', async () => {

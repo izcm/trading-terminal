@@ -72,6 +72,7 @@ export async function getDmrktListings({
     params: 'orders',
     query,
   })
+
   return mapResult(res, toListing)
 }
 
@@ -83,11 +84,11 @@ export async function getDmrktSales({
   filters?: Record<string, string[]>
   cursor?: string | null
 } = {}) {
-  const query = buildQuery({ filters, cursor, includes: ['nftCollection', 'order'] })
   const res = await getDmrktItems<SettlementDTO>({
     params: 'settlements',
-    query,
+    query: buildQuery({ filters, cursor, includes: ['nftCollection', 'order'] }),
   })
+
   return mapResult(res, toSale)
 }
 

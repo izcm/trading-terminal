@@ -38,9 +38,5 @@ describe('dmrkt page getters', () => {
 
       testErrorHandling(fetchPageWith)
     })
-
-    describe('fetch request', () => {
-      it('')
-    })
   })
 })
