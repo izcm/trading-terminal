@@ -8,5 +8,6 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: './setupTests.js',
     restoreMocks: true,
+    clearMocks: true,
   },
 })

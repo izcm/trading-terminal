@@ -1,14 +1,20 @@
 // todo: indexer will move from storing rsv => storing raw signature asap
 import { parseSignature } from 'viem'
+
 import type { OrderCore } from '@/protocol/eip712'
 import type { Hex } from '@/domain/shared/eth'
 
-export const baseUrl = process.env.NEXT_PUBLIC_INDEXER_API
+import { getBaseUrl } from '../config'
 
-export async function postDmrktOrder(chainId: number, order: OrderCore, signature: Hex) {
-  const url = `${baseUrl}/api/orders`
+import { Result } from '@/lib/utils/http'
 
-  // todo: remember to make signature hex (no need to store in parsed fmt)
+export async function postDmrktOrder(
+  chainId: number,
+  order: OrderCore,
+  signature: Hex
+): Promise<Result<unknown>> {
+  const url = `${getBaseUrl()}/api/orders`
+
   const parsed = parseSignature(signature)
 
   try {
@@ -39,6 +45,6 @@ export async function postDmrktOrder(chainId: number, order: OrderCore, signatur
       data,
     }
   } catch (err) {
-    return { ok: false, error: `error getting items: ${err}` }
+    return { ok: false, error: `Network Error: ${err}` }
   }
 }

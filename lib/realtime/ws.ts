@@ -1,3 +1,6 @@
+// todo: make this generic
+// => inject wslUrl from ws hook implementation
+
 let ws: WebSocket | null = null
 
 type Handler = (payload: unknown) => void

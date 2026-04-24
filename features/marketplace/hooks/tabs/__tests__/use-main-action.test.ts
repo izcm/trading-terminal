@@ -4,7 +4,7 @@ import { renderHook } from '@testing-library/react'
 import { TabActions, TabCtx, TabName, TabResource } from '@/features/tab-config'
 
 import { useMainAction } from '../use-main-action'
-import { fakeCtx, fakeListing } from '../../../../../lib/utils/fakes'
+import { fakeCtx, fakeListing } from '@/lib/utils/fakes'
 
 const { fillOrder, useFillOrder } = vi.hoisted(() => {
   const fillOrder = { fill: vi.fn(), hasAccount: true, isFillable: true, isChecking: false }

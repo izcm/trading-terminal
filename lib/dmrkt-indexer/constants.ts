@@ -1,1 +1,0 @@
-export const DMRKT_INDEXER_BASE_URL = process.env.NEXT_PUBLIC_INDEXER_API

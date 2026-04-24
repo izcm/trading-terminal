@@ -2,15 +2,15 @@ import type { Page, Result } from '@/lib/utils/http'
 
 import type { Listing } from '@/domain/listing'
 import type { NFT } from '@/domain/nft'
+import type { NFTCollection } from '@/domain/nft-collection'
 
 import { toListing, type OrderDTO } from '../types/order'
 import { toNFT, type NFTDTO } from '../types/nft'
-import { toSearchParams } from './logic/param-mapper'
-import { SettlementDTO, toSale } from '../types/settlement'
 import { NFTCollectionDTO, toNFTCollection } from '../types/nft-collection'
-import { NFTCollection } from '@/domain/nft-collection'
+import { SettlementDTO, toSale } from '../types/settlement'
 
-export const baseUrl = process.env.NEXT_PUBLIC_INDEXER_API
+import { toSearchParams } from './logic/param-mapper'
+import { getBaseUrl } from '../config'
 
 function setDefault(q: URLSearchParams, key: string, value: string) {
   if (!q.has(key)) q.set(key, value)
@@ -123,7 +123,7 @@ export async function getDmrktItems<T>({
   params: string
   query: URLSearchParams
 }): Promise<Result<Page<T>>> {
-  const url = `${baseUrl}/api/${params}?${query.toString()}&limit=25`
+  const url = `${getBaseUrl()}/api/${params}?${query.toString()}&limit=25`
 
   try {
     const res = await fetch(url)

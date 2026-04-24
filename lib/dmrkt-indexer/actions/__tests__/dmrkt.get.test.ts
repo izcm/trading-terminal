@@ -1,17 +1,22 @@
-import { describe, it, vi, expect, beforeAll, beforeEach } from 'vitest'
+import { describe, it, vi, expect, beforeAll, beforeEach, afterEach } from 'vitest'
 
 import { getDmrktItem, getDmrktListing, getDmrktNFT, getDmrktSale } from '../dmrkt.get'
+import { testResponseHandling } from './helpers'
 
 describe('dmrkt getters', () => {
-  const mockResponse = { foo: 'bar' }
-
   beforeAll(() => {
     process.env.NEXT_PUBLIC_INDEXER_API = 'http://test-api'
   })
 
-  describe('wrappers', () => {
-    beforeEach(() => (global.fetch = vi.fn()))
+  beforeEach(() => {
+    vi.stubGlobal('fetch', vi.fn())
+  })
 
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  describe('wrappers', () => {
     it('getDmrktListing forwards correct params', () => {
       getDmrktListing('abc')
       expect(fetch).toHaveBeenCalledWith(expect.stringContaining('/api/orders/abc'))
@@ -33,48 +38,24 @@ describe('dmrkt getters', () => {
 
     function fetchWith({
       fetchImpl = () => Promise.resolve({} as Response),
-      urlParams = baseUrlParams(),
-    }: {
-      fetchImpl?: () => Promise<Response>
-      urlParams?: { params: string; id: string }
+      input = baseUrlParams(),
     } = {}) {
-      global.fetch = vi.fn(fetchImpl)
+      const mock = vi.fn(fetchImpl)
+      vi.stubGlobal('fetch', mock)
 
-      return getDmrktItem(urlParams)
+      return getDmrktItem(input.params, input.id)
     }
 
-    it('calls fetch with correct params', async () => {
+    it('calls fetch with correct url', async () => {
       fetchWith()
 
       expect(fetch).toHaveBeenCalledExactlyOnceWith('http://test-api/api/params/id_123')
     })
 
-    // --- HAPPY ---
+    // --- RESPONSE HANDLING ---
 
-    it('returns ok: true and data when response returns ok', async () => {
-      const data = await fetchWith({
-        fetchImpl: () => Promise.resolve({ ok: true, json: async () => mockResponse } as Response),
-      })
-
-      expect(data).toEqual({ ok: true, data: mockResponse })
-    })
-
-    // --- SAD ---
-
-    it('returns ok: false and response text when response is not ok', async () => {
-      const data = await fetchWith({
-        fetchImpl: () => Promise.resolve({ ok: false, text: async () => 'error' } as Response),
-      })
-
-      expect(data).toEqual({ ok: false, error: 'error' })
-    })
-
-    it('returns ok: false and response text when fetch is rejected', async () => {
-      const data = await fetchWith({
-        fetchImpl: () => Promise.reject('API DOWN'),
-      })
-
-      expect(data).toEqual({ ok: false, error: 'Network Error: API DOWN' })
+    describe('response handling', () => {
+      testResponseHandling(fetchWith)
     })
   })
 })
