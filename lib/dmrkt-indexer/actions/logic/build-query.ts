@@ -12,7 +12,7 @@ export function buildQuery({
   filters: Record<string, string[]>
   cursor?: string | null
   includes?: string[]
-}) {
+}): URLSearchParams {
   const query = toSearchParams(filters)
 
   if (cursor) query.append('cursor', cursor)
@@ -20,7 +20,6 @@ export function buildQuery({
   includes.forEach(inc => query.append('include', inc))
 
   if (!filters.sortField) setDefault(query, 'sortField', 'createdAt')
-  //   if (!filters.sortDir) setDefault(query, 'sortDir', 'desc')
 
   return query
 }

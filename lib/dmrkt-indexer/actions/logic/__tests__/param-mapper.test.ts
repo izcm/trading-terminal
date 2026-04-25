@@ -56,12 +56,14 @@ describe('toSearchParams', () => {
     it('applies value aliases (side=ask -> side=0)', () => {
       const params = toSearchParams({ side: ['ask'] })
       const values = params.getAll('side')
+
       expect(values).toEqual(['0'])
     })
 
     it('replaces underscores with spaces in values', () => {
       const params = toSearchParams({ key: ['foo_bar'] })
       const values = params.getAll('key')
+
       expect(values).toEqual(['foo bar'])
     })
 
