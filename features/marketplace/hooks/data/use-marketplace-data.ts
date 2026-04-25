@@ -4,6 +4,7 @@ import type { Hex } from '@/domain/shared/eth'
 
 import type { Page } from '@/lib/utils/http'
 import { connectWs } from '@/lib/realtime/ws'
+import { getWsUrl } from '@/lib/dmrkt-indexer/config'
 
 import { pageGetters, TabName, TabResource } from '@/features/tab-config'
 import { useWsFeed, useWsSales } from '@/features/realtime/hooks/use-ws-sub'
@@ -43,7 +44,7 @@ export function useMarketplaceData(
 
   // --- ws ---
   useEffect(() => {
-    connectWs()
+    connectWs(getWsUrl())
   }, [])
 
   const addItemAndMarkFresh = useCallback(
