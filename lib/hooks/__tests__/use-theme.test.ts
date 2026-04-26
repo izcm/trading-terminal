@@ -1,16 +1,21 @@
-import { beforeEach, describe, expect, it } from 'vitest'
-import { renderHook, RenderHookResult } from '@testing-library/react'
+import { describe, expect, it, vi } from 'vitest'
+import { renderHook } from '@testing-library/react'
 
 import { useTheme } from '../use-theme'
+import { beforeEach } from 'node:test'
 
 describe('useTheme', () => {
+  beforeEach(() => {
+    localStorage.clear()
+  })
+
   function setup() {
     const hook = renderHook(() => useTheme())
 
     return {
       hook,
       getTheme: () => hook.result.current.theme,
-      getSetTheme: () => hook.result.current.setTheme,
+      applyTheme: hook.result.current.applyTheme,
     }
   }
 
@@ -28,8 +33,27 @@ describe('useTheme', () => {
     })
   })
 
-  describe('apply', () => {
-    it('sets data-theme attribute on document')
-    it('persists theme to localStorage')
+  describe('applyTheme', () => {
+    // nb: spies are restored automatically via restoreMocks in vitest config
+
+    it('sets data-theme attribute on document', () => {
+      const spy = vi.spyOn(document.documentElement, 'setAttribute')
+
+      const { applyTheme } = setup()
+      applyTheme('fresh')
+
+      expect(document.documentElement.getAttribute('data-theme')).toBe('fresh')
+      expect(spy).toHaveBeenCalledWith('data-theme', 'fresh')
+    })
+
+    it('persists theme to localStorage', () => {
+      const spy = vi.spyOn(Storage.prototype, 'setItem')
+
+      const { applyTheme } = setup()
+      applyTheme('fresh')
+
+      expect(localStorage.getItem('theme')).toBe('fresh')
+      expect(spy).toHaveBeenCalledWith('theme', 'fresh')
+    })
   })
 })

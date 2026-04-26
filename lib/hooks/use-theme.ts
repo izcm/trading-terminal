@@ -19,5 +19,5 @@ export function useTheme() {
     document.documentElement.setAttribute('data-theme', theme)
   }, [theme])
 
-  return { theme, setTheme: apply }
+  return { theme, applyTheme: apply }
 }

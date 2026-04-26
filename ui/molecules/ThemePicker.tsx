@@ -4,7 +4,7 @@ import { useTheme } from '@/lib/hooks/use-theme'
 import { GalleryItem } from './GalleryItem'
 
 export function ThemePicker({ themes }: { themes: string[] }) {
-  const { theme, setTheme } = useTheme()
+  const { theme, applyTheme: setTheme } = useTheme()
   const ref = useRef<HTMLDivElement>(null)
 
   return (
