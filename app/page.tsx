@@ -5,7 +5,7 @@ import Link from 'next/link'
 
 import { NFTCollection } from '@/domain/nft-collection'
 import { getDmrktNFTCollections } from '@/lib/dmrkt-indexer/actions/dmrkt-page.get'
-import { getDmrktBaseUrl } from '@/lib/dmrkt-indexer/config'
+import { getBaseUrl } from '@/lib/dmrkt-indexer/config'
 import { Spinner } from '@/ui/atoms/Spinner'
 
 const CHAIN_ID = 31337
@@ -56,7 +56,7 @@ export default function Page() {
     const poll = async () => {
       try {
         const res = await fetch(
-          `${getDmrktBaseUrl()}/api/healthcheck?chainId=${CHAIN_ID}&collection=${first.address}`
+          `${getBaseUrl()}/api/healthcheck?chainId=${CHAIN_ID}&collection=${first.address}`
         )
         if (res.ok) setStatus(await res.json())
       } catch {
