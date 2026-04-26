@@ -26,6 +26,7 @@ export function useWsFeed({ addItem, updateItem }: { addItem: AddItem; updateIte
 
   // addItem (addItemAndMarkFresh) has a lot of dependencies
   // refs avoid frequent re-subsribing
+
   useLayoutEffect(() => {
     addItemRef.current = addItem
     updateItemRef.current = updateItem
@@ -67,6 +68,9 @@ export function useWsFeed({ addItem, updateItem }: { addItem: AddItem; updateIte
 export function useWsSales({ addItem, updateItem }: { addItem: AddItem; updateItem: UpdateItem }) {
   const addItemRef = useRef(addItem)
   const updateItemRef = useRef(updateItem)
+
+  // addItem (addItemAndMarkFresh) has a lot of dependencies
+  // refs avoid frequent re-subsribing
 
   useLayoutEffect(() => {
     addItemRef.current = addItem

@@ -1,10 +1,12 @@
 let ws: WebSocket | null = null
 
 type Handler = (payload: unknown) => void
+type Listeners = Record<string, Set<Handler>>
 
-const handlers: Record<string, Set<Handler>> = {}
+const listeners: Listeners = {}
 
-export function connectWs(url: string) {
+// lazy DI for improved testability (_handlers)
+export function connectWs(url: string, _listeners: Listeners = listeners) {
   if (ws) return
 
   ws = new WebSocket(url)
@@ -14,20 +16,24 @@ export function connectWs(url: string) {
 
     const { event, payload } = parsed
 
-    handlers[event]?.forEach(fn => fn(payload))
+    _listeners[event]?.forEach(fn => fn(payload))
   }
 
-  ws.onclose = () => { ws = null }
-  ws.onerror = () => { ws = null }
+  ws.onclose = () => {
+    ws = null
+  }
+  ws.onerror = () => {
+    ws = null
+  }
 }
 
-// register handlers
+// adds local listeners
 export function on(event: string, fn: Handler) {
-  if (!handlers[event]) handlers[event] = new Set()
+  if (!listeners[event]) listeners[event] = new Set()
 
-  handlers[event].add(fn)
+  listeners[event].add(fn)
 
   return () => {
-    handlers[event].delete(fn)
+    listeners[event].delete(fn)
   }
 }

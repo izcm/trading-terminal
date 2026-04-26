@@ -8,6 +8,8 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: './setupTests.js',
     restoreMocks: true,
+
+    // https://vitest.dev/api/mock.html#mockclear
     clearMocks: true,
   },
 })

@@ -146,7 +146,6 @@ describe('use-tab-mutations', () => {
         withState: sortedFeed(dir as 'asc' | 'desc'),
       })
 
-      console.log(getState().feed.items)
       expect(getState().feed.items[sortedFeed(dir as 'asc' | 'desc').feed.items.length]).toEqual(
         item
       )
