@@ -1,6 +1,6 @@
 let ws: WebSocket | null = null
 
-type Handler = (payload: unknown) => void
+type Handler = (payload: unknown) => void | Promise<void>
 type Listeners = Record<string, Set<Handler>>
 
 const listeners: Listeners = {}

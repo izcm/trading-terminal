@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 import { on } from '@/lib/realtime/ws'
 import { getDmrktListing } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
 
-import { ListingStatus } from '@/domain/listing'
+import type { ListingStatus } from '@/domain/listing'
 import { itemGetters } from '../../tab-config'
 
 import { useWsSub, type WsSubProps } from './use-ws-sub'
