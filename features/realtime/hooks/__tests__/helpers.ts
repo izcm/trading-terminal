@@ -3,6 +3,7 @@ import { renderHook } from '@testing-library/react'
 
 import type { TabName, TabResource } from '@/features/tab-config'
 import type { WsSubProps } from '../use-ws-sub'
+import { Handler } from '@/lib/realtime/ws'
 
 export const makeHelpers = <K extends TabName>(
   tab: K,
@@ -23,11 +24,13 @@ export const makeHelpers = <K extends TabName>(
     }
   }
 
-  function getHandler(eventName: string) {
+  function getHandler(eventName: string): Handler {
     const call = vi.mocked(on).mock.calls.find(([event]) => event === eventName)
+
     expect(call).toBeDefined()
 
     const [, handler] = call!
+    expect(handler).toBeTypeOf('function')
 
     return handler
   }
