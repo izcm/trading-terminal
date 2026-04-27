@@ -39,7 +39,6 @@ describe('useWsSales', () => {
 
       await handler(somePayload())
 
-      console.log(updateItem.mock.results)
       expect(updateItem.mock.results[0].value).toMatchObject({ txContext: { txIndex: 1 } })
     })
 
