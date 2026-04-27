@@ -4,7 +4,6 @@ import { on } from '@/lib/realtime/ws'
 import { getDmrktListing } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
 
 import type { ListingStatus } from '@/domain/listing'
-import { itemGetters } from '../../tab-config'
 
 import { useWsSub, type WsSubProps } from './use-ws-sub'
 
@@ -37,7 +36,7 @@ export function useWsFeed({ addItem, updateItem }: WsSubProps) {
               status: status as ListingStatus,
             }))
 
-            const res = await itemGetters['feed'](id)
+            const res = await getDmrktListing(id)
             if (!res.ok) return
 
             const { txHash } = res.data

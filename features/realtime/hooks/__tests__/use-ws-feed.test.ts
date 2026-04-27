@@ -1,13 +1,11 @@
 import { describe, expect, it, vi } from 'vitest'
-import { renderHook } from '@testing-library/react'
-
-import type { Listing } from '@/domain/listing'
 
 // infra deps to be mocked
 import { on } from '@/lib/realtime/ws'
 import { getDmrktListing } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
 
 import { useWsFeed } from '../use-ws-feed'
+import { makeHelpers, testAddItemOnEvent } from './helpers'
 
 vi.mock('@/lib/realtime/ws', () => ({ on: vi.fn() }))
 vi.mock(import('@/lib/dmrkt-indexer/actions/dmrkt.get'), async importOriginal => {
@@ -19,31 +17,47 @@ vi.mock(import('@/lib/dmrkt-indexer/actions/dmrkt.get'), async importOriginal =>
 })
 
 describe('useWsFeed', () => {
-  const makeFetchSuccess = () => ({ ok: true as const, data: { id: 'listing_123' } as Listing })
-  const makeFetchFailure = () => ({ ok: false as const, error: 'error' })
+  const helpers = makeHelpers('feed', useWsFeed, vi.mocked(on))
+  const { setup, getHandler, makeFetchSuccess, makeFetchFailure, somePayload } = helpers
 
-  // function setup() {
-  //     const {}
-  // }
-  it('calls addItem with the fetched listing on order.created', async () => {
-    const addItem = vi.fn()
-    const updateItem = vi.fn()
+  describe('order.created', () => {
+    testAddItemOnEvent('order.created', helpers, vi.mocked(getDmrktListing))
+  })
 
-    // render hook => useWsSub => calls subscribe(fns in second argument)
-    renderHook(() => useWsFeed({ addItem, updateItem }))
-    const call = vi.mocked(on).mock.calls.find(([event]) => event === 'order.created')
+  describe('status events', () => {
+    it.each([
+      ['order.cancelled', 'cancelled'],
+      ['settlement.created', 'filled'],
+    ])(
+      'sets status immediately and then updates txHash if successfull fetch on %s',
+      async (event, status) => {
+        const { updateItem } = setup()
+        const handler = getHandler(event)
 
-    expect(call).toBeDefined()
+        const fetchSuccess = makeFetchSuccess({ txHash: '0xabc' })
+        vi.mocked(getDmrktListing).mockResolvedValueOnce(fetchSuccess)
 
-    const [, handler] = call!
+        await handler!(somePayload())
 
-    // have the mock of getDmrktListing return { ok: true }
-    const fetchSuccess = makeFetchSuccess()
-    vi.mocked(getDmrktListing).mockResolvedValueOnce(fetchSuccess)
+        expect(updateItem).toHaveBeenCalledTimes(2)
 
-    // simulate ws 'order.created' event by calling handler manually
-    await handler!({ chainId: 1, orderHash: '0xabc' })
+        expect(updateItem.mock.results[0].value).toMatchObject({ status })
+        expect(updateItem.mock.results[1].value).toMatchObject({ txHash: '0xabc' })
+      }
+    )
 
-    expect(addItem).toHaveBeenCalledWith('feed', fetchSuccess.data)
+    it.each([
+      ['fetch fails', makeFetchFailure()],
+      ['txHash is missing', makeFetchSuccess()],
+    ])('does not call updateItem a second time when %s', async (_, fetchResult) => {
+      const { updateItem } = setup()
+      const handler = getHandler('order.cancelled')
+
+      vi.mocked(getDmrktListing).mockResolvedValueOnce(fetchResult)
+
+      await handler!(somePayload())
+
+      expect(updateItem).toHaveBeenCalledTimes(1)
+    })
   })
 })
