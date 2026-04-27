@@ -1,76 +1,30 @@
 import { useEffect, useLayoutEffect, useRef } from 'react'
 
-import { on } from '@/lib/realtime/ws'
-import { getDmrktListing, getDmrktSale } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
+import type { TabResource } from '../../tab-config'
 
-import { ListingStatus } from '@/domain/listing'
-import { itemGetters, type TabResource } from '../../tab-config'
-
-const statusMap = {
-  'order.cancelled': 'cancelled',
-  'settlement.created': 'filled',
-}
-
-type AddItem = <K extends keyof TabResource>(tab: K, item: TabResource[K]) => void
-type UpdateItem = <K extends keyof TabResource>(
+export type AddItem = <K extends keyof TabResource>(tab: K, item: TabResource[K]) => void
+export type UpdateItem = <K extends keyof TabResource>(
   tab: K,
   id: string,
   updater: (item: TabResource[K]) => TabResource[K]
 ) => void
 
-// https://vitest.dev/guide/mocking/requests.html
-// ws mocks
-export function useWsFeed({ addItem, updateItem }: { addItem: AddItem; updateItem: UpdateItem }) {
-  const addItemRef = useRef(addItem)
-  const updateItemRef = useRef(updateItem)
-
-  // addItem (addItemAndMarkFresh) has a lot of dependencies
-  // refs avoid frequent re-subsribing
-
-  useLayoutEffect(() => {
-    addItemRef.current = addItem
-    updateItemRef.current = updateItem
-  }, [addItem, updateItem])
-
-  useEffect(() => {
-    const off = on('order.created', async p => {
-      const { chainId, orderHash } = p as { chainId: number; orderHash: string }
-
-      const res = await getDmrktListing(`${chainId}:${orderHash}`)
-      if (!res.ok) return
-
-      addItemRef.current('feed', res.data)
-    })
-
-    const offs = Object.entries(statusMap).map(([event, status]) =>
-      on(event, async p => {
-        const { chainId, orderHash } = p as { chainId: number; orderHash: string }
-        const id = `${chainId}:${orderHash}`
-
-        updateItemRef.current('feed', id, item => ({ ...item, status: status as ListingStatus }))
-
-        const res = await itemGetters['feed'](id)
-
-        if (!res.ok) return
-
-        const { txHash } = res.data
-        if (txHash) updateItemRef.current('feed', id, item => ({ ...item, txHash }))
-      })
-    )
-
-    return () => {
-      off()
-      offs.forEach(off => off())
-    }
-  }, [])
+export type WsSubProps = {
+  addItem: AddItem
+  updateItem: UpdateItem
 }
 
-export function useWsSales({ addItem, updateItem }: { addItem: AddItem; updateItem: UpdateItem }) {
+export function useWsSub(
+  { addItem, updateItem }: WsSubProps,
+  subscribe: (addItem: AddItem, updateItem: UpdateItem) => Array<() => void>
+) {
+  // note to self: addItem (addItemAndMarkFresh) has a lot of dependencies
+  // dont touch this!!
+
+  // subscription stability is useWsSub's responsibility
+  // refs keep addItem / updateItem fresh without triggering re-subscription
   const addItemRef = useRef(addItem)
   const updateItemRef = useRef(updateItem)
-
-  // addItem (addItemAndMarkFresh) has a lot of dependencies
-  // refs avoid frequent re-subsribing
 
   useLayoutEffect(() => {
     addItemRef.current = addItem
@@ -78,28 +32,10 @@ export function useWsSales({ addItem, updateItem }: { addItem: AddItem; updateIt
   }, [addItem, updateItem])
 
   useEffect(() => {
-    const offs = [
-      on('settlement.created', async p => {
-        const { chainId, orderHash } = p as { chainId: number; orderHash: string }
-
-        const res = await getDmrktSale(`${chainId}:${orderHash}`)
-        if (!res.ok) return
-
-        addItemRef.current('sales', res.data)
-      }),
-
-      on('settlement.callReconstructed', async p => {
-        const { chainId, orderHash } = p as { chainId: number; orderHash: string }
-        const id = `${chainId}:${orderHash}`
-
-        const res = await getDmrktSale(id)
-        if (!res.ok) return
-
-        const { txContext } = res.data
-        if (txContext) updateItemRef.current('sales', id, item => ({ ...item, txContext }))
-      }),
-    ]
-
+    const offs = subscribe(
+      (...args) => addItemRef.current(...args),
+      (...args) => updateItemRef.current(...args)
+    )
     return () => offs.forEach(off => off())
-  }, [])
+  }, [subscribe])
 }

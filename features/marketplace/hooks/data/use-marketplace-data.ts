@@ -7,7 +7,7 @@ import { connectWs } from '@/lib/realtime/ws'
 import { getWsUrl } from '@/lib/dmrkt-indexer/config'
 
 import { pageGetters, TabName, TabResource } from '@/features/tab-config'
-import { useWsFeed, useWsSales } from '@/features/realtime/hooks/use-ws-sub'
+import { useWsFeed, useWsSales } from '@/features/realtime/hooks'
 
 import { useFresh } from './use-fresh'
 import { useTabMutations } from '../tabs/use-tab-mutations'
