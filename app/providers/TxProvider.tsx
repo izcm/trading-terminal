@@ -21,19 +21,21 @@ export type Tx = {
   createdAt: number
 }
 
+export type AddTxParams = {
+  hash: Hex
+  listingId?: string
+  label?: TxLabel
+  onConfirmed?: () => void
+  decodeError?: (error: unknown) => string | undefined
+}
+
 type TxContextType = {
   txs: Tx[]
-  addTx: (
-    hash: Hex,
-    listingId?: string,
-    label?: TxLabel,
-    onConfirmed?: () => void,
-    decodeError?: (error: unknown) => string | undefined
-  ) => void
+  addTx: (params: AddTxParams) => void
   showTxs: (cb: (tx: Tx) => void) => void
 }
 
-export const TxContext = createContext<TxContextType | null>(null)
+const TxContext = createContext<TxContextType | null>(null)
 
 export function TxProvider({ children }: { children: ReactNode }) {
   const [txs, setTxs] = useState<Tx[]>([])
@@ -42,13 +44,13 @@ export function TxProvider({ children }: { children: ReactNode }) {
 
   const callbackRef = useRef<(tx: Tx) => void>(() => {})
 
-  const addTx: TxContextType['addTx'] = (
+  const addTx: TxContextType['addTx'] = ({
     hash,
     listingId,
     label = 'transaction',
     onConfirmed,
-    decodeError
-  ) => {
+    decodeError,
+  }) => {
     setTxs(prev => {
       if (prev.some(tx => tx.hash === hash)) return prev
       return [
@@ -57,7 +59,7 @@ export function TxProvider({ children }: { children: ReactNode }) {
           hash,
           status: 'pending',
           listingId,
-          label: label,
+          label,
           onConfirmed,
           decodeError,
           createdAt: Date.now(),

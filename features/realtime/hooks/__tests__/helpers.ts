@@ -26,7 +26,6 @@ export const makeHelpers = <K extends TabName>(
 
   function getHandler(eventName: string): Handler {
     const call = vi.mocked(on).mock.calls.find(([event]) => event === eventName)
-
     expect(call).toBeDefined()
 
     const [, handler] = call!
