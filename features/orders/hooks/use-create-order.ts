@@ -24,7 +24,7 @@ export function useCreateOrder() {
         throw new Error(res.error ?? `failed to create order`)
       }
 
-      return res.data.id as string
+      return (res.data as { id: string }).id
     },
     [signTypedDataAsync]
   )

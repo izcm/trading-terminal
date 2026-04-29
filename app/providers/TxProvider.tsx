@@ -132,7 +132,7 @@ export function TxProvider({ children }: { children: ReactNode }) {
                 isSelected={isSelected}
                 onSelect={() => {
                   onSelect()
-                  if (item.status === 'failed') return // tmp: no callback for failed tx
+                  if (item.status !== 'success') return // tmp: no callback for failed tx
 
                   callbackRef.current(item)
                   setOpen(false)
