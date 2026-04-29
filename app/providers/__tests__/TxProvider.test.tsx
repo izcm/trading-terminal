@@ -1,16 +1,23 @@
 import { act } from 'react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { cleanup, fireEvent, renderHook, screen, within } from '@testing-library/react'
+import { cleanup, fireEvent, renderHook, screen } from '@testing-library/react'
+
+import { useWaitForTransactionReceipt } from 'wagmi'
 
 import { useTx, TxProvider, Tx, AddTxParams } from '../TxProvider'
 
-const { mockUseWait: useWaitMock } = vi.hoisted(() => ({
-  mockUseWait: vi.fn(() => ({ isError: false, isSuccess: false })),
+vi.mock('wagmi', () => ({
+  useWaitForTransactionReceipt: vi.fn(() => ({ isError: false, isSuccess: false })),
 }))
 
-vi.mock('wagmi', () => ({
-  useWaitForTransactionReceipt: useWaitMock,
-}))
+type MockReceipt =
+  | { isError: false; isSuccess: false }
+  | { isError: false; isSuccess: true }
+  | { isError: true; isSuccess: false }
+
+function mockTxReceipt(val: MockReceipt) {
+  vi.mocked(useWaitForTransactionReceipt, { partial: true }).mockReturnValue(val)
+}
 
 vi.mock('focus-trap-react', () => ({
   FocusTrap: ({ children }: { children: React.ReactNode }) => children,
@@ -194,11 +201,8 @@ describe('state', () => {
     })
 
     describe('row onClick', () => {
-      function setupForStatus(
-        mockResult: { isError: boolean; isSuccess: boolean },
-        advanceMs: number
-      ) {
-        useWaitMock.mockReturnValue(mockResult)
+      function setupForStatus(mockResult: MockReceipt, advanceMs: number) {
+        mockTxReceipt(mockResult)
 
         const { addTx, showTxs, getTxs } = setup()
         const cb = vi.fn()
