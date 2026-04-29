@@ -74,7 +74,7 @@ export function TxProvider({ children }: { children: ReactNode }) {
     )
   }
 
-  const showTxs: TxContextType['showTxs'] = cb => {
+  const showTxs = (cb: (tx: Tx) => void) => {
     callbackRef.current = cb ?? (() => {})
 
     if (txs.length > 0) {
@@ -138,6 +138,7 @@ export function TxProvider({ children }: { children: ReactNode }) {
                   setOpen(false)
                 }}
                 className="transition rounded-lg"
+                dataId={item.hash}
               >
                 <div className="cursor-pointer">
                   <TxRow tx={item} />

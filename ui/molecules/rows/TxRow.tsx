@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import type { Tx, TxLabel } from '@/app/providers/TxProvider'
-import { hhmm } from '@/lib/utils/time'
+import { timeAgo } from '@/lib/utils/time'
 import { Copyable } from '@/ui/atoms'
 
 const ERROR_TRUNCATE = 80
@@ -33,7 +33,7 @@ export function TxRow({ tx, onClick }: Props) {
           </Copyable>
         </div>
 
-        <span className="text-muted">{hhmm(tx.createdAt)}</span>
+        <span className="text-muted">{timeAgo(tx.createdAt)}</span>
 
         <span className="flex-1 text-muted">{tx.label}</span>
 

@@ -8,9 +8,17 @@ type ArrowRowProps = {
   children: ReactNode
   className?: string
   dataId?: string
+  dataTestId?: string
 }
 
-export function ArrowRow({ isSelected, onSelect, children, className, dataId }: ArrowRowProps) {
+export function ArrowRow({
+  isSelected,
+  onSelect,
+  children,
+  className,
+  dataId,
+  dataTestId,
+}: ArrowRowProps) {
   const ref = useRef<HTMLLIElement>(null)
 
   useEffect(() => {
@@ -32,6 +40,7 @@ export function ArrowRow({ isSelected, onSelect, children, className, dataId }: 
     <li
       ref={ref}
       data-id={dataId}
+      data-testid={dataTestId}
       tabIndex={isSelected ? 0 : -1}
       onClick={onSelect}
       onKeyDown={e => {

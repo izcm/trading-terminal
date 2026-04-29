@@ -35,6 +35,7 @@ export function Modal({ isOpen, onClose, children, escTxt = 'Close' }: ModalProp
         fixed inset-0 z-[999] flex items-center justify-center
         bg-black/50 backdrop-blur-sm animate-fadeIn
       "
+      role="dialog"
       onClick={onClose}
     >
       <FocusTrap>
