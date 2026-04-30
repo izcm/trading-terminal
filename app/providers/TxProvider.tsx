@@ -175,7 +175,7 @@ function TxWatcher({
 
     if (isError) {
       handledRef.current = true
-      onFail(tx.decodeError?.(error))
+      onFail(tx.decodeError?.(error) ?? error?.message)
     }
   }, [isSuccess, isError, onSuccess, onFail, error, tx])
 

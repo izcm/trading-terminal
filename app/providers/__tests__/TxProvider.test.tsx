@@ -4,10 +4,10 @@ import { cleanup, fireEvent, renderHook, screen } from '@testing-library/react'
 
 import { useWaitForTransactionReceipt } from 'wagmi'
 
-import { useTx, TxProvider, AddTxParams } from '../TxProvider'
+import { useTx, TxProvider, AddTxParams, Tx } from '../TxProvider'
 
 vi.mock('wagmi', () => ({
-  useWaitForTransactionReceipt: vi.fn(() => ({ isError: false, isSuccess: false })),
+  useWaitForTransactionReceipt: vi.fn(() => ({ isError: false, isSuccess: false, error: null })),
 }))
 
 type MockReceipt =
@@ -15,8 +15,9 @@ type MockReceipt =
   | { isError: false; isSuccess: true }
   | { isError: true; isSuccess: false }
 
-function mockTxReceipt(val: MockReceipt) {
-  vi.mocked(useWaitForTransactionReceipt, { partial: true }).mockReturnValue(val)
+function mockTxReceipt(val: MockReceipt, error?: unknown) {
+  // @ts-expect-error don't enforce useWait error type
+  vi.mocked(useWaitForTransactionReceipt, { partial: true }).mockReturnValueOnce({ ...val, error })
 }
 
 vi.mock('focus-trap-react', () => ({
@@ -30,17 +31,29 @@ const wrapper = ({ children }: { children: React.ReactNode }) => {
 function setup() {
   const hook = renderHook(() => useTx(), { wrapper })
 
+  const getTxs = () => hook.result.current.txs
+  const getOnlyTx = () => {
+    expect(getTxs()).toHaveLength(1)
+    return getTxs()[0]
+  }
+
   return {
     hook,
-    addTx: hook.result.current.addTx,
-    showTxs: hook.result.current.showTxs,
-    getTxs: () => hook.result.current.txs,
+    addTx: (params: AddTxParams) => hook.result.current.addTx(params),
+    showTxs: (cb: (tx: Tx) => void) => hook.result.current.showTxs(cb),
+    getTxs,
+    getOnlyTx,
   }
 }
 
 const hash = '0xabc'
 
-type SetupOpts = { advanceTime?: boolean; showModal?: boolean; tx?: Partial<AddTxParams> }
+type SetupOpts = {
+  advanceTime?: boolean
+  showModal?: boolean
+  tx?: Partial<AddTxParams>
+  error?: unknown
+}
 
 function setupForSuccess(opts?: SetupOpts) {
   return setupForStatus({ isError: false, isSuccess: true }, { advanceTime: true, ...opts })
@@ -56,11 +69,11 @@ function setupForPending(opts?: SetupOpts) {
 
 function setupForStatus(
   mockResult: MockReceipt,
-  { advanceTime = false, showModal = false, tx }: SetupOpts = {}
+  { advanceTime = false, showModal = false, tx, error }: SetupOpts = {}
 ) {
-  mockTxReceipt(mockResult)
+  mockTxReceipt(mockResult, error)
 
-  const { addTx, showTxs, getTxs } = setup()
+  const { hook, addTx, showTxs, getTxs, getOnlyTx } = setup()
   const cb = vi.fn()
 
   act(() => {
@@ -75,7 +88,7 @@ function setupForStatus(
       showTxs(cb)
     })
 
-  return { cb, getTxs }
+  return { hook, cb, getTxs, getOnlyTx }
 }
 
 describe('state', () => {
@@ -205,26 +218,25 @@ describe('showTxs', () => {
     expect(row.dataset.id).toBe(hash)
   })
 
-  it('orders row date desc', () => {
+  function addNTxsAndShow(n: number) {
     const { addTx, showTxs } = setup()
-
-    // later loop => newer item
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < n; i++) {
       act(() => addTx({ hash: `0x${i}` }))
       vi.advanceTimersByTime(1000)
     }
-
     act(() => showTxs(() => {}))
+    return screen.getAllByRole('listitem')
+  }
 
-    const rows = screen.getAllByRole('listitem')
-
-    // getAllByRole guarantees elements in DOM order (top → bottom)
-    expect(rows).toHaveLength(5)
+  it('orders row date desc', () => {
+    const rows = addNTxsAndShow(5)
     expect(rows.map(r => r.dataset.id)).toEqual(['0x4', '0x3', '0x2', '0x1', '0x0'])
   })
 
   it('selects latest tx on open', () => {
-    // assert selectedId logic via UI state if possible
+    const rows = addNTxsAndShow(5)
+    const latest = rows.find(r => r.dataset.id === '0x4')
+    expect(latest).toHaveAttribute('tabindex', '0') // arrowRow selected is only row with tabIndex 0
   })
 
   describe('row onClick', () => {
@@ -279,8 +291,8 @@ describe('TxWatcher', () => {
 
   describe('on transaction success', () => {
     it('sets tx status to success', () => {
-      const { getTxs } = setupForSuccess()
-      expect(getTxs()[0]).toMatchObject({ status: 'success' })
+      const { getOnlyTx } = setupForSuccess()
+      expect(getOnlyTx().status).toBe('success')
     })
 
     it('calls onConfirmed', () => {
@@ -291,10 +303,32 @@ describe('TxWatcher', () => {
   })
 
   describe('on transaction failure', () => {
-    it('sets tx status to failed')
-    it('sets error from decodeError if provided')
-    it('sets raw error if no decodeError')
+    it('sets tx status to failed', () => {
+      const { getOnlyTx } = setupForFailure()
+      expect(getOnlyTx().status).toBe('failed')
+    })
+
+    it('sets error from decodeError if provided', () => {
+      const { getOnlyTx } = setupForFailure({
+        tx: { decodeError: () => `decoded` },
+        error: 'error',
+      })
+      expect(getOnlyTx().error).toBe('decoded')
+    })
+
+    it('sets error.message if no decodeError', () => {
+      const { getOnlyTx } = setupForFailure({ error: new Error('reverted') })
+      expect(getOnlyTx().error).toBe('reverted')
+    })
   })
 
-  it('only handles the event once even if effect re-runs')
+  it('only handles the event once even if effect re-runs', () => {
+    const onConfirmed = vi.fn()
+    const { hook } = setupForSuccess({ tx: { onConfirmed } })
+
+    hook.rerender()
+    hook.rerender()
+
+    expect(onConfirmed).toHaveBeenCalledOnce()
+  })
 })
