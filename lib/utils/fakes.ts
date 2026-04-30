@@ -1,3 +1,4 @@
+import { Tx } from '@/app/providers/TxProvider'
 import type { Listing } from '@/domain/listing'
 import type { TabCtx } from '@/features/tab-config'
 import { OrderCore, OrderSide } from '@/protocol/eip712'
@@ -27,5 +28,13 @@ export const fakeOrderCore = (overrides: Partial<OrderCore> = {}): OrderCore => 
   start: 0,
   end: 9999999999,
   nonce: '1',
+  ...overrides,
+})
+
+const fakeTx = (overrides: Partial<Tx> = {}): Tx => ({
+  hash: '0x123',
+  status: 'pending',
+  label: 'transaction',
+  createdAt: Date.now(),
   ...overrides,
 })

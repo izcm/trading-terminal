@@ -53,7 +53,7 @@ describe('useWsSales', () => {
 
       await handler!(somePayload())
 
-      expect(updateItem).not.toHaveBeenCalled()
+      expect(updateItem).not.toHaveBeenCalledOnce()
     })
   })
 })

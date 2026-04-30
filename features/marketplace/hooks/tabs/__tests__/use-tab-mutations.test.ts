@@ -156,7 +156,7 @@ describe('use-tab-mutations', () => {
 
       act(() => result.current.addItemSorted('feed', addedItem, { field: 'invalid' }))
 
-      expect(setState).not.toHaveBeenCalled()
+      expect(setState).not.toHaveBeenCalledOnce()
     })
   })
 

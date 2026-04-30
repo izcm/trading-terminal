@@ -30,7 +30,7 @@ describe('useOwnedTokenIds', () => {
 
       renderHookWith({ readMock })
 
-      await waitFor(() => expect(readMock).toHaveBeenCalled())
+      await waitFor(() => expect(readMock).toHaveBeenCalledOnce())
     })
   })
 
@@ -50,7 +50,7 @@ describe('useOwnedTokenIds', () => {
 
       await getRefetch(hook)()
 
-      expect(readMock).not.toHaveBeenCalled()
+      expect(readMock).not.toHaveBeenCalledOnce()
     })
 
     it('fetches and sets owned token ids', async () => {

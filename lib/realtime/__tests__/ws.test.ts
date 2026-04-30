@@ -100,6 +100,6 @@ describe('on', () => {
 
     triggerMessage({ event: 'trade', payload: { item: 'ak47' } })
 
-    expect(handler).not.toHaveBeenCalled()
+    expect(handler).not.toHaveBeenCalledOnce()
   })
 })

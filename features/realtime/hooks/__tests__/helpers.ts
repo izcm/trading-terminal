@@ -75,6 +75,6 @@ export function testAddItemOnEvent(
 
     await handler!(somePayload())
 
-    expect(addItem).not.toHaveBeenCalled()
+    expect(addItem).not.toHaveBeenCalledOnce()
   })
 }

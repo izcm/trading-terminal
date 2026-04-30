@@ -25,7 +25,7 @@ describe('useWsSub', () => {
 
       unmount()
 
-      expect(cleanup).toHaveBeenCalled()
+      expect(cleanup).toHaveBeenCalledOnce()
     })
   })
 })
