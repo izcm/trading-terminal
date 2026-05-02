@@ -33,7 +33,7 @@ export function TxRow({ tx, onClick }: Props) {
           </Copyable>
         </div>
 
-        <span className="text-muted">{timeAgo(tx.createdAt)}</span>
+        <span className="text-muted w-[80px] text-right">{timeAgo(tx.createdAt)}</span>
 
         <span className="flex-1 text-muted">{tx.label}</span>
 

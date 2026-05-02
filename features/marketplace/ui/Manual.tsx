@@ -69,6 +69,7 @@ export function Manual({ initialTab = 'shortcuts' }: { initialTab?: Tab } = {}) 
             <button
               key={key}
               onClick={() => setTab(key)}
+              autoFocus={key === tab}
               className={`text-sm cursor-pointer font-semibold transition ${
                 tab === key ? 'text-accent' : 'text-muted hover:text-accent-strong'
               }`}
@@ -142,7 +143,10 @@ export function Manual({ initialTab = 'shortcuts' }: { initialTab?: Tab } = {}) 
           </Section>
 
           <Section title="explore">
-            <ExRow query="mine trait.type=sword" desc="your sword tokens" />
+            <ExRow
+              query="mine trait.type=elixir trait.rarity=epic,legendary"
+              desc="your elixirs, epic or legendary"
+            />
             <ExRow query="trait.rarity=epic sortField=tokenId" desc="epic tokens sorted by id" />
             <ExRow
               query="trait.type=sword trait.color=blood_red,cyber_blue"

@@ -52,9 +52,7 @@ export function TabContainer<K extends TabName>({
   const galleryRef = useRef<HTMLUListElement>(null)
 
   useEffect(() => {
-    focusGalleryRef.current = () => {
-      galleryRef.current?.focus()
-    }
+    focusGalleryRef.current = () => galleryRef.current?.focus()
   }, [focusGalleryRef])
 
   const btnProps = selected ? ui.actionBtnProps?.(selected, tabAction.disabled, ctx) : undefined
