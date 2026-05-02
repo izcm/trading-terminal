@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 
 import { useTheme } from '@/lib/hooks/use-theme'
-import { GalleryItem } from './GalleryItem'
+import { GalleryItem } from '@/ui/molecules'
 
 export function ThemePicker({ themes }: { themes: string[] }) {
   const { theme, applyTheme: setTheme } = useTheme()

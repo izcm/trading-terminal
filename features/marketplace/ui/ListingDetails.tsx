@@ -2,8 +2,8 @@ import type { Listing } from '@/domain/listing'
 
 import { tsShort } from '@/lib/utils/time'
 
-import { Details, HexDetailField } from '@/ui/organisms'
-import type { DetailField } from '@/ui/molecules/DetailFields'
+import { Details, HexDetailField } from '@/ui/molecules'
+import type { DetailField } from '@/ui/molecules/details/DetailFields'
 import { listingStatusToClass } from '../lib/listing-status-ui'
 
 const DETAIL_FIELDS: DetailField<Listing>[] = [

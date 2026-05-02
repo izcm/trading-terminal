@@ -1,6 +1,7 @@
 import type { NFT } from '@/domain/nft'
 
-import { ArrowList, NFTRow } from '@/ui/molecules'
+import { ArrowList } from '@/ui/molecules'
+import { NFTRow } from './rows/NFTRow'
 import { ArrowRow } from '@/ui/atoms'
 
 type Props = {

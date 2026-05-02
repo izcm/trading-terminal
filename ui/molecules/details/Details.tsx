@@ -1,8 +1,8 @@
 import type { Hex } from '@/domain/shared/eth'
 import { truncateHex } from '@/lib/utils/hex'
 
-import { Copyable } from '../atoms'
-import { DetailFields, type DetailField } from '../molecules'
+import { Copyable } from '@/ui/atoms'
+import { DetailFields, type DetailField } from './DetailFields'
 
 // --- badge ---
 

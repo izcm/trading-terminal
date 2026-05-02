@@ -3,8 +3,9 @@ import { useWaitForTransactionReceipt } from 'wagmi'
 
 import type { Hex } from '@/domain/shared/eth'
 
-import { toast } from '@/ui/organisms'
-import { ArrowList, TxRow } from '@/ui/molecules'
+import { toast } from '@/ui/molecules'
+import { ArrowList } from '@/ui/molecules'
+import { TxRow } from '@/ui/organisms'
 import { ArrowRow, Modal } from '@/ui/atoms'
 
 export type TxStatus = 'pending' | 'success' | 'failed'

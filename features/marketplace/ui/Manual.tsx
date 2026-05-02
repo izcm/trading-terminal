@@ -17,6 +17,18 @@ function Row({ label, value, copy }: { label: string; value: React.ReactNode; co
   )
 }
 
+function ExRow({ query, desc }: { query: string; desc: string }) {
+  return (
+    <div
+      className="flex flex-col py-1 gap-0.5 hover:text-accent-string transition cursor-pointer"
+      onClick={() => navigator.clipboard.writeText(query)}
+    >
+      <span className="text-sm font-mono text-accent/80">{query}</span>
+      <span className="text-sm text-muted">{desc}</span>
+    </div>
+  )
+}
+
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="border-t border-soft pt-4 space-y-2">
@@ -26,21 +38,23 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   )
 }
 
-type Tab = 'manual' | 'filters'
+type Tab = 'shortcuts' | 'filters' | 'examples'
 
 const TABS: { key: Tab; label: string; shortcut: string }[] = [
-  { key: 'manual', label: 'manual', shortcut: '1' },
+  { key: 'shortcuts', label: 'shortcuts', shortcut: '1' },
   { key: 'filters', label: 'filters', shortcut: '2' },
+  { key: 'examples', label: 'examples', shortcut: '3' },
 ]
 
-export function Manual() {
-  const [tab, setTab] = useState<Tab>('manual')
+export function Manual({ initialTab = 'shortcuts' }: { initialTab?: Tab } = {}) {
+  const [tab, setTab] = useState<Tab>(initialTab)
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return
-      if (e.key === '1') setTab('manual')
+      if (e.key === '1') setTab('shortcuts')
       if (e.key === '2') setTab('filters')
+      if (e.key === '3') setTab('examples')
     }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
@@ -66,65 +80,79 @@ export function Manual() {
         <span className="text-xs text-muted">dmrkt</span>
       </div>
 
-      {tab === 'manual' && (
+      {tab === 'shortcuts' && (
         <Section title="keyboard">
-          <Row label="1 / 2" value="manual / filters" />
+          <Row label="1 / 2 / 3" value="shortcuts / filters / examples" />
           <Row label="f / e / s" value="switch tab" />
           <Row label="shift + f / e / s" value="switch tab + reset filters" />
           <Row label="a" value="run action" />
           <Row label="l" value="focus list" />
+          <Row label="i" value="focus search" />
           <Row label="shift + w" value="connect wallet" />
+          <Row label="t" value="open tx history" />
+          <Row label="m" value="open shortcuts" />
+          <Row label="." value="open settings" />
         </Section>
       )}
 
       {tab === 'filters' && (
         <>
-          <Section title="keywords">
-            <Row label="me" value="your address" copy="maker=me" />
-            <Row label="myTokens / mytokens" value="your tokens only" copy="myTokens" />
-          </Section>
-
-          <Section title="AVAILABLE FIELDS">
+          <Section title="mine flag">
             <div className="flex flex-col gap-1 text-sm text-muted pb-1">
-              <span>sidepanel fields per tab — match casing or use lowercase</span>
-              <span className="text-accent/80 text-xs">
-                explore: token attributes only (trait, value)
+              <span>
+                type <span className="text-accent font-mono">mine</span> to toggle per tab
               </span>
             </div>
-
-            <Row label="maker=<address>" value="orders by maker" copy="maker=" />
-            <Row label="side=ask|bid" value="order side" copy="side=ask" />
-            <Row
-              label="status=active|filled|cancelled"
-              value="order status"
-              copy="status=active,filled,cancelled"
-            />
-            <Row label="tokenId=123" value="specific token" copy="tokenId=" />
-            <Row label="trait=rarity value=epic" value="trait filter" copy="trait= value=" />
-            <Row label="sortField=timestamp" value="sort by field" copy="sortField=timestamp" />
+            <Row label="feed *" value="4u flag — actionable by you" />
+            <Row label="explore" value="owner = you" />
+            <Row label="sales" value="buyer = you || seller = you" />
           </Section>
 
-          <Section title="examples">
-            <p className="text-[10px] text-muted uppercase tracking-widest pb-1">feed</p>
+          <Section title="keywords">
+            <Row label="mine" value="activate mine flag" copy="mine" />
+            <Row label="me" value="replaced with your address" copy="maker=me" />
+          </Section>
 
-            <Row
-              label="mytokens side=bid status=active "
-              value="active bids on your tokens"
-              copy="mytokens side=bid status=active"
-            />
+          <Section title="available fields">
+            <div className="text-sm text-muted">
+              any field in the details panel is filterable — match casing or use lowercase
+            </div>
+          </Section>
 
+          <Section title="special syntax">
+            <Row label="trait.type=sword" value="explore only" copy="trait.type=" />
             <Row
-              label="side=ask trait= "
-              value="active bids on your tokens"
-              copy="mytokens side=bid status=active"
+              label="sortField=price sortDir=asc"
+              value="sort (default desc)"
+              copy="sortField=price sortDir=asc"
             />
+          </Section>
+        </>
+      )}
 
-            <p className="text-[10px] text-muted uppercase tracking-widest pt-2 pb-1">sales</p>
-            <Row
-              label="seller=me trait=rarity,color value=rare,aqua_blue"
-              value="your sales"
-              copy="seller=me"
+      {tab === 'examples' && (
+        <>
+          <Section title="feed">
+            <ExRow
+              query="status=active trait.type=sword sortField=price"
+              desc="active sword orders by price desc"
             />
+            <ExRow query="maker=me status=active,cancelled" desc="your active + cancelled orders" />
+            <ExRow query="mine side=bid status=active" desc="active bids on your tokens" />
+          </Section>
+
+          <Section title="explore">
+            <ExRow query="mine trait.type=sword" desc="your sword tokens" />
+            <ExRow query="trait.rarity=epic sortField=tokenId" desc="epic tokens sorted by id" />
+            <ExRow
+              query="trait.type=sword trait.color=blood_red,cyber_blue"
+              desc="swords, red or blue"
+            />
+          </Section>
+
+          <Section title="sales">
+            <ExRow query="seller=me sortField=price" desc="your sales by price" />
+            <ExRow query="buyer=me sortField=timestamp" desc="your purchases by time" />
           </Section>
         </>
       )}

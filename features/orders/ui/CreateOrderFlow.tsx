@@ -3,7 +3,7 @@ import { parseEther } from 'viem'
 import { dmrktDomain, OrderCore, OrderSide } from '@/protocol/eip712'
 import type { Hex } from '@/domain/shared/eth'
 
-import { toast } from '@/ui/organisms'
+import { toast } from '@/ui/molecules'
 
 import { useWallet } from '@/features/wallet/hooks/use-wallet'
 import { FormInput, OrderForm } from './OrderForm'

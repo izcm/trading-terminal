@@ -1,8 +1,8 @@
 import type { Sale } from '@/domain/sale'
 import { tsShort } from '@/lib/utils/time'
 
-import { Details, HexDetailField } from '@/ui/organisms'
-import type { DetailField } from '@/ui/molecules/DetailFields'
+import { Details, HexDetailField } from '@/ui/molecules'
+import type { DetailField } from '@/ui/molecules/details/DetailFields'
 
 const DETAIL_FIELDS: DetailField<Sale>[] = [
   {

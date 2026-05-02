@@ -1,7 +1,6 @@
 import { PLACEHOLDER_NFT, type NFT } from '@/domain/nft'
 
-import { DetailField, GalleryItem } from '../molecules'
-import { Details } from './Details'
+import { DetailField, Details, GalleryItem } from '@/ui/molecules'
 
 function getDetailsFields(nft: NFT): DetailField<NFT>[] {
   return nft.attributes.length > 0

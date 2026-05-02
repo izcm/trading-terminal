@@ -14,7 +14,7 @@ import type { NFT } from '@/domain/nft'
 import { activity } from '@/domain/shared/activity'
 
 // shared components
-import { ActivityItem, NFTRow } from '@/ui/molecules'
+import { ActivityItem, NFTRow } from '@/ui/organisms'
 import { Ban, CreditCard, Gavel, Handshake, Slash, Tag, X } from '@/ui/icons'
 
 // feature components

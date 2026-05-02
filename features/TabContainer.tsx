@@ -1,6 +1,6 @@
 import { RefObject, useEffect, useRef } from 'react'
 
-import { Tab } from '@/ui/organisms'
+import { Tab } from '@/ui/molecules'
 import { ResolvedAction, TabCtx, tabUIConfig, type TabName, type TabResource } from './tab-config'
 
 type Props<K extends TabName> = {

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import type { Hex } from '@/domain/shared/eth'
 import type { Page } from '@/lib/utils/http'
@@ -8,6 +8,7 @@ import { type Tx, useTx } from '@/app/providers/TxProvider'
 
 // shared components
 import { SalesReceipt } from '@/ui/organisms'
+import { SettingsMenu } from '@/ui/organisms'
 import { Modal, TextInput } from '@/ui/atoms'
 
 // tab config
@@ -32,7 +33,6 @@ import { Header } from './marketplace/ui/Header'
 import { Manual } from './marketplace/ui/Manual'
 import { Tabs } from './marketplace/ui/Tabs'
 import { buildSearchDefault } from './marketplace/lib/build-search-default'
-import { SettingsMenu } from '@/ui/molecules/SettingsMenu'
 
 type InitialState = {
   [K in TabName]: Page<TabResource[K]>
@@ -44,11 +44,6 @@ type InitialState = {
 type InfoModalType = 'manual' | 'settings'
 
 type InfoModalState = { open: true; type: InfoModalType } | { open: false }
-
-const infoModalContent: { [K in InfoModalType]: ReactNode } = {
-  manual: <Manual />,
-  settings: <SettingsMenu />,
-}
 
 export function MarketplaceView(initial: InitialState) {
   // --- route params ---
@@ -67,6 +62,12 @@ export function MarketplaceView(initial: InitialState) {
   const [infoModal, setInfoModal] = useState<InfoModalState>({
     open: false,
   })
+  const [manualTab, setManualTab] = useState<'shortcuts' | 'filters' | 'examples'>('shortcuts')
+
+  const infoModalContent = {
+    manual: <Manual initialTab={manualTab} />,
+    settings: <SettingsMenu />,
+  }
 
   // --- filters ---
   const { filters, setFilters, mineFlag, handleSearch, resetFilters, resetMineFlag } =
@@ -175,6 +176,11 @@ export function MarketplaceView(initial: InitialState) {
   const searchRef = useRef<HTMLInputElement>(null)
 
   // --- keyboard shortcuts ---
+  const openManual = (tab: 'shortcuts' | 'filters' | 'examples') => {
+    setManualTab(tab)
+    setInfoModal({ open: true, type: 'manual' })
+  }
+
   useKeyboardShortcuts({
     // tab switch
     f: () => setTab('feed'),
@@ -194,7 +200,11 @@ export function MarketplaceView(initial: InitialState) {
 
     // header shortcuts
     W: () => walletInteraction(),
-    m: () => setInfoModal({ open: true, type: 'manual' }),
+    m: () => openManual('shortcuts'),
+    '1': () => openManual('shortcuts'),
+    '2': () => openManual('filters'),
+    '3': () => openManual('examples'),
+
     '.': () => setInfoModal({ open: true, type: 'settings' }),
     t: () => showTxs(onNavigateToTx), // open provider tx overview
 
