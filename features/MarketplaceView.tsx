@@ -117,7 +117,7 @@ export function MarketplaceView(initial: InitialState) {
 
   // --- tab actions ---
   const { actions: tabActions, modal: actionModal, closeModal } = useTabActions()
-  const mainAction = useMainAction(tab, selectedItem, { isMine }, tabActions, {
+  const mainAction = useMainAction(tab, selectedItem, { isMine, isMyListing }, tabActions, {
     refetch: refetchOwnedIds,
   })
 
