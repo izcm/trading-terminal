@@ -119,7 +119,7 @@ export const tabUIConfig: TabUIConfig = {
 
   explore: {
     galleryItem: nft => <NFTRow nft={nft} />,
-    actionBtnProps: (nft, _disabled, ctx) => {
+    actionBtnProps: (nft, disabled, ctx) => {
       const isMyToken = ctx?.isMine?.(nft)
 
       const content = isMyToken
@@ -128,6 +128,7 @@ export const tabUIConfig: TabUIConfig = {
 
       return {
         className: 'btn btn-primary',
+        disabled,
         children: btnContent(content.Icon as IconType, content.label),
       }
     },

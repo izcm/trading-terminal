@@ -16,8 +16,14 @@ type TabPages = {
   [K in TabName]: Page<TabResource[K]>
 }
 
+// initialPages paused for now — hook starts from empty state and fetches on mount
+const emptyPages: TabPages = {
+  feed: { items: [], cursor: null },
+  explore: { items: [], cursor: null },
+  sales: { items: [], cursor: null },
+}
+
 export function useMarketplaceData(
-  initialPages: TabPages,
   tab: TabName,
   filters: Record<TabName, Record<string, string[]>>,
   mineFlag: Record<TabName, boolean>,
@@ -27,7 +33,7 @@ export function useMarketplaceData(
   buildMineQuery: (filters: Record<string, string[]>) => Record<string, string[]>,
   onPageReplaced?: <K extends TabName>(tab: K, page: Page<TabResource[K]>) => void
 ) {
-  const [state, setState] = useState<TabPages>(initialPages)
+  const [state, setState] = useState<TabPages>(emptyPages)
   const { add: addFresh, isFresh: isFresh } = useFresh(tab)
   const { mergePage, replacePage, addItemSorted, updateItem } = useTabMutations(setState)
 

@@ -31,12 +31,12 @@ export function SalesReceipt({ sale }: { sale: Sale }) {
 
       {/* tx info */}
       <div className="flex flex-col gap-1">
+        <Row label="chain id" value={sale.chainId} />
         <Row
           label="tx hash"
           value={<Copyable value={sale.txHash}>{truncateHex(sale.txHash)}</Copyable>}
         />
         <Row label="block" value={sale.blockNumber} />
-        <Row label="log index" value={sale.logIndex} />
       </div>
 
       {/* call */}

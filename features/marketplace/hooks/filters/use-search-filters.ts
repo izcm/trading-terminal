@@ -11,7 +11,7 @@ export const DEFAULT_FILTERS: Record<TabName, Record<string, string[]>> = {
 
 export const DEFAULT_MINE_FLAG: Record<TabName, boolean> = {
   feed: true,
-  sales: true,
+  sales: false,
   explore: false,
 }
 

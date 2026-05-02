@@ -32,7 +32,6 @@ import { Header } from './marketplace/ui/Header'
 import { Manual } from './marketplace/ui/Manual'
 import { Tabs } from './marketplace/ui/Tabs'
 import { buildSearchDefault } from './marketplace/lib/build-search-default'
-import { dmrktDomain } from '@/protocol/eip712/domain'
 import { SettingsMenu } from '@/ui/molecules/SettingsMenu'
 
 type InitialState = {
@@ -56,7 +55,7 @@ export function MarketplaceView(initial: InitialState) {
   const { collection: routeCollection, chainId: routeChainId } = initial
 
   // --- wallet ---
-  const { account, isConnected, connect, disconnect, chainId } = useWallet()
+  const { account, isConnected, connect, disconnect, chainId: walletChainId } = useWallet()
   const { showTxs } = useTx()
   const walletInteraction = () => (isConnected ? disconnect() : connect())
 
@@ -101,7 +100,6 @@ export function MarketplaceView(initial: InitialState) {
   )
 
   const { state, isFresh, isLoadingMore, loadMore } = useMarketplaceData(
-    initial,
     tab,
     filters,
     mineFlag,
@@ -119,9 +117,13 @@ export function MarketplaceView(initial: InitialState) {
 
   // --- tab actions ---
   const { actions: tabActions, modal: actionModal, closeModal } = useTabActions()
-  const resolvedTabAction = useMainAction(tab, selectedItem, { isMine }, tabActions, {
+  const mainAction = useMainAction(tab, selectedItem, { isMine }, tabActions, {
     refetch: refetchOwnedIds,
   })
+
+  const wrongChain = isConnected && walletChainId !== routeChainId
+  const resolvedMainAction =
+    wrongChain && tab !== 'sales' ? { run: undefined, loading: false, disabled: true } : mainAction
 
   // --- navigation helpers ---
   function resetFiltersAndSelected(tab: TabName) {
@@ -198,8 +200,9 @@ export function MarketplaceView(initial: InitialState) {
 
     // tab internals
     a: () => {
-      if (!resolvedTabAction?.run || resolvedTabAction.disabled || resolvedTabAction.loading) return
-      resolvedTabAction.run()
+      if (!resolvedMainAction?.run || resolvedMainAction.disabled || resolvedMainAction.loading)
+        return
+      resolvedMainAction.run()
     },
     l: () => focusGalleryRef.current?.(),
     i: () => searchRef.current?.focus(),
@@ -211,10 +214,9 @@ export function MarketplaceView(initial: InitialState) {
         {/* ---- header ---- */}
 
         <Header
-          chainId={chainId}
-          inventory={{ count: ownedIds.length, isLoading: loadingInventory }}
-          contractAddress={dmrktDomain.verifyingContract}
+          chainId={routeChainId}
           collection={routeCollection}
+          inventory={{ count: ownedIds.length, isLoading: loadingInventory }}
           onOpenManual={() => setInfoModal({ open: true, type: 'manual' })}
           onOpenSettings={() => setInfoModal({ open: true, type: 'settings' })}
           onNavigateToTx={onNavigateToTx}
@@ -245,7 +247,7 @@ export function MarketplaceView(initial: InitialState) {
           onLoadMore={loadMore}
           isLoading={isLoadingMore}
           hasMore={state[tab].cursor !== null}
-          tabAction={resolvedTabAction}
+          tabAction={resolvedMainAction}
           ctx={{ isMine, isMyListing }}
         />
       </main>

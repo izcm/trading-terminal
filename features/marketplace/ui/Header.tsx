@@ -3,6 +3,8 @@ import dynamic from 'next/dynamic'
 
 import type { Tx } from '@/app/providers/TxProvider'
 
+import { dmrktDomain } from '@/protocol/eip712/domain'
+
 import type { Hex } from '@/domain/shared/eth'
 import { truncateHex } from '@/lib/utils/hex'
 
@@ -11,6 +13,7 @@ import { Spinner, Copyable } from '@/ui/atoms'
 import { Popover } from '@/ui/molecules'
 
 import { TxTracker } from '../../realtime/ui/TxTracker'
+import { useWallet } from '@/features/wallet/hooks/use-wallet'
 
 const WalletWidget = dynamic(
   () => import('../../wallet/ui/WalletWidget').then(m => m.WalletWidget),
@@ -23,85 +26,113 @@ type InventoryInfo = {
 }
 
 type HeaderProps = {
-  chainId: number | undefined
-  inventory: InventoryInfo
-  contractAddress: Hex | undefined
+  chainId: number
   collection: Hex
+  inventory: InventoryInfo
   onOpenManual: () => void
   onOpenSettings: () => void
   onNavigateToTx: (tx: Tx) => void
 }
 
+/**
+ * Wallet state drives two conditional areas:
+ *
+ * Chain badge (left) — only shown when connected.
+ *   Wrong chain → display-only badge showing wallet's current chainId.
+ *   Correct chain → clickable badge, opens contract address popover.
+ *
+ * Status area (right) — settings always visible, then:
+ *   Not connected → "not connected" error.
+ *   Wrong chain   → "wrong chainId" error.
+ *   Happy path    → inventory count + tx tracker.
+ */
 export function Header({
-  chainId,
   inventory,
-  contractAddress,
   collection,
+  chainId,
   onOpenManual,
   onOpenSettings,
   onNavigateToTx,
 }: HeaderProps) {
+  const { chainId: walletChainId, isConnected } = useWallet()
+
+  const wrongChainId = chainId !== walletChainId
+
+  const dmrktAddress = dmrktDomain.verifyingContract
+
   return (
-    <div className="flex items-center mb-1">
-      <div className="basis-1/3 flex items-center justify-start gap-4 text-sm">
+    <div className="flex items-center mb-1 gap-4">
+      {/* wallet + chain badge */}
+      <div className="basis-3/8 flex items-center justify-start gap-4 text-sm">
         <WalletWidget />
-        {chainId ? (
-          <Popover
-            align="left"
-            trigger={
-              <button className="text-sm text-accent cursor-pointer border border-transparent hover:border-accent/40 px-1 rounded transition-colors">
-                [ chainId: {chainId} ]
-              </button>
-            }
-          >
-            <div className="flex flex-col gap-2">
-              <div className="flex gap-4 justify-between">
-                <span className="text-muted">dmrkt engine</span>
-                {contractAddress ? (
-                  <Copyable value={contractAddress}>{truncateHex(contractAddress)}</Copyable>
-                ) : (
-                  <span className="text-muted">—</span>
-                )}
+        {isConnected &&
+          (wrongChainId ? (
+            <button className="text-sm text-accent cursor-pointer border border-transparent hover:border-accent/40 px-1 rounded pointer-events-none">
+              [ chainId: {walletChainId} ]
+            </button>
+          ) : (
+            <Popover
+              align="left"
+              trigger={
+                <button className="text-sm text-accent cursor-pointer border border-transparent hover:border-accent/40 px-1 rounded transition-colors">
+                  [ chainId: {chainId}]
+                </button>
+              }
+            >
+              {/* contract addresses */}
+              <div className="flex flex-col gap-2">
+                <div className="flex gap-4 justify-between">
+                  <span className="text-muted">dmrkt engine</span>
+                  {dmrktAddress ? (
+                    <Copyable value={dmrktAddress}>{truncateHex(dmrktAddress)}</Copyable>
+                  ) : (
+                    <span className="text-muted">—</span>
+                  )}
+                </div>
+                <div className="flex gap-4 justify-between">
+                  <span className="text-muted">collection</span>
+                  <Copyable value={collection}>{truncateHex(collection)}</Copyable>
+                </div>
               </div>
-              <div className="flex gap-4 justify-between">
-                <span className="text-muted">collection</span>
-                <Copyable value={collection}>{truncateHex(collection)}</Copyable>
-              </div>
-            </div>
-          </Popover>
-        ) : (
-          <span className="text-failure">Not connected</span>
-        )}
+            </Popover>
+          ))}
       </div>
 
-      <div className="basis-1/3 flex justify-center">
+      {/* manual */}
+      <div className="basis-2/8 flex justify-center">
         <button onClick={onOpenManual} className="btn btn-menu w-full max-w-[250px]">
           dmrkt manual
         </button>
       </div>
 
-      <div className="basis-1/3 flex items-center justify-between gap-4">
+      {/* settings + wallet status OR inventory + session txs */}
+      <div className="basis-3/8 flex items-center justify-between gap-4">
         <button className="btn btn-menu" onClick={onOpenSettings}>
           <Settings size={16} />
         </button>
 
-        <div className="flex gap-4">
-          <div className="flex items-center justify-center gap-2 text-accent text-sm">
-            {inventory.isLoading ? (
-              <>
-                <Spinner size={16} />
-                <span>inventory...</span>
-              </>
-            ) : (
-              <>
-                <Backpack size={16} />
-                <span>{inventory.count}</span>
-              </>
-            )}
+        {!isConnected ? (
+          <span className="text-failure text-sm">no wallet connected</span>
+        ) : wrongChainId ? (
+          <span className="text-failure text-sm">wrong chainId - switch to {chainId}</span>
+        ) : (
+          <div className="flex gap-4">
+            <div className="flex items-center justify-center gap-2 text-accent text-sm">
+              {inventory.isLoading ? (
+                <>
+                  <Spinner size={16} />
+                  <span>inventory...</span>
+                </>
+              ) : (
+                <>
+                  <Backpack size={16} />
+                  <span>{inventory.count}</span>
+                </>
+              )}
+            </div>
+            <TxTracker onNavigateToTx={onNavigateToTx} />
           </div>
-
-          <TxTracker onNavigateToTx={onNavigateToTx} />
-        </div>
+        )}
       </div>
     </div>
   )

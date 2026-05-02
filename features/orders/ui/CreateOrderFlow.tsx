@@ -1,7 +1,7 @@
-import { parseEther } from 'viem' // todo: decouple here
+import { parseEther } from 'viem'
 
-import { OrderCore, OrderSide } from '@/protocol/eip712'
-import { Hex } from '@/domain/shared/eth'
+import { dmrktDomain, OrderCore, OrderSide } from '@/protocol/eip712'
+import type { Hex } from '@/domain/shared/eth'
 
 import { toast } from '@/ui/organisms'
 
@@ -17,11 +17,20 @@ type Props = {
 }
 
 export function CreateOrderFlow({ collection, tokenId, side, onOrderCreated }: Props) {
-  const { account } = useWallet()
+  const { account, chainId: walletChainId } = useWallet()
   const { create } = useCreateOrder()
 
   async function wrapAndSign(input: FormInput) {
     if (!account) return
+
+    if (walletChainId !== dmrktDomain.chainId) {
+      toast({
+        title: 'Wrong network',
+        description: 'Switch network to continue',
+        variant: 'error',
+      })
+      return
+    }
 
     const order: OrderCore = {
       side,

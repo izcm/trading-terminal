@@ -22,6 +22,12 @@ export const FIELD_NAME_MAP: Record<string, string> = {
   logindex: 'logIndex',
   log_index: 'logIndex',
 
+  // sort params
+  sortfield: 'sortField',
+  sort_field: 'sortField',
+  sortdir: 'sortDir',
+  sort_dir: 'sortDir',
+
   // single-word fields (included for completeness / uniform lookup)
   price: 'price',
   side: 'side',

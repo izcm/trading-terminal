@@ -6,5 +6,5 @@ export const weiToChartNumber = (wei: bigint): number => {
 
 export const formatEth2 = (wei: bigint) => {
   const eth = Number(formatEther(wei))
-  return eth.toFixed(2)
+  return parseFloat(eth.toFixed(4)).toString()
 }
