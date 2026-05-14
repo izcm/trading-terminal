@@ -15,7 +15,7 @@ import { activity } from '@/domain/shared/activity'
 
 // shared components
 import { ActivityItem, NFTRow } from '@/ui/organisms'
-import { Ban, CreditCard, Gavel, Handshake, Slash, Tag, X } from '@/ui/icons'
+import { Ban, CreditCard, FileText, Gavel, Handshake, Slash, Tag, X } from '@/ui/icons'
 
 // feature components
 import { ListingDetails } from './marketplace/ui/ListingDetails'
@@ -139,7 +139,7 @@ export const tabUIConfig: TabUIConfig = {
     details: s => <SaleDetails sale={s} />,
     actionBtnProps: () => ({
       className: 'btn btn-secondary',
-      children: 'Transaction details',
+      children: btnContent(FileText as IconType, 'Tx details'),
     }),
   },
 }

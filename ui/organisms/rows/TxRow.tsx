@@ -27,20 +27,20 @@ export function TxRow({ tx, onClick }: Props) {
       <div className="flex gap-6 justify-between p-4">
         <StatusIcon status={tx.status} />
 
-        <div className="shrink-0 w-22">
+        <div className="shrink-0 w-22 whitespace-nowrap">
           <Copyable value={tx.hash} className="text-accent">
             {shortHash}
           </Copyable>
         </div>
 
-        <span className="text-muted w-[80px] text-right">{timeAgo(tx.createdAt)}</span>
+        <span className="text-muted w-[80px] text-right whitespace-nowrap">{timeAgo(tx.createdAt)}</span>
 
         <span className="flex-1 text-muted">{tx.label}</span>
 
         <button
           className={`basis-[110px] flex items-center justify-between gap-2 shrink-0 cursor-pointer ${tx.status !== 'success' ? 'invisible' : ''}`}
         >
-          <div className="text-accent">{LINK_LABELS[tx.label]}</div>
+          <div className="text-accent whitespace-nowrap">{LINK_LABELS[tx.label]}</div>
 
           <svg
             className="w-3.5 h-3.5 text-accent"

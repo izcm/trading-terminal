@@ -1,6 +1,7 @@
 export {
   Ban,
   CreditCard,
+  FileText,
   Gavel,
   Handshake,
   Layers,

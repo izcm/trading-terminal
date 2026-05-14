@@ -100,7 +100,7 @@ export function Header({
 
       {/* manual */}
       <div className="basis-2/8 flex justify-center">
-        <button onClick={onOpenManual} className="btn btn-menu w-full max-w-[250px]">
+        <button onClick={onOpenManual} className="btn btn-menu w-full">
           dmrkt manual
         </button>
       </div>
