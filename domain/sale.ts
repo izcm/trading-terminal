@@ -31,8 +31,8 @@ export type Sale = {
   // Transaction details
   logIndex: number
 
-  nftCollection?: NFTCollection | null
-  listing?: Listing | null
+  nftCollection?: NFTCollection
+  listing?: Listing
 
   txContext?: {
     txIndex: number

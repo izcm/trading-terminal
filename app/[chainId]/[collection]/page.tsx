@@ -4,6 +4,7 @@ import {
   getDmrktListings,
   getDmrktNFTs,
   getDmrktSales,
+  getDmrktNFTCollections,
 } from '@/lib/dmrkt-indexer/actions/dmrkt-page.get'
 
 import { MarketplaceView } from '@/features/MarketplaceView'

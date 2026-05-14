@@ -45,12 +45,19 @@ export default function Page() {
     return () => clearTimeout(id)
   }, [])
 
+  // demo contains one nft collection
   const first = nftCollections[0]
+
+  // has indexer
+  // 1. backfilled nfts
+  // 2. are there recorded settlements?
+  // 3. have indexer reconstructed full settlements receipts?
   const isDone =
     status?.nfts.done &&
     status.settlements.total > 0 &&
     status.settlements.reconstructed === status.settlements.total
 
+  // poll progress every 2 seconds
   useEffect(() => {
     if (!first || isDone) return
     const poll = async () => {
@@ -68,25 +75,31 @@ export default function Page() {
     return () => clearInterval(id)
   }, [first, isDone])
 
-  // loading collections
+  const dmrktBanner = () => (
+    <h1
+      className="text-accent glow"
+      style={{ fontSize: '4rem', letterSpacing: '-0.03em', fontWeight: 800 }}
+    >
+      d | mrkt
+    </h1>
+  )
+
+  const bannerClasses = 'h-screen flex flex-col gap-12 items-center justify-center fade-in'
+
+  // show banner and loading spinner when no collection is indexed
   if (!first && !error) {
     return (
-      <div className="h-screen flex items-center justify-center">
+      <div className={`${bannerClasses} fade-in`}>
+        {dmrktBanner()}
         <Spinner size={20} />
       </div>
     )
   }
 
-  // indexing gate — always show bars; show collection buttons when done
+  // collection has been indexed => show backfill progress and settlement count
   return (
-    <div className="h-screen flex flex-col items-center justify-center gap-12 font-mono fade-in">
-      <h1
-        className="text-accent glow"
-        style={{ fontSize: '4rem', letterSpacing: '-0.03em', fontWeight: 800 }}
-      >
-        d | mrkt
-      </h1>
-
+    <div className={bannerClasses}>
+      {dmrktBanner()}
       <div className="flex flex-col gap-5 w-56">
         {status ? (
           <>

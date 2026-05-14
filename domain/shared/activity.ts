@@ -15,6 +15,7 @@ export type Activity = {
   status?: ActivityStatus
   isCollectionBid?: boolean
   collectionSymbol?: string
+  supplyDecimals?: number
 }
 
 export const activity = {
@@ -30,6 +31,7 @@ export const activity = {
       isCollectionBid: listing.isCollectionBid,
       collectionSymbol: listing.nftCollection?.symbol ?? 'unknown',
       status: listing.status,
+      supplyDecimals: supplyDecimals(listing.nftCollection ?? {}),
     }
   },
 
@@ -45,4 +47,10 @@ export const activity = {
       collectionSymbol: sale.nftCollection?.symbol ?? 'unknown',
     }
   },
+}
+
+const supplyDecimals = ({ totalSupply }: { totalSupply?: bigint }) => {
+  if (!totalSupply) return undefined
+
+  return String(totalSupply).length
 }

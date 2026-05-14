@@ -64,15 +64,15 @@ export function OrderForm({ tokenId, onSubmit, back }: Props) {
 
   return (
     <form ref={formRef} onSubmit={submit} className="flex flex-col w-[400px] gap-4">
-      <div className="text-muted">nft #{tokenId}</div>
+      <div className="text-subtle">nft #{tokenId}</div>
 
       <div>
-        <div className="text-muted mb-2">Price (ETH)</div>
+        <div className="text-subtle mb-2">Price (ETH)</div>
         <TextInput placeholder="0.15" value={price} onChange={setPrice} />
       </div>
 
       <div>
-        <div className="text-muted mb-2">Durations (days)</div>
+        <div className="text-subtle mb-2">Durations (days)</div>
 
         <div className="flex justify-center gap-4">
           {durations.map(d => (

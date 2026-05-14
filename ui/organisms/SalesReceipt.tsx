@@ -6,7 +6,7 @@ import { Copyable } from '../atoms'
 function Row({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div className="flex justify-between items-center py-1">
-      <span className="text-sm text-muted">{label}</span>
+      <span className="text-sm text-subtle">{label}</span>
       <span className="text-sm font-mono text-right">{value}</span>
     </div>
   )
@@ -24,7 +24,7 @@ export function SalesReceipt({ sale }: { sale: Sale }) {
       {/* header */}
       <div className="flex gap-4 justify-between items-center">
         <h2 className="text-sm font-semibold">Transaction</h2>
-        <span className="text-sm text-muted">#{`${sale.chainId}:${truncateHex(sale.txHash)}`}</span>
+        <span className="text-sm text-subtle">#{`${sale.chainId}:${truncateHex(sale.txHash)}`}</span>
       </div>
 
       <Divider />

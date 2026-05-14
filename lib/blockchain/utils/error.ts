@@ -16,7 +16,7 @@ import {
 export function decodeContractError(
   error: unknown,
   abi: Abi,
-  errorMessages?: Record<string, string>,
+  errorMessages?: Record<string, string>
 ): string | undefined {
   if (
     error instanceof ContractFunctionExecutionError &&

@@ -1,35 +1,48 @@
 @theme {
+  /* --- backgrounds --- */
+  /* use as: bg-primary, bg-secondary, bg-surface */
   --color-primary: var(--bg-primary);
   --color-secondary: var(--bg-secondary);
   --color-surface: var(--bg-surface);
+
+  /* --- text --- */
+  /* use as: text-fg (full), text-subtle (secondary), text-muted (dim/disabled) */
+  --color-fg: var(--text-primary);
+  --color-subtle: var(--text-subtle);
   --color-muted: var(--text-muted);
 
-  --color-sale: var(--accent-neutral);
-  --color-ask: var(--accent-ask);
-  --color-bid: var(--accent-bid);
-
-  --color-muted: var(--text-muted);
-
+  /* --- borders --- */
+  /* use as: border-default, border-soft */
   --color-default: var(--border-default);
   --color-soft: var(--border-soft);
 
-  --color-accent-strong: var(--accent-strong);
+  /* --- accent --- */
+  /* use as: text-accent, bg-accent, border-accent (+ /opacity works) */
   --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
   --color-accent-weak: var(--accent-weak);
 
+  /* --- market colors --- */
+  /* use as: text-ask, text-bid, text-sale */
+  --color-ask: var(--accent-ask);
+  --color-bid: var(--accent-bid);
+  --color-sale: var(--accent-neutral);
+
+  /* --- status --- */
+  /* use as: text-success, text-warning, text-failure (+ -weak variants) */
   --color-success: var(--success);
   --color-success-weak: var(--success-weak);
-
   --color-warning: var(--warning);
   --color-warning-weak: var(--warning-weak);
-
   --color-failure: var(--failure);
   --color-failure-weak: var(--failure-weak);
 
+  /* --- order state (used by .order-* classes below) --- */
   --order-active: var(--accent);
   --order-filled: var(--color-sale);
   --order-dead: var(--failure-weak);
 
+  /* --- typography --- */
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Helvetica, Arial,
     'Apple Color Emoji', 'Segoe UI Emoji';
@@ -50,6 +63,7 @@
   --bg-muted: rgba(120, 255, 180, 0.05);
 
   --text-primary: rgba(230, 235, 240, 0.94);
+  --text-subtle: rgba(195, 205, 215, 0.75);
   --text-muted: rgba(165, 175, 185, 0.6);
 
   --border-default: rgba(120, 255, 180, 0.35);
@@ -81,21 +95,18 @@
 :root[data-theme='void'] {
   color-scheme: dark;
 
-  /* push separation a bit more */
   --bg-primary: #010208;
   --bg-secondary: #060826; /* more blue */
   --bg-surface: #0b0f29; /* noticeably lifted */
-  --bg-muted: rgba(120, 140, 255, 0.12); /* slightly stronger */
+  --bg-muted: rgba(120, 140, 255, 0.12);
 
-  /* text stays mostly fine */
   --text-primary: rgba(220, 222, 235, 0.95);
+  --text-subtle: rgba(190, 195, 225, 0.78);
   --text-muted: rgba(170, 180, 220, 0.65);
 
-  /* borders → more readable layering */
   --border-default: rgba(120, 140, 255, 0.45);
   --border-soft: rgba(120, 140, 255, 0.22);
 
-  /* accents untouched (your palette is good) */
   --accent: #7c84ff;
   --accent-weak: rgba(124, 132, 255, 0.7);
   --accent-strong: #a5abff;
@@ -116,13 +127,12 @@
   --failure: #f0356a;
   --failure-weak: rgba(240, 53, 106, 0.75);
 
-  /* slightly stronger glow so surfaces pop */
   --panel-shadow:
     0 0 24px rgba(124, 132, 255, 0.22), 0 0 80px rgba(124, 132, 255, 0.14),
     0 0 160px rgba(58, 209, 255, 0.1);
 }
 
-/* optional UI helpers (makes states feel intentional) */
+/* order state classes */
 
 .order-active {
   color: var(--order-active);

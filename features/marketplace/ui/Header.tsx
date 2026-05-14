@@ -82,7 +82,7 @@ export function Header({
               {/* contract addresses */}
               <div className="flex flex-col gap-2">
                 <div className="flex gap-4 justify-between">
-                  <span className="text-muted">dmrkt engine</span>
+                  <span className="text-subtle">dmrkt engine</span>
                   {dmrktAddress ? (
                     <Copyable value={dmrktAddress}>{truncateHex(dmrktAddress)}</Copyable>
                   ) : (
@@ -90,7 +90,7 @@ export function Header({
                   )}
                 </div>
                 <div className="flex gap-4 justify-between">
-                  <span className="text-muted">collection</span>
+                  <span className="text-subtle">collection</span>
                   <Copyable value={collection}>{truncateHex(collection)}</Copyable>
                 </div>
               </div>

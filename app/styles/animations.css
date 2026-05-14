@@ -40,7 +40,7 @@
 }
 
 .fresh {
-  animation: freshPulse 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards 2;
+  animation: freshPulse 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards 1;
 }
 
 @keyframes freshPulse {
@@ -55,7 +55,7 @@
 }
 
 .border-highlight {
-  animation: borderHighlight 2s ease-in-out forwards 1;
+  animation: borderHighlight 1.2s ease-in-out forwards 2;
 }
 
 @keyframes borderHighlight {

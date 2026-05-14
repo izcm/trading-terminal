@@ -61,6 +61,11 @@ function ActivityRow({ item }: { item: Props }) {
 
   const badgeClasses = 'absolute -bottom-1 -right-1 text-[10px] px-1 rounded text-black'
 
+  const paddedTokenId = () => {
+    const targetLength = item.activity.supplyDecimals
+    return targetLength === undefined ? tokenId : String(tokenId).padStart(targetLength, '0')
+  }
+
   return (
     <div className="base-row gap-4 py-1 px-2">
       {/* NFT image */}
@@ -93,7 +98,7 @@ function ActivityRow({ item }: { item: Props }) {
 
         <div>
           <span className="text-xs text-muted inline-block w-[75px]">
-            {symbol} {!isCollectionBid ? `#${tokenId}` : '#any'}
+            {symbol} {!isCollectionBid ? `#${paddedTokenId()}` : '#any'}
           </span>
           {status && status !== 'active' && (
             <span className={`text-[11px] tracking-wide ${listingStatusToClass[status]}`}>

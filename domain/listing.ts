@@ -25,7 +25,7 @@ export type Listing = {
   start: number
   end: number
 
-  nftCollection?: NFTCollection | null
+  nftCollection?: NFTCollection
 
   rawOrder: Order
 

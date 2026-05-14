@@ -33,9 +33,11 @@ export function TxRow({ tx, onClick }: Props) {
           </Copyable>
         </div>
 
-        <span className="text-muted w-[80px] text-right whitespace-nowrap">{timeAgo(tx.createdAt)}</span>
+        <span className="text-muted w-[80px] text-right whitespace-nowrap">
+          {timeAgo(tx.createdAt)}
+        </span>
 
-        <span className="flex-1 text-muted">{tx.label}</span>
+        <span className="flex-1 text-subtle">{tx.label}</span>
 
         <button
           className={`basis-[110px] flex items-center justify-between gap-2 shrink-0 cursor-pointer ${tx.status !== 'success' ? 'invisible' : ''}`}

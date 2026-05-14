@@ -33,12 +33,16 @@ import { Header } from './marketplace/ui/Header'
 import { Manual } from './marketplace/ui/Manual'
 import { Tabs } from './marketplace/ui/Tabs'
 import { buildSearchDefault } from './marketplace/lib/build-search-default'
+import { CollectionProvider } from './collection/CollectionContext'
+
+import type { NFTCollection } from '@/domain/nft-collection'
 
 type InitialState = {
   [K in TabName]: Page<TabResource[K]>
 } & {
   chainId: number
   collection: Hex
+  nftCollection?: NFTCollection
 }
 
 type InfoModalType = 'manual' | 'settings'
@@ -47,7 +51,7 @@ type InfoModalState = { open: true; type: InfoModalType } | { open: false }
 
 export function MarketplaceView(initial: InitialState) {
   // --- route params ---
-  const { collection: routeCollection, chainId: routeChainId } = initial
+  const { collection: routeCollection, chainId: routeChainId, nftCollection } = initial
 
   // --- wallet ---
   const { account, isConnected, connect, disconnect, chainId: walletChainId } = useWallet()
@@ -218,7 +222,7 @@ export function MarketplaceView(initial: InitialState) {
     i: () => searchRef.current?.focus(),
   })
 
-  return (
+  const content = (
     <div className="flex gap-4 h-screen max-w-4xl px-2 mx-auto overflow-hidden font-mono">
       <main className="flex-1 flex flex-col gap-4 mt-4">
         {/* ---- header ---- */}
@@ -288,4 +292,7 @@ export function MarketplaceView(initial: InitialState) {
       )}
     </div>
   )
+
+  if (!nftCollection) return content
+  return <CollectionProvider collection={nftCollection}>{content}</CollectionProvider>
 }

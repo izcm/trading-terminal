@@ -12,7 +12,7 @@ function Row({ label, value, copy }: { label: string; value: React.ReactNode; co
       onClick={() => copy && navigator.clipboard.writeText(copy)}
     >
       <span className="text-sm font-mono text-accent">{label}</span>
-      <span className="text-sm text-muted text-right">{value}</span>
+      <span className="text-sm text-subtle text-right">{value}</span>
     </div>
   )
 }
@@ -32,7 +32,7 @@ function ExRow({ query, desc }: { query: string; desc: string }) {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="border-t border-soft pt-4 space-y-2">
-      <h3 className="text-[11px] text-muted uppercase tracking-widest">{title}</h3>
+      <h3 className="text-[11px] text-subtle uppercase tracking-widest">{title}</h3>
       {children}
     </div>
   )
@@ -71,10 +71,10 @@ export function Manual({ initialTab = 'shortcuts' }: { initialTab?: Tab } = {}) 
               onClick={() => setTab(key)}
               autoFocus={key === tab}
               className={`text-sm cursor-pointer font-semibold transition ${
-                tab === key ? 'text-accent' : 'text-muted hover:text-accent-strong'
+                tab === key ? 'text-accent' : 'text-subtle hover:text-accent-strong'
               }`}
             >
-              <span className="text-muted font-mono">{shortcut}.</span> {label}
+              <span className="text-subtle font-mono">{shortcut}.</span> {label}
             </button>
           ))}
         </div>

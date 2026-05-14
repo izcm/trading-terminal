@@ -38,7 +38,7 @@ export function Checkbox({ label, checked, onChange }: CheckboxProps) {
         </span>
       </div>
 
-      <span className="text-sm text-muted peer-hover:text-accent transition-colors">{label}</span>
+      <span className="text-sm text-subtle peer-hover:text-accent transition-colors">{label}</span>
     </label>
   )
 }

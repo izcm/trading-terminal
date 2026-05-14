@@ -34,8 +34,13 @@ export function useFillOrder(order?: Order, listingId?: string, onConfirmed?: ()
     if (!isFillable || isChecking || !sim.data?.request) return
 
     const hash = await writeContractAsync(sim.data.request)
-    addTx({ hash, listingId, label: 'order filled', onConfirmed, decodeError: (err: unknown) =>
-      decodeContractError(err, orderbookAbi, ORDERBOOK_ERROR_MESSAGES)
+    addTx({
+      hash,
+      listingId,
+      label: 'order filled',
+      onConfirmed,
+      decodeError: (err: unknown) =>
+        decodeContractError(err, orderbookAbi, ORDERBOOK_ERROR_MESSAGES),
     })
   }
 

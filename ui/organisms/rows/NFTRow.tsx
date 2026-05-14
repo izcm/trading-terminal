@@ -6,7 +6,13 @@ export function NFTRow({ nft }: { nft: NFT }) {
   return (
     <div className="base-row gap-4 py-1 px-2">
       <div className="relative shrink-0">
-        <Image src={nft.image} alt={nft.name} width={48} height={48} className="w-12 h-12 rounded object-cover" />
+        <Image
+          src={nft.image}
+          alt={nft.name}
+          width={48}
+          height={48}
+          className="w-12 h-12 rounded object-cover"
+        />
       </div>
 
       <div className="flex flex-col justify-center flex-1 min-h-[56px]">
