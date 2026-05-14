@@ -1,7 +1,6 @@
-import { it, expect, vi } from 'vitest'
+import { it, expect, vi, describe } from 'vitest'
 
 import { Result } from '@/lib/utils/http'
-import { describe } from 'node:test'
 
 export function fetchWith<TArgs extends unknown[], TResult>(
   fn: (...args: TArgs) => Promise<TResult>,

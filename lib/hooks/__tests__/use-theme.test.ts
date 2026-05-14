@@ -1,8 +1,7 @@
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { renderHook } from '@testing-library/react'
 
 import { useTheme } from '../use-theme'
-import { beforeEach } from 'node:test'
 
 describe('useTheme', () => {
   beforeEach(() => {
