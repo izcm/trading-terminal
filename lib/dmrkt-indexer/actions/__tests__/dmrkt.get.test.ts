@@ -18,18 +18,18 @@ describe('dmrkt item getters', () => {
 
   describe('wrappers', () => {
     it('getDmrktListing forwards correct params', () => {
-      getDmrktListing('abc')
-      expect(fetch).toHaveBeenCalledWith(expect.stringContaining('/api/orders/abc'))
+      getDmrktListing(1, '0xabc')
+      expect(fetch).toHaveBeenCalledWith(expect.stringContaining('/api/orders/1:0xabc'))
     })
 
     it('getDmrktSale forwards correct params', () => {
-      getDmrktSale('abc')
-      expect(fetch).toHaveBeenCalledWith(expect.stringContaining('/api/settlements/abc'))
+      getDmrktSale(1, '0xabc')
+      expect(fetch).toHaveBeenCalledWith(expect.stringContaining('/api/settlements/1:0xabc'))
     })
 
     it('getDmrktNFT forwards correct params', () => {
-      getDmrktNFT('abc')
-      expect(fetch).toHaveBeenCalledWith(expect.stringContaining('/api/nfts/abc'))
+      getDmrktNFT(1, '0xcollection', '42')
+      expect(fetch).toHaveBeenCalledWith(expect.stringContaining('/api/nfts/1:0xcollection:42'))
     })
   })
 

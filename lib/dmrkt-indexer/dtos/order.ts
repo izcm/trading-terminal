@@ -40,7 +40,7 @@ export type OrderDTO = {
 export function toListing(dto: OrderDTO): Listing {
   return {
     ...dto,
-    nftCollection: dto.nftCollection ? toNFTCollection(dto.nftCollection) : dto.nftCollection,
+    nftCollection: dto.nftCollection ? toNFTCollection(dto.nftCollection) : undefined,
     tokenId: BigInt(dto.tokenId),
     price: BigInt(dto.price),
   }

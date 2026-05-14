@@ -14,16 +14,20 @@ function mapItem<TDTO, T>(res: Result<TDTO>, toDomain: (dto: TDTO) => T): Result
   return { ok: true, data: toDomain(res.data) }
 }
 
-export function getDmrktListing(id: string): Promise<Result<Listing>> {
-  return getDmrktItem('orders', id)
+export function getDmrktListing(chainId: number, orderHash: string): Promise<Result<Listing>> {
+  return getDmrktItem('orders', `${chainId}:${orderHash}`)
 }
 
-export function getDmrktSale(id: string): Promise<Result<Sale>> {
-  return getDmrktItem('settlements', id)
+export function getDmrktSale(chainId: number, orderHash: string): Promise<Result<Sale>> {
+  return getDmrktItem('settlements', `${chainId}:${orderHash}`)
 }
 
-export function getDmrktNFT(id: string): Promise<Result<NFT>> {
-  return getDmrktItem('nfts', id)
+export function getDmrktNFT(
+  chainId: number,
+  collection: string,
+  tokenId: string | bigint
+): Promise<Result<NFT>> {
+  return getDmrktItem('nfts', `${chainId}:${collection}:${tokenId}`)
 }
 
 export async function getDmrktNFTCollection(

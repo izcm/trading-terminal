@@ -45,14 +45,6 @@ export const pageGetters: { [K in TabName]: PageGetters<K> } = {
   explore: getDmrktNFTs,
 }
 
-export const itemGetters: {
-  [K in TabName]: (id: string) => Promise<Result<TabResource[K]>>
-} = {
-  feed: getDmrktListing,
-  sales: getDmrktSale,
-  explore: getDmrktNFT,
-}
-
 // === CTX ===
 
 export type TabCtx = {

@@ -2,7 +2,6 @@
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import type { Hex } from '@/domain/shared/eth'
 import type { Page } from '@/lib/utils/http'
 import { type Tx, useTx } from '@/app/providers/TxProvider'
 
@@ -40,9 +39,7 @@ import type { NFTCollection } from '@/domain/nft-collection'
 type InitialState = {
   [K in TabName]: Page<TabResource[K]>
 } & {
-  chainId: number
-  collection: Hex
-  nftCollection?: NFTCollection
+  collection: NFTCollection
 }
 
 type InfoModalType = 'manual' | 'settings'
@@ -51,7 +48,8 @@ type InfoModalState = { open: true; type: InfoModalType } | { open: false }
 
 export function MarketplaceView(initial: InitialState) {
   // --- route params ---
-  const { collection: routeCollection, chainId: routeChainId, nftCollection } = initial
+  const { collection } = initial
+  const { address: collectionAddress, chainId } = collection
 
   // --- wallet ---
   const { account, isConnected, connect, disconnect, chainId: walletChainId } = useWallet()
@@ -82,7 +80,7 @@ export function MarketplaceView(initial: InitialState) {
     ids: ownedIds,
     isFetching: loadingInventory,
     refetch: refetchOwnedIds,
-  } = useOwnedTokenIds(routeCollection, account)
+  } = useOwnedTokenIds(collectionAddress, account)
 
   const { isMine, isMyListing, buildMineQuery } = useMine(tab, account, ownedIds)
 
@@ -108,8 +106,8 @@ export function MarketplaceView(initial: InitialState) {
     tab,
     filters,
     mineFlag,
-    routeChainId,
-    routeCollection,
+    chainId,
+    collectionAddress,
     isMine,
     buildMineQuery,
     handlePageReplaced
@@ -126,7 +124,7 @@ export function MarketplaceView(initial: InitialState) {
     refetch: refetchOwnedIds,
   })
 
-  const wrongChain = isConnected && walletChainId !== routeChainId
+  const wrongChain = isConnected && walletChainId !== chainId
   const resolvedMainAction =
     wrongChain && tab !== 'sales' ? { run: undefined, loading: false, disabled: true } : mainAction
 
@@ -222,14 +220,14 @@ export function MarketplaceView(initial: InitialState) {
     i: () => searchRef.current?.focus(),
   })
 
-  const content = (
+  const view = (
     <div className="flex gap-4 h-screen max-w-4xl px-2 mx-auto overflow-hidden font-mono">
       <main className="flex-1 flex flex-col gap-4 mt-4">
         {/* ---- header ---- */}
 
         <Header
-          chainId={routeChainId}
-          collection={routeCollection}
+          chainId={chainId}
+          collection={collectionAddress}
           inventory={{ count: ownedIds.length, isLoading: loadingInventory }}
           onOpenManual={() => setInfoModal({ open: true, type: 'manual' })}
           onOpenSettings={() => setInfoModal({ open: true, type: 'settings' })}
@@ -293,6 +291,5 @@ export function MarketplaceView(initial: InitialState) {
     </div>
   )
 
-  if (!nftCollection) return content
-  return <CollectionProvider collection={nftCollection}>{content}</CollectionProvider>
+  return <CollectionProvider collection={collection}>{view}</CollectionProvider>
 }

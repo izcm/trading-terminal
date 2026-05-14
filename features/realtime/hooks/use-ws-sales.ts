@@ -13,7 +13,7 @@ export function useWsSales({ addItem, updateItem }: WsSubProps) {
         on('settlement.created', async p => {
           const { chainId, orderHash } = p as { chainId: number; orderHash: string }
 
-          const res = await getDmrktSale(`${chainId}:${orderHash}`)
+          const res = await getDmrktSale(chainId, orderHash)
           if (!res.ok) return
 
           addItem('sales', res.data)
@@ -23,7 +23,7 @@ export function useWsSales({ addItem, updateItem }: WsSubProps) {
           const { chainId, orderHash } = p as { chainId: number; orderHash: string }
           const id = `${chainId}:${orderHash}`
 
-          const res = await getDmrktSale(id)
+          const res = await getDmrktSale(chainId, orderHash)
           if (!res.ok) return
 
           const { txContext } = res.data

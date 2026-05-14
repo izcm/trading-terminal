@@ -46,9 +46,9 @@ export function toSale(dto: SettlementDTO): Sale {
     tokenId: BigInt(dto.tokenId),
     price: BigInt(dto.price),
 
-    nftCollection: dto.nftCollection ? toNFTCollection(dto.nftCollection) : null,
+    nftCollection: dto.nftCollection ? toNFTCollection(dto.nftCollection) : undefined,
 
-    listing: dto.order ? toListing(dto.order) : null,
+    listing: dto.order ? toListing(dto.order) : undefined,
 
     txContext: dto.txContext
       ? {

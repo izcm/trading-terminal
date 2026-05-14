@@ -1,11 +1,9 @@
-import type { Hex } from '@/domain/shared/eth'
-
 import {
   getDmrktListings,
   getDmrktNFTs,
   getDmrktSales,
-  getDmrktNFTCollections,
 } from '@/lib/dmrkt-indexer/actions/dmrkt-page.get'
+import { getDmrktNFTCollection } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
 
 import { MarketplaceView } from '@/features/MarketplaceView'
 
@@ -21,11 +19,12 @@ export default async function Page({
     collection: [collection],
   }
 
-  const listingCall = await getDmrktListings({
-    filters: { status: ['active'], ...baseFilters },
-  })
-  const salesCall = await getDmrktSales({ filters: baseFilters })
-  const exploreCall = await getDmrktNFTs({ filters: baseFilters })
+  const [listingCall, salesCall, exploreCall, collectionCall] = await Promise.all([
+    getDmrktListings({ filters: { status: ['active'], ...baseFilters } }),
+    getDmrktSales({ filters: baseFilters }),
+    getDmrktNFTs({ filters: baseFilters }),
+    getDmrktNFTCollection(Number(chainId), collection),
+  ])
 
   const feed = listingCall.ok
     ? { items: listingCall.data.items, cursor: listingCall.data.cursor }
@@ -39,13 +38,20 @@ export default async function Page({
     ? { items: exploreCall.data.items, cursor: exploreCall.data.cursor }
     : { items: [], cursor: null }
 
+  if (!collectionCall.ok) {
+    return (
+      <div className="h-screen flex items-center justify-center font-mono text-sm text-muted">
+        error fetching nft collection: {collectionCall.error}
+      </div>
+    )
+  }
+
   return (
     <MarketplaceView
       feed={feed}
       sales={sales}
       explore={explore}
-      chainId={Number(chainId)}
-      collection={collection as Hex}
+      collection={collectionCall.data}
     />
   )
 }

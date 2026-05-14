@@ -20,7 +20,7 @@ export function useWsFeed({ addItem, updateItem }: WsSubProps) {
         on('order.created', async p => {
           const { chainId, orderHash } = p as { chainId: number; orderHash: string }
 
-          const res = await getDmrktListing(`${chainId}:${orderHash}`)
+          const res = await getDmrktListing(chainId, orderHash)
           if (!res.ok) return
 
           addItem('feed', res.data)
@@ -36,7 +36,7 @@ export function useWsFeed({ addItem, updateItem }: WsSubProps) {
               status: status as ListingStatus,
             }))
 
-            const res = await getDmrktListing(id)
+            const res = await getDmrktListing(chainId, orderHash)
             if (!res.ok) return
 
             const { txHash } = res.data
