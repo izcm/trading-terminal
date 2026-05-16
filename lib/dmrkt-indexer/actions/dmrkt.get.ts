@@ -34,24 +34,17 @@ export async function getDmrktNFTCollection(
   chainId: number,
   collection: string
 ): Promise<Result<NFTCollection>> {
-  console.log('CHAINID WHEN FETCHING: ', chainId)
-  console.log('COLLECTION ADDRESS WHEN FETCHING: ', collection)
-  console.log('ID WHEN FETCHING: ', `${chainId}:${collection}`)
-
   const res = await getDmrktItem<NFTCollectionDTO>('nft-collections', `${chainId}:${collection}`)
   return mapItem(res, toNFTCollection)
 }
 
 export async function getDmrktItem<T>(params: string, id: string): Promise<Result<T>> {
   const url = `${getBaseUrl()}/api/${params}/${id}`
-  if (params === 'nft-collections') console.log('FETCHING FROM URL: ', url)
 
   try {
     const res = await fetch(url)
 
     if (!res.ok) {
-      // const json = await res.json()
-      console.log('ERROR AND CONTENT IS: ', JSON.stringify(res))
       const error = await getResponseError(res)
       return { ok: false, error }
     }
