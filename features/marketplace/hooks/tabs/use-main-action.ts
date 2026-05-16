@@ -53,7 +53,7 @@ export function useMainAction<K extends TabName>(
   }
 
   // if tab is feed + a listing is selected + user is not maker of selected listing
-  if (isFeed && listing && !ctx?.isMine(listing)) {
+  if (isFeed && listing && !ctx?.isMyListing?.(listing)) {
     return {
       run: fillOrder.fill,
       disabled: !fillOrder.isFillable || listing.status !== 'active',

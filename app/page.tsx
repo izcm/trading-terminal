@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 
 import { NFTCollection } from '@/domain/nft-collection'
+import { getDmrktNFTCollection } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
 import { getDmrktNFTCollections } from '@/lib/dmrkt-indexer/actions/dmrkt-page.get'
 import { getBaseUrl } from '@/lib/dmrkt-indexer/config'
 import { Spinner } from '@/ui/atoms/Spinner'
@@ -28,7 +29,7 @@ function Bar({ current, total }: { current: number; total: number }) {
 }
 
 export default function Page() {
-  const [nftCollections, setNFTCollections] = useState<NFTCollection[]>([])
+  const [collection, setCollection] = useState<NFTCollection | null>(null)
   const [status, setStatus] = useState<IndexingStatus | null>(null)
   const [error, setError] = useState<string | undefined>()
 
@@ -36,7 +37,7 @@ export default function Page() {
     let id: ReturnType<typeof setTimeout>
     const poll = () => {
       getDmrktNFTCollections({ filters: { chainId: [String(CHAIN_ID)] } }).then(res => {
-        if (res.ok && res.data.items.length > 0) setNFTCollections(res.data.items)
+        if (res.ok && res.data.items.length > 0) setCollection(res.data.items[0])
         else if (!res.ok) setError(res.error)
         else id = setTimeout(poll, 3200)
       })
@@ -45,25 +46,16 @@ export default function Page() {
     return () => clearTimeout(id)
   }, [])
 
-  // demo contains one nft collection
-  const first = nftCollections[0]
-
-  // has indexer
-  // 1. backfilled nfts
-  // 2. are there recorded settlements?
-  // 3. have indexer reconstructed full settlements receipts?
-  const isDone =
-    status?.nfts.done &&
-    status.settlements.total > 0 &&
-    status.settlements.reconstructed === status.settlements.total
+  // isDone ? show link to trading page
+  const [isDone, setIsDone] = useState(false)
 
   // poll progress every 2 seconds
   useEffect(() => {
-    if (!first || isDone) return
+    if (!collection || isDone) return
     const poll = async () => {
       try {
         const res = await fetch(
-          `${getBaseUrl()}/api/healthcheck?chainId=${CHAIN_ID}&collection=${first.address}`
+          `${getBaseUrl()}/api/healthcheck?chainId=${CHAIN_ID}&collection=${collection.address}`
         )
         if (res.ok) setStatus(await res.json())
       } catch {
@@ -73,7 +65,29 @@ export default function Page() {
     poll()
     const id = setInterval(poll, 2000)
     return () => clearInterval(id)
-  }, [first, isDone])
+  }, [collection, isDone])
+
+  // has indexer
+  // 1. backfilled nfts?
+  // 2. are there recorded settlements?
+  // 3. have indexer reconstructed full settlements receipts?
+  const fullyPolled =
+    status?.nfts.done &&
+    status.settlements.total > 0 &&
+    status.settlements.reconstructed === status.settlements.total
+
+  // collection might not have name indexed at page load
+  // if so -> do extra fetch on poll finish
+  useEffect(() => {
+    if (!fullyPolled || collection?.name !== 'unknown collection') {
+      if (fullyPolled) setIsDone(true)
+      return
+    }
+    getDmrktNFTCollection(CHAIN_ID, collection.address).then(res => {
+      if (res.ok) setCollection(res.data)
+      setIsDone(true)
+    })
+  }, [fullyPolled, collection?.name])
 
   const dmrktBanner = () => (
     <h1
@@ -87,7 +101,7 @@ export default function Page() {
   const bannerClasses = 'h-screen flex flex-col gap-12 items-center justify-center fade-in'
 
   // show banner and loading spinner when no collection is indexed
-  if (!first && !error) {
+  if (!collection && !error) {
     return (
       <div className={`${bannerClasses} fade-in`}>
         {dmrktBanner()}
@@ -137,18 +151,15 @@ export default function Page() {
           </div>
         )}
 
-        {isDone && (
+        {isDone && collection && (
           <div className="flex flex-col gap-2 pt-4">
             {error && <p className="text-sm text-red-400">{error}</p>}
-            {nftCollections.map(c => (
-              <Link
-                key={`${c.chainId}:${c.address}`}
-                href={`/${c.chainId}/${c.address}`}
-                className="btn btn-primary text-center"
-              >
-                enter {c.name ?? c.address.slice(0, 6) + '...'} →
-              </Link>
-            ))}
+            <Link
+              href={`/${collection.chainId}/${collection.address}`}
+              className="btn btn-primary text-center"
+            >
+              enter {collection.name ?? collection.address.slice(0, 6) + '...'} →
+            </Link>
           </div>
         )}
       </div>

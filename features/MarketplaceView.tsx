@@ -128,6 +128,7 @@ export function MarketplaceView(initial: InitialState) {
   const resolvedMainAction =
     wrongChain && tab !== 'sales' ? { run: undefined, loading: false, disabled: true } : mainAction
 
+  console.log(resolvedMainAction)
   // --- navigation helpers ---
   function resetFiltersAndSelected(tab: TabName) {
     setTab(tab)
