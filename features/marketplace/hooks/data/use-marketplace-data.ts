@@ -32,7 +32,7 @@ export function useMarketplaceData(
   isMine: (item: TabResource[TabName]) => boolean,
   buildMineQuery: (filters: Record<string, string[]>) => Record<string, string[]>,
   onPageReplaced?: <K extends TabName>(tab: K, page: Page<TabResource[K]>) => void,
-  isReady = true
+  isReady = false
 ) {
   const [state, setState] = useState<TabPages>(emptyPages)
   const { add: addFresh, isFresh: isFresh } = useFresh(tab)
@@ -99,20 +99,21 @@ export function useMarketplaceData(
 
   // --- page fetch trigger ---
 
+  // buildMineQuery reads ownedIdsRef.current at call time, so calling it inline here
+  // (not via query memo) guarantees fresh ids when isReady flips.
+  // query is not used — the memo ran before ids loaded and won't rerun since buildMineQuery is stable.
   useEffect(() => {
     if (!isReady) return
-    const run = async () => {
-      console.log(query)
-      const res = await pageGetters[tab]({ filters: query, cursor: null })
 
+    const base = { ...filters[tab], chainId: [chainId.toString()], collection: [collection] }
+    const q = mineFlag[tab] ? buildMineQuery(base) : base
+
+    pageGetters[tab]({ filters: q, cursor: null }).then(res => {
       if (!res.ok) return
       replacePage(tab, res.data)
-
       onPageReplaced?.(tab, res.data)
-    }
-
-    run()
-  }, [tab, query, replacePage, onPageReplaced, isReady])
+    })
+  }, [tab, filters, mineFlag, chainId, collection, isReady, replacePage, onPageReplaced])
 
   return { state, isFresh, isLoadingMore, loadMore }
 }
