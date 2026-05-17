@@ -17,7 +17,6 @@ type TabPages = {
   [K in TabName]: Page<TabResource[K]>
 }
 
-// initialPages paused for now — hook starts from empty state and fetches on mount
 const emptyPages: TabPages = {
   feed: { items: [], cursor: null },
   explore: { items: [], cursor: null },
@@ -103,7 +102,7 @@ export function useMarketplaceData(
   useEffect(() => {
     if (!isReady) return
     const run = async () => {
-      console.log(filters)
+      console.log(query)
       const res = await pageGetters[tab]({ filters: query, cursor: null })
 
       if (!res.ok) return

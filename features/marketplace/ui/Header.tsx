@@ -54,7 +54,7 @@ export function Header({
   onOpenSettings,
   onNavigateToTx,
 }: HeaderProps) {
-  const { chainId: walletChainId, isConnected } = useWallet()
+  const { chainId: walletChainId, isConnected, isResolving } = useWallet()
 
   const wrongChainId = chainId !== walletChainId
 
@@ -111,7 +111,7 @@ export function Header({
           <Settings size={16} />
         </button>
 
-        {!isConnected ? (
+        {!isConnected && !isResolving ? (
           <span className="text-failure text-sm">no wallet connected</span>
         ) : wrongChainId ? (
           <span className="text-failure text-sm">wrong chainId - switch to {chainId}</span>

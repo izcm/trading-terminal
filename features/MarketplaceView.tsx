@@ -8,7 +8,7 @@ import { type Tx, useTx } from '@/app/providers/TxProvider'
 // shared components
 import { SalesReceipt } from '@/ui/organisms'
 import { SettingsMenu } from '@/ui/organisms'
-import { Modal, TextInput } from '@/ui/atoms'
+import { Modal, Spinner, TextInput } from '@/ui/atoms'
 
 // tab config
 import { TabResource, tabUIConfig, type TabName } from './tab-config'
@@ -37,8 +37,6 @@ import { CollectionProvider } from './collection/CollectionContext'
 import type { NFTCollection } from '@/domain/nft-collection'
 
 type InitialState = {
-  [K in TabName]: Page<TabResource[K]>
-} & {
   collection: NFTCollection
 }
 
@@ -259,19 +257,25 @@ export function MarketplaceView(initial: InitialState) {
 
         {/* ---- tab gallery + sidepanel ---- */}
 
-        <TabContainer
-          ui={tabUIConfig[tab]}
-          items={state[tab].items}
-          selectedId={selectedByTab[tab]}
-          setSelectedId={id => setSelectedByTab(prev => ({ ...prev, [tab]: id }))}
-          focusGalleryRef={focusGalleryRef}
-          isFresh={item => isFresh(tab, item.id)}
-          onLoadMore={loadMore}
-          isLoading={isLoadingMore}
-          hasMore={state[tab].cursor !== null}
-          tabAction={resolvedMainAction}
-          ctx={{ isMine, isMyListing }}
-        />
+        {isReady ? (
+          <TabContainer
+            ui={tabUIConfig[tab]}
+            items={state[tab].items}
+            selectedId={selectedByTab[tab]}
+            setSelectedId={id => setSelectedByTab(prev => ({ ...prev, [tab]: id }))}
+            focusGalleryRef={focusGalleryRef}
+            isFresh={item => isFresh(tab, item.id)}
+            onLoadMore={loadMore}
+            isLoading={isLoadingMore}
+            hasMore={state[tab].cursor !== null}
+            tabAction={resolvedMainAction}
+            ctx={{ isMine, isMyListing }}
+          />
+        ) : (
+          <div className="flex-1 flex items-center justify-center">
+            <Spinner size={16} />
+          </div>
+        )}
       </main>
 
       {/* ---- modals ---- */}

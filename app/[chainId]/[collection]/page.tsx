@@ -1,10 +1,4 @@
-import {
-  getDmrktListings,
-  getDmrktNFTs,
-  getDmrktSales,
-} from '@/lib/dmrkt-indexer/actions/dmrkt-page.get'
 import { getDmrktNFTCollection } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
-
 import { MarketplaceView } from '@/features/MarketplaceView'
 
 export default async function Page({
@@ -14,29 +8,7 @@ export default async function Page({
 }) {
   const { chainId, collection } = await params
 
-  const baseFilters = {
-    chainId: ['31337'],
-    collection: [collection],
-  }
-
-  const [listingCall, salesCall, exploreCall, collectionCall] = await Promise.all([
-    getDmrktListings({ filters: { status: ['active'], ...baseFilters } }),
-    getDmrktSales({ filters: baseFilters }),
-    getDmrktNFTs({ filters: baseFilters }),
-    getDmrktNFTCollection(Number(chainId), collection),
-  ])
-
-  const feed = listingCall.ok
-    ? { items: listingCall.data.items, cursor: listingCall.data.cursor }
-    : { items: [], cursor: null }
-
-  const sales = salesCall.ok
-    ? { items: salesCall.data.items, cursor: salesCall.data.cursor }
-    : { items: [], cursor: null }
-
-  const explore = exploreCall.ok
-    ? { items: exploreCall.data.items, cursor: exploreCall.data.cursor }
-    : { items: [], cursor: null }
+  const collectionCall = await getDmrktNFTCollection(Number(chainId), collection)
 
   if (!collectionCall.ok) {
     return (
@@ -46,7 +18,5 @@ export default async function Page({
     )
   }
 
-  return (
-    <MarketplaceView feed={feed} sales={sales} explore={explore} collection={collectionCall.data} />
-  )
+  return <MarketplaceView collection={collectionCall.data} />
 }
