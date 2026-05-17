@@ -17,8 +17,8 @@ function DetailRow({
 }) {
   return (
     <div className="flex justify-between">
-      <span>{label}</span>
-      <span className={className}>{value}</span>
+      <span className="truncate">{label}</span>
+      <span className={`whitespace-nowrap ${className ?? ''}`}>{value}</span>
     </div>
   )
 }

@@ -11,6 +11,7 @@ import { useWsFeed, useWsSales } from '@/features/realtime/hooks'
 
 import { useFresh } from './use-fresh'
 import { useTabMutations } from '../tabs/use-tab-mutations'
+import { itemMatchesFilters } from '../../lib/logic/matches-filters'
 
 type TabPages = {
   [K in TabName]: Page<TabResource[K]>
@@ -31,7 +32,8 @@ export function useMarketplaceData(
   collection: Hex,
   isMine: (item: TabResource[TabName]) => boolean,
   buildMineQuery: (filters: Record<string, string[]>) => Record<string, string[]>,
-  onPageReplaced?: <K extends TabName>(tab: K, page: Page<TabResource[K]>) => void
+  onPageReplaced?: <K extends TabName>(tab: K, page: Page<TabResource[K]>) => void,
+  isReady = true
 ) {
   const [state, setState] = useState<TabPages>(emptyPages)
   const { add: addFresh, isFresh: isFresh } = useFresh(tab)
@@ -55,8 +57,11 @@ export function useMarketplaceData(
 
   const addItemAndMarkFresh = useCallback(
     <K extends TabName>(tab: K, item: TabResource[K]) => {
-      // if mine flag is active and fresh is not mine => don't do anything
+      // if mine flag is active and fresh is not mine -> skip
       if (!isMine(item) && mineFlag[tab]) return
+
+      // if item does not pass active filters -> skip
+      if (!itemMatchesFilters(item, filters[tab])) return
 
       const tabFilters = filters[tab]
       addItemSorted(tab, item, {
@@ -96,7 +101,9 @@ export function useMarketplaceData(
   // --- page fetch trigger ---
 
   useEffect(() => {
+    if (!isReady) return
     const run = async () => {
+      console.log(filters)
       const res = await pageGetters[tab]({ filters: query, cursor: null })
 
       if (!res.ok) return
@@ -106,7 +113,7 @@ export function useMarketplaceData(
     }
 
     run()
-  }, [tab, query, replacePage, onPageReplaced])
+  }, [tab, query, replacePage, onPageReplaced, isReady])
 
   return { state, isFresh, isLoadingMore, loadMore }
 }

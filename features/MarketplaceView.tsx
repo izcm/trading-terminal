@@ -31,7 +31,7 @@ import { CreateOrderFlow } from './orders/ui/CreateOrderFlow'
 import { Header } from './marketplace/ui/Header'
 import { Manual } from './marketplace/ui/Manual'
 import { Tabs } from './marketplace/ui/Tabs'
-import { buildSearchDefault } from './marketplace/lib/build-search-default'
+import { buildSearchDefault } from './marketplace/lib/logic/build-search-default'
 import { CollectionProvider } from './collection/CollectionContext'
 
 import type { NFTCollection } from '@/domain/nft-collection'
@@ -52,7 +52,14 @@ export function MarketplaceView(initial: InitialState) {
   const { address: collectionAddress, chainId } = collection
 
   // --- wallet ---
-  const { account, isConnected, connect, disconnect, chainId: walletChainId } = useWallet()
+  const {
+    account,
+    isConnected,
+    isResolving,
+    connect,
+    disconnect,
+    chainId: walletChainId,
+  } = useWallet()
   const { showTxs } = useTx()
   const walletInteraction = () => (isConnected ? disconnect() : connect())
 
@@ -102,6 +109,8 @@ export function MarketplaceView(initial: InitialState) {
     []
   )
 
+  const isReady = !isResolving && !loadingInventory
+
   const { state, isFresh, isLoadingMore, loadMore } = useMarketplaceData(
     tab,
     filters,
@@ -110,7 +119,8 @@ export function MarketplaceView(initial: InitialState) {
     collectionAddress,
     isMine,
     buildMineQuery,
-    handlePageReplaced
+    handlePageReplaced,
+    isReady
   )
 
   const selectedItem = useMemo(
@@ -128,7 +138,6 @@ export function MarketplaceView(initial: InitialState) {
   const resolvedMainAction =
     wrongChain && tab !== 'sales' ? { run: undefined, loading: false, disabled: true } : mainAction
 
-  console.log(resolvedMainAction)
   // --- navigation helpers ---
   function resetFiltersAndSelected(tab: TabName) {
     setTab(tab)
@@ -222,7 +231,7 @@ export function MarketplaceView(initial: InitialState) {
   })
 
   const view = (
-    <div className="flex gap-4 h-screen max-w-4xl px-2 mx-auto overflow-hidden font-mono">
+    <div className="flex gap-4 h-screen max-w-[960px] px-2 mx-auto overflow-hidden font-mono">
       <main className="flex-1 flex flex-col gap-4 mt-4">
         {/* ---- header ---- */}
 

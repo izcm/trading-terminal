@@ -8,6 +8,7 @@ export function useWallet() {
   return {
     account: address,
     isConnected: status === 'connected',
+    isResolving: status === 'connecting' || status === 'reconnecting',
     connect: () => connectAsync({ connector: connectors[0] }),
     disconnect,
     chainId,

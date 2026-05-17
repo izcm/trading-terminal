@@ -47,11 +47,6 @@ export default async function Page({
   }
 
   return (
-    <MarketplaceView
-      feed={feed}
-      sales={sales}
-      explore={explore}
-      collection={collectionCall.data}
-    />
+    <MarketplaceView feed={feed} sales={sales} explore={explore} collection={collectionCall.data} />
   )
 }
