@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import type { Page } from '@/lib/utils/http'
 import { type Tx, useTx } from '@/app/providers/TxProvider'
@@ -107,7 +107,10 @@ export function MarketplaceView(initial: InitialState) {
     []
   )
 
-  const isReady = !isResolving && !loadingInventory
+  // if been ready once -> remain ready
+  const wasReadyRef = useRef(false)
+  if (!isResolving && !loadingInventory) wasReadyRef.current = true
+  const isReady = wasReadyRef.current
 
   const { state, isFresh, isLoadingMore, loadMore } = useMarketplaceData(
     tab,
