@@ -137,6 +137,7 @@ export function MarketplaceView(initial: InitialState) {
 
   const wrongChain = isConnected && walletChainId !== chainId
   const resolvedMainAction =
+    // not connected users can still view tx receipts
     wrongChain && tab !== 'sales' ? { run: undefined, loading: false, disabled: true } : mainAction
 
   // --- navigation helpers ---

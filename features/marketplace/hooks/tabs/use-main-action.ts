@@ -44,7 +44,7 @@ export function useMainAction<K extends TabName>(
   }
 
   // if listing is inactive => disable and do nothing
-  if (!fillOrder.hasAccount || (isFeed && listing && listing.status !== 'active')) {
+  if (isFeed && (!fillOrder.hasAccount || (listing && listing.status !== 'active'))) {
     return {
       run: undefined,
       disabled: true,
