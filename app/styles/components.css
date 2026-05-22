@@ -263,14 +263,13 @@
 }
 
 .btn-menu {
-  padding: 0.1rem 0.75rem;
+  height: 24px;
   background: transparent;
   color: var(--accent);
   font-size: 0.8575rem;
   letter-spacing: 1.6px;
   border-radius: 0.5rem;
   border: 1px solid var(--border-soft);
-
   transition:
     border-color 160ms ease,
     color 160ms ease,

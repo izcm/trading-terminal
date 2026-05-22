@@ -86,10 +86,10 @@ export function Manual({ initialTab = 'shortcuts' }: { initialTab?: Tab } = {}) 
           <Row label="1 / 2 / 3" value="shortcuts / filters / examples" />
           <Row label="f / e / s" value="switch tab" />
           <Row label="shift + f / e / s" value="switch tab + reset filters" />
+          <Row label="shift + w" value="connect wallet" />
           <Row label="a" value="run action" />
           <Row label="l" value="focus list" />
           <Row label="i" value="focus search" />
-          <Row label="shift + w" value="connect wallet" />
           <Row label="t" value="open tx history" />
           <Row label="m" value="open shortcuts" />
           <Row label="." value="open settings" />
