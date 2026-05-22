@@ -12,13 +12,30 @@ type ModalProps = {
 export function Modal({ isOpen, onClose, children, escTxt = 'Close' }: ModalProps) {
   const lastFocusedRef = useRef<HTMLElement | null>(null)
 
+  // close on Escape always, close on X unless focus is on a non-numeric text input
+  const handler = (e: KeyboardEvent) => {
+    const target = e.target as HTMLElement
+
+    const isNumeric = (target as HTMLInputElement).dataset?.numeric !== undefined
+    const typingText =
+      !isNumeric &&
+      (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)
+
+    if (e.key === 'Escape') {
+      onClose()
+      return
+    }
+
+    if (!typingText && e.key.toLowerCase() === 'x') {
+      onClose()
+    }
+  }
+
   // Close on ESC key
   useEffect(() => {
     if (!isOpen) return
 
     lastFocusedRef.current = document.activeElement as HTMLElement | null
-
-    const handler = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
 
     document.addEventListener('keydown', handler)
     return () => {

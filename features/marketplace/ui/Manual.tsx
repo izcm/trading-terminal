@@ -93,6 +93,8 @@ export function Manual({ initialTab = 'shortcuts' }: { initialTab?: Tab } = {}) 
           <Row label="t" value="open tx history" />
           <Row label="m" value="open shortcuts" />
           <Row label="." value="open settings" />
+          <Row label="x" value="close modal" />
+          <Row label="esc" value="close modal" />
         </Section>
       )}
 
@@ -104,7 +106,7 @@ export function Manual({ initialTab = 'shortcuts' }: { initialTab?: Tab } = {}) 
                 type <span className="text-accent font-mono">mine</span> to toggle per tab
               </span>
             </div>
-            <Row label="feed *" value="4u flag — actionable by you" />
+            <Row label="feed *" value="items actionable by you – Buy, Sell, Cancel" />
             <Row label="explore" value="owner = you" />
             <Row label="sales" value="buyer = you || seller = you" />
           </Section>

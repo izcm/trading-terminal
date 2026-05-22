@@ -130,7 +130,7 @@ export function MarketplaceView(initial: InitialState) {
   )
 
   // --- tab actions ---
-  const { actions: tabActions, modal: actionModal, closeModal } = useTabActions()
+  const { actions: tabActions, modal: actionModal, closeModal: closeActionModal } = useTabActions()
   const mainAction = useMainAction(tab, selectedItem, { isMine, isMyListing }, tabActions, {
     refetch: refetchOwnedIds,
   })
@@ -284,18 +284,18 @@ export function MarketplaceView(initial: InitialState) {
       {/* ---- modals ---- */}
 
       {actionModal?.type === 'receipt' && (
-        <Modal isOpen onClose={closeModal}>
+        <Modal isOpen onClose={closeActionModal}>
           <SalesReceipt sale={actionModal.data} />
         </Modal>
       )}
 
       {actionModal?.type === 'createOrder' && (
-        <Modal isOpen onClose={closeModal} escTxt="Cancel">
+        <Modal isOpen onClose={closeActionModal} escTxt="Cancel">
           <CreateOrderFlow
             collection={actionModal.data.collection}
             tokenId={actionModal.data.tokenId}
             side={actionModal.data.side}
-            onOrderCreated={closeModal}
+            onOrderCreated={closeActionModal}
           />
         </Modal>
       )}

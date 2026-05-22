@@ -68,7 +68,7 @@ export function OrderForm({ tokenId, onSubmit, back }: Props) {
 
       <div>
         <div className="text-subtle mb-2">Price (ETH)</div>
-        <TextInput placeholder="0.15" value={price} onChange={setPrice} />
+        <TextInput placeholder="0.15" value={price} onChange={setPrice} numeric />
       </div>
 
       <div>
