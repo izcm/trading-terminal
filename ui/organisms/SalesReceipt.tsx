@@ -24,7 +24,9 @@ export function SalesReceipt({ sale }: { sale: Sale }) {
       {/* header */}
       <div className="flex gap-4 justify-between items-center">
         <h2 className="text-sm font-semibold">Transaction</h2>
-        <span className="text-sm text-subtle">#{`${sale.chainId}:${truncateHex(sale.txHash)}`}</span>
+        <span className="text-sm text-subtle">
+          #{`${sale.chainId}:${truncateHex(sale.txHash)}`}
+        </span>
       </div>
 
       <Divider />
@@ -84,7 +86,7 @@ export function SalesReceipt({ sale }: { sale: Sale }) {
           <Divider />
           <div className="flex flex-col gap-2">
             <span className="text-sm text-muted">more info is coming...</span>
-            <span className="text-sm text-muted">usually a couple minutes</span>
+            <span className="text-sm text-muted">usually less than a minute</span>
           </div>
         </>
       )}

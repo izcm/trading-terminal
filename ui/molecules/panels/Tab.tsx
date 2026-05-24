@@ -92,6 +92,7 @@ export function Tab<T extends { id: string; chainId: number; collection: Hex; to
               if (action) action()
             }}
             {...actionBtnProps}
+            className={actionBtnProps?.className ?? 'btn btn-primary'}
           />
         )}
 
