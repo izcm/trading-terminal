@@ -88,11 +88,10 @@ export function Tab<T extends { id: string; chainId: number; collection: Hex; to
           <button
             onClick={() => {
               if (!selected) return
-
               if (action) action()
             }}
             {...actionBtnProps}
-            className={actionBtnProps?.className ?? 'btn btn-primary'}
+            className={actionBtnProps?.className ?? 'btn invisible'}
           />
         )}
 

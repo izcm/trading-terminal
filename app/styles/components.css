@@ -91,36 +91,21 @@
   color: var(--text-primary);
   font-weight: 600;
 
-  border-color: color-mix(in oklab, var(--accent) 32%, transparent);
+  border-color: color-mix(in oklab, var(--accent) 24%, transparent);
 
-  background: linear-gradient(
-    160deg,
-    color-mix(in oklab, var(--accent) 36%, black),
-    color-mix(in oklab, var(--accent) 42%, black)
-  );
+  background: color-mix(in oklab, var(--accent) 28%, black);
 
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.1),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.4),
-    0 2px 8px color-mix(in oklab, var(--accent) 8%, black);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
 }
 
 .btn-primary:hover {
   color: var(--text-primary);
 
-  border-color: color-mix(in oklab, var(--accent) 44%, transparent);
+  border-color: color-mix(in oklab, var(--accent) 32%, transparent);
 
-  background: linear-gradient(
-    160deg,
-    color-mix(in oklab, var(--accent) 48%, black),
-    color-mix(in oklab, var(--accent) 54%, black)
-  );
+  background: color-mix(in oklab, var(--accent) 34%, black);
 
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.14),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.32),
-    0 4px 12px color-mix(in oklab, var(--accent) 14%, black),
-    0 0 8px color-mix(in oklab, var(--accent) 6%, transparent);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.09);
 }
 
 .btn-primary:active {
