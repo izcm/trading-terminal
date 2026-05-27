@@ -1,4 +1,5 @@
 import { KeyboardEvent, MouseEvent, useState } from 'react'
+import { toast } from '@/ui/molecules/overlay/Toast'
 
 type CopyableProps = {
   value: string
@@ -12,6 +13,13 @@ export function Copyable({ value, children, className = '' }: CopyableProps) {
   async function handleCopy(e: KeyboardEvent | MouseEvent) {
     e.stopPropagation()
 
+    if (!navigator.clipboard) {
+      toast({
+        title: `Manual copy: ${value}`,
+        description: 'Clipboard API restricted in non-secure contexts — see demo README "VM notes"',
+      })
+      return
+    }
     await navigator.clipboard.writeText(value)
     setCopied(true)
     setTimeout(() => setCopied(false), 1000)

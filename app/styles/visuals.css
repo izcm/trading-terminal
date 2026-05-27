@@ -6,15 +6,8 @@
 
 .glow {
   text-shadow:
-    0 0 0.25rem color-mix(in oklab, var(--accent) 30%, transparent),
-    0 0 0.6rem color-mix(in oklab, var(--accent) 20%, transparent);
-}
-
-.cyber {
-  text-shadow:
-    0 0 0.35rem color-mix(in oklab, var(--accent) 55%, transparent),
-    0 0 0.9rem color-mix(in oklab, var(--accent) 45%, transparent),
-    0 0 2.2rem color-mix(in oklab, var(--accent-strong) 35%, transparent);
+    0 0 0.25rem color-mix(in oklab, var(--accent) 15%, transparent),
+    0 0 0.6rem color-mix(in oklab, var(--accent) 10%, transparent);
 }
 
 .svg-neon img,
