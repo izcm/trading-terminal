@@ -75,7 +75,7 @@ export function Header({
               align="left"
               trigger={
                 <button className="text-sm text-accent cursor-pointer border border-transparent hover:border-accent/40 px-1 rounded transition-colors">
-                  [ chainId: {chainId}]
+                  [ chainId: {chainId} ]
                 </button>
               }
             >
