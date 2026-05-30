@@ -43,7 +43,7 @@ export default function Page() {
         signal: controller.signal,
       })
 
-      if (!res.ok) return setError(res.error)
+      if (!res.ok) return controller.signal.aborted ? undefined : setError(res.error)
 
       const collection = res.data.items[0]
 
