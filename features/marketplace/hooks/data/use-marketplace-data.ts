@@ -105,14 +105,17 @@ export function useMarketplaceData(
   useEffect(() => {
     if (!isReady) return
 
+    const controller = new AbortController()
     const base = { ...filters[tab], chainId: [chainId.toString()], collection: [collection] }
     const q = mineFlag[tab] ? buildMineQuery(base) : base
 
-    pageGetters[tab]({ filters: q, cursor: null }).then(res => {
+    pageGetters[tab]({ filters: q, cursor: null, signal: controller.signal }).then(res => {
       if (!res.ok) return
       replacePage(tab, res.data)
       onPageReplaced?.(tab, res.data)
     })
+
+    return () => controller.abort()
   }, [tab, filters, mineFlag, chainId, collection, isReady, replacePage, onPageReplaced])
 
   return { state, isFresh, isLoadingMore, loadMore }

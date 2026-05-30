@@ -124,7 +124,7 @@ describe('useMainAction', () => {
 
     const action = renderHookWith({
       selected: fakeListing(),
-      ctx: fakeCtx({ isMine: () => true }),
+      ctx: fakeCtx({ isMyListing: () => true }),
       actions: { ...stubActions, feed: () => mockRun },
     })
 

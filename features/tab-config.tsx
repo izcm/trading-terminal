@@ -37,6 +37,7 @@ export type TabName = keyof TabResource
 type PageGetters<K extends TabName> = (args: {
   filters?: Record<string, string[]>
   cursor?: string | null
+  signal?: AbortSignal
 }) => Promise<Result<Page<TabResource[K]>>>
 
 export const pageGetters: { [K in TabName]: PageGetters<K> } = {

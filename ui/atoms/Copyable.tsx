@@ -13,6 +13,7 @@ export function Copyable({ value, children, className = '' }: CopyableProps) {
   async function handleCopy(e: KeyboardEvent | MouseEvent) {
     e.stopPropagation()
 
+    // for non-safe context environment -> show toast for manual copy
     if (!navigator.clipboard) {
       toast({
         title: `Manual copy: ${value}`,
@@ -20,6 +21,8 @@ export function Copyable({ value, children, className = '' }: CopyableProps) {
       })
       return
     }
+
+    // for safe context -> copy to clipboard
     await navigator.clipboard.writeText(value)
     setCopied(true)
     setTimeout(() => setCopied(false), 1000)

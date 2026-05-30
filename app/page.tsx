@@ -35,15 +35,28 @@ export default function Page() {
 
   useEffect(() => {
     let id: ReturnType<typeof setTimeout>
-    const poll = () => {
-      getDmrktNFTCollections({ filters: { chainId: [String(CHAIN_ID)] } }).then(res => {
-        if (res.ok && res.data.items.length > 0) setCollection(res.data.items[0])
-        else if (!res.ok) setError(res.error)
-        else id = setTimeout(poll, 3200)
+    const controller = new AbortController()
+
+    const poll = async () => {
+      const res = await getDmrktNFTCollections({
+        filters: { chainId: [String(CHAIN_ID)] },
+        signal: controller.signal,
       })
+
+      if (!res.ok) return setError(res.error)
+
+      const collection = res.data.items[0]
+
+      if (collection) return setCollection(collection)
+
+      id = setTimeout(poll, 3200)
     }
+
     poll()
-    return () => clearTimeout(id)
+    return () => {
+      controller.abort()
+      clearTimeout(id)
+    }
   }, [])
 
   // isDone ? show link to trading page
@@ -52,10 +65,12 @@ export default function Page() {
   // poll progress every 2 seconds
   useEffect(() => {
     if (!collection || isDone) return
+    const controller = new AbortController()
     const poll = async () => {
       try {
         const res = await fetch(
-          `${getBaseUrl()}/api/healthcheck?chainId=${CHAIN_ID}&collection=${collection.address}`
+          `${getBaseUrl()}/api/healthcheck?chainId=${CHAIN_ID}&collection=${collection.address}`,
+          { signal: controller.signal }
         )
         if (res.ok) setStatus(await res.json())
       } catch {
@@ -64,7 +79,10 @@ export default function Page() {
     }
     poll()
     const id = setInterval(poll, 2000)
-    return () => clearInterval(id)
+    return () => {
+      controller.abort()
+      clearInterval(id)
+    }
   }, [collection, isDone])
 
   // has indexer
