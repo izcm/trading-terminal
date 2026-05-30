@@ -29,13 +29,16 @@ function mapResult<TDTO, T>(res: Result<Page<TDTO>>, toDomain: (dto: TDTO) => T)
 export async function getDmrktNFTCollections({
   filters = {},
   cursor,
+  signal,
 }: {
   filters?: Record<string, string[]>
   cursor?: string | null
+  signal?: AbortSignal
 } = {}): Promise<Result<Page<NFTCollection>>> {
   const res = await getDmrktItems<NFTCollectionDTO>({
     params: 'nft-collections',
     query: buildQuery({ filters, cursor }),
+    signal,
   })
 
   return mapResult(res, toNFTCollection)
@@ -45,13 +48,16 @@ export async function getDmrktNFTCollections({
 export async function getDmrktNFTs({
   filters = {},
   cursor,
+  signal,
 }: {
   filters?: Record<string, string[]>
   cursor?: string | null
+  signal?: AbortSignal
 } = {}): Promise<Result<Page<NFT>>> {
   const res = await getDmrktItems<NFTDTO>({
     params: 'nfts',
     query: buildQuery({ filters, cursor }),
+    signal,
   })
 
   return mapResult(res, toNFT)
@@ -61,9 +67,11 @@ export async function getDmrktNFTs({
 export async function getDmrktListings({
   filters = {},
   cursor,
+  signal,
 }: {
   filters?: Record<string, string[]>
   cursor?: string | null
+  signal?: AbortSignal
 } = {}): Promise<Result<Page<Listing>>> {
   const query = buildQuery({ filters, cursor, includes: ['nftCollection'] })
   query.append('isCollectionBid', 'false') // added since collectionBid feature is paused
@@ -71,6 +79,7 @@ export async function getDmrktListings({
   const res = await getDmrktItems<OrderDTO>({
     params: 'orders',
     query,
+    signal,
   })
 
   return mapResult(res, toListing)
@@ -80,13 +89,16 @@ export async function getDmrktListings({
 export async function getDmrktSales({
   filters = {},
   cursor,
+  signal,
 }: {
   filters?: Record<string, string[]>
   cursor?: string | null
+  signal?: AbortSignal
 } = {}) {
   const res = await getDmrktItems<SettlementDTO>({
     params: 'settlements',
     query: buildQuery({ filters, cursor, includes: ['nftCollection', 'order'] }),
+    signal,
   })
 
   return mapResult(res, toSale)
@@ -96,14 +108,16 @@ export async function getDmrktSales({
 export async function getDmrktItems<T>({
   params,
   query,
+  signal,
 }: {
   params: string
   query: URLSearchParams
+  signal?: AbortSignal
 }): Promise<Result<Page<T>>> {
   const url = `${getBaseUrl()}/api/${params}?${query.toString()}&limit=25`
 
   try {
-    const res = await fetch(url)
+    const res = await fetch(url, { signal })
 
     if (!res.ok) {
       const error = await getResponseError(res)
@@ -121,6 +135,7 @@ export async function getDmrktItems<T>({
       },
     }
   } catch (err) {
+    if (err instanceof DOMException && err.name === 'AbortError') return { ok: false, error: 'Fetch aborted' }
     return { ok: false, error: `Network Error: ${err}` }
   }
 }

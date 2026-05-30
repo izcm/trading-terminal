@@ -67,6 +67,15 @@ export function testErrorHandling(
   })
 }
 
+export function testAbortHandling(
+  action: (fetchImpl?: () => Promise<Response>) => Promise<Result<unknown>>
+) {
+  it('returns aborted error when signal is aborted', async () => {
+    const result = await action(() => Promise.reject(new DOMException('aborted', 'AbortError')))
+    expect(result).toEqual({ ok: false, error: 'Fetch aborted' })
+  })
+}
+
 export function testResponseHandling(
   action: (fetchImpl?: () => Promise<Response>) => Promise<Result<unknown>>
 ) {

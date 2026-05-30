@@ -14,35 +14,53 @@ function mapItem<TDTO, T>(res: Result<TDTO>, toDomain: (dto: TDTO) => T): Result
   return { ok: true, data: toDomain(res.data) }
 }
 
-export function getDmrktListing(chainId: number, orderHash: string): Promise<Result<Listing>> {
-  return getDmrktItem('orders', `${chainId}:${orderHash}`)
+export function getDmrktListing(
+  chainId: number,
+  orderHash: string,
+  signal?: AbortSignal
+): Promise<Result<Listing>> {
+  return getDmrktItem('orders', `${chainId}:${orderHash}`, signal)
 }
 
-export function getDmrktSale(chainId: number, orderHash: string): Promise<Result<Sale>> {
-  return getDmrktItem('settlements', `${chainId}:${orderHash}`)
+export function getDmrktSale(
+  chainId: number,
+  orderHash: string,
+  signal?: AbortSignal
+): Promise<Result<Sale>> {
+  return getDmrktItem('settlements', `${chainId}:${orderHash}`, signal)
 }
 
 export function getDmrktNFT(
   chainId: number,
   collection: string,
-  tokenId: string | bigint
+  tokenId: string | bigint,
+  signal?: AbortSignal
 ): Promise<Result<NFT>> {
-  return getDmrktItem('nfts', `${chainId}:${collection}:${tokenId}`)
+  return getDmrktItem('nfts', `${chainId}:${collection}:${tokenId}`, signal)
 }
 
 export async function getDmrktNFTCollection(
   chainId: number,
-  collection: string
+  collection: string,
+  signal?: AbortSignal
 ): Promise<Result<NFTCollection>> {
-  const res = await getDmrktItem<NFTCollectionDTO>('nft-collections', `${chainId}:${collection}`)
+  const res = await getDmrktItem<NFTCollectionDTO>(
+    'nft-collections',
+    `${chainId}:${collection}`,
+    signal
+  )
   return mapItem(res, toNFTCollection)
 }
 
-export async function getDmrktItem<T>(params: string, id: string): Promise<Result<T>> {
+export async function getDmrktItem<T>(
+  params: string,
+  id: string,
+  signal?: AbortSignal
+): Promise<Result<T>> {
   const url = `${getBaseUrl()}/api/${params}/${id}`
 
   try {
-    const res = await fetch(url)
+    const res = await fetch(url, { signal })
 
     if (!res.ok) {
       const error = await getResponseError(res)
@@ -52,6 +70,8 @@ export async function getDmrktItem<T>(params: string, id: string): Promise<Resul
     const data = await res.json()
     return { ok: true, data: data as T }
   } catch (err) {
+    if (err instanceof DOMException && err.name === 'AbortError')
+      return { ok: false, error: 'Fetch aborted' }
     return { ok: false, error: `Network Error: ${err}` }
   }
 }
