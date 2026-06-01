@@ -111,9 +111,9 @@ export function Header({
           <Settings size={16} />
         </button>
 
-        {!isConnected && !isResolving ? (
+        {!isConnected ? (
           <span className="text-failure text-sm">no wallet connected</span>
-        ) : wrongChainId ? (
+        ) : wrongChainId && !isResolving ? (
           <span className="text-failure text-sm">wrong chainId - switch to {chainId}</span>
         ) : (
           <div className="flex gap-4">

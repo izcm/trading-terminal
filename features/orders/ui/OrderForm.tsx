@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { TextInput } from '@/ui/atoms'
+import { Spinner, TextInput } from '@/ui/atoms'
 
 export type FormInput = {
   price: string
@@ -10,7 +10,7 @@ export type FormInput = {
 
 type Props = {
   tokenId: bigint
-  onSubmit: (formInput: FormInput) => void
+  onSubmit: (formInput: FormInput) => Promise<void>
   back?: () => void
 }
 
@@ -22,6 +22,7 @@ const durations = [
 
 export function OrderForm({ tokenId, onSubmit, back }: Props) {
   const [price, setPrice] = useState('')
+  const [pending, setPending] = useState(false)
 
   const [selectedDuration, setSelectedDuration] = useState<number>(durations[0].seconds)
 
@@ -51,15 +52,16 @@ export function OrderForm({ tokenId, onSubmit, back }: Props) {
 
   const valid = tokenId !== undefined && price && Number(price) > 0
 
-  function submit(e: React.FormEvent<HTMLFormElement>) {
+  async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    if (!valid) return
+    if (!valid || pending) return
 
-    onSubmit({
-      price,
-      start: Number(start),
-      end: Number(end),
-    })
+    setPending(true)
+    try {
+      await onSubmit({ price, start: Number(start), end: Number(end) })
+    } finally {
+      setPending(false)
+    }
   }
 
   return (
@@ -102,8 +104,18 @@ export function OrderForm({ tokenId, onSubmit, back }: Props) {
           </button>
         )}
 
-        <button type="submit" disabled={!valid} className="flex-1 btn btn-primary">
-          Create order
+        <button
+          type="submit"
+          disabled={!valid || pending}
+          className={`flex-1 btn ${pending ? 'btn-ghost' : 'btn-primary'}`}
+        >
+          {pending ? (
+            <>
+              <Spinner size={14} /> Pending...
+            </>
+          ) : (
+            'Create order'
+          )}
         </button>
       </div>
     </form>
