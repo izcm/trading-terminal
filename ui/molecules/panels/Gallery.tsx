@@ -85,7 +85,8 @@ export function Gallery<T extends { id: string }>({
       : {
           arrowList:
             'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 lg-rounded',
-          arrowRow: 'outline-none focus-visible:ring-1 focus-visible:ring-accent rounded-lg block',
+          arrowRow:
+            'outline-none focus-visible:ring-0.5 focus-visible:ring-accent rounded-lg block',
         }
 
   return (
@@ -116,7 +117,7 @@ export function Gallery<T extends { id: string }>({
                 !isSelected && isFresh?.(item) && 'fresh',
 
                 // selected
-                isSelected && 'bg-accent/35'
+                isSelected && 'bg-accent/25'
               )}
             >
               {galleryItem(item)}
