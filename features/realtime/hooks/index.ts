@@ -1,2 +1,2 @@
 export { useWsFeed } from './use-ws-feed'
-export { useWsSales } from './use-ws-sales'
+export { useWsTrades } from './use-ws-trades'

@@ -7,7 +7,7 @@ import type { NFTCollection } from '@/domain/nft-collection'
 import { toListing, type OrderDTO } from '../dtos/order'
 import { toNFT, type NFTDTO } from '../dtos/nft'
 import { NFTCollectionDTO, toNFTCollection } from '../dtos/nft-collection'
-import { SettlementDTO, toSale } from '../dtos/settlement'
+import { SettlementDTO, toTrade } from '../dtos/settlement'
 
 import { getBaseUrl } from '../config'
 import { buildQuery } from './logic/build-query'
@@ -85,8 +85,8 @@ export async function getDmrktListings({
   return mapResult(res, toListing)
 }
 
-// --- Sales ---
-export async function getDmrktSales({
+// --- Trades ---
+export async function getDmrktTrades({
   filters = {},
   cursor,
   signal,
@@ -101,7 +101,7 @@ export async function getDmrktSales({
     signal,
   })
 
-  return mapResult(res, toSale)
+  return mapResult(res, toTrade)
 }
 
 // --- Core fetch ---

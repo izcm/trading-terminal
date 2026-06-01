@@ -19,7 +19,7 @@ describe('use-tab-mutations', () => {
     let state = {
       feed: { items: [], cursor: null },
       explore: { items: [], cursor: null },
-      sales: { items: [], cursor: null },
+      trades: { items: [], cursor: null },
       ...overrides,
     }
 
@@ -49,9 +49,9 @@ describe('use-tab-mutations', () => {
     feed: { items: [{ id: 'a' }, { id: 'b' }, { id: 'c' }] as TabResource['feed'][], cursor: null },
   }
 
-  const populatedSales = {
-    sales: {
-      items: [{ id: 'd' }, { id: 'e' }, { id: 'f' }] as TabResource['sales'][],
+  const populatedTrades = {
+    trades: {
+      items: [{ id: 'd' }, { id: 'e' }, { id: 'f' }] as TabResource['trades'][],
       cursor: null,
     },
   }
@@ -87,10 +87,10 @@ describe('use-tab-mutations', () => {
     it('does not affect other tabs', () => {
       const getState = renderHookAndAct({
         run: m => m.addItem('feed', addedItem),
-        withState: { ...populatedFeed, ...populatedSales, ...populatedExplore },
+        withState: { ...populatedFeed, ...populatedTrades, ...populatedExplore },
       })
 
-      expect(getState()).toMatchObject({ ...populatedSales, ...populatedExplore })
+      expect(getState()).toMatchObject({ ...populatedTrades, ...populatedExplore })
     })
   })
 
@@ -197,10 +197,10 @@ describe('use-tab-mutations', () => {
     it('does not affect other tabs', () => {
       const getState = renderHookAndAct({
         run: m => m.updateItem('feed', updatedId, () => updatedItem),
-        withState: { ...populatedFeed, ...populatedSales, ...populatedExplore },
+        withState: { ...populatedFeed, ...populatedTrades, ...populatedExplore },
       })
 
-      expect(getState()).toMatchObject({ ...populatedSales, ...populatedExplore })
+      expect(getState()).toMatchObject({ ...populatedTrades, ...populatedExplore })
     })
   })
 
@@ -256,10 +256,10 @@ describe('use-tab-mutations', () => {
     it('does not affect other tabs', () => {
       const getState = renderHookAndAct({
         run: m => m.mergePage('feed', newItems, newCursor),
-        withState: { ...populatedFeed, ...populatedSales, ...populatedExplore },
+        withState: { ...populatedFeed, ...populatedTrades, ...populatedExplore },
       })
 
-      expect(getState()).toMatchObject({ ...populatedSales, ...populatedExplore })
+      expect(getState()).toMatchObject({ ...populatedTrades, ...populatedExplore })
     })
   })
 

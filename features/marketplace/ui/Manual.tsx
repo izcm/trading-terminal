@@ -84,16 +84,15 @@ export function Manual({ initialTab = 'shortcuts' }: { initialTab?: Tab } = {}) 
       {tab === 'shortcuts' && (
         <Section title="keyboard">
           <Row label="1 / 2 / 3" value="shortcuts / filters / examples" />
-          <Row label="f / e / s" value="switch tab" />
-          <Row label="shift + f / e / s" value="switch tab + reset filters" />
+          <Row label="f / e / t" value="switch tab" />
+          <Row label="shift + f / e / t" value="switch tab + reset filters" />
           <Row label="shift + w" value="connect wallet" />
           <Row label="a" value="run action" />
+          <Row label="s" value="focus search" />
           <Row label="l" value="focus list" />
-          <Row label="i" value="focus search" />
-          <Row label="t" value="open tx history" />
-          <Row label="m" value="open shortcuts" />
-          <Row label="." value="open settings" />
-          <Row label="x" value="close modal" />
+          <Row label="m" value="open manual" />
+          <Row label="." value="view session txs" />
+          <Row label="," value="open settings" />
           <Row label="esc" value="close modal" />
         </Section>
       )}
@@ -108,7 +107,7 @@ export function Manual({ initialTab = 'shortcuts' }: { initialTab?: Tab } = {}) 
             </div>
             <Row label="feed *" value="items actionable by you – Buy, Sell, Cancel" />
             <Row label="explore" value="owner = you" />
-            <Row label="sales" value="buyer = you || seller = you" />
+            <Row label="trades" value="buyer = you || seller = you" />
           </Section>
 
           <Section title="keywords">
@@ -138,7 +137,7 @@ export function Manual({ initialTab = 'shortcuts' }: { initialTab?: Tab } = {}) 
           <Section title="feed">
             <ExRow
               query="status=active trait.type=sword sortField=price"
-              desc="active sword orders by price desc"
+              desc="active sword orders by highest price"
             />
             <ExRow query="maker=me status=active,cancelled" desc="your active + cancelled orders" />
             <ExRow query="mine side=bid status=active" desc="active bids on your tokens" />
@@ -149,16 +148,15 @@ export function Manual({ initialTab = 'shortcuts' }: { initialTab?: Tab } = {}) 
               query="mine trait.type=elixir trait.rarity=epic,legendary"
               desc="your elixirs, epic or legendary"
             />
-            <ExRow query="trait.rarity=epic sortField=tokenId" desc="epic tokens sorted by id" />
             <ExRow
               query="trait.type=sword trait.color=blood_red,cyber_blue"
               desc="swords, red or blue"
             />
           </Section>
 
-          <Section title="sales">
-            <ExRow query="seller=me sortField=price" desc="your sales by price" />
-            <ExRow query="buyer=me sortField=timestamp" desc="your purchases by time" />
+          <Section title="trades">
+            <ExRow query="seller=me sortField=price sortDir=asc" desc="your cheapest trades" />
+            <ExRow query="buyer=me sortField=timestamp" desc="your most recent buys" />
           </Section>
         </>
       )}

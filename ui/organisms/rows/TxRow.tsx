@@ -12,7 +12,7 @@ type Props = {
 }
 
 export const LINK_LABELS: Record<TxLabel, string> = {
-  'order filled': 'view sale',
+  'order filled': 'view trade',
   'order cancelled': 'view order',
   transaction: 'view receipt',
 }

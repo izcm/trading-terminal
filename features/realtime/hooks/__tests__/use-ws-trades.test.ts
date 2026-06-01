@@ -2,28 +2,28 @@ import { describe, expect, it, vi } from 'vitest'
 
 // infra deps to be mocked
 import { on } from '@/lib/realtime/ws'
-import { getDmrktSale } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
+import { getDmrktTrade } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
 
-import { useWsSales } from '../use-ws-sales'
+import { useWsTrades } from '../use-ws-trades'
 import { makeHelpers, testAddItemOnEvent } from './helpers'
-import { Sale } from '@/domain/sale'
+import { Trade } from '@/domain/trade'
 
 vi.mock('@/lib/realtime/ws', () => ({ on: vi.fn() }))
 vi.mock(import('@/lib/dmrkt-indexer/actions/dmrkt.get'), async importOriginal => {
   const actual = await importOriginal()
   return {
     ...actual,
-    getDmrktSale: vi.fn(),
+    getDmrktTrade: vi.fn(),
   }
 })
 
-describe('useWsSales', () => {
-  const helpers = makeHelpers('sales', useWsSales, vi.mocked(on))
+describe('useWsTrades', () => {
+  const helpers = makeHelpers('trades', useWsTrades, vi.mocked(on))
 
   const { setup, getHandler, makeFetchSuccess, makeFetchFailure, somePayload } = helpers
 
   describe('settlement.created', () => {
-    testAddItemOnEvent('settlement.created', helpers, vi.mocked(getDmrktSale))
+    testAddItemOnEvent('settlement.created', helpers, vi.mocked(getDmrktTrade))
   })
 
   describe('settlement.callReconstructed', () => {
@@ -33,8 +33,8 @@ describe('useWsSales', () => {
       const { updateItem } = setup()
       const handler = getHandler(crEvent)
 
-      vi.mocked(getDmrktSale).mockResolvedValueOnce(
-        makeFetchSuccess({ txContext: { txIndex: 1 } as Sale['txContext'] })
+      vi.mocked(getDmrktTrade).mockResolvedValueOnce(
+        makeFetchSuccess({ txContext: { txIndex: 1 } as Trade['txContext'] })
       )
 
       await handler(somePayload())
@@ -49,7 +49,7 @@ describe('useWsSales', () => {
       const { updateItem } = setup()
       const handler = getHandler(crEvent)
 
-      vi.mocked(getDmrktSale).mockResolvedValueOnce(fetchResult)
+      vi.mocked(getDmrktTrade).mockResolvedValueOnce(fetchResult)
 
       await handler!(somePayload())
 

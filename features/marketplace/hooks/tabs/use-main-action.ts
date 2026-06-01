@@ -23,7 +23,7 @@ type OwnedActions = {
  * @param selected - The item currently in view, or `undefined` if none
  * @param ctx - Tab context supplying ownership and rule checks (e.g. `isMine`)
  * @param actions - Map of default actions keyed by tab name
- * @param owned - Callbacks for side effects after inventory changes (e.g. after a sale)
+ * @param owned - Callbacks for side effects after inventory changes (e.g. after a trade)
  * @returns `ResolvedAction` — the action to run, whether it is disabled, and whether it is loading
  */
 

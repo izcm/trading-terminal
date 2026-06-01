@@ -35,7 +35,7 @@ describe('useMine', () => {
     it.each([
       ['feed', { 'or.tokenId': TOKEN_IDS.map(String), 'or.side': ['0'] }],
       ['explore', { tokenId: TOKEN_IDS.map(String) }],
-      ['sales', { 'or.buyer': [ACCOUNT], 'or.seller': [ACCOUNT] }],
+      ['trades', { 'or.buyer': [ACCOUNT], 'or.seller': [ACCOUNT] }],
     ] as [TabName, Record<string, string[]>][])(
       'returns correct mineFilters for %s along with base filters',
       (tab, expected) => {
@@ -62,13 +62,13 @@ describe('useMine', () => {
         { actor: DIFFERENT_ACCOUNT, tokenId: TOKEN_IDS[0] }, // owned-id clause
       ],
       explore: [{ tokenId: TOKEN_IDS[0] }],
-      sales: [
+      trades: [
         { seller: ACCOUNT, buyer: DIFFERENT_ACCOUNT }, // seller clause
         { seller: DIFFERENT_ACCOUNT, buyer: ACCOUNT }, // buyer clause
       ],
     }
 
-    it.each(['feed', 'explore', 'sales'] as TabName[])(
+    it.each(['feed', 'explore', 'trades'] as TabName[])(
       'returns true for all %s `mine` variants',
       tab => {
         const hook = renderHook(() => useMine(tab, ACCOUNT, TOKEN_IDS))
@@ -81,7 +81,7 @@ describe('useMine', () => {
     it.each([
       ['feed', { actor: DIFFERENT_ACCOUNT, tokenId: notMineTokenId }],
       ['explore', { tokenId: notMineTokenId }],
-      ['sales', { buyer: DIFFERENT_ACCOUNT, seller: DIFFERENT_ACCOUNT }],
+      ['trades', { buyer: DIFFERENT_ACCOUNT, seller: DIFFERENT_ACCOUNT }],
     ] as [TabName, Partial<TabResource[TabName]>][])(
       'returns false when item is not a %s `mine` variant',
       (tab, item) => {

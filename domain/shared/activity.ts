@@ -1,11 +1,11 @@
 import type { Listing, ListingStatus } from '@/domain/listing'
-import { Sale } from '../sale'
+import { Trade } from '../trade'
 import { Hex } from './eth'
 
 type ActivityStatus = ListingStatus
 
 export type Activity = {
-  source: 'sale' | 'listing'
+  source: 'trade' | 'listing'
   type: 'ask' | 'bid' | 'unknown'
   chainId: number
   collection: Hex
@@ -33,16 +33,16 @@ export const activity = {
     }
   },
 
-  fromSale(sale: Sale): Activity {
+  fromTrade(trade: Trade): Activity {
     return {
-      source: 'sale',
-      type: sale.listing?.side ?? 'unknown',
-      chainId: sale.chainId,
-      collection: sale.collection,
-      tokenId: sale.tokenId,
-      price: sale.price,
-      timestamp: sale.timestamp,
-      collectionSymbol: sale.nftCollection?.symbol ?? 'unknown',
+      source: 'trade',
+      type: trade.listing?.side ?? 'unknown',
+      chainId: trade.chainId,
+      collection: trade.collection,
+      tokenId: trade.tokenId,
+      price: trade.price,
+      timestamp: trade.timestamp,
+      collectionSymbol: trade.nftCollection?.symbol ?? 'unknown',
     }
   },
 }

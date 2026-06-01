@@ -5,13 +5,13 @@ import type { Hex } from '@/domain/shared/eth'
 
 export const DEFAULT_FILTERS: Record<TabName, Record<string, string[]>> = {
   feed: { status: ['active'] },
-  sales: {},
+  trades: {},
   explore: {},
 }
 
 export const DEFAULT_MINE_FLAG: Record<TabName, boolean> = {
   feed: true,
-  sales: false,
+  trades: false,
   explore: false,
 }
 

@@ -6,7 +6,7 @@ import type { Page } from '@/lib/utils/http'
 import { type Tx, useTx } from '@/app/providers/TxProvider'
 
 // shared components
-import { SalesReceipt } from '@/ui/organisms'
+import { TradeReceipt } from '@/ui/organisms'
 import { SettingsMenu } from '@/ui/organisms'
 import { Modal, Spinner, TextInput } from '@/ui/atoms'
 
@@ -139,7 +139,7 @@ export function MarketplaceView(initial: InitialState) {
 
   const resolvedMainAction =
     // not connected users can still view tx receipts
-    (wrongChain || !isConnected) && tab !== 'sales'
+    (wrongChain || !isConnected) && tab !== 'trades'
       ? { run: undefined, loading: false, disabled: true }
       : mainAction
 
@@ -151,9 +151,9 @@ export function MarketplaceView(initial: InitialState) {
     setResetTick(t => t + 1)
   }
 
-  // when user clicks a tx in txTracker => navigate to sales receipt / order row
+  // when user clicks a tx in txTracker => navigate to trade receipt / order row
   function onNavigateToTx(tx: Tx) {
-    const tab = tx.label === 'order filled' ? 'sales' : 'feed'
+    const tab = tx.label === 'order filled' ? 'trades' : 'feed'
 
     setTab(tab)
     resetMineFlag(tab)
@@ -201,15 +201,15 @@ export function MarketplaceView(initial: InitialState) {
   useKeyboardShortcuts({
     // tab switch
     f: () => setTab('feed'),
-    s: () => setTab('sales'),
+    t: () => setTab('trades'),
     e: () => setTab('explore'),
 
     // tab switch + reset filters
     F: () => {
       resetFiltersAndSelected('feed')
     },
-    S: () => {
-      resetFiltersAndSelected('sales')
+    T: () => {
+      resetFiltersAndSelected('trades')
     },
     E: () => {
       resetFiltersAndSelected('explore')
@@ -222,17 +222,17 @@ export function MarketplaceView(initial: InitialState) {
     '2': () => openManual('filters'),
     '3': () => openManual('examples'),
 
-    '.': () => setInfoModal({ open: true, type: 'settings' }),
-    t: () => showTxs(onNavigateToTx), // open provider tx overview
+    ',': () => setInfoModal({ open: true, type: 'settings' }),
+    '.': () => showTxs(onNavigateToTx), // open provider tx overview
 
     // tab internals
+    s: () => searchRef.current?.focus(),
     a: () => {
       if (!resolvedMainAction?.run || resolvedMainAction.disabled || resolvedMainAction.loading)
         return
       resolvedMainAction.run()
     },
     l: () => focusGalleryRef.current?.(),
-    i: () => searchRef.current?.focus(),
   })
 
   const view = (
@@ -289,7 +289,7 @@ export function MarketplaceView(initial: InitialState) {
 
       {actionModal?.type === 'receipt' && (
         <Modal isOpen onClose={closeActionModal}>
-          <SalesReceipt sale={actionModal.data} />
+          <TradeReceipt trade={actionModal.data} />
         </Modal>
       )}
 

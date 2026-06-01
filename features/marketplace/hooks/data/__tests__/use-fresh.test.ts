@@ -12,7 +12,7 @@ describe('useFresh', () => {
   let hook: RenderHookResult<ReturnType<typeof useFresh>, HookProps>
 
   const defaultTab = 'feed'
-  const otherTabs: TabName[] = ['sales', 'explore']
+  const otherTabs: TabName[] = ['trades', 'explore']
 
   beforeEach(() => {
     vi.useFakeTimers()
@@ -75,7 +75,7 @@ describe('useFresh', () => {
   // tab switch rerender
   it('flushes queued items when switching to that tab', () => {
     const id = base.id
-    const tab = 'sales'
+    const tab = 'trades'
 
     // add to inactive tab => marked as pending
     act(() => add(tab, id))
@@ -91,7 +91,7 @@ describe('useFresh', () => {
   })
 
   it('flushes multiple queued items when switching tabs', () => {
-    const tab = 'sales'
+    const tab = 'trades'
     const ids = ['a', 'b', 'c']
 
     // add all to inactive tab

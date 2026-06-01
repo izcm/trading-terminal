@@ -16,7 +16,7 @@ vi.mock('@/features/trade/hooks/use-fill-order', () => ({ useFillOrder }))
 describe('useMainAction', () => {
   const stubActions: TabActions = {
     feed: () => undefined,
-    sales: () => undefined,
+    trades: () => undefined,
     explore: () => undefined,
   }
 
@@ -106,7 +106,7 @@ describe('useMainAction', () => {
     expect(useFillOrder).toHaveBeenCalledWith(listing.rawOrder, listing.id, refetch)
   })
 
-  it.each(['sales', 'explore'])('returns default tab action for %s tab', tab => {
+  it.each(['trades', 'explore'])('returns default tab action for %s tab', tab => {
     const mockRun = () => undefined
 
     const action = renderHookWith({

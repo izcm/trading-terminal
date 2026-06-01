@@ -1,7 +1,7 @@
 import type { Result } from '@/lib/utils/http'
 
 import type { Listing } from '@/domain/listing'
-import type { Sale } from '@/domain/sale'
+import type { Trade } from '@/domain/trade'
 import type { NFT } from '@/domain/nft'
 import type { NFTCollection } from '@/domain/nft-collection'
 
@@ -22,11 +22,11 @@ export function getDmrktListing(
   return getDmrktItem('orders', `${chainId}:${orderHash}`, signal)
 }
 
-export function getDmrktSale(
+export function getDmrktTrade(
   chainId: number,
   orderHash: string,
   signal?: AbortSignal
-): Promise<Result<Sale>> {
+): Promise<Result<Trade>> {
   return getDmrktItem('settlements', `${chainId}:${orderHash}`, signal)
 }
 

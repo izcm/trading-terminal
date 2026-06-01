@@ -66,7 +66,7 @@ export default function Page() {
     }
   }, [])
 
-  // isDone ? show link to trading page
+  // isDone ? show link to marketplace
   const [isDone, setIsDone] = useState(false)
 
   // poll progress every 2 seconds

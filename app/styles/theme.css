@@ -23,10 +23,10 @@
   --color-accent-weak: var(--accent-weak);
 
   /* --- market colors --- */
-  /* use as: text-ask, text-bid, text-sale */
+  /* use as: text-ask, text-bid, text-trade */
   --color-ask: var(--accent-ask);
   --color-bid: var(--accent-bid);
-  --color-sale: var(--accent-neutral);
+  --color-trade: var(--accent-neutral);
 
   /* --- status --- */
   /* use as: text-success, text-warning, text-failure (+ -weak variants) */
@@ -39,7 +39,7 @@
 
   /* --- order state (used by .order-* classes below) --- */
   --order-active: var(--accent);
-  --order-filled: var(--color-sale);
+  --order-filled: var(--color-trade);
   --order-dead: var(--failure-weak);
 
   /* --- typography --- */
@@ -87,7 +87,7 @@
   --failure: #ff2d55;
   --failure-weak: rgba(255, 45, 85, 0.65);
 
-  --color-sale: #5ee7ff; /* crisp cyan */
+  --color-trade: #5ee7ff; /* crisp cyan */
 
   --panel-shadow: 0 0 10px rgba(102, 255, 178, 0.25), 0 0 40px rgba(102, 255, 178, 0.1);
 }
@@ -113,7 +113,7 @@
 
   --accent-bid: #51d8b2ce;
   --accent-ask: #c77dff;
-  --color-sale: #3ad1ff;
+  --color-trade: #3ad1ff;
 
   --accent-neutral: #d6ff6b;
   --accent-neutral-weak: rgba(214, 255, 107, 0.55);

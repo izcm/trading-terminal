@@ -1,6 +1,6 @@
 import { addrShort, truncateHex } from '@/lib/utils/hex'
 
-import type { Sale } from '@/domain/sale'
+import type { Trade } from '@/domain/trade'
 import { Copyable } from '../atoms'
 
 function Row({ label, value }: { label: string; value: React.ReactNode }) {
@@ -16,8 +16,8 @@ const Divider = () => <div className="border-t border-soft" />
 
 const shortMoney = (x: number) => x.toFixed(6)
 
-export function SalesReceipt({ sale }: { sale: Sale }) {
-  const ctx = sale.txContext
+export function TradeReceipt({ trade }: { trade: Trade }) {
+  const ctx = trade.txContext
 
   return (
     <div className="flex flex-col gap-4 rounded-border p-6">
@@ -25,7 +25,7 @@ export function SalesReceipt({ sale }: { sale: Sale }) {
       <div className="flex gap-4 justify-between items-center">
         <h2 className="text-sm font-semibold">Transaction</h2>
         <span className="text-sm text-subtle">
-          #{`${sale.chainId}:${truncateHex(sale.txHash)}`}
+          #{`${trade.chainId}:${truncateHex(trade.txHash)}`}
         </span>
       </div>
 
@@ -33,12 +33,12 @@ export function SalesReceipt({ sale }: { sale: Sale }) {
 
       {/* tx info */}
       <div className="flex flex-col gap-1">
-        <Row label="chain id" value={sale.chainId} />
+        <Row label="chain id" value={trade.chainId} />
         <Row
           label="tx hash"
-          value={<Copyable value={sale.txHash}>{truncateHex(sale.txHash)}</Copyable>}
+          value={<Copyable value={trade.txHash}>{truncateHex(trade.txHash)}</Copyable>}
         />
-        <Row label="block" value={sale.blockNumber} />
+        <Row label="block" value={trade.blockNumber} />
       </div>
 
       {/* call */}

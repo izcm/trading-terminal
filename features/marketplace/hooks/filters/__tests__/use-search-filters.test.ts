@@ -9,7 +9,7 @@ describe('useSearchFilters', () => {
   let result: RenderHookResult<ReturnType<typeof useSearchFilters>, unknown>['result']
 
   const defaultTab = 'feed'
-  const otherTabs: TabName[] = ['sales', 'explore']
+  const otherTabs: TabName[] = ['trades', 'explore']
 
   beforeEach(() => {
     const hook = renderHook(() => useSearchFilters(defaultTab))
@@ -105,14 +105,14 @@ describe('useSearchFilters', () => {
       act(() =>
         result.current.setFilters(prev => ({
           ...prev,
-          sales: { status: ['expired'] },
+          trades: { status: ['expired'] },
           explore: { tokenId: ['2'] },
         }))
       )
 
       act(() => result.current.resetFilters(defaultTab))
 
-      expect(result.current.filters.sales).toEqual({ status: ['expired'] })
+      expect(result.current.filters.trades).toEqual({ status: ['expired'] })
       expect(result.current.filters.explore).toEqual({ tokenId: ['2'] })
     })
   })

@@ -3,9 +3,9 @@ import type { Listing } from './listing'
 
 import type { Hex } from './shared/eth'
 
-export const saleKey = (chainId: number, orderHash: string) => `${chainId}:${orderHash}` as const
+export const tradeKey = (chainId: number, orderHash: string) => `${chainId}:${orderHash}` as const
 
-export type Sale = {
+export type Trade = {
   id: string
   chainId: number
 

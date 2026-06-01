@@ -1,6 +1,6 @@
 export * from './NFTCard'
 export * from './NFTPicker'
-export * from './SalesReceipt'
+export * from './TradeReceipt'
 export * from './SettingsMenu'
 export * from './ThemePicker'
 

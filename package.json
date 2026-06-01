@@ -8,7 +8,8 @@
     "test": "vitest",
     "fmt": "prettier --write .",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "clean": "rm -rf .next node_modules"
   },
   "dependencies": {
     "@a2zb/packages": "github:izcm/a2zblocks-packages",

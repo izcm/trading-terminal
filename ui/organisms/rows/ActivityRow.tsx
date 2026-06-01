@@ -78,8 +78,8 @@ function ActivityRow({ item }: { item: Props }) {
         />
 
         {/* activity indicator */}
-        {source === 'sale' ? (
-          <span className={`${badgeClasses} bg-sale/70`}>sale</span>
+        {source === 'trade' ? (
+          <span className={`${badgeClasses} bg-trade/70`}>trd</span>
         ) : (
           <span
             className={`${badgeClasses} ${activityType === 'ask' ? 'bg-ask text-black' : 'bg-bid text-black'}

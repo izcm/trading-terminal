@@ -3,7 +3,7 @@ import { act } from 'react'
 import { vi, describe, it, expect } from 'vitest'
 import { renderHook } from '@testing-library/react'
 
-import type { Sale } from '@/domain/sale'
+import type { Trade } from '@/domain/trade'
 import type { NFT } from '@/domain/nft'
 
 import { OrderSide } from '@/protocol/eip712'
@@ -83,15 +83,15 @@ describe('useTabActions', () => {
       })
     })
 
-    describe('sales', () => {
+    describe('trades', () => {
       it('opens receipt modal', () => {
         const { actions, getModal } = setup()
 
-        const sale = { id: 'sale_123' } as Sale
+        const trade = { id: 'trade_123' } as Trade
 
-        act(() => actions.sales(sale)?.())
+        act(() => actions.trades(trade)?.())
 
-        expect(getModal()).toEqual({ type: 'receipt', data: sale })
+        expect(getModal()).toEqual({ type: 'receipt', data: trade })
       })
     })
   })
@@ -108,7 +108,7 @@ describe('useTabActions', () => {
       const { getModal, getCloseModal, actions } = setup()
 
       // do some action that sets modal content
-      act(() => actions.sales({ id: 'sale_123' } as Sale)?.())
+      act(() => actions.trades({ id: 'trade_123' } as Trade)?.())
       expect(getModal()).not.toBeNull()
 
       // now close modal and expect to be null

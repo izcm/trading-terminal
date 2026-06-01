@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef } from 'react'
 
 import { Hex } from '@/domain/shared/eth'
 import { Listing } from '@/domain/listing'
-import { Sale } from '@/domain/sale'
+import { Trade } from '@/domain/trade'
 
 import { TabName, TabResource } from '@/features/tab-config'
 
@@ -31,8 +31,8 @@ export function useMine(tab: TabName, account: Hex | undefined, ids: bigint[]) {
           return (item as Listing).actor === account || ownedIdsRef.current.includes(item.tokenId)
         case 'explore':
           return ownedIdsRef.current.includes(item.tokenId)
-        case 'sales':
-          return (item as Sale).seller === account || (item as Sale).buyer === account
+        case 'trades':
+          return (item as Trade).seller === account || (item as Trade).buyer === account
         default:
           return false
       }
@@ -48,7 +48,7 @@ export function useMine(tab: TabName, account: Hex | undefined, ids: bigint[]) {
 
       const mineFilters: Record<TabName, Record<string, string[]>> = {
         feed: { 'or.tokenId': ownedIds, ['or.side']: ['0'] }, // is of type ask or owned by user
-        sales: { 'or.buyer': [account], ['or.seller']: [account] }, // is buyer or seller
+        trades: { 'or.buyer': [account], ['or.seller']: [account] }, // is buyer or seller
         explore: { tokenId: ownedIds.length ? ownedIds : ['__none__'] }, // is owned by user; __none__ matches nothing when inventory is empty
       }
 

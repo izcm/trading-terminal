@@ -1,5 +1,5 @@
 // Maps snake_case / all-lowercase input to the correct camelCase field name
-// Covers all fields present in ListingDetails and SaleDetails (and their domain types)
+// Covers all fields present in ListingDetails and TradeDetails (and their domain types)
 
 export const FIELD_NAME_MAP: Record<string, string> = {
   // shared
@@ -16,7 +16,7 @@ export const FIELD_NAME_MAP: Record<string, string> = {
   iscollectionbid: 'isCollectionBid',
   is_collection_bid: 'isCollectionBid',
 
-  // sale-specific
+  // trade-specific
   blocknumber: 'blockNumber',
   block_number: 'blockNumber',
   logindex: 'logIndex',

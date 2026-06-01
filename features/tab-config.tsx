@@ -3,13 +3,13 @@ import { ButtonHTMLAttributes, JSX, ReactNode } from 'react'
 import type { Page, Result } from '@/lib/utils/http'
 import {
   getDmrktListings,
-  getDmrktSales,
+  getDmrktTrades,
   getDmrktNFTs,
 } from '@/lib/dmrkt-indexer/actions/dmrkt-page.get'
-import { getDmrktListing, getDmrktNFT, getDmrktSale } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
+import { getDmrktListing, getDmrktNFT, getDmrktTrade } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
 
 import type { Listing } from '@/domain/listing'
-import type { Sale } from '@/domain/sale'
+import type { Trade } from '@/domain/trade'
 import type { NFT } from '@/domain/nft'
 import { activity } from '@/domain/shared/activity'
 
@@ -19,7 +19,7 @@ import { Ban, CreditCard, FileText, Gavel, Handshake, Slash, Tag, X } from '@/ui
 
 // feature components
 import { ListingDetails } from './marketplace/ui/ListingDetails'
-import { SaleDetails } from './marketplace/ui/SaleDetails'
+import { TradeDetails } from './marketplace/ui/TradeDetails'
 import { capitalize } from '@/lib/utils/string'
 
 // === BASE INFO ===
@@ -27,7 +27,7 @@ import { capitalize } from '@/lib/utils/string'
 export type TabResource = {
   feed: Listing
   explore: NFT
-  sales: Sale
+  trades: Trade
 }
 
 export type TabName = keyof TabResource
@@ -42,7 +42,7 @@ type PageGetters<K extends TabName> = (args: {
 
 export const pageGetters: { [K in TabName]: PageGetters<K> } = {
   feed: getDmrktListings,
-  sales: getDmrktSales,
+  trades: getDmrktTrades,
   explore: getDmrktNFTs,
 }
 
@@ -127,9 +127,9 @@ export const tabUIConfig: TabUIConfig = {
     },
   },
 
-  sales: {
-    galleryItem: s => <ActivityItem activity={activity.fromSale(s)} />,
-    details: s => <SaleDetails sale={s} />,
+  trades: {
+    galleryItem: s => <ActivityItem activity={activity.fromTrade(s)} />,
+    details: s => <TradeDetails trade={s} />,
     actionBtnProps: () => ({
       className: 'btn btn-secondary',
       children: btnContent(FileText as IconType, 'Tx details'),

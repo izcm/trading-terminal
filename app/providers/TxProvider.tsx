@@ -104,7 +104,7 @@ export function TxProvider({ children }: { children: ReactNode }) {
                   text: 'See transaction',
                   fn: () =>
                     document.dispatchEvent(
-                      new KeyboardEvent('keydown', { key: 't', bubbles: true })
+                      new KeyboardEvent('keydown', { key: '.', bubbles: true })
                     ),
                 },
               })
@@ -128,33 +128,37 @@ export function TxProvider({ children }: { children: ReactNode }) {
       ))}
       {open && (
         <Modal isOpen onClose={() => setOpen(false)}>
-          <ArrowList
-            items={[...txs].reverse()}
-            getId={tx => tx.hash}
-            selectedId={selectedHash}
-            onSelect={tx => setSelectedHash(tx.hash)}
-            className="rounded-lg p-1 border border-default"
-          >
-            {({ item, isSelected, onSelect }) => (
-              <ArrowRow
-                key={item.hash}
-                isSelected={isSelected}
-                onSelect={() => {
-                  onSelect()
-                  if (item.status !== 'success') return // tmp: no callback for failed tx
+          {txs.length === 0 ? (
+            <p className="text-sm text-muted px-4 py-6">Session has no transactions yet.</p>
+          ) : (
+            <ArrowList
+              items={[...txs].reverse()}
+              getId={tx => tx.hash}
+              selectedId={selectedHash}
+              onSelect={tx => setSelectedHash(tx.hash)}
+              className="rounded-lg p-1 border border-default"
+            >
+              {({ item, isSelected, onSelect }) => (
+                <ArrowRow
+                  key={item.hash}
+                  isSelected={isSelected}
+                  onSelect={() => {
+                    onSelect()
+                    if (item.status !== 'success') return // tmp: no callback for failed tx
 
-                  callbackRef.current(item)
-                  setOpen(false)
-                }}
-                className="transition rounded-lg"
-                dataId={item.hash}
-              >
-                <div className="cursor-pointer">
-                  <TxRow tx={item} />
-                </div>
-              </ArrowRow>
-            )}
-          </ArrowList>
+                    callbackRef.current(item)
+                    setOpen(false)
+                  }}
+                  className="transition rounded-lg"
+                  dataId={item.hash}
+                >
+                  <div className="cursor-pointer">
+                    <TxRow tx={item} />
+                  </div>
+                </ArrowRow>
+              )}
+            </ArrowList>
+          )}
         </Modal>
       )}
       {children}

@@ -1,5 +1,5 @@
 import type { Hex } from '@/domain/shared/eth'
-import type { Sale } from '@/domain/sale'
+import type { Trade } from '@/domain/trade'
 
 import { type NFTCollectionDTO, toNFTCollection } from './nft-collection'
 import { type OrderDTO, toListing } from './order'
@@ -39,7 +39,7 @@ export type SettlementDTO = {
   createdAt: number
 }
 
-export function toSale(dto: SettlementDTO): Sale {
+export function toTrade(dto: SettlementDTO): Trade {
   return {
     ...dto,
 

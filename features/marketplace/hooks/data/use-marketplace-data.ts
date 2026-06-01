@@ -7,7 +7,7 @@ import { connectWs } from '@/lib/realtime/ws'
 import { getWsUrl } from '@/lib/dmrkt-indexer/config'
 
 import { pageGetters, TabName, TabResource } from '@/features/tab-config'
-import { useWsFeed, useWsSales } from '@/features/realtime/hooks'
+import { useWsFeed, useWsTrades } from '@/features/realtime/hooks'
 
 import { useFresh } from './use-fresh'
 import { useTabMutations } from '../tabs/use-tab-mutations'
@@ -20,7 +20,7 @@ type TabPages = {
 const emptyPages: TabPages = {
   feed: { items: [], cursor: null },
   explore: { items: [], cursor: null },
-  sales: { items: [], cursor: null },
+  trades: { items: [], cursor: null },
 }
 
 export function useMarketplaceData(
@@ -73,7 +73,7 @@ export function useMarketplaceData(
   )
 
   useWsFeed({ addItem: addItemAndMarkFresh, updateItem })
-  useWsSales({ addItem: addItemAndMarkFresh, updateItem })
+  useWsTrades({ addItem: addItemAndMarkFresh, updateItem })
 
   // --- pagination ---
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false)

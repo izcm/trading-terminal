@@ -205,6 +205,12 @@ describe('showTxs', () => {
     expect(screen.getByRole('dialog')).toBeInTheDocument()
   })
 
+  it('shows empty state message when there are no txs', () => {
+    const { showTxs } = setup()
+    act(() => showTxs(() => {}))
+    expect(screen.getByText('Session has no transactions yet.')).toBeInTheDocument()
+  })
+
   it('sets row dataId to tx hash', () => {
     const { addTx, showTxs } = setup()
 

@@ -1,6 +1,6 @@
 import { describe, it, vi, expect, beforeEach, afterEach } from 'vitest'
 
-import { getDmrktItem, getDmrktListing, getDmrktNFT, getDmrktSale } from '../dmrkt.get'
+import { getDmrktItem, getDmrktListing, getDmrktNFT, getDmrktTrade } from '../dmrkt.get'
 import { fetchWith, testAbortHandling, testResponseHandling } from './helpers'
 
 vi.mock('../../config', () => ({
@@ -22,8 +22,8 @@ describe('dmrkt item getters', () => {
       expect(fetch).toHaveBeenCalledWith(expect.stringContaining('/api/orders/1:0xabc'), expect.any(Object))
     })
 
-    it('getDmrktSale forwards correct params', () => {
-      getDmrktSale(1, '0xabc')
+    it('getDmrktTrade forwards correct params', () => {
+      getDmrktTrade(1, '0xabc')
       expect(fetch).toHaveBeenCalledWith(expect.stringContaining('/api/settlements/1:0xabc'), expect.any(Object))
     })
 
