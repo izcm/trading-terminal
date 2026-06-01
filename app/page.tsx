@@ -37,7 +37,16 @@ export default function Page() {
     let id: ReturnType<typeof setTimeout>
     const controller = new AbortController()
 
-    const poll = async () => {
+    const getCollection = async () => {
+      // wait for server to be reachable before fetching collections
+      try {
+        await fetch(getBaseUrl(), { signal: controller.signal, method: 'HEAD' })
+      } catch {
+        if (controller.signal.aborted) return
+        id = setTimeout(getCollection, 3200)
+        return
+      }
+
       const res = await getDmrktNFTCollections({
         filters: { chainId: [String(CHAIN_ID)] },
         signal: controller.signal,
@@ -49,10 +58,10 @@ export default function Page() {
 
       if (collection) return setCollection(collection)
 
-      id = setTimeout(poll, 3200)
+      id = setTimeout(getCollection, 3200)
     }
 
-    poll()
+    getCollection()
     return () => {
       controller.abort()
       clearTimeout(id)

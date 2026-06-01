@@ -14,9 +14,16 @@ type Props = {
   tokenId: bigint
   side: OrderSide
   onOrderCreated?: (id: string) => void
+  onOrderNavigate?: (id: string) => void // toast navigate to order
 }
 
-export function CreateOrderFlow({ collection, tokenId, side, onOrderCreated }: Props) {
+export function CreateOrderFlow({
+  collection,
+  tokenId,
+  side,
+  onOrderCreated,
+  onOrderNavigate,
+}: Props) {
   const { account, chainId: walletChainId } = useWallet()
   const { create } = useCreateOrder()
 
@@ -51,6 +58,9 @@ export function CreateOrderFlow({ collection, tokenId, side, onOrderCreated }: P
         title: 'Order Created',
         description: 'Your signed order is stored at dmrkt. The marketplace should update shortly.',
         variant: 'success',
+        toastAction: onOrderNavigate
+          ? { text: 'View order', fn: () => onOrderNavigate(id) }
+          : undefined,
       })
       onOrderCreated?.(id)
     } catch (err) {

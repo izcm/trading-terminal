@@ -300,6 +300,11 @@ export function MarketplaceView(initial: InitialState) {
             tokenId={actionModal.data.tokenId}
             side={actionModal.data.side}
             onOrderCreated={closeActionModal}
+            onOrderNavigate={(id: string) => {
+              resetFiltersAndSelected('feed')
+              // split order id to get orderHash
+              setFilters(prev => ({ ...prev, ['feed']: { orderHash: [id.split(':')[1]] } }))
+            }}
           />
         </Modal>
       )}

@@ -99,6 +99,14 @@ export function TxProvider({ children }: { children: ReactNode }) {
                 description:
                   'Your tx is confirmed on-chain. The marketplace should update shortly.',
                 variant: 'success',
+                // todo: pass toast action instead of knowing marketplaceview's keyboard shortcut logic here
+                toastAction: {
+                  text: 'See transaction',
+                  fn: () =>
+                    document.dispatchEvent(
+                      new KeyboardEvent('keydown', { key: 't', bubbles: true })
+                    ),
+                },
               })
               updateTx(tx.hash, 'success')
               tx.onConfirmed?.()
