@@ -40,7 +40,10 @@ export default function Page() {
     const getCollection = async () => {
       // wait for server to be reachable before fetching collections
       try {
-        await fetch(getBaseUrl(), { signal: controller.signal, method: 'HEAD' })
+        await fetch(`${getBaseUrl()}/api/healthcheck`, {
+          signal: controller.signal,
+          method: 'HEAD',
+        })
       } catch {
         if (controller.signal.aborted) return
         id = setTimeout(getCollection, 3200)
