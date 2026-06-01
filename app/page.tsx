@@ -5,7 +5,6 @@ import Link from 'next/link'
 
 import { NFTCollection } from '@/domain/nft-collection'
 import { getDmrktNFTCollection } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
-import { getDmrktNFTCollections } from '@/lib/dmrkt-indexer/actions/dmrkt-page.get'
 import { getBaseUrl } from '@/lib/dmrkt-indexer/config'
 import { Spinner } from '@/ui/atoms/Spinner'
 
@@ -29,39 +28,35 @@ function Bar({ current, total }: { current: number; total: number }) {
 }
 
 export default function Page() {
-  const [collection, setCollection] = useState<NFTCollection | null>(null)
-  const [status, setStatus] = useState<IndexingStatus | null>(null)
-  const [error, setError] = useState<string | undefined>()
+  const [collection, setCollection] = useState<NFTCollection>()
+  const [status, setStatus] = useState<IndexingStatus>()
+  const [error, setError] = useState<string>()
 
   useEffect(() => {
+    if (collection) return
+
     let id: ReturnType<typeof setTimeout>
     const controller = new AbortController()
 
     const getCollection = async () => {
-      // wait for server to be reachable before fetching collection
+      // healthcheck returns chainId + address of first indexed collection
+      // note: there is only one demo collection per today
       try {
-        await fetch(`${getBaseUrl()}/api/healthcheck`, {
+        const res = await fetch(`${getBaseUrl()}/healthcheck`, {
           signal: controller.signal,
-          method: 'HEAD',
         })
+
+        const collection = await res.json()
+        if (collection) return setCollection(collection)
+
+        id = setTimeout(getCollection, 3200)
       } catch {
         if (controller.signal.aborted) return
+
+        // naively assuming every error is indexer starting
+        setError('awaiting indexer')
         id = setTimeout(getCollection, 3200)
-        return
       }
-
-      const res = await getDmrktNFTCollections({
-        filters: { chainId: [String(CHAIN_ID)] },
-        signal: controller.signal,
-      })
-
-      if (!res.ok) return controller.signal.aborted ? undefined : setError(res.error)
-
-      const collection = res.data.items[0]
-
-      if (collection) return setCollection(collection)
-
-      id = setTimeout(getCollection, 3200)
     }
 
     getCollection()
@@ -78,18 +73,19 @@ export default function Page() {
   useEffect(() => {
     if (!collection || isDone) return
     const controller = new AbortController()
+
     const poll = async () => {
       try {
-        const res = await fetch(
-          `${getBaseUrl()}/api/healthcheck?chainId=${CHAIN_ID}&collection=${collection.address}`,
-          { signal: controller.signal }
-        )
+        const res = await fetch(`${getBaseUrl()}/healthcheck/${CHAIN_ID}/${collection.address}`, {
+          signal: controller.signal,
+        })
         if (res.ok) setStatus(await res.json())
       } catch {
         /* retry next tick */
       }
     }
     poll()
+
     const id = setInterval(poll, 2000)
     return () => {
       controller.abort()
@@ -130,12 +126,21 @@ export default function Page() {
 
   const bannerClasses = 'h-screen flex flex-col gap-12 items-center justify-center fade-in'
 
+  const [dots, setDots] = useState('.')
+  useEffect(() => {
+    const id = setInterval(() => setDots(d => (d.length >= 3 ? '.' : d + '.')), 500)
+    return () => clearInterval(id)
+  }, [])
+
   // show banner and loading spinner when no collection is indexed
   if (!collection) {
     return (
       <div className={`${bannerClasses} fade-in`}>
         {dmrktBanner()}
-        {error ? <p className="text-sm text-red-400">{error}</p> : <Spinner size={20} />}
+        <p className="text-sm opacity-40">
+          {error ?? 'awaiting collection'}
+          <span className="inline-block w-4">{dots}</span>
+        </p>
       </div>
     )
   }
