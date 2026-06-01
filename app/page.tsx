@@ -38,7 +38,7 @@ export default function Page() {
     const controller = new AbortController()
 
     const getCollection = async () => {
-      // wait for server to be reachable before fetching collections
+      // wait for server to be reachable before fetching collection
       try {
         await fetch(`${getBaseUrl()}/api/healthcheck`, {
           signal: controller.signal,
@@ -131,11 +131,11 @@ export default function Page() {
   const bannerClasses = 'h-screen flex flex-col gap-12 items-center justify-center fade-in'
 
   // show banner and loading spinner when no collection is indexed
-  if (!collection && !error) {
+  if (!collection) {
     return (
       <div className={`${bannerClasses} fade-in`}>
         {dmrktBanner()}
-        <Spinner size={20} />
+        {error ? <p className="text-sm text-red-400">{error}</p> : <Spinner size={20} />}
       </div>
     )
   }
@@ -183,7 +183,6 @@ export default function Page() {
 
         {isDone && collection && (
           <div className="flex flex-col gap-2 pt-4">
-            {error && <p className="text-sm text-red-400">{error}</p>}
             <Link
               href={`/${collection.chainId}/${collection.address}`}
               className="btn btn-primary text-center"
