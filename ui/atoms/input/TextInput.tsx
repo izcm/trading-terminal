@@ -5,7 +5,6 @@ type Props = {
   value?: string
   onChange?: (value: string) => void
   onSubmit?: (value: string) => void
-  onEscape?: () => void
   ref?: React.Ref<HTMLInputElement>
   numeric?: boolean
 }
@@ -13,7 +12,7 @@ type Props = {
 // merketplaceView is a heavy component and shouldnt rerender on every keystroke
 // so internal state is added. then render only happens on submit
 
-export function TextInput({ placeholder, value, onChange, onSubmit, onEscape, ref, numeric }: Props) {
+export function TextInput({ placeholder, value, onChange, onSubmit, ref, numeric }: Props) {
   const [internal, setInternal] = useState(value ?? '')
   const [prevValue, setPrevValue] = useState(value)
 
@@ -42,7 +41,7 @@ export function TextInput({ placeholder, value, onChange, onSubmit, onEscape, re
           e.preventDefault()
           onSubmit?.(internal)
         } else if (e.key === 'Escape') {
-          onEscape?.()
+          setInternal('')
         }
       }}
     />

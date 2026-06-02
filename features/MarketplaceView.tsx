@@ -259,7 +259,6 @@ export function MarketplaceView(initial: InitialState) {
           ref={searchRef}
           value={inputSeed}
           onSubmit={handleSearch}
-          onEscape={() => setInputSeed('')}
         />
 
         {/* ---- tab gallery + sidepanel ---- */}
