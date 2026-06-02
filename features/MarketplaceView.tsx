@@ -71,9 +71,12 @@ export function MarketplaceView(initial: InitialState) {
   })
   const [manualTab, setManualTab] = useState<'shortcuts' | 'filters' | 'examples'>('shortcuts')
 
-  const infoModalContent = {
-    manual: <Manual initialTab={manualTab} />,
-    settings: <SettingsMenu />,
+  const infoModalContent: Record<
+    InfoModalType,
+    { content: React.ReactNode; managesFocus: boolean }
+  > = {
+    manual: { content: <Manual initialTab={manualTab} />, managesFocus: false },
+    settings: { content: <SettingsMenu />, managesFocus: true },
   }
 
   // --- filters ---
@@ -316,8 +319,12 @@ export function MarketplaceView(initial: InitialState) {
       )}
 
       {infoModal.open && (
-        <Modal isOpen onClose={() => setInfoModal({ open: false })}>
-          {infoModalContent[infoModal.type]}
+        <Modal
+          isOpen
+          onClose={() => setInfoModal({ open: false })}
+          selfManagesFocus={infoModalContent[infoModal.type].managesFocus}
+        >
+          {infoModalContent[infoModal.type].content}
         </Modal>
       )}
     </div>

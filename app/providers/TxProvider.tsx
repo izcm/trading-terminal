@@ -127,7 +127,7 @@ export function TxProvider({ children }: { children: ReactNode }) {
         />
       ))}
       {open && (
-        <Modal isOpen onClose={() => setOpen(false)}>
+        <Modal isOpen onClose={() => setOpen(false)} selfManagesFocus>
           {txs.length === 0 ? (
             <p className="text-sm text-muted px-4 py-6">Session has no transactions yet.</p>
           ) : (
