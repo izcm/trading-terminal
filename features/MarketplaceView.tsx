@@ -147,7 +147,6 @@ export function MarketplaceView(initial: InitialState) {
   function resetFiltersAndSelected(tab: TabName) {
     setTab(tab)
     resetFilters(tab)
-    resetMineFlag(tab)
     setResetTick(t => t + 1)
   }
 
@@ -260,6 +259,7 @@ export function MarketplaceView(initial: InitialState) {
           ref={searchRef}
           value={inputSeed}
           onSubmit={handleSearch}
+          onEscape={() => setInputSeed('')}
         />
 
         {/* ---- tab gallery + sidepanel ---- */}
