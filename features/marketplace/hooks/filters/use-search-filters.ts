@@ -4,13 +4,14 @@ import type { TabName } from '@/features/tab-config'
 import type { Hex } from '@/domain/shared/eth'
 
 export const DEFAULT_FILTERS: Record<TabName, Record<string, string[]>> = {
-  feed: { status: ['active'] },
+  feed: {},
+  // feed: { status: ['active'] },
   trades: {},
   explore: {},
 }
 
 export const DEFAULT_MINE_FLAG: Record<TabName, boolean> = {
-  feed: true,
+  feed: false,
   trades: false,
   explore: false,
 }

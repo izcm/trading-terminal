@@ -300,7 +300,7 @@ export function MarketplaceView(initial: InitialState) {
       )}
 
       {actionModal?.type === 'createOrder' && (
-        <Modal isOpen onClose={closeActionModal} escTxt="Cancel">
+        <Modal isOpen onClose={closeActionModal} escTxt="Cancel" selfManagesFocus>
           <CreateOrderFlow
             collection={actionModal.data.collection}
             tokenId={actionModal.data.tokenId}

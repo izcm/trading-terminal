@@ -69,8 +69,7 @@ export function Manual({ initialTab = 'shortcuts' }: { initialTab?: Tab } = {}) 
             <button
               key={key}
               onClick={() => setTab(key)}
-              autoFocus={key === tab}
-              className={`text-sm cursor-pointer font-semibold transition ${
+              className={`text-sm cursor-pointer font-semibold transition outline-none ${
                 tab === key ? 'text-accent' : 'text-subtle hover:text-accent-strong'
               }`}
             >

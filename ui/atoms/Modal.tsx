@@ -6,11 +6,19 @@ type ModalProps = {
   isOpen: boolean
   onClose: () => void
   escTxt?: string
+  selfManagesFocus?: boolean
   children: ReactNode
 }
 
-export function Modal({ isOpen, onClose, children, escTxt = 'Close' }: ModalProps) {
+export function Modal({
+  isOpen,
+  onClose,
+  children,
+  escTxt = 'Close',
+  selfManagesFocus,
+}: ModalProps) {
   const lastFocusedRef = useRef<HTMLElement | null>(null)
+  const closeButtonRef = useRef<HTMLButtonElement>(null)
 
   // close on Escape always, close on X unless focus is on a non-numeric text input
   const handler = (e: KeyboardEvent) => {
@@ -55,7 +63,7 @@ export function Modal({ isOpen, onClose, children, escTxt = 'Close' }: ModalProp
       role="dialog"
       onClick={onClose}
     >
-      <FocusTrap>
+      <FocusTrap focusTrapOptions={{ initialFocus: selfManagesFocus ? false : '#modal-close-btn' }}>
         <div
           className="
             flex flex-col gap-2
@@ -66,7 +74,7 @@ export function Modal({ isOpen, onClose, children, escTxt = 'Close' }: ModalProp
           onClick={e => e.stopPropagation()}
         >
           {children}
-          <button className="btn btn-secondary" onClick={onClose}>
+          <button id="modal-close-btn" className="btn btn-secondary outline-none" onClick={onClose}>
             {escTxt}
           </button>
         </div>
