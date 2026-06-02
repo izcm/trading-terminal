@@ -107,10 +107,10 @@ export function MarketplaceView(initial: InitialState) {
     []
   )
 
-  // if been ready once -> remain ready
-  const wasReadyRef = useRef(false)
-  if (!isResolving && !loadingInventory) wasReadyRef.current = true
-  const isReady = wasReadyRef.current
+  const isReadyRef = useRef(false)
+  if (isResolving) isReadyRef.current = false
+  if (!isResolving && !loadingInventory) isReadyRef.current = true
+  const isReady = isReadyRef.current
 
   const { state, isFresh, isLoadingMore, loadMore } = useMarketplaceData(
     tab,
@@ -223,6 +223,13 @@ export function MarketplaceView(initial: InitialState) {
 
     ',': () => setInfoModal({ open: true, type: 'settings' }),
     '.': () => showTxs(onNavigateToTx), // open provider tx overview
+
+    o: () => {
+      if (!account) return
+      setTab('feed')
+      setFilters(prev => ({ ...prev, feed: { maker: [account] } }))
+      setResetTick(t => t + 1)
+    },
 
     // tab internals
     s: () => searchRef.current?.focus(),
