@@ -38,7 +38,6 @@ export function ThemePicker({ themes }: { themes: string[] }) {
         return (
           <button
             key={t}
-            autoFocus={selected}
             tabIndex={selected ? 0 : -1}
             onClick={() => setTheme(t)}
             aria-pressed={selected}
