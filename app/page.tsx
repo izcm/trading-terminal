@@ -102,24 +102,17 @@ export default function Page() {
     status.settlements.total > 0 &&
     status.settlements.reconstructed === status.settlements.total
 
-  // fetch collection name when fully polled; retry once if still missing
+  // collection might not have name indexed at page load
+  // if so -> do extra fetch on poll finish
   useEffect(() => {
-    if (!fullyPolled) return
-    if (collection?.name !== 'unknown collection') {
-      setIsDone(true)
+    if (!fullyPolled || collection?.name !== 'unknown collection') {
+      if (fullyPolled) setIsDone(true)
       return
     }
-
-    const get = () =>
-      getDmrktNFTCollection(CHAIN_ID, collection.address).then(res => {
-        if (res.ok) setCollection(res.data) // update name
-        setIsDone(true)
-      })
-
-    get() // first attempt
-    const id = setTimeout(get, 1500) // retry if name still missing
-    // first attempt success -> name changes -> effect re-runs -> timeout cancelled
-    return () => clearTimeout(id)
+    getDmrktNFTCollection(CHAIN_ID, collection.address).then(res => {
+      if (res.ok) setCollection(res.data)
+      setIsDone(true)
+    })
   }, [fullyPolled, collection?.name])
 
   const dmrktBanner = () => (
