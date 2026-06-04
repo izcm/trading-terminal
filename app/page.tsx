@@ -135,7 +135,7 @@ export default function Page() {
   // show banner and loading spinner when no collection is indexed
   if (!collection) {
     return (
-      <div className={`${bannerClasses} fade-in`}>
+      <div className={bannerClasses}>
         {dmrktBanner()}
         <p className="text-sm opacity-40">
           {error ?? 'awaiting collection'}

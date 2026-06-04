@@ -31,7 +31,8 @@ export function NFTPreview({ chainId, address, tokenId }: Props) {
   )
 
   useEffect(() => {
-    if (!enabled || !tokenURI) return
+    if (!enabled) return setNft(undefined)
+    if (!tokenURI) return
 
     const preview = async () => {
       setNft(mapTokenUriToNFT(chainId, address, tokenId, tokenURI))

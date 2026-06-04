@@ -40,17 +40,16 @@
 }
 
 .fresh {
-  animation: freshPulse 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards 1;
+  animation: freshPulse 1s ease-out forwards;
 }
 
 @keyframes freshPulse {
-  0% {
-    background-color: color-mix(in oklab, var(--accent-strong) 18%, var(--bg-surface));
-    box-shadow: inset 2px 0 0 var(--accent-strong);
+  from {
+    background-color: color-mix(in oklab, var(--accent-strong) 25%, var(--bg-surface));
   }
-  100% {
+
+  to {
     background-color: var(--bg-surface);
-    box-shadow: inset 2px 0 0 transparent;
   }
 }
 
