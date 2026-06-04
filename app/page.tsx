@@ -20,7 +20,7 @@ function Bar({ current, total }: { current: number; total: number }) {
   return (
     <div className="h-px w-full bg-white/8 rounded-full overflow-hidden">
       <div
-        className="h-full bg-accent/50 rounded-full transition-all duration-700"
+        className="h-full bg-accent rounded-full transition-all duration-700"
         style={{ width: `${pct}%` }}
       />
     </div>
@@ -154,7 +154,7 @@ export default function Page() {
           <>
             <div className="flex flex-col gap-2">
               <div className="flex justify-between text-sm">
-                <span className={status.nfts.done ? 'text-accent' : 'opacity-40'}>nfts</span>
+                <span className={isDone ? 'text-accent' : 'opacity-40'}>nfts</span>
                 <span className="opacity-25 tabular-nums">
                   {`${status.nfts.indexed} / ${status.nfts.total}`}
                 </span>
@@ -164,15 +164,7 @@ export default function Page() {
 
             <div className="flex flex-col gap-2">
               <div className="flex justify-between text-sm">
-                <span
-                  className={
-                    status.settlements.reconstructed === status.settlements.total
-                      ? 'text-accent'
-                      : 'opacity-40'
-                  }
-                >
-                  settlements
-                </span>
+                <span className={isDone ? 'text-accent' : 'opacity-40'}>settlements</span>
                 <span className="opacity-25 tabular-nums">
                   {status.settlements.reconstructed} / {status.settlements.total}
                 </span>

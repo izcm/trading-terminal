@@ -5,6 +5,8 @@ import type { Hex } from '@/domain/shared/eth'
 
 import { toast } from '@/ui/molecules'
 
+import { getBlockTimestamp } from '@/lib/blockchain'
+
 import { useWallet } from '@/features/wallet/hooks/use-wallet'
 import { FormInput, OrderForm } from './OrderForm'
 import { useCreateOrder } from '../hooks/use-create-order'
@@ -39,6 +41,9 @@ export function CreateOrderFlow({
       return
     }
 
+    // block timestamp for dev, since no blockas are mined in background
+    const now = await getBlockTimestamp(dmrktDomain.chainId)
+
     const order: OrderCore = {
       side,
       isCollectionBid: false, // feature is paused
@@ -48,6 +53,7 @@ export function CreateOrderFlow({
       currency: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
       nonce: Date.now().toString(),
       ...input,
+      start: now,
       price: parseEther(input.price).toString(),
     }
 

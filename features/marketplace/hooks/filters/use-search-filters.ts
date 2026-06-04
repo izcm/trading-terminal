@@ -4,7 +4,8 @@ import type { TabName } from '@/features/tab-config'
 import type { Hex } from '@/domain/shared/eth'
 
 export const DEFAULT_FILTERS: Record<TabName, Record<string, string[]>> = {
-  feed: { status: ['active'] },
+  // feed: { status: ['active'] },
+  feed: {},
   trades: {},
   explore: {},
 }
