@@ -22,26 +22,14 @@ export const FIELD_NAME_MAP: Record<string, string> = {
   logindex: 'logIndex',
   log_index: 'logIndex',
 
+  // ui aliases
+  maker: 'actor',
+
   // sort params
   sortfield: 'sortField',
   sort_field: 'sortField',
   sortdir: 'sortDir',
   sort_dir: 'sortDir',
-
-  // single-word fields (included for completeness / uniform lookup)
-  price: 'price',
-  side: 'side',
-  actor: 'actor',
-  maker: 'maker',
-  status: 'status',
-  expires: 'expires',
-  collection: 'collection',
-  currency: 'currency',
-  buyer: 'buyer',
-  seller: 'seller',
-  timestamp: 'timestamp',
-  start: 'start',
-  end: 'end',
 }
 
 export function resolveFieldName(input: string): string {

@@ -1,9 +1,8 @@
-import { FIELD_ALIASES } from '@/lib/dmrkt-indexer/actions/logic/param-mapper'
+import { FIELD_NAME_MAP } from '@/features/marketplace/lib/field-config'
 
 export function itemMatchesFilters(
   item: Record<string, unknown>,
   filters: Record<string, string[]>,
-  aliasMap: Record<string, string | undefined> = FIELD_ALIASES,
   shouldSkip: (key: string) => boolean = key => key.startsWith('sort')
 ): boolean {
   return Object.entries(filters).every(([key, values]) => {
@@ -11,7 +10,7 @@ export function itemMatchesFilters(
 
     // if item does not have filter key
     // the ui ignores it so return true
-    const trueKey = aliasMap[key] ?? key
+    const trueKey = FIELD_NAME_MAP[key.toLowerCase()] ?? key
 
     if (shouldSkip(key)) return true
     if (!Object.hasOwn(item, trueKey)) return true
