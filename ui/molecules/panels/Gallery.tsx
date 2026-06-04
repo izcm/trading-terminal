@@ -114,7 +114,7 @@ export function Gallery<T extends { id: string }>({
                 !isSelected && !isFresh?.(item) && 'hover:bg-white/15 bg-surface/75',
 
                 // fresh
-                !isSelected && isFresh?.(item) && 'fresh',
+                isFresh?.(item) && 'fresh',
 
                 // selected
                 isSelected && 'bg-accent/25'

@@ -33,15 +33,15 @@ function placeholderNFT(activity: Activity): NFT {
 }
 
 export function ActivityItem({ activity }: { activity: Activity }) {
-  const { chainId, collection, tokenId } = activity
+  const { chainId, collection: colAddr, tokenId } = activity
 
   const { data: tokenURI } = useTokenURI({
     chainId,
-    address: collection,
+    address: colAddr,
     tokenId: BigInt(tokenId),
   })
 
-  const nft = tokenURI ? mapTokenUriToNFT(chainId, collection, tokenId, tokenURI) : undefined
+  const nft = tokenURI ? mapTokenUriToNFT(chainId, colAddr, tokenId, tokenURI) : undefined
 
   return <ActivityRow item={{ activity, nft }} />
 }
@@ -62,7 +62,7 @@ function ActivityRow({ item }: { item: Props }) {
 
   const badgeClasses = 'absolute -bottom-1 -right-1 text-[10px] px-1 rounded text-black'
 
-  const { padTokenId } = useCollection()
+  const { padTokenId, collection } = useCollection()
   const paddedTokenId = padTokenId(tokenId)
 
   return (
@@ -92,12 +92,14 @@ function ActivityRow({ item }: { item: Props }) {
 
       <div className="flex flex-col justify-center flex-1 min-h-[56px]">
         <span className="font-semibold truncate">
-          {source === 'listing' && isCollectionBid ? `${symbol} collection bid` : nft.name}
+          {source === 'listing' && isCollectionBid
+            ? `${collection?.symbol ?? 'unknown'} collection bid`
+            : nft.name}
         </span>
 
         <div>
           <span className="text-xs text-muted inline-block w-[75px]">
-            {symbol} {!isCollectionBid ? `#${paddedTokenId}` : '#any'}
+            {collection?.symbol ?? 'unknown'} {!isCollectionBid ? `#${paddedTokenId}` : '#any'}
           </span>
           {status && status !== 'active' && (
             <span className={`text-[11px] tracking-wide px-1 ${listingStatusToClass[status]}`}>
