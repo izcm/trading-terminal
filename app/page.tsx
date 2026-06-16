@@ -164,7 +164,7 @@ export default function Page() {
 
             <div className="flex flex-col gap-2">
               <div className="flex justify-between text-sm">
-                <span className={isDone ? 'text-accent' : 'opacity-40'}>settlements</span>
+                <span className={isDone ? 'text-accent' : 'opacity-40'}>trades</span>
                 <span className="opacity-25 tabular-nums">
                   {status.settlements.reconstructed} / {status.settlements.total}
                 </span>
