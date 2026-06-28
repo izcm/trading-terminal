@@ -9,26 +9,25 @@ export async function readOwned(
   collection: Address,
   user: Address
 ): Promise<bigint[]> {
-  const ids: bigint[] = []
+  const tokenIds = Array.from({ length: 500 }, (_, i) => BigInt(i))
 
-  for (let tokenId = 0; tokenId < 500; tokenId++) {
-    const bigTokenId = BigInt(tokenId)
+  const results = await Promise.all(
+    tokenIds.map(async tokenId => {
+      try {
+        const ownerOf = await client.readContract({
+          abi: erc721Abi,
+          address: collection,
+          functionName: 'ownerOf',
+          args: [tokenId],
+        })
+        return ownerOf.toLowerCase() === user.toLowerCase() ? tokenId : null
+      } catch {
+        return null
+      }
+    })
+  )
 
-    try {
-      const ownerOf = await client.readContract({
-        abi: erc721Abi,
-        address: collection,
-        functionName: 'ownerOf',
-        args: [bigTokenId],
-      })
-
-      if (ownerOf.toLowerCase() === user.toLowerCase()) ids.push(bigTokenId)
-    } catch {
-      continue
-    }
-  }
-
-  return ids
+  return results.filter((id): id is bigint => id !== null)
 }
 
 export async function readNFT(
