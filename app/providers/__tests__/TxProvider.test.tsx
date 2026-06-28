@@ -10,6 +10,8 @@ vi.mock('wagmi', () => ({
   useWaitForTransactionReceipt: vi.fn(() => ({ isError: false, isSuccess: false, error: null })),
 }))
 
+vi.mock('@/lib/blockchain/wagmi', () => ({ wagmiConfig: {} }))
+
 type MockReceipt =
   | { isError: false; isSuccess: false }
   | { isError: false; isSuccess: true }

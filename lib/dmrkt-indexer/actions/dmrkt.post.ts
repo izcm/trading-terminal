@@ -14,7 +14,7 @@ export async function postDmrktOrder(
   order: OrderCore,
   signature: Hex
 ): Promise<Result<unknown>> {
-  const url = `${getBaseUrl()}/api/orders`
+  const url = `${getBaseUrl()}/orders`
 
   const parsed = parseSignature(signature)
 

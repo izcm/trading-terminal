@@ -19,17 +19,26 @@ describe('dmrkt item getters', () => {
   describe('wrappers', () => {
     it('getDmrktListing forwards correct params', () => {
       getDmrktListing(1, '0xabc')
-      expect(fetch).toHaveBeenCalledWith(expect.stringContaining('/api/orders/1:0xabc'), expect.any(Object))
+      expect(fetch).toHaveBeenCalledWith(
+        expect.stringContaining('/orders/1:0xabc'),
+        expect.any(Object)
+      )
     })
 
     it('getDmrktTrade forwards correct params', () => {
       getDmrktTrade(1, '0xabc')
-      expect(fetch).toHaveBeenCalledWith(expect.stringContaining('/api/settlements/1:0xabc'), expect.any(Object))
+      expect(fetch).toHaveBeenCalledWith(
+        expect.stringContaining('/settlements/1:0xabc'),
+        expect.any(Object)
+      )
     })
 
     it('getDmrktNFT forwards correct params', () => {
       getDmrktNFT(1, '0xcollection', '42')
-      expect(fetch).toHaveBeenCalledWith(expect.stringContaining('/api/nfts/1:0xcollection:42'), expect.any(Object))
+      expect(fetch).toHaveBeenCalledWith(
+        expect.stringContaining('/nfts/1:0xcollection:42'),
+        expect.any(Object)
+      )
     })
   })
 
@@ -44,7 +53,10 @@ describe('dmrkt item getters', () => {
     it('calls fetch with correct url', async () => {
       fetchItemWith()
 
-      expect(fetch).toHaveBeenCalledExactlyOnceWith('http://test-api/api/params/id_123', expect.any(Object))
+      expect(fetch).toHaveBeenCalledExactlyOnceWith(
+        'http://test-api/params/id_123',
+        expect.any(Object)
+      )
     })
 
     it('forwards signal to fetch', async () => {
@@ -56,7 +68,9 @@ describe('dmrkt item getters', () => {
       expect(fetch).toHaveBeenCalledWith(expect.any(String), { signal: controller.signal })
     })
 
-    testAbortHandling(fetchImpl => fetchWith(getDmrktItem, { input: ['params', 'id_123'], fetchImpl }))
+    testAbortHandling(fetchImpl =>
+      fetchWith(getDmrktItem, { input: ['params', 'id_123'], fetchImpl })
+    )
 
     // --- RESPONSE HANDLING ---
 

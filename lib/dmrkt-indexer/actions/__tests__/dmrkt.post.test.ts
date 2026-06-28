@@ -59,7 +59,7 @@ describe('postDmrktOrder', () => {
     it('sets correct url', async () => {
       const { url } = await getFetchArgs()
 
-      expect(url).toBe('http://test-api/api/orders')
+      expect(url).toBe('http://test-api/orders')
     })
 
     it('sets method to POST', async () => {

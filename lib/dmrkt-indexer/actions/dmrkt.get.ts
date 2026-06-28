@@ -57,7 +57,7 @@ export async function getDmrktItem<T>(
   id: string,
   signal?: AbortSignal
 ): Promise<Result<T>> {
-  const url = `${getBaseUrl()}/api/${params}/${id}`
+  const url = `${getBaseUrl()}/${params}/${id}`
 
   try {
     const res = await fetch(url, { signal })

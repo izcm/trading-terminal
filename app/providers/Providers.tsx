@@ -17,7 +17,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <WalletProvider>
-          <TxProvider> {children}</TxProvider>
+          <TxProvider>{children}</TxProvider>
         </WalletProvider>
       </QueryClientProvider>
     </WagmiProvider>
