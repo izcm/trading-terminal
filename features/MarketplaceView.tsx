@@ -88,7 +88,7 @@ export function MarketplaceView(initial: InitialState) {
     ids: ownedIds,
     isFetching: loadingInventory,
     refetch: refetchOwnedIds,
-  } = useOwnedTokenIds(collectionAddress, account)
+  } = useOwnedTokenIds(chainId, collectionAddress, account)
 
   const { isMine, isMyListing, buildMineQuery } = useMine(tab, account, ownedIds)
 
@@ -311,7 +311,7 @@ export function MarketplaceView(initial: InitialState) {
             onOrderCreated={closeActionModal}
             onOrderNavigate={(id: string) => {
               resetFiltersAndSelected('feed')
-              // split order id to get orderHash
+              // order id is on fmt {chainId}:{orderHash}
               setFilters(prev => ({ ...prev, ['feed']: { orderHash: [id.split(':')[1]] } }))
             }}
           />

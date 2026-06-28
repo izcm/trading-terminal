@@ -1,22 +1,27 @@
 import { useCallback, useEffect, useState } from 'react'
+import { usePublicClient } from 'wagmi'
+import type { PublicClient } from 'viem'
 
 import { readOwned } from '@/lib/blockchain/erc721/erc721.read'
 import type { Hex } from '@/domain/shared/eth'
 
 export function useOwnedTokenIds(
+  chainId: number | undefined,
   collection: Hex | undefined,
   account: Hex | undefined,
-  readOwnedFn: (collection: Hex, account: Hex) => Promise<bigint[]> = readOwned // soft di
+  readOwnedFn: (client: PublicClient, collection: Hex, account: Hex) => Promise<bigint[]> = readOwned // soft di
 ) {
   const [ids, setIds] = useState<bigint[]>([])
   const [isFetching, setIsFetching] = useState<boolean>(false)
 
+  const client = usePublicClient({ chainId })
+
   const fetch = useCallback(async () => {
-    if (!account || !collection) return
+    if (!account || !collection || !client) return
 
     setIsFetching(true)
 
-    const res = await readOwnedFn(collection, account)
+    const res = await readOwnedFn(client, collection, account)
 
     setIds(prev => {
       if (prev.length === res.length && prev.every((id, i) => id === res[i])) return prev
@@ -24,7 +29,7 @@ export function useOwnedTokenIds(
     })
 
     setIsFetching(false)
-  }, [collection, account, readOwnedFn])
+  }, [collection, account, client, readOwnedFn])
 
   useEffect(() => {
     ;(async () => await fetch())()

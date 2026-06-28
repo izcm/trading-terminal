@@ -1,9 +1,16 @@
 import { act } from 'react'
 import { describe, expect, it, Mock, vi } from 'vitest'
 import { renderHook, RenderHookResult, waitFor } from '@testing-library/react'
+import type { PublicClient } from 'viem'
 
 import { Hex } from '@/domain/shared/eth'
 import { useOwnedTokenIds } from '../use-owned-tokenids'
+
+const mockClient = {} as PublicClient
+
+vi.mock('wagmi', () => ({
+  usePublicClient: vi.fn(() => mockClient),
+}))
 
 describe('useOwnedTokenIds', () => {
   type HookProps = Parameters<typeof useOwnedTokenIds>
@@ -21,8 +28,8 @@ describe('useOwnedTokenIds', () => {
   }: {
     collection?: Hex
     account?: Hex
-    readMock?: Mock<(collection: Hex, account: Hex) => Promise<bigint[]>>
-  } = {}) => renderHook(() => useOwnedTokenIds(collection, account, readMock))
+    readMock?: Mock<(client: PublicClient, collection: Hex, account: Hex) => Promise<bigint[]>>
+  } = {}) => renderHook(() => useOwnedTokenIds(31337, collection, account, readMock))
 
   describe('mount', () => {
     it('auto fetches on mount when inputs are valid', async () => {
@@ -46,7 +53,7 @@ describe('useOwnedTokenIds', () => {
       ['account', '0xcollection' as Hex, undefined as Hex | undefined],
     ])('does nothing when %s is undefined', async (_, collection, account) => {
       const readMock = vi.fn()
-      const hook = renderHook(() => useOwnedTokenIds(collection, account, readMock))
+      const hook = renderHook(() => useOwnedTokenIds(31337, collection, account, readMock))
 
       await getRefetch(hook)()
 
@@ -90,7 +97,7 @@ describe('useOwnedTokenIds', () => {
 
       await act(async () => getRefetch(hook)())
 
-      expect(readMock).toHaveBeenCalledWith('0xmyC', '0xmyA')
+      expect(readMock).toHaveBeenCalledWith(expect.any(Object), '0xmyC', '0xmyA')
     })
   })
 

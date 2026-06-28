@@ -6,7 +6,6 @@ import {
   getDmrktTrades,
   getDmrktNFTs,
 } from '@/lib/dmrkt-indexer/actions/dmrkt-page.get'
-import { getDmrktListing, getDmrktNFT, getDmrktTrade } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
 
 import type { Listing } from '@/domain/listing'
 import type { Trade } from '@/domain/trade'

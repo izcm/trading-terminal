@@ -6,7 +6,7 @@ export const wagmiConfig = createConfig({
   chains: [{ ...anvil, testnet: true }, sepolia],
   connectors: [injected()],
   transports: {
-    [anvil.id]: http(process.env.NEXT_PUBLIC_ANVIL_RPC_URL),
-    [sepolia.id]: http(process.env.NEXT_PUBLIC_SEPOLIA_RPC_URL),
+    [anvil.id]: http('http:/localhost/8545'),
+    [sepolia.id]: http(process.env['SEPOLIA_RPC_URL']),
   },
 })

@@ -1,11 +1,12 @@
 // todo: decouple
 import Image from 'next/image'
+
 import { formatEth2 } from '@/lib/blockchain/utils/bigint'
 import { useTokenURI } from '@/lib/blockchain'
+import { tsSuperShort } from '@/lib/utils/time'
 
 import { NFT_LOADING_IMAGE } from '@/domain/constants/placeholders'
 
-import { tsSuperShort } from '@/lib/utils/time'
 import type { Activity } from '@/domain/shared/activity'
 import { mapTokenUriToNFT, type NFT } from '@/domain/nft'
 
