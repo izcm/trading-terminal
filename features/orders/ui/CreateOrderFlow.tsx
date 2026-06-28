@@ -4,7 +4,7 @@ import type { Hex } from '@/domain/shared/eth'
 import { toast } from '@/ui/molecules'
 
 import { FormInput, OrderForm } from './OrderForm'
-import { useCreateOrder } from '../hooks/use-create-order'
+import { useCreateOrder, WrongNetworkError } from '../hooks/use-create-order'
 
 type Props = {
   collection: Hex
@@ -41,9 +41,10 @@ export function CreateOrderFlow({
 
       let toastMsg: string | undefined
 
-      err instanceof Error && err.message === 'missing chain config'
-        ? (toastMsg = 'Are you connected to the correct network?')
-        : (toastMsg = `Something happened, order was not processed.`)
+      toastMsg =
+        err instanceof WrongNetworkError
+          ? 'Are you connected to the correct network?'
+          : 'Something happened, order was not processed.'
 
       toast({
         title: 'Order Creation Failed',

@@ -11,6 +11,8 @@ import { getBlockTimestamp } from '@/lib/blockchain'
 import { useWallet } from '@/features/wallet/hooks/use-wallet'
 import { Hex } from '@/domain/shared/eth'
 
+export class WrongNetworkError extends Error {}
+
 export function useCreateOrder() {
   const { signTypedDataAsync } = useSignTypedData()
   const { chainId, account } = useWallet()
@@ -20,7 +22,7 @@ export function useCreateOrder() {
 
   const create = useCallback(
     async (side: OrderSide, collection: Hex, tokenId: bigint, price: string, end: number) => {
-      if (!chain || !client || !account) throw new Error('missing chain config')
+      if (!chain || !client || !account) throw new WrongNetworkError()
 
       // block timestamp for dev, since no blocks are mined in background
       const now = await getBlockTimestamp(client)
