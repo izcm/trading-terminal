@@ -1,10 +1,6 @@
-import { getPublicClient } from 'wagmi/actions'
-import { wagmiConfig } from '../wagmi'
+import { PublicClient } from 'viem'
 
-type ChainId = (typeof wagmiConfig.chains)[number]['id']
-
-export async function getBlockTimestamp(chainId: ChainId): Promise<number> {
-  const client = getPublicClient(wagmiConfig, { chainId })
+export async function getBlockTimestamp(client: PublicClient): Promise<number> {
   const block = await client.getBlock()
   return Number(block.timestamp)
 }

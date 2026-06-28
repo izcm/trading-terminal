@@ -10,7 +10,7 @@ import { injected } from 'wagmi/connectors'
 
 const sepoliaChain = {
   ...sepolia,
-  marketplace: '0xe51F2d78338487183Ce4dDB9384195B10E9c189f',
+  marketplace: '0xe51F2d78338487183Ce4dDB9384195B10E9c189f' as `0x${string}`,
 }
 
 export const wagmiConfig = createConfig({
@@ -23,3 +23,7 @@ export const wagmiConfig = createConfig({
     [sepolia.id]: http('https://ethereum-sepolia-rpc.publicnode.com'),
   },
 })
+
+export function getChainConfig(chainId: number) {
+  return wagmiConfig.chains.find(c => c.id === chainId)
+}

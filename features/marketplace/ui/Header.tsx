@@ -8,12 +8,14 @@ import { dmrktDomain } from '@/protocol/eip712/domain'
 import type { Hex } from '@/domain/shared/eth'
 import { truncateHex } from '@/lib/utils/hex'
 
+import { useWallet } from '@/features/wallet/hooks/use-wallet'
+
 import { Backpack, Settings } from '@/ui/icons'
 import { Spinner, Copyable } from '@/ui/atoms'
 import { Popover } from '@/ui/molecules'
 
 import { TxTracker } from '../../realtime/ui/TxTracker'
-import { useWallet } from '@/features/wallet/hooks/use-wallet'
+import { getChainConfig } from '@/lib/blockchain/wagmi'
 
 const WalletWidget = dynamic(
   () => import('../../wallet/ui/WalletWidget').then(m => m.WalletWidget),
@@ -58,7 +60,7 @@ export function Header({
 
   const wrongChainId = chainId !== walletChainId
 
-  const dmrktAddress = dmrktDomain.verifyingContract
+  const chain = !wrongChainId ? getChainConfig(walletChainId) : undefined
 
   return (
     <div className="flex items-center mb-1 gap-4">
@@ -83,8 +85,8 @@ export function Header({
               <div className="flex flex-col gap-2">
                 <div className="flex gap-4 justify-between">
                   <span className="text-subtle">dmrkt engine</span>
-                  {dmrktAddress ? (
-                    <Copyable value={dmrktAddress}>{truncateHex(dmrktAddress)}</Copyable>
+                  {chain?.marketplace ? (
+                    <Copyable value={chain.marketplace}>{truncateHex(chain.marketplace)}</Copyable>
                   ) : (
                     <span className="text-muted">—</span>
                   )}

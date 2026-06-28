@@ -1,8 +1,6 @@
-const contractAddr = process.env.NEXT_PUBLIC_MARKETPLACE_ADDR
-
-export const dmrktDomain = {
+export const dmrktDomain = (chainId: bigint, marketplaceAddr: `0x${string}`) => ({
   name: 'dmrkt',
   version: '0',
-  chainId: 31337,
-  verifyingContract: contractAddr as `0x${string}`,
-} as const
+  chainId,
+  verifyingContract: marketplaceAddr,
+})
