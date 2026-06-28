@@ -114,7 +114,7 @@ export async function getDmrktItems<T>({
   query: URLSearchParams
   signal?: AbortSignal
 }): Promise<Result<Page<T>>> {
-  const url = `${getBaseUrl()}/api/${params}?${query.toString()}&limit=25`
+  const url = `${getBaseUrl()}/${params}?${query.toString()}&limit=25`
 
   try {
     const res = await fetch(url, { signal })
@@ -135,7 +135,8 @@ export async function getDmrktItems<T>({
       },
     }
   } catch (err) {
-    if (err instanceof DOMException && err.name === 'AbortError') return { ok: false, error: 'Fetch aborted' }
+    if (err instanceof DOMException && err.name === 'AbortError')
+      return { ok: false, error: 'Fetch aborted' }
     return { ok: false, error: `Network Error: ${err}` }
   }
 }
