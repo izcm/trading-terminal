@@ -1,119 +1,26 @@
-'use client'
-
-import { useEffect, useState } from 'react'
 import Link from 'next/link'
 
-import { NFTCollection } from '@/domain/nft-collection'
-import { getDmrktNFTCollection } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
-import { getBaseUrl } from '@/lib/dmrkt-indexer/config'
-import { Spinner } from '@/ui/atoms/Spinner'
+import { getDmrktNFTCollections } from '@/lib/dmrkt-indexer/actions/dmrkt-page.get'
+import { ImageRow } from '@/ui/organisms/rows/ImageRow'
+import { NFT_PLACEHOLDER_IMAGE } from '@/domain/constants/placeholders'
+import { SimulationState } from '@/features/SimulationState'
 
-const CHAIN_ID = 31337
+const SEPOLIA_CHAIN_ID = 11155111
 
-type IndexingStatus = {
-  nfts: { total: number; indexed: number; done: boolean }
-  settlements: { total: number; reconstructed: number }
-}
+export default async function Page() {
+  const collectionCall = await getDmrktNFTCollections({
+    filters: { chainId: [SEPOLIA_CHAIN_ID.toString()] },
+  })
 
-function Bar({ current, total }: { current: number; total: number }) {
-  const pct = total > 0 ? (current / total) * 100 : 0
-  return (
-    <div className="h-px w-full bg-white/8 rounded-full overflow-hidden">
-      <div
-        className="h-full bg-accent rounded-full transition-all duration-700"
-        style={{ width: `${pct}%` }}
-      />
-    </div>
-  )
-}
+  const parentClasses = 'min-h-screen flex flex-col gap-4 items-center justify-center fade-in'
 
-export default function Page() {
-  const [collection, setCollection] = useState<NFTCollection>()
-  const [status, setStatus] = useState<IndexingStatus>()
-  const [error, setError] = useState<string>()
-
-  useEffect(() => {
-    if (collection) return
-
-    let id: ReturnType<typeof setTimeout>
-    const controller = new AbortController()
-
-    const getCollection = async () => {
-      // healthcheck returns chainId + address of first indexed collection
-      // note: there is only one demo collection per today
-      try {
-        const res = await fetch(`${getBaseUrl()}/healthcheck`, {
-          signal: controller.signal,
-        })
-
-        const collection = await res.json()
-        if (collection) return setCollection(collection)
-
-        id = setTimeout(getCollection, 3200)
-      } catch {
-        if (controller.signal.aborted) return
-
-        // naively assuming every error is indexer starting
-        setError('awaiting indexer')
-        id = setTimeout(getCollection, 3200)
-      }
-    }
-
-    getCollection()
-    return () => {
-      controller.abort()
-      clearTimeout(id)
-    }
-  }, [])
-
-  // isDone ? show link to marketplace
-  const [isDone, setIsDone] = useState(false)
-
-  // poll progress every 2 seconds
-  useEffect(() => {
-    if (!collection || isDone) return
-    const controller = new AbortController()
-
-    const poll = async () => {
-      try {
-        const res = await fetch(`${getBaseUrl()}/healthcheck/${CHAIN_ID}/${collection.address}`, {
-          signal: controller.signal,
-        })
-        if (res.ok) setStatus(await res.json())
-      } catch {
-        /* retry next tick */
-      }
-    }
-    poll()
-
-    const id = setInterval(poll, 2000)
-    return () => {
-      controller.abort()
-      clearInterval(id)
-    }
-  }, [collection, isDone])
-
-  // has indexer
-  // 1. backfilled nfts?
-  // 2. are there recorded settlements?
-  // 3. have indexer reconstructed full settlements receipts?
-  const fullyPolled =
-    status?.nfts.done &&
-    status.settlements.total > 0 &&
-    status.settlements.reconstructed === status.settlements.total
-
-  // collection might not have name indexed at page load
-  // if so -> do extra fetch on poll finish
-  useEffect(() => {
-    if (!fullyPolled || collection?.name !== 'unknown collection') {
-      if (fullyPolled) setIsDone(true)
-      return
-    }
-    getDmrktNFTCollection(CHAIN_ID, collection.address).then(res => {
-      if (res.ok) setCollection(res.data)
-      setIsDone(true)
-    })
-  }, [fullyPolled, collection?.name])
+  if (!collectionCall.ok) {
+    return (
+      <div className={parentClasses}>
+        <span className="text-failure">Couldn't fetch collection: {collectionCall.error}</span>
+      </div>
+    )
+  }
 
   const dmrktBanner = () => (
     <h1
@@ -124,41 +31,25 @@ export default function Page() {
     </h1>
   )
 
-  const bannerClasses = 'h-screen flex flex-col gap-12 items-center justify-center fade-in'
-
-  const [dots, setDots] = useState('.')
-  useEffect(() => {
-    const id = setInterval(() => setDots(d => (d.length >= 3 ? '.' : d + '.')), 500)
-    return () => clearInterval(id)
-  }, [])
-
-  // show banner and loading spinner when no collection is indexed
-  if (!collection) {
-    return (
-      <div className={bannerClasses}>
-        {dmrktBanner()}
-        <p className="text-sm opacity-40">
-          {error ?? 'awaiting collection'}
-          <span className="inline-block w-4">{dots}</span>
-        </p>
-      </div>
-    )
-  }
-
-  // collection has been indexed => show backfill progress and settlement count
   return (
-    <div className={bannerClasses}>
+    <div className={parentClasses}>
       {dmrktBanner()}
-      <div className="flex flex-col gap-5 w-56">
-        <div className="flex flex-col gap-2 pt-4">
-          <Link
-            href={`/${collection.chainId}/${collection.address}`}
-            className="btn btn-primary text-center"
-          >
-            enter {collection.name ?? collection.address.slice(0, 6) + '...'} →
-          </Link>
+      <div className="flex flex-col gap-4 text-muted w-3/4">
+        <div>
+          <p>
+            Welcome to this live marketplace simulation. Pre-populated orders are created and signed
+            programatically through foundry scripting.
+          </p>
+          <p>Fully deterministic, fully reproducable.</p>
         </div>
+        <p>
+          You can run the whole simulation and full-stack application dockerized on your local
+          machine; github_repo.
+        </p>
+        <p>Provided by a2zblock.</p>
       </div>
+
+      <SimulationState chainId={SEPOLIA_CHAIN_ID} collections={collectionCall.data.items} />
     </div>
   )
 }

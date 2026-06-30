@@ -2,21 +2,27 @@ import { ReactNode, RefObject, useEffect } from 'react'
 
 import { ArrowRow } from '@/ui/atoms'
 import { ArrowList } from '@/ui/molecules'
-import clsx from 'clsx'
+
+import { cn } from '@/lib/utils/cn'
 
 export type GalleryProps<T> = {
   // items and selection
   items: T[]
   selected?: T
-  onSelect: (item: T) => void
+  onSelect?: (item: T) => void
+  onEnter?: (item: T) => void
 
   // render
   galleryItem: (item: T) => ReactNode
   isFresh?: (item: T) => boolean
   galleryView?: 'list' | 'card'
+  arrowClasses?: { selected?: string; default?: string }
 
-  // ref
+  // ref + pagination
   ref?: RefObject<HTMLUListElement | null>
+  onLoadMore?: () => void
+  isLoading?: boolean
+  hasMore?: boolean
 }
 
 export function Gallery<T extends { id: string }>({
@@ -24,13 +30,15 @@ export function Gallery<T extends { id: string }>({
   galleryItem,
   selected,
   onSelect,
+  onEnter,
   isFresh,
   galleryView = 'list',
+  arrowClasses,
   ref,
   onLoadMore,
   isLoading,
   hasMore,
-}: GalleryProps<T> & { onLoadMore?: () => void; isLoading?: boolean; hasMore?: boolean }) {
+}: GalleryProps<T>) {
   // load more on 'regular' scroll
   useEffect(() => {
     const el = ref?.current
@@ -96,9 +104,9 @@ export function Gallery<T extends { id: string }>({
         <ArrowList
           ref={ref}
           items={items}
-          getId={c => c.id}
+          getId={item => item.id}
           selectedId={selected?.id}
-          onSelect={onSelect}
+          onSelect={c => onSelect?.(c)}
           className={`${galleryClasses.arrowList} min-h-0 flex-1 rounded-lg p-1`}
         >
           {({ item, isSelected, onSelect }) => (
@@ -106,18 +114,21 @@ export function Gallery<T extends { id: string }>({
               key={item.id}
               isSelected={isSelected}
               onSelect={onSelect}
+              onEnter={onEnter ? () => onEnter(item) : undefined}
               dataId={item.id}
-              className={clsx(
+              className={cn(
                 galleryClasses.arrowRow,
 
                 // default
-                !isSelected && !isFresh?.(item) && 'hover:bg-white/15 bg-surface/75',
+                !isSelected &&
+                  !isFresh?.(item) &&
+                  cn('hover:bg-white/15 bg-surface/75', arrowClasses?.default),
 
                 // fresh
                 isFresh?.(item) && 'fresh',
 
                 // selected
-                isSelected && 'bg-accent/25'
+                isSelected && cn('bg-accent/25', arrowClasses?.selected)
               )}
             >
               {galleryItem(item)}

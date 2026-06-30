@@ -1,14 +1,20 @@
 import { useMemo } from 'react'
-import { useSimulateContract } from 'wagmi'
+
 import { Address } from 'viem'
+import { useChainId, useSimulateContract } from 'wagmi'
 
 import { Order, toOrder712 } from '@/protocol/eip712'
-import { orderbookAbi, orderbookAddress } from '@/protocol/config'
+import { orderbookAbi } from '@/protocol/config'
 
 import { ozErc721Errors } from '@/lib/blockchain'
+import { getChainConfig } from '@/lib/blockchain/wagmi'
 
 export function useTradeSimulation(user?: Address, order?: Order, tokenIdCb?: bigint) {
-  const enabled = !!order && !!user && (!order.isCollectionBid || tokenIdCb !== undefined)
+  const chainId = useChainId()
+  const chain = getChainConfig(chainId)
+
+  const enabled =
+    !!chain && !!order && !!user && (!order.isCollectionBid || tokenIdCb !== undefined)
 
   const args = useMemo(() => {
     if (!order || !user) return undefined
@@ -23,7 +29,7 @@ export function useTradeSimulation(user?: Address, order?: Order, tokenIdCb?: bi
 
   const sim = useSimulateContract({
     abi: [...orderbookAbi, ...ozErc721Errors],
-    address: orderbookAddress! as Address,
+    address: chain?.marketplace,
     functionName: 'settle',
     account: user,
     args,

@@ -5,6 +5,7 @@ import { useEffect, useRef } from 'react'
 type ArrowRowProps = {
   isSelected: boolean
   onSelect: () => void
+  onEnter?: () => void
   children: ReactNode
   className?: string
   dataId?: string
@@ -14,6 +15,7 @@ type ArrowRowProps = {
 export function ArrowRow({
   isSelected,
   onSelect,
+  onEnter,
   children,
   className,
   dataId,
@@ -42,11 +44,14 @@ export function ArrowRow({
       data-id={dataId}
       data-testid={dataTestId}
       tabIndex={isSelected ? 0 : -1}
-      onClick={onSelect}
+      onClick={() => {
+        onSelect()
+        onEnter?.()
+      }}
       onKeyDown={e => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault()
-          onSelect()
+          ;(onEnter ?? onSelect)()
         }
       }}
       className={appliedClasses}

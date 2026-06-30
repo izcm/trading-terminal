@@ -32,7 +32,7 @@ import { Header } from './marketplace/ui/Header'
 import { Manual } from './marketplace/ui/Manual'
 import { Tabs } from './marketplace/ui/Tabs'
 import { buildSearchDefault } from './marketplace/lib/logic/build-search-default'
-import { CollectionProvider } from './collection/CollectionContext'
+import { CollectionProvider } from './CollectionContext'
 
 import type { NFTCollection } from '@/domain/nft-collection'
 
@@ -44,9 +44,8 @@ type InfoModalType = 'manual' | 'settings'
 
 type InfoModalState = { open: true; type: InfoModalType } | { open: false }
 
-export function MarketplaceView(initial: InitialState) {
+export function MarketplaceView({ collection }: InitialState) {
   // --- route params ---
-  const { collection } = initial
   const { address: collectionAddress, chainId } = collection
 
   // --- wallet ---
@@ -200,6 +199,8 @@ export function MarketplaceView(initial: InitialState) {
     setInfoModal({ open: true, type: 'manual' })
   }
 
+  const modalIsOpen = actionModal !== null || infoModal.open
+
   useKeyboardShortcuts({
     // tab switch
     f: () => setTab('feed'),
@@ -241,6 +242,11 @@ export function MarketplaceView(initial: InitialState) {
         return
       resolvedMainAction.run()
     },
+    // Enter: () => {
+    //   if (!resolvedMainAction?.run || resolvedMainAction.disabled || resolvedMainAction.loading)
+    //     return
+    //   resolvedMainAction.run()
+    // },
     l: () => focusGalleryRef.current?.(),
   })
 

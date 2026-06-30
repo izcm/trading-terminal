@@ -1,10 +1,11 @@
 import Image from 'next/image'
 import type { NFT } from '@/domain/nft'
-import { useCollection } from '@/features/collection/CollectionContext'
+import { useCollection } from '@/features/CollectionContext'
 
 export function NFTRow({ nft }: { nft: NFT }) {
   const { padTokenId } = useCollection()
   const rarity = nft.attributes?.find(a => a.trait_type === 'Rarity')?.value
+
   return (
     <div className="base-row gap-4 py-1 px-2">
       <div className="relative shrink-0">

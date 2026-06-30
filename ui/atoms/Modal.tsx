@@ -63,7 +63,12 @@ export function Modal({
       role="dialog"
       onClick={onClose}
     >
-      <FocusTrap focusTrapOptions={{ initialFocus: selfManagesFocus ? false : '#modal-close-btn' }}>
+      <FocusTrap
+        focusTrapOptions={{
+          initialFocus: selfManagesFocus ? false : '#modal-close-btn',
+          clickOutsideDeactivates: true,
+        }}
+      >
         <div
           className="
             flex flex-col gap-2

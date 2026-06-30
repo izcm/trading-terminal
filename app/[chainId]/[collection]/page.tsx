@@ -4,7 +4,7 @@ import { MarketplaceView } from '@/features/MarketplaceView'
 export default async function Page({
   params,
 }: {
-  params: { chainId: string; collection: string }
+  params: Promise<{ chainId: string; collection: string }>
 }) {
   const { chainId, collection } = await params
 

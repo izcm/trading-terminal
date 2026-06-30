@@ -11,7 +11,7 @@ import type { Activity } from '@/domain/shared/activity'
 import { mapTokenUriToNFT, type NFT } from '@/domain/nft'
 
 import { listingStatusToClass } from '@/features/marketplace/lib/listing-status-ui'
-import { useCollection } from '@/features/collection/CollectionContext'
+import { useCollection } from '@/features/CollectionContext'
 
 type Props = {
   activity: Activity

@@ -11,11 +11,6 @@
  * window defined  → NEXT_PUBLIC_INDEXER_API (localhost)
  */
 export function getBaseUrl() {
-  if (typeof window === 'undefined') {
-    const url = process.env.INDEXER_API
-    if (!url) throw new Error('Missing INDEXER_API')
-    return url
-  }
   const url = process.env.NEXT_PUBLIC_INDEXER_API
   if (!url) throw new Error('Missing NEXT_PUBLIC_INDEXER_API')
   return url
