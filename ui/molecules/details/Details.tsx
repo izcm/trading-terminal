@@ -43,10 +43,6 @@ export type DetailsProps<T> = {
 }
 
 export function Details<T>({ item, title, detailsFields, bottomFields }: DetailsProps<T>) {
-  if (!item) {
-    return <div className={`p-4 text-sm`}>select a BIPBAPBOP</div>
-  }
-
   return (
     <div className={`h-full flex flex-col p-4 text-sm justify-between`} tabIndex={-1}>
       {title && (
