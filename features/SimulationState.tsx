@@ -42,7 +42,6 @@ export function SimulationState({ chainId, collections }: InitialState) {
             title={c.name}
             subtitle={c.symbol}
             endContent={<SimulationStats c={c} />}
-            classNames={{ root: 'gap-4' }}
           />
         )}
         selected={selected}

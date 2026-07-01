@@ -1,6 +1,4 @@
 // todo: decouple
-import Image from 'next/image'
-
 import { formatEth2 } from '@/lib/blockchain/utils/bigint'
 import { useTokenURI } from '@/lib/blockchain'
 import { tsSuperShort } from '@/lib/utils/time'
@@ -12,6 +10,7 @@ import { mapTokenUriToNFT, type NFT } from '@/domain/nft'
 
 import { listingStatusToClass } from '@/features/marketplace/lib/listing-status-ui'
 import { useCollection } from '@/features/CollectionContext'
+import { ImageRow } from '@/ui/molecules/ImageRow'
 
 type Props = {
   activity: Activity
@@ -53,7 +52,6 @@ function ActivityRow({ item }: { item: Props }) {
     type: activityType,
     isCollectionBid,
     timestamp,
-    collectionSymbol: symbol,
     tokenId,
     price,
     status,
@@ -66,61 +64,56 @@ function ActivityRow({ item }: { item: Props }) {
   const { padTokenId, collection } = useCollection()
   const paddedTokenId = padTokenId(tokenId)
 
-  return (
-    <div className="base-row gap-4 py-1 px-2">
-      {/* NFT image */}
-      <div className="relative shrink-0 rounded-xl">
-        <Image
-          src={nft.image}
-          alt={nft.name}
-          width={50}
-          height={50}
-          className="rounded object-cover"
-        />
+  const badge =
+    source === 'trade' ? (
+      <span className={`${badgeClasses} bg-trade/70`}>trd</span>
+    ) : (
+      <span
+        className={`${badgeClasses} ${activityType === 'ask' ? 'bg-ask text-black' : 'bg-bid text-black'}`}
+      >
+        {activityType}
+      </span>
+    )
 
-        {/* activity indicator */}
-        {source === 'trade' ? (
-          <span className={`${badgeClasses} bg-trade/70`}>trd</span>
-        ) : (
-          <span
-            className={`${badgeClasses} ${activityType === 'ask' ? 'bg-ask text-black' : 'bg-bid text-black'}
-        `}
-          >
-            {activityType}
-          </span>
-        )}
-      </div>
-
-      <div className="flex flex-col justify-center flex-1 min-h-[56px]">
-        <span className="font-semibold truncate">
-          {source === 'listing' && isCollectionBid
-            ? `${collection?.symbol ?? 'unknown'} collection bid`
-            : nft.name}
+  const subtitle = (
+    <>
+      <span className="text-xs text-muted inline-block w-[75px]">
+        {collection?.symbol ?? 'unknown'} {!isCollectionBid ? `#${paddedTokenId}` : '#any'}
+      </span>
+      {status && status !== 'active' && (
+        <span className={`text-[11px] tracking-wide px-1 ${listingStatusToClass[status]}`}>
+          {status.toUpperCase()}
         </span>
+      )}
+      {isCollectionBid && (
+        <span className="text-xs text-accent/70 block">any NFT in collection</span>
+      )}
+    </>
+  )
 
-        <div>
-          <span className="text-xs text-muted inline-block w-[75px]">
-            {collection?.symbol ?? 'unknown'} {!isCollectionBid ? `#${paddedTokenId}` : '#any'}
-          </span>
-          {status && status !== 'active' && (
-            <span className={`text-[11px] tracking-wide px-1 ${listingStatusToClass[status]}`}>
-              {status.toUpperCase()}
-            </span>
-          )}
-        </div>
-
-        {isCollectionBid && <span className="text-xs text-accent/70">any NFT in collection</span>}
-      </div>
-
-      {/* price */}
-      <div className="text-right flex flex-col px-1">
-        <span className="font-semibold">{formatEth2(price)} ETH</span>
-
-        <span className="text-xs text-muted">
-          {source === 'listing' ? 'exp ' : ''}
-          {tsSuperShort(timestamp)}
-        </span>
-      </div>
+  const endContent = (
+    <div className="flex flex-col px-1 flex-1 text-right ">
+      <span className="font-semibold">{formatEth2(price)} ETH</span>
+      <span className="text-xs text-muted">
+        {source === 'listing' ? 'exp ' : ''}
+        {tsSuperShort(timestamp)}
+      </span>
     </div>
+  )
+
+  return (
+    <ImageRow
+      image={nft.image}
+      title={
+        source === 'listing' && isCollectionBid
+          ? `${collection?.symbol ?? 'unknown'} collection bid`
+          : nft.name
+      }
+      subtitle={subtitle}
+      imageBadge={badge}
+      endContent={endContent}
+      imageSize={50}
+      classNames={{ root: 'min-h-[64px] [&>*:nth-child(2)]:gap-1', title: 'text-md' }}
+    />
   )
 }

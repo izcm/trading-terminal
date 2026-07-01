@@ -4,13 +4,14 @@ import { cn } from '@/lib/utils/cn'
 
 type Props = {
   image: string
-  title: string
-  subtitle?: string
+  title: ReactNode
+  subtitle?: ReactNode
   endContent?: ReactNode
+  imageBadge?: ReactNode
   imageSize?: number
   classNames?: {
     title?: string
-    subtitle?: string
+    subtitle?: ReactNode
     image?: string
     root?: string
   }
@@ -21,6 +22,7 @@ export function ImageRow({
   title,
   subtitle,
   endContent,
+  imageBadge,
   imageSize = 48,
   classNames,
 }: Props) {
@@ -32,13 +34,15 @@ export function ImageRow({
           alt={image}
           width={imageSize}
           height={imageSize}
-          className={cn('w-12 h-12 rounded object-cover', classNames?.image)}
+          className={cn('rounded object-cover', classNames?.image)}
         />
+        {imageBadge}
       </div>
 
-      <div className="flex flex-col justify-center">
+      {/* <div className="flex flex-col justify-center"> */}
+      <div className={cn('flex flex-col justify-center')}>
         <span className={cn('text-sm font-semibold truncate', classNames?.title)}>{title}</span>
-        <span className={cn('text-xs text-muted font-muted truncate', classNames?.subtitle)}>
+        <span className={cn('text-xs text-muted inline-block truncate', classNames?.subtitle)}>
           {subtitle}
         </span>
       </div>
