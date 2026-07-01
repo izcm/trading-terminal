@@ -1,7 +1,7 @@
 import { describe, vi, expect, beforeEach, it, afterEach } from 'vitest'
 
 import { fetchWith, testAbortHandling, testErrorHandling } from './helpers'
-import { getDmrktItems } from '../dmrkt-page.get'
+import { getDmrktPage } from '../dmrkt-page.get'
 
 vi.mock('../../config', () => ({
   getBaseUrl: () => 'http://test-api',
@@ -24,7 +24,7 @@ describe('dmrkt page getters', () => {
 
     describe('response handling', () => {
       const fetchPageWith = (fetchImpl?: () => Promise<Response>) =>
-        fetchWith(getDmrktItems, { input: [baseInput()], fetchImpl })
+        fetchWith(getDmrktPage, { input: [baseInput()], fetchImpl })
 
       it('handles ok response', async () => {
         const mockResponse = { items: ['foo', 'bar'], nextCursor: 'cursor_123' }
@@ -39,7 +39,7 @@ describe('dmrkt page getters', () => {
       testErrorHandling(fetchPageWith)
     })
 
-    testAbortHandling(fetchImpl => fetchWith(getDmrktItems, { input: [baseInput()], fetchImpl }))
+    testAbortHandling(fetchImpl => fetchWith(getDmrktPage, { input: [baseInput()], fetchImpl }))
 
     it('forwards signal to fetch', async () => {
       const controller = new AbortController()
@@ -48,7 +48,7 @@ describe('dmrkt page getters', () => {
         json: async () => ({ items: [], nextCursor: null }),
       } as Response)
 
-      await getDmrktItems({ ...baseInput(), signal: controller.signal })
+      await getDmrktPage({ ...baseInput(), signal: controller.signal })
 
       expect(fetch).toHaveBeenCalledWith(expect.any(String), { signal: controller.signal })
     })

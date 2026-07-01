@@ -3,42 +3,42 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-import { NFTCollection } from '@/domain/nft-collection'
-import { ImageRow } from '@/ui/molecules/ImageRow'
-import { Gallery } from '@/ui/molecules'
-import { Copyable, LabeledValue } from '@/ui/atoms'
 import { addrShort } from '@/lib/utils/hex'
+
+import { NFTCollection } from '@/domain/nft-collection'
+import { Hex } from '@/domain/shared/eth'
+
+import { ImageRow, Gallery } from '@/ui/molecules'
+import { Copyable, LabeledValue } from '@/ui/atoms'
 
 type Count = number | string
 
-type CollectionState = NFTCollection & {
-  counts: {
-    activeOrders: Count
-    trades: Count
-    traders: Count
-  }
+type Counts = {
+  activeOrders: Count
+  trades: Count
+  traders: Count
 }
 
 type InitialState = {
   chainId: number
   collections: NFTCollection[]
-  collectionStates: CollectionState[]
+  collectionStats: Record<Hex, Counts>
 }
 
-const SimulationStats = ({ c }: { c: NFTCollection }) => (
+const SimulationStats = ({ address, counts }: { address: Hex; counts: Counts }) => (
   <div className="flex gap-4 px-1">
     <div className="px-2">
-      <LabeledValue label="sepolia" value={<Copyable value={addrShort(c.address)} />} />
+      <LabeledValue label="sepolia" value={<Copyable value={addrShort(address)} />} />
     </div>
     <div className="flex gap-4">
-      <LabeledValue label="unique wallets" value={108} />
-      <LabeledValue label="active orders" value={32} />
-      <LabeledValue label="executed trades" value={102} />
+      <LabeledValue label="unique wallets" value={counts.traders} />
+      <LabeledValue label="active orders" value={counts.activeOrders} />
+      <LabeledValue label="executed trades" value={counts.trades} />
     </div>
   </div>
 )
 
-export function SimulationState({ chainId, collections, collectionStates }: InitialState) {
+export function SimulationState({ chainId, collections, collectionStats }: InitialState) {
   const [selected, setSelected] = useState<NFTCollection | undefined>(collections[0])
   const router = useRouter()
 
@@ -51,7 +51,7 @@ export function SimulationState({ chainId, collections, collectionStates }: Init
             image={`/collection_banners/${c.symbol}.svg`}
             title={c.name}
             subtitle={c.symbol}
-            endContent={<SimulationStats c={c} />}
+            endContent={<SimulationStats address={c.address} counts={collectionStats[c.address]} />}
             classNames={{ image: 'rounded-xl' }}
           />
         )}

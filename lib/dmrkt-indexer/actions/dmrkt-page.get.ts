@@ -26,7 +26,7 @@ function mapResult<TDTO, T>(res: Result<Page<TDTO>>, toDomain: (dto: TDTO) => T)
 }
 
 // --- Core fetch ---
-export async function getDmrktItems<T>({
+export async function getDmrktPage<T>({
   params,
   query,
   signal,
@@ -51,7 +51,7 @@ export async function getDmrktNFTCollections({
   cursor?: string | null
   signal?: AbortSignal
 } = {}): Promise<Result<Page<NFTCollection>>> {
-  const res = await getDmrktItems<NFTCollectionDTO>({
+  const res = await getDmrktPage<NFTCollectionDTO>({
     params: 'nft-collections',
     query: buildQuery({ filters, cursor }),
     signal,
@@ -70,7 +70,7 @@ export async function getDmrktNFTs({
   cursor?: string | null
   signal?: AbortSignal
 } = {}): Promise<Result<Page<NFT>>> {
-  const res = await getDmrktItems<NFTDTO>({
+  const res = await getDmrktPage<NFTDTO>({
     params: 'nfts',
     query: buildQuery({ filters, cursor }),
     signal,
@@ -92,7 +92,7 @@ export async function getDmrktListings({
   const query = buildQuery({ filters, cursor, includes: ['nftCollection'] })
   query.append('isCollectionBid', 'false') // added since collectionBid feature is paused
 
-  const res = await getDmrktItems<OrderDTO>({
+  const res = await getDmrktPage<OrderDTO>({
     params: 'orders',
     query,
     signal,
@@ -111,7 +111,7 @@ export async function getDmrktSettlements({
   cursor?: string | null
   signal?: AbortSignal
 } = {}) {
-  const res = await getDmrktItems<SettlementDTO>({
+  const res = await getDmrktPage<SettlementDTO>({
     params: 'settlements',
     query: buildQuery({ filters, cursor, includes: ['nftCollection', 'order'] }),
     signal,
@@ -120,17 +120,3 @@ export async function getDmrktSettlements({
   return mapResult(res, toTrade)
 }
 
-// --- Count ---
-export async function getDmrktCount(
-  countOf: string,
-  filters: Record<string, string[]> = {}
-): Promise<Result<number>> {
-  const res = await getDmrktItems<{ count: number }>({
-    params: `count/${countOf}`,
-    query: buildQuery({ filters }),
-    limit: 0,
-  })
-
-  if (!res.ok) return res
-  return { ok: true, data: res.data.items[0]?.count ?? 0 }
-}

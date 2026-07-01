@@ -7,7 +7,20 @@ import type { NFTCollection } from '@/domain/nft-collection'
 
 import { NFTCollectionDTO, toNFTCollection } from '../dtos/nft-collection'
 import { getBaseUrl } from '../config'
+import { buildQuery } from './logic/build-query'
 import { fetchJSON } from '@/lib/utils/http'
+
+export async function getDmrktCount(
+  countOf: string,
+  filters: Record<string, string[]> = {}
+): Promise<Result<number>> {
+  const res = await fetchJSON<{ count: number }>(
+    `${getBaseUrl()}/${countOf}/count?${buildQuery({ filters })}`
+  )
+
+  if (!res.ok) return res
+  return { ok: true, data: res.data.count }
+}
 
 function mapItem<TDTO, T>(res: Result<TDTO>, toDomain: (dto: TDTO) => T): Result<T> {
   if (!res.ok) return res

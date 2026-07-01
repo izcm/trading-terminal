@@ -1,4 +1,5 @@
-import { getDmrktCount, getDmrktNFTCollections } from '@/lib/dmrkt-indexer/actions/dmrkt-page.get'
+import { getDmrktCount } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
+import { getDmrktNFTCollections } from '@/lib/dmrkt-indexer/actions/dmrkt-page.get'
 
 import { SimulationState } from '@/features/SimulationState'
 import { NFTCollection } from '@/domain/nft-collection'
@@ -35,7 +36,7 @@ export default async function Page() {
   const unwrapCount = (r: Awaited<ReturnType<typeof getDmrktCount>>) =>
     r.ok ? r.data : "couldn't count"
 
-  const collectionStates = await Promise.all(
+  const collectionStatsList = await Promise.all(
     collections.map(async c => {
       const count = (countOf: string, filters?: Record<string, string[]>) =>
         getDmrktCount(countOf, {
@@ -50,21 +51,23 @@ export default async function Page() {
         count('orders'),
       ])
 
-      return {
-        ...c,
-        counts: {
+      return [
+        c.address,
+        {
           activeOrders: unwrapCount(activeOrders),
           trades: unwrapCount(trades),
           traders: unwrapCount(traders),
         },
-      }
+      ] as const
     })
   )
+
+  const collectionStats = Object.fromEntries(collectionStatsList)
 
   return (
     <div className={parentClasses}>
       {dmrktBanner()}
-      <div className="flex flex-col gap-4 text-muted">
+      <div className="flex flex-col gap-4 my-2 text-muted">
         <p className="text-accent-weak">Welcome to IzBlocks' live marketplace simulation.</p>
         <p>
           Pre-populated orders are created, signed, and executed programmatically via Foundry
@@ -76,7 +79,7 @@ export default async function Page() {
       <SimulationState
         chainId={SEPOLIA_CHAIN_ID}
         collections={collectionCall.data.items}
-        collectionStates={collectionStates}
+        collectionStats={collectionStats}
       />
     </div>
   )
