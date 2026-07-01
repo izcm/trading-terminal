@@ -11,7 +11,7 @@ import { SettlementDTO, toTrade } from '../dtos/settlement'
 
 import { getBaseUrl } from '../config'
 import { buildQuery } from './logic/build-query'
-import { getResponseError } from './logic/get-error'
+import { fetchJSON } from '@/lib/utils/http'
 
 function mapResult<TDTO, T>(res: Result<Page<TDTO>>, toDomain: (dto: TDTO) => T): Result<Page<T>> {
   if (!res.ok) return res
@@ -23,6 +23,22 @@ function mapResult<TDTO, T>(res: Result<Page<TDTO>>, toDomain: (dto: TDTO) => T)
       cursor: res.data.cursor,
     },
   }
+}
+
+// --- Core fetch ---
+export async function getDmrktItems<T>({
+  params,
+  query,
+  signal,
+  limit = 25,
+}: {
+  params: string
+  query: URLSearchParams
+  signal?: AbortSignal
+  limit?: number
+}): Promise<Result<Page<T>>> {
+  const url = `${getBaseUrl()}/${params}?${query.toString()}${limit ? `&limit=${limit}` : ''}`
+  return fetchJSON<Page<T>>(url, signal)
 }
 
 // --- NFT Collections ---
@@ -86,7 +102,7 @@ export async function getDmrktListings({
 }
 
 // --- Trades ---
-export async function getDmrktTrades({
+export async function getDmrktSettlements({
   filters = {},
   cursor,
   signal,
@@ -104,39 +120,17 @@ export async function getDmrktTrades({
   return mapResult(res, toTrade)
 }
 
-// --- Core fetch ---
-export async function getDmrktItems<T>({
-  params,
-  query,
-  signal,
-}: {
-  params: string
-  query: URLSearchParams
-  signal?: AbortSignal
-}): Promise<Result<Page<T>>> {
-  const url = `${getBaseUrl()}/${params}?${query.toString()}&limit=25`
+// --- Count ---
+export async function getDmrktCount(
+  countOf: string,
+  filters: Record<string, string[]> = {}
+): Promise<Result<number>> {
+  const res = await getDmrktItems<{ count: number }>({
+    params: `count/${countOf}`,
+    query: buildQuery({ filters }),
+    limit: 0,
+  })
 
-  try {
-    const res = await fetch(url, { signal })
-
-    if (!res.ok) {
-      const error = await getResponseError(res)
-
-      return { ok: false, error }
-    }
-
-    const data = await res.json()
-
-    return {
-      ok: true,
-      data: {
-        items: data.items as T[],
-        cursor: data.nextCursor ?? null,
-      },
-    }
-  } catch (err) {
-    if (err instanceof DOMException && err.name === 'AbortError')
-      return { ok: false, error: 'Fetch aborted' }
-    return { ok: false, error: `Network Error: ${err}` }
-  }
+  if (!res.ok) return res
+  return { ok: true, data: res.data.items[0]?.count ?? 0 }
 }

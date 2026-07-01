@@ -1,7 +1,7 @@
-import Link from 'next/link'
+import { getDmrktCount, getDmrktNFTCollections } from '@/lib/dmrkt-indexer/actions/dmrkt-page.get'
 
-import { getDmrktNFTCollections } from '@/lib/dmrkt-indexer/actions/dmrkt-page.get'
 import { SimulationState } from '@/features/SimulationState'
+import { NFTCollection } from '@/domain/nft-collection'
 
 const SEPOLIA_CHAIN_ID = 11155111
 
@@ -10,7 +10,8 @@ export default async function Page() {
     filters: { chainId: [SEPOLIA_CHAIN_ID.toString()] },
   })
 
-  const parentClasses = 'min-h-screen flex flex-col gap-4 items-center justify-center fade-in'
+  const parentClasses =
+    'min-h-screen flex flex-col gap-4 max-w-4xl items-center justify-center mx-auto fade-in'
 
   if (!collectionCall.ok) {
     return (
@@ -29,11 +30,42 @@ export default async function Page() {
     </h1>
   )
 
+  const collections = collectionCall.data.items
+
+  const unwrapCount = (r: Awaited<ReturnType<typeof getDmrktCount>>) =>
+    r.ok ? r.data : "couldn't count"
+
+  const collectionStates = await Promise.all(
+    collections.map(async c => {
+      const count = (countOf: string, filters?: Record<string, string[]>) =>
+        getDmrktCount(countOf, {
+          chainId: [c.chainId.toString()],
+          collection: [c.address],
+          ...filters,
+        })
+
+      const [activeOrders, trades, traders] = await Promise.all([
+        count('orders', { status: ['active'] }),
+        count('settlements'),
+        count('orders'),
+      ])
+
+      return {
+        ...c,
+        counts: {
+          activeOrders: unwrapCount(activeOrders),
+          trades: unwrapCount(trades),
+          traders: unwrapCount(traders),
+        },
+      }
+    })
+  )
+
   return (
     <div className={parentClasses}>
       {dmrktBanner()}
-      <div className="flex flex-col gap-4 text-muted w-3/4">
-        <p className="text-accent-weak">Welcome to IzBlock's live marketplace simulation.</p>
+      <div className="flex flex-col gap-4 text-muted">
+        <p className="text-accent-weak">Welcome to IzBlocks' live marketplace simulation.</p>
         <p>
           Pre-populated orders are created, signed, and executed programmatically via Foundry
           scripts. The process is deterministic, making every run fully reproducible.
@@ -41,7 +73,11 @@ export default async function Page() {
         <p>The simulation and full-stack application can also be run locally; github_repo.</p>
       </div>
 
-      <SimulationState chainId={SEPOLIA_CHAIN_ID} collections={collectionCall.data.items} />
+      <SimulationState
+        chainId={SEPOLIA_CHAIN_ID}
+        collections={collectionCall.data.items}
+        collectionStates={collectionStates}
+      />
     </div>
   )
 }

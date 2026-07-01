@@ -23,7 +23,7 @@ export function ImageRow({
   subtitle,
   endContent,
   imageBadge,
-  imageSize = 48,
+  imageSize = 50,
   classNames,
 }: Props) {
   return (

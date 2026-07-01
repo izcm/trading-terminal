@@ -1,6 +1,8 @@
+import { ReactNode } from 'react'
+
 type Props = {
-  label: string
-  value: string | number
+  label: ReactNode
+  value: ReactNode
 }
 
 export const LabeledValue = ({ label, value }: Props) => (

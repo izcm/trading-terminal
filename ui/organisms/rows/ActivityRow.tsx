@@ -112,7 +112,6 @@ function ActivityRow({ item }: { item: Props }) {
       subtitle={subtitle}
       imageBadge={badge}
       endContent={endContent}
-      imageSize={50}
       classNames={{ root: 'min-h-[64px] [&>*:nth-child(2)]:gap-1', title: 'text-md' }}
     />
   )

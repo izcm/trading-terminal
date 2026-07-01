@@ -9,26 +9,36 @@ import { Gallery } from '@/ui/molecules'
 import { Copyable, LabeledValue } from '@/ui/atoms'
 import { addrShort } from '@/lib/utils/hex'
 
+type Count = number | string
+
+type CollectionState = NFTCollection & {
+  counts: {
+    activeOrders: Count
+    trades: Count
+    traders: Count
+  }
+}
+
 type InitialState = {
   chainId: number
   collections: NFTCollection[]
+  collectionStates: CollectionState[]
 }
 
 const SimulationStats = ({ c }: { c: NFTCollection }) => (
-  <div className="flex gap-4 mx-2">
-    <div className="flex flex-col justify-center text-sm">
-      <Copyable value={addrShort(c.address)} />
-      <span className="text-xs text-muted">sepolia</span>
+  <div className="flex gap-4 px-1">
+    <div className="px-2">
+      <LabeledValue label="sepolia" value={<Copyable value={addrShort(c.address)} />} />
     </div>
-    <div className="flex gap-4 px-2">
-      <LabeledValue label="demo users" value={108} />
+    <div className="flex gap-4">
+      <LabeledValue label="unique wallets" value={108} />
       <LabeledValue label="active orders" value={32} />
       <LabeledValue label="executed trades" value={102} />
     </div>
   </div>
 )
 
-export function SimulationState({ chainId, collections }: InitialState) {
+export function SimulationState({ chainId, collections, collectionStates }: InitialState) {
   const [selected, setSelected] = useState<NFTCollection | undefined>(collections[0])
   const router = useRouter()
 
@@ -42,6 +52,7 @@ export function SimulationState({ chainId, collections }: InitialState) {
             title={c.name}
             subtitle={c.symbol}
             endContent={<SimulationStats c={c} />}
+            classNames={{ image: 'rounded-xl' }}
           />
         )}
         selected={selected}

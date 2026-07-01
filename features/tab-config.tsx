@@ -3,7 +3,7 @@ import { ButtonHTMLAttributes, JSX, ReactNode } from 'react'
 import type { Page, Result } from '@/lib/utils/http'
 import {
   getDmrktListings,
-  getDmrktTrades,
+  getDmrktSettlements,
   getDmrktNFTs,
 } from '@/lib/dmrkt-indexer/actions/dmrkt-page.get'
 
@@ -41,7 +41,7 @@ type PageGetters<K extends TabName> = (args: {
 
 export const pageGetters: { [K in TabName]: PageGetters<K> } = {
   feed: getDmrktListings,
-  trades: getDmrktTrades,
+  trades: getDmrktSettlements,
   explore: getDmrktNFTs,
 }
 

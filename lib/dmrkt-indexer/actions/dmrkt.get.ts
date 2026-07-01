@@ -7,7 +7,7 @@ import type { NFTCollection } from '@/domain/nft-collection'
 
 import { NFTCollectionDTO, toNFTCollection } from '../dtos/nft-collection'
 import { getBaseUrl } from '../config'
-import { getResponseError } from './logic/get-error'
+import { fetchJSON } from '@/lib/utils/http'
 
 function mapItem<TDTO, T>(res: Result<TDTO>, toDomain: (dto: TDTO) => T): Result<T> {
   if (!res.ok) return res
@@ -52,26 +52,10 @@ export async function getDmrktNFTCollection(
   return mapItem(res, toNFTCollection)
 }
 
-export async function getDmrktItem<T>(
+export function getDmrktItem<T>(
   params: string,
   id: string,
   signal?: AbortSignal
 ): Promise<Result<T>> {
-  const url = `${getBaseUrl()}/${params}/${id}`
-
-  try {
-    const res = await fetch(url, { signal })
-
-    if (!res.ok) {
-      const error = await getResponseError(res)
-      return { ok: false, error }
-    }
-
-    const data = await res.json()
-    return { ok: true, data: data as T }
-  } catch (err) {
-    if (err instanceof DOMException && err.name === 'AbortError')
-      return { ok: false, error: 'Fetch aborted' }
-    return { ok: false, error: `Network Error: ${err}` }
-  }
+  return fetchJSON<T>(`${getBaseUrl()}/${params}/${id}`, signal)
 }
