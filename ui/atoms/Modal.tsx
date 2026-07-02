@@ -18,7 +18,6 @@ export function Modal({
   selfManagesFocus,
 }: ModalProps) {
   const lastFocusedRef = useRef<HTMLElement | null>(null)
-  const closeButtonRef = useRef<HTMLButtonElement>(null)
 
   // close on Escape always, close on X unless focus is on a non-numeric text input
   const handler = (e: KeyboardEvent) => {

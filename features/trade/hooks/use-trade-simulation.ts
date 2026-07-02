@@ -1,13 +1,11 @@
 import { useMemo } from 'react'
 
-import { Address } from 'viem'
 import { useSimulateContract } from 'wagmi'
 
 import { Order, toOrder712 } from '@/protocol/eip712'
 import { orderbookAbi } from '@/protocol/config'
 
 import { ozErc721Errors } from '@/lib/blockchain'
-import { safeSerialize } from '@/lib/utils/json'
 import { getChainConfig } from '@/lib/blockchain/wagmi'
 import { useWallet } from '@/features/wallet/hooks/use-wallet'
 
@@ -39,8 +37,6 @@ export function useTradeSimulation(order?: Order, tokenIdCb?: bigint) {
       enabled,
     },
   })
-
-  console.log(safeSerialize(sim))
 
   return sim
 }

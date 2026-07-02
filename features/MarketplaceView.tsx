@@ -45,12 +45,6 @@ type Props = {
   initialPages?: TabPages
 }
 
-const initialPages: TabPages = {
-  feed: { items: [], cursor: null },
-  explore: { items: [], cursor: null },
-  trades: { items: [], cursor: null },
-}
-
 // --- modal ---
 type InfoModalType = 'manual' | 'settings'
 
