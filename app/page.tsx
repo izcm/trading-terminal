@@ -2,7 +2,6 @@ import { getDmrktCount } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
 import { getDmrktNFTCollections } from '@/lib/dmrkt-indexer/actions/dmrkt-page.get'
 
 import { SimulationState } from '@/features/SimulationState'
-import { NFTCollection } from '@/domain/nft-collection'
 
 const SEPOLIA_CHAIN_ID = 11155111
 
@@ -48,7 +47,7 @@ export default async function Page() {
       const [activeOrders, trades, traders] = await Promise.all([
         count('orders', { status: ['active'] }),
         count('settlements'),
-        count('orders'),
+        count('settlements/wallets'),
       ])
 
       return [

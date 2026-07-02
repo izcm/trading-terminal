@@ -32,6 +32,8 @@ import { Header } from './marketplace/ui/Header'
 import { Manual } from './marketplace/ui/Manual'
 import { Tabs } from './marketplace/ui/Tabs'
 import { buildSearchDefault } from './marketplace/lib/logic/build-search-default'
+
+// contexts
 import { CollectionProvider } from './CollectionContext'
 
 import type { NFTCollection } from '@/domain/nft-collection'
@@ -45,7 +47,7 @@ type InfoModalType = 'manual' | 'settings'
 type InfoModalState = { open: true; type: InfoModalType } | { open: false }
 
 export function MarketplaceView({ collection }: InitialState) {
-  // --- route params ---
+  // --- collection ---
   const { address: collectionAddress, chainId } = collection
 
   // --- wallet ---

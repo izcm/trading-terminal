@@ -1,6 +1,12 @@
 import { getDmrktNFTCollection } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
 import { MarketplaceView } from '@/features/MarketplaceView'
 
+const filters = {
+  orders: { status: ['active'] },
+  settlements: {},
+  nfts: {},
+}
+
 export default async function Page({
   params,
 }: {
