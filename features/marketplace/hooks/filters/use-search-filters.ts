@@ -5,7 +5,7 @@ import type { Hex } from '@/domain/shared/eth'
 
 export const DEFAULT_FILTERS: Record<TabName, Record<string, string[]>> = {
   // feed: { status: ['active'] },
-  feed: {},
+  feed: { status: ['active'] },
   trades: {},
   explore: {},
 }

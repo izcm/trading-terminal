@@ -1,17 +1,19 @@
 import { useMemo } from 'react'
 
 import { Address } from 'viem'
-import { useChainId, useSimulateContract } from 'wagmi'
+import { useSimulateContract } from 'wagmi'
 
 import { Order, toOrder712 } from '@/protocol/eip712'
 import { orderbookAbi } from '@/protocol/config'
 
 import { ozErc721Errors } from '@/lib/blockchain'
+import { safeSerialize } from '@/lib/utils/json'
 import { getChainConfig } from '@/lib/blockchain/wagmi'
+import { useWallet } from '@/features/wallet/hooks/use-wallet'
 
-export function useTradeSimulation(user?: Address, order?: Order, tokenIdCb?: bigint) {
-  const chainId = useChainId()
-  const chain = getChainConfig(chainId)
+export function useTradeSimulation(order?: Order, tokenIdCb?: bigint) {
+  const { account: user, chainId } = useWallet()
+  const chain = chainId ? getChainConfig(chainId) : undefined
 
   const enabled =
     !!chain && !!order && !!user && (!order.isCollectionBid || tokenIdCb !== undefined)
@@ -37,6 +39,8 @@ export function useTradeSimulation(user?: Address, order?: Order, tokenIdCb?: bi
       enabled,
     },
   })
+
+  console.log(safeSerialize(sim))
 
   return sim
 }

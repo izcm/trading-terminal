@@ -92,37 +92,28 @@ export function TxProvider({ children }: { children: ReactNode }) {
           key={tx.hash}
           tx={tx}
           onSuccess={() => {
-            // setTimeout is for demo purposes — local fork mines blocks very fast
-            setTimeout(() => {
-              toast({
-                title: 'Transaction confirmed',
-                description:
-                  'Your tx is confirmed on-chain. The marketplace should update shortly.',
-                variant: 'success',
-                // todo: pass toast action instead of knowing marketplaceview's keyboard shortcut logic here
-                toastAction: {
-                  text: 'See transaction',
-                  fn: () =>
-                    document.dispatchEvent(
-                      new KeyboardEvent('keydown', { key: '.', bubbles: true })
-                    ),
-                },
-              })
-              updateTx(tx.hash, 'success')
-              tx.onConfirmed?.()
-            }, 1500)
+            toast({
+              title: 'Transaction confirmed',
+              description: 'Your tx is confirmed on-chain. The marketplace should update shortly.',
+              variant: 'success',
+              // todo: pass toast action instead of knowing marketplaceview's keyboard shortcut logic here
+              toastAction: {
+                text: 'See transaction',
+                fn: () =>
+                  document.dispatchEvent(new KeyboardEvent('keydown', { key: '.', bubbles: true })),
+              },
+            })
+            updateTx(tx.hash, 'success')
+            tx.onConfirmed?.()
           }}
           onFail={(decoded?: string) => {
-            setTimeout(() => {
-              toast({
-                title: 'Transaction not completed',
-                description:
-                  decoded ??
-                  'It may have been rejected, reverted, or out of gas. Please try again.',
-                variant: 'error',
-              })
-              updateTx(tx.hash, 'failed', decoded)
-            }, 1500)
+            toast({
+              title: 'Transaction not completed',
+              description:
+                decoded ?? 'It may have been rejected, reverted, or out of gas. Please try again.',
+              variant: 'error',
+            })
+            updateTx(tx.hash, 'failed', decoded)
           }}
         />
       ))}

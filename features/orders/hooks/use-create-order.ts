@@ -1,17 +1,16 @@
 import { useCallback } from 'react'
 import { usePublicClient, useSignTypedData } from 'wagmi'
-import { parseEther } from 'viem'
+import { Hex, parseEther } from 'viem'
 
 import { dmrktDomain, eip712Types, OrderSide, toOrder712 } from '@/protocol/eip712'
 
 import { postDmrktOrder } from '@/lib/dmrkt-indexer/actions/dmrkt.post'
+
 import { getChainConfig } from '@/lib/blockchain/wagmi'
 import { getBlockTimestamp } from '@/lib/blockchain'
+import { WrongNetworkError } from '@/lib/blockchain/errors'
 
 import { useWallet } from '@/features/wallet/hooks/use-wallet'
-import { Hex } from '@/domain/shared/eth'
-
-export class WrongNetworkError extends Error {}
 
 export function useCreateOrder() {
   const { signTypedDataAsync } = useSignTypedData()
@@ -22,7 +21,7 @@ export function useCreateOrder() {
 
   const create = useCallback(
     async (side: OrderSide, collection: Hex, tokenId: bigint, price: string, end: number) => {
-      if (!chain || !client || !account) throw new WrongNetworkError()
+      if (!chain || !client || !account) throw new WrongNetworkError('create order')
 
       // block timestamp for dev, since no blocks are mined in background
       const now = await getBlockTimestamp(client)
@@ -33,7 +32,7 @@ export function useCreateOrder() {
         actor: account,
         collection,
         tokenId: tokenId.toString(),
-        currency: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2' as Hex,
+        currency: chain.weth,
         nonce: Date.now().toString(),
         start: now,
         end,

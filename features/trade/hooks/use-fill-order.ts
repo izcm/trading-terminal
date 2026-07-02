@@ -24,7 +24,7 @@ export function useFillOrder(order?: Order, listingId?: string, onConfirmed?: ()
   const { addTx } = useTx()
   const { account } = useWallet()
 
-  const sim = useTradeSimulation(account, order)
+  const sim = useTradeSimulation(order)
 
   const { isFillable, isChecking, error } = useTradeValidation(sim)
 

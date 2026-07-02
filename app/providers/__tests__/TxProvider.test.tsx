@@ -18,7 +18,6 @@ type MockReceipt =
   | { isError: true; isSuccess: false }
 
 function mockTxReceipt(val: MockReceipt, error?: unknown) {
-  // @ts-expect-error don't enforce useWait error type
   vi.mocked(useWaitForTransactionReceipt, { partial: true }).mockReturnValueOnce({ ...val, error })
 }
 
@@ -51,18 +50,17 @@ function setup() {
 const hash = '0xabc'
 
 type SetupOpts = {
-  advanceTime?: boolean
   showModal?: boolean
   tx?: Partial<AddTxParams>
   error?: unknown
 }
 
 function setupForSuccess(opts?: SetupOpts) {
-  return setupForStatus({ isError: false, isSuccess: true }, { advanceTime: true, ...opts })
+  return setupForStatus({ isError: false, isSuccess: true }, opts)
 }
 
 function setupForFailure(opts?: SetupOpts) {
-  return setupForStatus({ isError: true, isSuccess: false }, { advanceTime: true, ...opts })
+  return setupForStatus({ isError: true, isSuccess: false }, opts)
 }
 
 function setupForPending(opts?: SetupOpts) {
@@ -71,7 +69,7 @@ function setupForPending(opts?: SetupOpts) {
 
 function setupForStatus(
   mockResult: MockReceipt,
-  { advanceTime = false, showModal = false, tx, error }: SetupOpts = {}
+  { showModal = false, tx, error }: SetupOpts = {}
 ) {
   mockTxReceipt(mockResult, error)
 
@@ -81,10 +79,6 @@ function setupForStatus(
   act(() => {
     addTx({ hash, ...tx })
   })
-  if (advanceTime)
-    act(() => {
-      vi.advanceTimersByTime(1500)
-    })
   if (showModal)
     act(() => {
       showTxs(cb)

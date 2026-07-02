@@ -1,10 +1,12 @@
 import { OrderSide } from '@/protocol/eip712'
 import type { Hex } from '@/domain/shared/eth'
 
-import { toast } from '@/ui/molecules'
+import { WrongNetworkError } from '@/lib/blockchain/errors'
 
+import { toast } from '@/ui/molecules'
 import { FormInput, OrderForm } from './OrderForm'
-import { useCreateOrder, WrongNetworkError } from '../hooks/use-create-order'
+
+import { useCreateOrder } from '../hooks/use-create-order'
 
 type Props = {
   collection: Hex
