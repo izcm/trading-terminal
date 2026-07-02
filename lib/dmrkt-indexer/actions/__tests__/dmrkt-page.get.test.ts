@@ -33,7 +33,10 @@ describe('dmrkt page getters', () => {
           Promise.resolve({ ok: true, json: async () => mockResponse } as Response)
         )
 
-        expect(data).toEqual({ ok: true, data: { items: ['foo', 'bar'], cursor: 'cursor_123' } })
+        expect(data).toEqual({
+          ok: true,
+          data: { items: ['foo', 'bar'], nextCursor: 'cursor_123' },
+        })
       })
 
       testErrorHandling(fetchPageWith)

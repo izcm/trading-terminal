@@ -10,6 +10,8 @@ import { TradeReceipt } from '@/ui/organisms'
 import { SettingsMenu } from '@/ui/organisms'
 import { Modal, Spinner, TextInput } from '@/ui/atoms'
 
+import type { NFTCollection } from '@/domain/nft-collection'
+
 // tab config
 import { TabResource, tabUIConfig, type TabName } from './tab-config'
 import { TabContainer } from './TabContainer'
@@ -32,21 +34,29 @@ import { Header } from './marketplace/ui/Header'
 import { Manual } from './marketplace/ui/Manual'
 import { Tabs } from './marketplace/ui/Tabs'
 import { buildSearchDefault } from './marketplace/lib/logic/build-search-default'
+import type { TabPages } from './marketplace/hooks/tabs/use-tab-mutations'
 
 // contexts
 import { CollectionProvider } from './CollectionContext'
 
-import type { NFTCollection } from '@/domain/nft-collection'
-
-type InitialState = {
+// --- initial state ---
+type Props = {
   collection: NFTCollection
+  initialPages?: TabPages
 }
 
+const initialPages: TabPages = {
+  feed: { items: [], cursor: null },
+  explore: { items: [], cursor: null },
+  trades: { items: [], cursor: null },
+}
+
+// --- modal ---
 type InfoModalType = 'manual' | 'settings'
 
 type InfoModalState = { open: true; type: InfoModalType } | { open: false }
 
-export function MarketplaceView({ collection }: InitialState) {
+export function MarketplaceView({ collection, initialPages }: Props) {
   // --- collection ---
   const { address: collectionAddress, chainId } = collection
 
@@ -125,7 +135,8 @@ export function MarketplaceView({ collection }: InitialState) {
     isMine,
     buildMineQuery,
     handlePageReplaced,
-    isReady
+    isReady,
+    initialPages
   )
 
   const selectedItem = useMemo(

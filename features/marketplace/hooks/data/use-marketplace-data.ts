@@ -13,7 +13,7 @@ import { useFresh } from './use-fresh'
 import { useTabMutations } from '../tabs/use-tab-mutations'
 import { itemMatchesFilters } from '../../lib/logic/matches-filters'
 
-type TabPages = {
+export type TabPages = {
   [K in TabName]: Page<TabResource[K]>
 }
 
@@ -32,9 +32,10 @@ export function useMarketplaceData(
   isMine: (item: TabResource[TabName]) => boolean,
   buildMineQuery: (filters: Record<string, string[]>) => Record<string, string[]>,
   onPageReplaced?: <K extends TabName>(tab: K, page: Page<TabResource[K]>) => void,
-  isReady = false
+  isReady = false,
+  initialPages: TabPages = emptyPages
 ) {
-  const [state, setState] = useState<TabPages>(emptyPages)
+  const [state, setState] = useState<TabPages>(initialPages)
   const { add: addFresh, isFresh: isFresh } = useFresh(tab)
   const { mergePage, replacePage, addItemSorted, updateItem } = useTabMutations(setState)
 

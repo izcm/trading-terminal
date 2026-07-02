@@ -1,11 +1,12 @@
 import { getDmrktNFTCollection } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
-import { MarketplaceView } from '@/features/MarketplaceView'
+import {
+  getDmrktListings,
+  getDmrktNFTs,
+  getDmrktSettlements as getDmrktTrades,
+} from '@/lib/dmrkt-indexer/actions/dmrkt-page.get'
 
-const filters = {
-  orders: { status: ['active'] },
-  settlements: {},
-  nfts: {},
-}
+import { MarketplaceView } from '@/features/MarketplaceView'
+import { unwrap } from '@/lib/utils/http'
 
 export default async function Page({
   params,
@@ -14,15 +15,31 @@ export default async function Page({
 }) {
   const { chainId, collection } = await params
 
-  const collectionCall = await getDmrktNFTCollection(Number(chainId), collection)
+  const baseFilters = { chainId: [chainId], collection: [collection] }
 
-  if (!collectionCall.ok) {
+  const [nftCall, listingCall, tradeCall, collectionCall] = await Promise.all([
+    getDmrktNFTs({ filters: baseFilters }),
+    getDmrktListings({ filters: { ...baseFilters, status: ['active'] } }),
+    getDmrktTrades({ filters: baseFilters }),
+    getDmrktNFTCollection(Number(chainId), collection),
+  ])
+
+  if ([nftCall, listingCall, tradeCall, collectionCall].some(r => !r.ok)) {
     return (
       <div className="h-screen flex items-center justify-center font-mono text-sm text-muted">
-        error fetching nft collection: {collectionCall.error}
+        return <div>error loading page</div>
       </div>
     )
   }
 
-  return <MarketplaceView collection={collectionCall.data} />
+  return (
+    <MarketplaceView
+      collection={unwrap(collectionCall)}
+      initialPages={{
+        feed: unwrap(listingCall),
+        explore: unwrap(nftCall),
+        trades: unwrap(tradeCall),
+      }}
+    />
+  )
 }
