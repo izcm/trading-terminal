@@ -52,7 +52,7 @@ export function SimulationState({ chainId, collections, collectionStats }: Initi
             title={c.name}
             subtitle={c.symbol}
             endContent={<SimulationStats address={c.address} counts={collectionStats[c.address]} />}
-            classNames={{ image: 'rounded-xl' }}
+            classNames={{ image: 'rounded-xl', root: 'max-w-[640px]' }}
           />
         )}
         selected={selected}

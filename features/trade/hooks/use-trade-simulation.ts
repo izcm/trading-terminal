@@ -8,6 +8,7 @@ import { orderbookAbi } from '@/protocol/config'
 import { ozErc721Errors } from '@/lib/blockchain'
 import { getChainConfig } from '@/lib/blockchain/wagmi'
 import { useWallet } from '@/features/wallet/hooks/use-wallet'
+import { safeSerialize } from '@/lib/utils/json'
 
 export function useTradeSimulation(order?: Order, tokenIdCb?: bigint) {
   const { account: user, chainId } = useWallet()
@@ -37,6 +38,8 @@ export function useTradeSimulation(order?: Order, tokenIdCb?: bigint) {
       enabled,
     },
   })
+
+  console.log(safeSerialize(sim))
 
   return sim
 }

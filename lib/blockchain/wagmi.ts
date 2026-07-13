@@ -10,7 +10,7 @@ import { injected } from 'wagmi/connectors'
 
 const sepoliaChain = {
   ...sepolia,
-  marketplace: '0xF0d371989151dd235e5178F5f664a363D7a3A1f3' as `0x${string}`,
+  marketplace: '0xB3F657a8Aa21398d9CA6a2B5386B53134E150DD0' as `0x${string}`,
   weth: '0x5f207d42F869fd1c71d7f0f81a2A67Fc20FF7323' as `0x${string}`,
 }
 

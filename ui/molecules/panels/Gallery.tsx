@@ -128,7 +128,7 @@ export function Gallery<T extends { id: string }>({
                 isFresh?.(item) && 'fresh',
 
                 // selected
-                isSelected && cn('bg-accent/25', arrowClasses?.selected)
+                isSelected && cn('bg-accent/30', arrowClasses?.selected)
               )}
             >
               {galleryItem(item)}

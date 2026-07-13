@@ -27,7 +27,12 @@ export function ImageRow({
   classNames,
 }: Props) {
   return (
-    <div className={cn('base-row gap-4 py-1 px-2', classNames?.root)}>
+    <div
+      className={cn(
+        'grid grid-cols-[auto_1fr_auto] cursor-pointer gap-4 items-center py-1 px-2',
+        classNames?.root
+      )}
+    >
       <div className="relative shrink-0">
         <Image
           src={image}
@@ -40,7 +45,7 @@ export function ImageRow({
       </div>
 
       {/* <div className="flex flex-col justify-center"> */}
-      <div className={cn('flex flex-col justify-center')}>
+      <div className={cn('flex flex-col justify-center text-start min-w-0')}>
         <span className={cn('text-sm font-semibold truncate', classNames?.title)}>{title}</span>
         <span className={cn('text-xs text-muted inline-block truncate', classNames?.subtitle)}>
           {subtitle}

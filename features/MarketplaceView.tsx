@@ -238,7 +238,7 @@ export function MarketplaceView({ collection, initialPages }: Props) {
     o: () => {
       if (!account) return
       setTab('feed')
-      setFilters(prev => ({ ...prev, feed: { maker: [account] } }))
+      setFilters(prev => ({ ...prev, feed: { maker: [account], status: ['active'] } }))
       setResetTick(t => t + 1)
     },
 
