@@ -15,7 +15,7 @@ import { Spinner, Copyable } from '@/ui/atoms'
 import { Popover } from '@/ui/molecules'
 
 import { TxTracker } from '../../realtime/ui/TxTracker'
-import { getChainConfig } from '@/lib/blockchain/wagmi'
+import { getChainConfig } from '@/lib/blockchain'
 
 const WalletWidget = dynamic(
   () => import('../../wallet/ui/WalletWidget').then(m => m.WalletWidget),

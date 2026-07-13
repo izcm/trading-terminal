@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 // todo: di?
-import { useTokenURI } from '@/lib/blockchain'
+import { useTokenURI } from '@/lib/blockchain/hooks'
 
 import { Hex } from '@/domain/shared/eth'
 import { mapTokenUriToNFT, NFT } from '@/domain/nft'

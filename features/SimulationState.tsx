@@ -57,7 +57,7 @@ export function SimulationState({ chainId, collections, collectionStats }: Initi
         )}
         selected={selected}
         onSelect={c => setSelected(c)}
-        onEnter={c => router.push(`/${chainId}/${c.address}`)}
+        onEnter={c => router.push(`/${c.chainId}/${c.address}`)}
         arrowClasses={{ selected: 'bg-accent/8 border-accent/80', default: 'bg-secondary/20 ' }}
       />
     </div>

@@ -13,7 +13,7 @@ const DETAIL_FIELDS: DetailField<Listing>[] = [
   },
   {
     label: 'price',
-    getValue: l => `${Number(l.price) / 1e18} ETH`,
+    getValue: l => `${Number(l.price) / 1e18} WETH`,
   },
   {
     label: 'side',

@@ -1,6 +1,6 @@
 'use client'
 
-import { wagmiConfig } from '@/lib/blockchain/wagmi'
+import { wagmiConfig } from '@/lib/blockchain'
 import { midnightTheme, RainbowKitProvider } from '@rainbow-me/rainbowkit'
 import '@rainbow-me/rainbowkit/styles.css'
 import { WagmiProvider } from 'wagmi'

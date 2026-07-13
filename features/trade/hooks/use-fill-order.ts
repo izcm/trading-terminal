@@ -4,7 +4,7 @@ import { useTx } from '@/app/providers/TxProvider'
 import type { Order } from '@/protocol/eip712'
 
 import { useWallet } from '@/features/wallet/hooks/use-wallet'
-import { decodeContractError } from '@/lib/blockchain/utils/error'
+import { decodeContractError } from '@/lib/blockchain'
 
 import { orderbookAbi } from '@/protocol/config'
 import { ORDERBOOK_ERROR_MESSAGES } from '@/protocol/errors'

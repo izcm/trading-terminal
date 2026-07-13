@@ -1,6 +1,6 @@
 // todo: decouple
-import { formatEth2 } from '@/lib/blockchain/utils/bigint'
-import { useTokenURI } from '@/lib/blockchain'
+import { formatEth2 } from '@/lib/blockchain'
+import { useTokenURI } from '@/lib/blockchain/hooks'
 import { tsSuperShort } from '@/lib/utils/time'
 
 import { NFT_LOADING_IMAGE } from '@/domain/constants/placeholders'
@@ -93,7 +93,7 @@ function ActivityRow({ item }: { item: Props }) {
 
   const endContent = (
     <div className="flex flex-col px-1 flex-1 text-right ">
-      <span className="font-semibold">{formatEth2(price)} ETH</span>
+      <span className="font-semibold">{formatEth2(price)} WETH</span>
       <span className="text-xs text-muted">
         {source === 'listing' ? 'exp ' : ''}
         {tsSuperShort(timestamp)}

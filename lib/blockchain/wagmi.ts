@@ -1,12 +1,12 @@
 import { createConfig, http } from 'wagmi'
-import { sepolia } from 'wagmi/chains'
+import { sepolia, anvil } from 'wagmi/chains'
 import { injected } from 'wagmi/connectors'
 
-// const anvilChain = {
-//   ...anvil,
-//   testnet: true,
-//   marketplace: '0x2b0C8bcd7D285B59B2b3D8705E9595Dfcbc33B8A',
-// }
+const anvilChain = {
+  ...anvil,
+  testnet: true,
+  marketplace: '0x2b0C8bcd7D285B59B2b3D8705E9595Dfcbc33B8A',
+}
 
 const sepoliaChain = {
   ...sepolia,

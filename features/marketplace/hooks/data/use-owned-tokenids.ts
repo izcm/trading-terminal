@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import type { PublicClient } from 'viem'
 
-import { readOwned } from '@/lib/blockchain/actions/erc721/read-owned'
-import { usePublicClient } from '@/lib/blockchain/hooks/use-public-client'
+import { readOwned } from '@/lib/blockchain/actions'
+import { usePublicClient } from '@/lib/blockchain/hooks'
 import type { Hex } from '@/domain/shared/eth'
 
 export function useOwnedTokenIds(

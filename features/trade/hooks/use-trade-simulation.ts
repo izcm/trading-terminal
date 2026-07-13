@@ -5,8 +5,7 @@ import { useSimulateContract } from 'wagmi'
 import { Order, toOrder712 } from '@/protocol/eip712'
 import { orderbookAbi } from '@/protocol/config'
 
-import { ozErc721Errors } from '@/lib/blockchain'
-import { getChainConfig } from '@/lib/blockchain/wagmi'
+import { ozErc721Errors, getChainConfig } from '@/lib/blockchain'
 import { useWallet } from '@/features/wallet/hooks/use-wallet'
 
 export function useTradeSimulation(order?: Order, tokenIdCb?: bigint) {

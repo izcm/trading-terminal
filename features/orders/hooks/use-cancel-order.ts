@@ -1,11 +1,10 @@
 import { useChainId, useWriteContract } from 'wagmi'
 import { Address } from 'viem'
 
-import { getChainConfig } from '@/lib/blockchain/wagmi'
+import { getChainConfig, WrongNetworkError } from '@/lib/blockchain'
 
 import { useTx } from '@/app/providers/TxProvider'
 import { orderbookAbi } from '@/protocol/config'
-import { WrongNetworkError } from '@/lib/blockchain/errors'
 
 export function useCancelOrder() {
   const { addTx } = useTx()

@@ -6,6 +6,19 @@ import { getChainConfig, wagmiConfig } from '../wagmi'
 
 type PayableStatus = 'payable' | 'nonpayable'
 
+export type WriteAction<
+  TAbi extends Abi = Abi,
+  TFuncName extends ContractFunctionName<TAbi, PayableStatus> = ContractFunctionName<
+    TAbi,
+    PayableStatus
+  >,
+> = {
+  abi: TAbi
+  address: Address
+  functionName: TFuncName
+  args: ContractFunctionArgs<TAbi, PayableStatus, TFuncName>
+}
+
 export function useSimpleWrite() {
   const account = useAccount()
   const chainId = useChainId()
@@ -24,11 +37,7 @@ export function useSimpleWrite() {
     args,
     onSuccess,
     onError,
-  }: {
-    abi: TAbi
-    address: Address
-    functionName: TFuncName
-    args: ContractFunctionArgs<TAbi, PayableStatus, TFuncName>
+  }: WriteAction<TAbi, TFuncName> & {
     onSuccess: (hash: Hex) => void
     onError: (err: Error) => void
   }) {

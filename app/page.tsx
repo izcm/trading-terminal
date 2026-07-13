@@ -32,6 +32,8 @@ export default async function Page() {
 
   const collections = collectionCall.data.items
 
+  console.log(collections)
+
   const unwrapCount = (r: Awaited<ReturnType<typeof getDmrktCount>>) =>
     r.ok ? r.data : "couldn't count"
 
