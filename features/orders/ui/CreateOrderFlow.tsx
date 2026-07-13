@@ -7,6 +7,7 @@ import { toast } from '@/ui/molecules'
 import { FormInput, OrderForm } from './OrderForm'
 
 import { useCreateOrder } from '../hooks/use-create-order'
+import { useState } from 'react'
 
 type Props = {
   collection: Hex
@@ -25,7 +26,15 @@ export function CreateOrderFlow({
 }: Props) {
   const { create } = useCreateOrder()
 
+  const [approving, setApproving] = useState<boolean>(false)
+
   async function wrapAndSign(input: FormInput) {
+    if (side === OrderSide.ASK) {
+      // for asks -> check nft transfer auth
+    } else {
+      // for bids -> check weth allowance + if user has enough funds
+    }
+
     try {
       const id = await create(side, collection, tokenId, input.price, input.end)
 
@@ -56,5 +65,5 @@ export function CreateOrderFlow({
     }
   }
 
-  return <OrderForm tokenId={tokenId} onSubmit={wrapAndSign} />
+  return approving ? <div>hello</div> : <OrderForm tokenId={tokenId} onSubmit={wrapAndSign} />
 }

@@ -1,6 +1,8 @@
 import { useCallback } from 'react'
-import { usePublicClient, useSignTypedData } from 'wagmi'
+import { useSignTypedData } from 'wagmi'
 import { Hex, parseEther } from 'viem'
+
+import { usePublicClient } from '@/lib/blockchain/hooks/use-public-client'
 
 import { dmrktDomain, eip712Types, OrderSide, toOrder712 } from '@/protocol/eip712'
 

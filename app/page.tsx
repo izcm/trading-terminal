@@ -70,13 +70,13 @@ export default async function Page() {
         <p className="text-accent/80">Welcome to IzBlocks' live marketplace simulation.</p>
 
         <p>
-          Pre-populated orders are created, signed, and executed programmatically via Foundry
-          scripts. The process is deterministic, making every run fully reproducible.
+          Pre-populated orders are created, signed, and executed programmatically. The process is
+          deterministic, making every run fully reproducible.
         </p>
 
         <p>
-          The walkthrough shows an early, simpler version of the simulation. A more recent version,
-          alongside the indexer and frontend, can be run locally; github_repo.
+          The linked walkthrough shows an early, simpler version of the simulation. A more recent
+          version, alongside the indexer and frontend, can be run locally; github_repo.
         </p>
 
         <div className="flex gap-3">

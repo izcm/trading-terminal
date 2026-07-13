@@ -1,15 +1,19 @@
 import { useCallback, useEffect, useState } from 'react'
-import { usePublicClient } from 'wagmi'
 import type { PublicClient } from 'viem'
 
-import { readOwned } from '@/lib/blockchain/erc721/erc721.read'
+import { readOwned } from '@/lib/blockchain/actions/erc721/read-owned'
+import { usePublicClient } from '@/lib/blockchain/hooks/use-public-client'
 import type { Hex } from '@/domain/shared/eth'
 
 export function useOwnedTokenIds(
   chainId: number | undefined,
   collection: Hex | undefined,
   account: Hex | undefined,
-  readOwnedFn: (client: PublicClient, collection: Hex, account: Hex) => Promise<bigint[]> = readOwned // soft di
+  readOwnedFn: (
+    client: PublicClient,
+    collection: Hex,
+    account: Hex
+  ) => Promise<bigint[]> = readOwned // soft di
 ) {
   const [ids, setIds] = useState<bigint[]>([])
   const [isFetching, setIsFetching] = useState<boolean>(false)
