@@ -74,7 +74,10 @@ export default async function Page() {
           scripts. The process is deterministic, making every run fully reproducible.
         </p>
 
-        <p>The simulation and full-stack application can also be run locally; github_repo.</p>
+        <p>
+          The walkthrough shows an early, simpler version of the simulation. A more recent version,
+          alongside the indexer and frontend, can be run locally; github_repo.
+        </p>
 
         <div className="flex gap-3">
           <a

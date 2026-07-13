@@ -29,7 +29,7 @@ export function Tab<T extends { id: string; chainId: number; collection: Hex; to
 
   return (
     <div className="min-h-0 flex-1 flex gap-4">
-      <div className="flex-1 flex flex-col">
+      <div className="min-h-0 flex-1 flex flex-col">
         <Gallery<T> {...gallery} />
       </div>
 

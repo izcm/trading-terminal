@@ -18,9 +18,9 @@ export type TabPages = {
 }
 
 const emptyPages: TabPages = {
-  feed: { items: [], cursor: null },
-  explore: { items: [], cursor: null },
-  trades: { items: [], cursor: null },
+  feed: { items: [], nextCursor: null },
+  explore: { items: [], nextCursor: null },
+  trades: { items: [], nextCursor: null },
 }
 
 export function useMarketplaceData(
@@ -80,10 +80,11 @@ export function useMarketplaceData(
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false)
 
   const loadMore = useCallback(async () => {
-    const currCursor = state[tab].cursor
+    const currCursor = state[tab].nextCursor
 
     if (!currCursor || isLoadingMore) return
 
+    console.log('IM IN USE MARKETPLCEDATA')
     setIsLoadingMore(true)
 
     const res = await pageGetters[tab]({
@@ -92,7 +93,7 @@ export function useMarketplaceData(
     })
 
     if (res.ok) {
-      mergePage(tab, res.data.items, res.data.cursor)
+      mergePage(tab, res.data.items, res.data.nextCursor)
     }
 
     setIsLoadingMore(false)

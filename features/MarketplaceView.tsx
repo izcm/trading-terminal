@@ -296,7 +296,7 @@ export function MarketplaceView({ collection, initialPages }: Props) {
             isFresh={item => isFresh(tab, item.id)}
             onLoadMore={loadMore}
             isLoading={isLoadingMore}
-            hasMore={state[tab].cursor !== null}
+            hasMore={state[tab].nextCursor !== null}
             tabAction={resolvedMainAction}
             ctx={{ isMine, isMyListing }}
           />

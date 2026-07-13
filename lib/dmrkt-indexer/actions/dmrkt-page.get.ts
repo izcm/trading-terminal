@@ -13,14 +13,17 @@ import { getBaseUrl } from '../config'
 import { buildQuery } from './logic/build-query'
 import { fetchJSON } from '@/lib/utils/http'
 
-function mapResult<TDTO, T>(res: Result<Page<TDTO>>, toDomain: (dto: TDTO) => T): Result<Page<T>> {
+function mapResult<TDTO, T>(
+  res: Result<{ items: TDTO[]; nextCursor: string | null }>,
+  toDomain: (dto: TDTO) => T
+): Result<Page<T>> {
   if (!res.ok) return res
 
   return {
     ok: true,
     data: {
       items: res.data.items.map(toDomain),
-      cursor: res.data.cursor,
+      nextCursor: res.data.nextCursor,
     },
   }
 }
@@ -119,4 +122,3 @@ export async function getDmrktSettlements({
 
   return mapResult(res, toTrade)
 }
-

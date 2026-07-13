@@ -128,7 +128,7 @@ describe('use-tab-mutations', () => {
 
       const getState = renderHookAndAct({
         run: m => m.addItemSorted('feed', added, { field: 'start', dir: 'asc' }),
-        withState: { feed: { items, cursor: null } },
+        withState: { feed: { items, nextCursor: null } },
       })
 
       expect(getState().feed.items[1]).toEqual(added) // 1, 2, 3, 5
@@ -227,19 +227,19 @@ describe('use-tab-mutations', () => {
     it('sets cursor to new string value', () => {
       const getState = renderHookAndAct({
         run: m => m.mergePage('feed', [], newCursor),
-        withState: { feed: { items: [], cursor: null } },
+        withState: { feed: { items: [], nextCursor: null } },
       })
 
-      expect(getState().feed.cursor).toBe(newCursor)
+      expect(getState().feed.nextCursor).toBe(newCursor)
     })
 
     it('sets cursor to new null value', () => {
       const getState = renderHookAndAct({
         run: m => m.mergePage('feed', [], null),
-        withState: { feed: { items: [], cursor: 'old' } },
+        withState: { feed: { items: [], nextCursor: 'old' } },
       })
 
-      expect(getState().feed.cursor).toBe(null)
+      expect(getState().feed.nextCursor).toBe(null)
     })
 
     it('does not insert duplicates', () => {
