@@ -43,6 +43,7 @@ import { CollectionProvider } from './CollectionContext'
 type Props = {
   collection: NFTCollection
   initialPages?: TabPages
+  isDemo?: boolean
 }
 
 // --- modal ---
@@ -50,7 +51,9 @@ type InfoModalType = 'manual' | 'settings'
 
 type InfoModalState = { open: true; type: InfoModalType } | { open: false }
 
-export function MarketplaceView({ collection, initialPages }: Props) {
+export function MarketplaceView({ collection, initialPages, isDemo }: Props) {
+  if (isDemo) console.log('DEMO TIME')
+
   // --- collection ---
   const { address: collectionAddress, chainId } = collection
 

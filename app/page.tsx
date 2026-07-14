@@ -2,10 +2,18 @@ import { getDmrktCount } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
 import { getDmrktNFTCollections } from '@/lib/dmrkt-indexer/actions/dmrkt-page.get'
 
 import { SimulationState } from '@/features/SimulationState'
+import ProgressPage from '@/ui/organisms/demo/ProgressPage'
 
 const SEPOLIA_CHAIN_ID = 11155111
 
 export default async function Page() {
+  const IS_DEMO = process.env.NEXT_PUBLIC_MODE === 'DEMO'
+
+  // show healthcheck / indexing progress bars
+  if (IS_DEMO) {
+    return <ProgressPage />
+  }
+
   const collectionCall = await getDmrktNFTCollections({
     filters: { chainId: [SEPOLIA_CHAIN_ID.toString()] },
   })
@@ -31,8 +39,6 @@ export default async function Page() {
   )
 
   const collections = collectionCall.data.items
-
-  console.log(collections)
 
   const unwrapCount = (r: Awaited<ReturnType<typeof getDmrktCount>>) =>
     r.ok ? r.data : "couldn't count"
