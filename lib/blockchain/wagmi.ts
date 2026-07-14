@@ -1,31 +1,29 @@
 import { Address } from 'viem'
 import { createConfig, http } from 'wagmi'
-import { sepolia, anvil } from 'wagmi/chains'
+import * as wagmiChains from 'wagmi/chains'
 import { injected } from 'wagmi/connectors'
 
-type ChainExtras = { marketplace: Address; weth: Address }
+import supportedChains from '@/chains.json'
 
-const anvilChain: typeof anvil & { testnet: true } & ChainExtras = {
-  ...anvil,
-  testnet: true,
-  marketplace: '0xaaFdEcD44CD63e2dC9D252D37d7CBB8aE3b5F82c',
-  weth: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
-}
+type ChainExtras = wagmiChains.Chain & { marketplace: Address; weth: Address }
 
-const sepoliaChain: typeof sepolia & ChainExtras = {
-  ...sepolia,
-  marketplace: '0xB3F657a8Aa21398d9CA6a2B5386B53134E150DD0',
-  weth: '0x5f207d42F869fd1c71d7f0f81a2A67Fc20FF7323',
-}
+const configuredChains: ChainExtras[] = supportedChains.map(sc => {
+  return {
+    ...Object.values(wagmiChains).find(wc => wc.id === sc.chainId)!,
+    marketplace: sc.marketplace as Address,
+    weth: sc.weth as Address,
+  }
+})
+
+if (configuredChains.length === 0) throw new Error('no supported chains configured')
+
+const transports = Object.fromEntries(supportedChains.map(sc => [sc.chainId, http(sc.url)]))
 
 export const wagmiConfig = createConfig({
-  chains: [sepoliaChain, anvilChain],
+  chains: configuredChains as unknown as [wagmiChains.Chain, ...wagmiChains.Chain[]],
 
   connectors: [injected()],
-  transports: {
-    [anvil.id]: http('http://localhost:8545'),
-    [sepolia.id]: http('https://ethereum-sepolia-rpc.publicnode.com'),
-  },
+  transports,
 })
 
 export function getChainConfig(chainId: number) {
