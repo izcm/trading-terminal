@@ -76,7 +76,7 @@ export function useTabMutations(setState: Dispatch<SetStateAction<TabPages>>) {
   )
 
   const mergePage = useCallback(
-    <K extends TabName>(tab: K, items: TabResource[K][], cursor: string | null) => {
+    <K extends TabName>(tab: K, items: TabResource[K][], nextCursor: string | null) => {
       setState(prev => {
         const existing = new Set(prev[tab].items.map(i => i.id))
 
@@ -84,7 +84,7 @@ export function useTabMutations(setState: Dispatch<SetStateAction<TabPages>>) {
           ...prev,
           [tab]: {
             items: [...prev[tab].items, ...items.filter(n => !existing.has(n.id))],
-            cursor,
+            nextCursor,
           },
         }
       })

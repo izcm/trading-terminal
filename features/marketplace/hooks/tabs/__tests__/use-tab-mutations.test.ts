@@ -17,9 +17,9 @@ describe('use-tab-mutations', () => {
   // full type: (value: TabPages | (prev: TabPages) => TabPages) => void
   const renderHookWith = (overrides: Partial<TabPages> = {}) => {
     let state = {
-      feed: { items: [], cursor: null },
-      explore: { items: [], cursor: null },
-      trades: { items: [], cursor: null },
+      feed: { items: [], nextCursor: null },
+      explore: { items: [], nextCursor: null },
+      trades: { items: [], nextCursor: null },
       ...overrides,
     }
 
@@ -46,20 +46,23 @@ describe('use-tab-mutations', () => {
   }
 
   const populatedFeed = {
-    feed: { items: [{ id: 'a' }, { id: 'b' }, { id: 'c' }] as TabResource['feed'][], cursor: null },
+    feed: {
+      items: [{ id: 'a' }, { id: 'b' }, { id: 'c' }] as TabResource['feed'][],
+      nextCursor: null,
+    },
   }
 
   const populatedTrades = {
     trades: {
       items: [{ id: 'd' }, { id: 'e' }, { id: 'f' }] as TabResource['trades'][],
-      cursor: null,
+      nextCursor: null,
     },
   }
 
   const populatedExplore = {
     explore: {
       items: [{ id: 'g' }, { id: 'h' }, { id: 'j' }] as TabResource['explore'][],
-      cursor: null,
+      nextCursor: null,
     },
   }
 
@@ -101,7 +104,7 @@ describe('use-tab-mutations', () => {
     const addedItem = { createdAt: 2 } as TabResource['feed']
 
     const sortedFeed = (dir: 'asc' | 'desc' = 'desc') => ({
-      feed: { items: dir === 'asc' ? itemsAsc : itemsDesc, cursor: null },
+      feed: { items: dir === 'asc' ? itemsAsc : itemsDesc, nextCursor: null },
     })
 
     it('inserts item in correct position with default sort (createdAt, desc)', () => {
@@ -220,7 +223,7 @@ describe('use-tab-mutations', () => {
 
       expect(getState().feed).toEqual({
         items: [...populatedFeed.feed.items, ...newItems],
-        cursor: newCursor,
+        nextCursor: newCursor,
       })
     })
 
@@ -266,7 +269,7 @@ describe('use-tab-mutations', () => {
   describe('replacePage', () => {
     const newPage = {
       items: [{ id: 'r_a' }, { id: 'r_b' }, { id: 'r_c' }] as TabResource['feed'][],
-      cursor: 'cursor_123',
+      nextCursor: 'cursor_123',
     }
 
     it('replaces tab page', () => {

@@ -38,7 +38,6 @@ export function Modal({
     }
   }
 
-  // Close on ESC key
   useEffect(() => {
     if (!isOpen) return
 

@@ -89,11 +89,11 @@ export function Manual({ initialTab = 'shortcuts' }: { initialTab?: Tab } = {}) 
           <Row label="a / enter" value="run action" />
           <Row label="s" value="focus search" />
           <Row label="l" value="focus list" />
-          <Row label="m" value="open manual" />
+          <Row label="?" value="open manual" />
           <Row label="o" value="my active orders" />
           <Row label="." value="view session txs" />
           <Row label="," value="open settings" />
-          <Row label="esc" value="close modal" />
+          <Row label="esc / x" value="close modal" />
           <Row label="esc (in search)" value="clear search input" />
         </Section>
       )}

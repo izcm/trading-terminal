@@ -5,7 +5,8 @@ export function StartMessage() {
 
       <p className="text-subtle">
         For the smoothest experience, connect your wallet and set your transfer/allowance approvals
-        in <span className="text-accent-weak">Settings</span> (gear icon).
+        in <span className="text-accent-weak">Settings</span> (gear icon, or press{' '}
+        <span className="text-accent-weak">,</span>).
       </p>
 
       <p className="text-subtle">
@@ -22,6 +23,11 @@ export function StartMessage() {
           <li>Actions to deposit WETH and update approvals</li>
         </ul>
       </div>
+
+      <p className="text-subtle">
+        This app is built for keyboard use — press{' '}
+        <span className="text-accent-weak">?</span> anytime to see the full list of shortcuts.
+      </p>
     </div>
   )
 }

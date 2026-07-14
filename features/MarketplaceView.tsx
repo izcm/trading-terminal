@@ -238,7 +238,7 @@ export function MarketplaceView({ collection, initialPages }: Props) {
 
     // header shortcuts
     W: () => walletInteraction(),
-    m: () => openManual('shortcuts'),
+    '?': () => openManual('shortcuts'),
     '1': () => openManual('shortcuts'),
     '2': () => openManual('filters'),
     '3': () => openManual('examples'),
