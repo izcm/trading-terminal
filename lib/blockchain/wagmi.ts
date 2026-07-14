@@ -8,7 +8,7 @@ type ChainExtras = { marketplace: Address; weth: Address }
 const anvilChain: typeof anvil & { testnet: true } & ChainExtras = {
   ...anvil,
   testnet: true,
-  marketplace: '0x2b0C8bcd7D285B59B2b3D8705E9595Dfcbc33B8A',
+  marketplace: '0xaaFdEcD44CD63e2dC9D252D37d7CBB8aE3b5F82c',
   weth: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
 }
 

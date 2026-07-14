@@ -1,8 +1,9 @@
 import { useState } from 'react'
+import { parseEther } from 'viem'
 
 import { NotConnectedError, WrongNetworkError, getChainConfig } from '@/lib/blockchain'
 import { readERC721Contract, getBlockTimestamp, readERC20Contract } from '@/lib/blockchain/actions'
-import { usePublicClient } from '@/lib/blockchain/hooks'
+import { usePublicClient, useSimpleWrite, WriteAction } from '@/lib/blockchain/hooks'
 import { erc721Abi, erc20Abi } from '@/lib/blockchain'
 
 import { OrderSide } from '@/protocol/eip712'
@@ -22,6 +23,8 @@ type Props = {
   onOrderNavigate?: (id: string) => void // toast navigate to order
 }
 
+type PendingAction = { label: string; action: WriteAction }
+
 export function CreateOrderFlow({
   collection,
   tokenId,
@@ -35,16 +38,53 @@ export function CreateOrderFlow({
   const chain = client?.chain?.id ? getChainConfig(client.chain.id) : undefined
 
   const { create } = useCreateOrder(chainId, chain?.marketplace, account)
+  const { simpleWrite } = useSimpleWrite()
 
-  const [approving, setApproving] = useState<boolean>(false)
+  const [pendingAction, setPendingAction] = useState<PendingAction | null>(null)
+  const [pendingInput, setPendingInput] = useState<FormInput | null>(null)
+  const [approvalConfirmed, setApprovalConfirmed] = useState(false)
+  const [isApproving, setIsApproving] = useState(false)
 
   function rejectWith(description: string) {
     toast({ title: 'Order Creation Failed', description, variant: 'error' })
   }
 
+  if (!account) return <div>Please connect your wallet.</div>
+  if (!client || !chain) return <div>Are you connected to the correct network?</div>
+
+  async function signAndCreate(input: FormInput) {
+    if (!client || !chain) return
+
+    try {
+      // block timestamp for dev, since no blocks are mined in background
+      const now = await getBlockTimestamp(client)
+
+      const id = await create(side, collection, tokenId, input.price, chain.weth, now, input.end)
+
+      toast({
+        title: 'Order Created',
+        description: 'Your signed order is stored at dmrkt. The marketplace should update shortly.',
+        variant: 'success',
+        toastAction: onOrderNavigate
+          ? { text: 'View order', fn: () => onOrderNavigate(id) }
+          : undefined,
+      })
+      onOrderCreated?.(id)
+    } catch (err) {
+      console.error(err)
+
+      rejectWith(
+        err instanceof WrongNetworkError
+          ? 'Are you connected to the correct network?'
+          : err instanceof NotConnectedError
+            ? 'Please connect your wallet.'
+            : 'Something happened, order was not processed.'
+      )
+    }
+  }
+
   async function wrapAndSign(input: FormInput) {
-    if (!account) throw new NotConnectedError('create order')
-    if (!client || !chain) throw new WrongNetworkError('create order')
+    if (!client || !chain || !account) return
 
     let approvalsOk
     let reject
@@ -88,43 +128,72 @@ export function CreateOrderFlow({
       return
     }
 
-    // do approvals if not ok
     if (!approvalsOk) {
-      setApproving(true)
+      const action: WriteAction =
+        side === OrderSide.ASK
+          ? {
+              abi: erc721Abi,
+              address: collection,
+              functionName: 'setApprovalForAll',
+              args: [chain.marketplace, true],
+            }
+          : {
+              abi: erc20Abi,
+              address: chain.weth,
+              functionName: 'approve',
+              args: [chain.marketplace, parseEther(input.price)],
+            }
+
+      setPendingAction({
+        label:
+          side === OrderSide.ASK ? 'Approve NFT for marketplace' : 'Approve WETH for marketplace',
+        action,
+      })
+      setPendingInput(input)
+      setApprovalConfirmed(false)
       return
     }
 
-    try {
-      // block timestamp for dev, since no blocks are mined in background
-      const now = await getBlockTimestamp(client)
-
-      const id = await create(side, collection, tokenId, input.price, chain.weth, now, input.end)
-
-      toast({
-        title: 'Order Created',
-        description: 'Your signed order is stored at dmrkt. The marketplace should update shortly.',
-        variant: 'success',
-        toastAction: onOrderNavigate
-          ? { text: 'View order', fn: () => onOrderNavigate(id) }
-          : undefined,
-      })
-      onOrderCreated?.(id)
-    } catch (err) {
-      console.error(err)
-
-      rejectWith(
-        err instanceof WrongNetworkError
-          ? 'Are you connected to the correct network?'
-          : err instanceof NotConnectedError
-            ? 'Please connect your wallet.'
-            : 'Something happened, order was not processed.'
-      )
-    }
+    await signAndCreate(input)
   }
 
-  return approving ? (
-    <div>
-      <h1>Approvals</h1>
+  function handleApprove() {
+    if (!pendingAction) return
+
+    setIsApproving(true)
+    simpleWrite({
+      ...pendingAction.action,
+      onSuccess: () => {
+        setIsApproving(false)
+        setApprovalConfirmed(true)
+      },
+      onError: err => {
+        setIsApproving(false)
+        rejectWith(`Approval failed: ${err.message}`)
+      },
+    })
+  }
+
+  async function handleSignAfterApproval() {
+    if (!pendingInput) return
+
+    const input = pendingInput
+    setPendingAction(null)
+    setPendingInput(null)
+    setApprovalConfirmed(false)
+
+    await signAndCreate(input)
+  }
+
+  return pendingAction ? (
+    <div className="flex flex-col gap-4 p-4">
+      <h1>Approve to continue</h1>
+      <button className="btn" disabled={isApproving || approvalConfirmed} onClick={handleApprove}>
+        {pendingAction.label}
+      </button>
+      <button className="btn" disabled={!approvalConfirmed} onClick={handleSignAfterApproval}>
+        Sign Order
+      </button>
     </div>
   ) : (
     <OrderForm tokenId={tokenId} onSubmit={wrapAndSign} />
