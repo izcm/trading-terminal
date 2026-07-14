@@ -9,6 +9,7 @@ type ArrowListProps<T> = {
   children: (args: { item: T; isSelected: boolean; onSelect: () => void }) => ReactNode
   className?: string
   ref?: React.Ref<HTMLUListElement>
+  direction?: 'vertical' | 'horizontal'
 }
 
 export function ArrowList<T>({
@@ -19,8 +20,12 @@ export function ArrowList<T>({
   children,
   className = '',
   ref,
+  direction = 'vertical',
 }: ArrowListProps<T>) {
   const base = 'overflow-y-auto no-scrollbar'
+  const [prevKey, nextKey] =
+    direction === 'horizontal' ? ['ArrowLeft', 'ArrowRight'] : ['ArrowUp', 'ArrowDown']
+
   return (
     <ul
       ref={ref}
@@ -41,7 +46,7 @@ export function ArrowList<T>({
           return
         }
 
-        if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return
+        if (e.key !== prevKey && e.key !== nextKey) return
         e.preventDefault()
 
         const index = selectedId === undefined ? 0 : items.findIndex(it => getId(it) === selectedId)
@@ -50,8 +55,8 @@ export function ArrowList<T>({
 
         let next = index
 
-        if (e.key === 'ArrowDown') next = Math.min(index + 1, items.length - 1)
-        if (e.key === 'ArrowUp') next = Math.max(index - 1, 0)
+        if (e.key === nextKey) next = Math.min(index + 1, items.length - 1)
+        if (e.key === prevKey) next = Math.max(index - 1, 0)
 
         onSelect(items[next])
       }}

@@ -38,22 +38,20 @@ import type { TabPages } from './marketplace/hooks/tabs/use-tab-mutations'
 
 // contexts
 import { CollectionProvider } from './CollectionContext'
+import { StartMessage } from '@/ui/organisms/StartMessages'
 
 // --- initial state ---
 type Props = {
   collection: NFTCollection
   initialPages?: TabPages
-  isDemo?: boolean
 }
 
 // --- modal ---
-type InfoModalType = 'manual' | 'settings'
+type InfoModalType = 'manual' | 'settings' | 'startMsg'
 
 type InfoModalState = { open: true; type: InfoModalType } | { open: false }
 
-export function MarketplaceView({ collection, initialPages, isDemo }: Props) {
-  if (isDemo) console.log('DEMO TIME')
-
+export function MarketplaceView({ collection, initialPages }: Props) {
   // --- collection ---
   const { address: collectionAddress, chainId } = collection
 
@@ -77,6 +75,15 @@ export function MarketplaceView({ collection, initialPages, isDemo }: Props) {
   const [infoModal, setInfoModal] = useState<InfoModalState>({
     open: false,
   })
+
+  useEffect(() => {
+    const hasShown = localStorage.getItem('hasShownStartMsg')
+    if (hasShown) return
+
+    localStorage.setItem('hasShownStartMsg', 'true')
+    setInfoModal({ open: true, type: 'startMsg' })
+  }, [])
+
   const [manualTab, setManualTab] = useState<'shortcuts' | 'filters' | 'examples'>('shortcuts')
 
   const infoModalContent: Record<
@@ -85,6 +92,7 @@ export function MarketplaceView({ collection, initialPages, isDemo }: Props) {
   > = {
     manual: { content: <Manual initialTab={manualTab} />, managesFocus: false },
     settings: { content: <SettingsMenu />, managesFocus: true },
+    startMsg: { content: <StartMessage />, managesFocus: false },
   }
 
   // --- filters ---
@@ -209,7 +217,7 @@ export function MarketplaceView({ collection, initialPages, isDemo }: Props) {
     setInfoModal({ open: true, type: 'manual' })
   }
 
-  const modalIsOpen = actionModal !== null || infoModal.open
+  // const modalIsOpen = actionModal !== null || infoModal.open
 
   useKeyboardShortcuts({
     // tab switch
