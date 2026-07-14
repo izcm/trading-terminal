@@ -54,19 +54,10 @@ export function useSimpleWrite() {
         account: account.address,
       })
 
-      await writeContractAsync(
-        // {
-        //   abi,
-        //   address,
-        //   functionName,
-        //   args,
-        // } as Parameters<typeof writeContractAsync>[0],
-        request as Parameters<typeof writeContractAsync>[0],
-        {
-          onSuccess,
-          onError,
-        }
-      )
+      await writeContractAsync(request as Parameters<typeof writeContractAsync>[0], {
+        onSuccess,
+        onError,
+      })
     } catch (err) {
       onError(err instanceof Error ? err : new Error(String(err)))
     }

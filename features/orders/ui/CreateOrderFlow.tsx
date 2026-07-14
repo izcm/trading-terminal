@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { parseEther } from 'viem'
 
 import { NotConnectedError, WrongNetworkError, getChainConfig } from '@/lib/blockchain'
@@ -40,6 +40,8 @@ export function CreateOrderFlow({
   const { create } = useCreateOrder(chainId, chain?.marketplace, account)
   const { simpleWrite } = useSimpleWrite()
 
+  const approvalsRef = useRef<HTMLButtonElement>(null)
+
   const [pendingAction, setPendingAction] = useState<PendingAction | null>(null)
   const [pendingInput, setPendingInput] = useState<FormInput | null>(null)
   const [approvalConfirmed, setApprovalConfirmed] = useState(false)
@@ -48,6 +50,13 @@ export function CreateOrderFlow({
   function rejectWith(description: string) {
     toast({ title: 'Order Creation Failed', description, variant: 'error' })
   }
+
+  useEffect(() => {
+    if (!pendingAction) return
+    approvalsRef.current?.focus()
+    console.log('ref is: ', approvalsRef.current)
+    console.log('fucking fucks')
+  }, [pendingAction, approvalConfirmed])
 
   if (!account) return <div>Please connect your wallet.</div>
   if (!client || !chain) return <div>Are you connected to the correct network?</div>
@@ -109,7 +118,9 @@ export function CreateOrderFlow({
             chain.marketplace
       } else {
         // reject if account does not have sufficient weth balance
-        reject = (await readERC20Contract(client, chain.weth, 'balanceOf', [account])) < input.price
+        reject =
+          (await readERC20Contract(client, chain.weth, 'balanceOf', [account])) <
+          parseEther(input.price)
 
         if (reject) {
           rejectWith('WETH balance lower than bid price.')
@@ -121,7 +132,7 @@ export function CreateOrderFlow({
           (await readERC20Contract(client, chain.weth, 'allowance', [
             account,
             chain.marketplace,
-          ])) >= input.price
+          ])) >= parseEther(input.price)
       }
     } catch {
       rejectWith('Failed to check necessary approvals.')
@@ -188,10 +199,20 @@ export function CreateOrderFlow({
   return pendingAction ? (
     <div className="flex flex-col gap-4 p-4">
       <h1>Approve to continue</h1>
-      <button className="btn" disabled={isApproving || approvalConfirmed} onClick={handleApprove}>
+      <button
+        ref={!approvalConfirmed ? approvalsRef : undefined}
+        className="btn"
+        disabled={isApproving || approvalConfirmed}
+        onClick={handleApprove}
+      >
         {pendingAction.label}
       </button>
-      <button className="btn" disabled={!approvalConfirmed} onClick={handleSignAfterApproval}>
+      <button
+        ref={approvalConfirmed ? approvalsRef : undefined}
+        className="btn"
+        disabled={!approvalConfirmed}
+        onClick={handleSignAfterApproval}
+      >
         Sign Order
       </button>
     </div>
