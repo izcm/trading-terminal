@@ -54,8 +54,6 @@ export function CreateOrderFlow({
   useEffect(() => {
     if (!pendingAction) return
     approvalsRef.current?.focus()
-    console.log('ref is: ', approvalsRef.current)
-    console.log('fucking fucks')
   }, [pendingAction, approvalConfirmed])
 
   if (!account) return <div>Please connect your wallet.</div>
