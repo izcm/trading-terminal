@@ -37,7 +37,10 @@ export const wagmiConfig = createConfig({
   chains: configuredChains as unknown as [ChainExtras, ...ChainExtras[]],
 
   connectors: [injected()],
-  transports,
+  transports: transports as Record<
+    (typeof configuredChains)[number]['id'],
+    ReturnType<typeof http>
+  >,
 })
 
 export function getChainConfig(chainId: number) {
