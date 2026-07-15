@@ -34,7 +34,7 @@ if (configuredChains.length === 0) throw new Error('no supported chains configur
 const transports = Object.fromEntries(activeChains.map(sc => [sc.chainId, http(sc.url)]))
 
 export const wagmiConfig = createConfig({
-  chains: configuredChains as unknown as [wagmiChains.Chain, ...wagmiChains.Chain[]],
+  chains: configuredChains as unknown as [ChainExtras, ...ChainExtras[]],
 
   connectors: [injected()],
   transports,

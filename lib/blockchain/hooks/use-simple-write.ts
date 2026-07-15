@@ -44,6 +44,7 @@ export function useSimpleWrite() {
     if (!account.address || !chain) return
 
     const publicClient = getPublicClient(wagmiConfig, { chainId: chain.id })
+    if (!publicClient) throw new Error(`no public client for chain ${chain.id}`)
 
     try {
       const { request } = await publicClient.simulateContract({
