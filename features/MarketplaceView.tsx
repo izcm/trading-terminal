@@ -7,7 +7,7 @@ import { type Tx, useTx } from '@/app/providers/TxProvider'
 
 // shared components
 import { TradeReceipt } from '@/ui/organisms'
-import { SettingsMenu } from '@/ui/organisms'
+import { SettingsMenu } from '@/features/wallet/SettingsMenu'
 import { Modal, Spinner, TextInput } from '@/ui/atoms'
 
 import type { NFTCollection } from '@/domain/nft-collection'

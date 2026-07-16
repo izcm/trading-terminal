@@ -1,19 +1,25 @@
 import { useEffect, useRef, useState } from 'react'
-import { parseEther } from 'viem'
 
-import { NotConnectedError, WrongNetworkError, getChainConfig } from '@/lib/blockchain'
+import { parseEther, Hex } from 'viem'
+import { useAccount } from 'wagmi'
+
+import {
+  NotConnectedError,
+  WrongNetworkError,
+  getChainConfig,
+  erc721Abi,
+  erc20Abi,
+  WriteAction,
+} from '@/lib/blockchain'
 import { readERC721Contract, getBlockTimestamp, readERC20Contract } from '@/lib/blockchain/actions'
-import { usePublicClient, useSimpleWrite, WriteAction } from '@/lib/blockchain/hooks'
-import { erc721Abi, erc20Abi } from '@/lib/blockchain'
+import { usePublicClient, useSimpleWrite } from '@/lib/blockchain/hooks'
 
 import { OrderSide } from '@/protocol/eip712'
-import type { Hex } from '@/domain/shared/eth'
 
 import { toast } from '@/ui/molecules'
 import { FormInput, OrderForm } from './OrderForm'
 
 import { useCreateOrder } from '../hooks/use-create-order'
-import { useWallet } from '@/features/wallet/hooks/use-wallet'
 
 type Props = {
   collection: Hex
@@ -32,12 +38,12 @@ export function CreateOrderFlow({
   onOrderCreated,
   onOrderNavigate,
 }: Props) {
-  const { chainId, account } = useWallet()
+  const { chainId, address } = useAccount()
   const client = usePublicClient({ chainId })
 
   const chain = client?.chain?.id ? getChainConfig(client.chain.id) : undefined
 
-  const { create } = useCreateOrder(chainId, chain?.marketplace, account)
+  const { create } = useCreateOrder(chainId, chain?.marketplace, address)
   const { simpleWrite } = useSimpleWrite()
 
   const approvalsRef = useRef<HTMLButtonElement>(null)
@@ -56,7 +62,7 @@ export function CreateOrderFlow({
     approvalsRef.current?.focus()
   }, [pendingAction, approvalConfirmed])
 
-  if (!account) return <div>Please connect your wallet.</div>
+  if (!address) return <div>Please connect your wallet.</div>
   if (!client || !chain) return <div>Are you connected to the correct network?</div>
 
   async function signAndCreate(input: FormInput) {
@@ -91,7 +97,7 @@ export function CreateOrderFlow({
   }
 
   async function wrapAndSign(input: FormInput) {
-    if (!client || !chain || !account) return
+    if (!client || !chain || !address) return
 
     let approvalsOk
     let reject
@@ -99,7 +105,7 @@ export function CreateOrderFlow({
     try {
       if (side === OrderSide.ASK) {
         // reject if not owner of token (already semi-handled in marketplaceview but extra check here)
-        reject = (await readERC721Contract(client, collection, 'ownerOf', [tokenId])) !== account
+        reject = (await readERC721Contract(client, collection, 'ownerOf', [tokenId])) !== address
 
         if (reject) {
           rejectWith("You don't own this NFT")
@@ -109,15 +115,15 @@ export function CreateOrderFlow({
         // for asks -> check marketplace has approved transfer auth
         approvalsOk =
           (await readERC721Contract(client, collection, 'isApprovedForAll', [
-            account,
+            address,
             chain.marketplace,
           ])) ||
           (await readERC721Contract(client, collection, 'getApproved', [tokenId])) ===
             chain.marketplace
       } else {
-        // reject if account does not have sufficient weth balance
+        // reject if address does not have sufficient weth balance
         reject =
-          (await readERC20Contract(client, chain.weth, 'balanceOf', [account])) <
+          (await readERC20Contract(client, chain.weth, 'balanceOf', [address])) <
           parseEther(input.price)
 
         if (reject) {
@@ -128,7 +134,7 @@ export function CreateOrderFlow({
         // for bids -> check weth allowance + if user has enough funds
         approvalsOk =
           (await readERC20Contract(client, chain.weth, 'allowance', [
-            account,
+            address,
             chain.marketplace,
           ])) >= parseEther(input.price)
       }

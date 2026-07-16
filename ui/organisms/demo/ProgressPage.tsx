@@ -42,7 +42,7 @@ export default function ProgressPage() {
       // healthcheck returns chainId + address of first indexed collection
       // note: there is only one demo collection per today
       try {
-        const res = await fetch(`${getBaseUrl()}/api/healthcheck`, {
+        const res = await fetch(`${getBaseUrl()}/healthcheck`, {
           signal: controller.signal,
         })
 
@@ -76,12 +76,9 @@ export default function ProgressPage() {
 
     const poll = async () => {
       try {
-        const res = await fetch(
-          `${getBaseUrl()}/api/healthcheck/${CHAIN_ID}/${collection.address}`,
-          {
-            signal: controller.signal,
-          }
-        )
+        const res = await fetch(`${getBaseUrl()}/healthcheck/${CHAIN_ID}/${collection.address}`, {
+          signal: controller.signal,
+        })
         if (res.ok) setStatus(await res.json())
       } catch {
         /* retry next tick */

@@ -1,29 +1,15 @@
-import { Abi, Address, ContractFunctionArgs, ContractFunctionName, Hex } from 'viem'
-import { useAccount, useChainId, useWriteContract } from 'wagmi'
+import { Abi, ContractFunctionName, Hex } from 'viem'
+import { useAccount, useChainId, useConfig, useWriteContract } from 'wagmi'
 import { getPublicClient } from 'wagmi/actions'
 
-import { getChainConfig, wagmiConfig } from '../wagmi'
+import { WriteAction } from '../types'
 
 type PayableStatus = 'payable' | 'nonpayable'
-
-export type WriteAction<
-  TAbi extends Abi = Abi,
-  TFuncName extends ContractFunctionName<TAbi, PayableStatus> = ContractFunctionName<
-    TAbi,
-    PayableStatus
-  >,
-> = {
-  abi: TAbi
-  address: Address
-  functionName: TFuncName
-  args: ContractFunctionArgs<TAbi, PayableStatus, TFuncName>
-}
 
 export function useSimpleWrite() {
   const account = useAccount()
   const chainId = useChainId()
-
-  const chain = getChainConfig(chainId)
+  const config = useConfig()
 
   const { writeContractAsync } = useWriteContract()
 
@@ -35,16 +21,17 @@ export function useSimpleWrite() {
     address,
     functionName,
     args,
+    value,
     onSuccess,
     onError,
   }: WriteAction<TAbi, TFuncName> & {
-    onSuccess: (hash: Hex) => void
-    onError: (err: Error) => void
+    onSuccess?: (hash: Hex) => void
+    onError?: (err: Error) => void
   }) {
-    if (!account.address || !chain) return
+    if (!account.address) return
 
-    const publicClient = getPublicClient(wagmiConfig, { chainId: chain.id })
-    if (!publicClient) throw new Error(`no public client for chain ${chain.id}`)
+    const publicClient = getPublicClient(config, { chainId })
+    if (!publicClient) throw new Error(`no public client for chain ${chainId}`)
 
     try {
       const { request } = await publicClient.simulateContract({
@@ -52,6 +39,7 @@ export function useSimpleWrite() {
         abi,
         functionName,
         args,
+        value,
         account: account.address,
       })
 
@@ -60,11 +48,8 @@ export function useSimpleWrite() {
         onError,
       })
     } catch (err) {
-      onError(err instanceof Error ? err : new Error(String(err)))
+      onError?.(err instanceof Error ? err : new Error(String(err)))
     }
-
-    // points to WriteContractAsync.variables
-    // @node_modules/@wagmi/core/src/query/writeContract.ts#99-100
   }
 
   return { simpleWrite }
