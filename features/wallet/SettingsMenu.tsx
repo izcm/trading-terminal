@@ -7,59 +7,12 @@ import { useTheme } from '@/lib/hooks/use-theme'
 import { useMarketplaceStatus } from '@/features/wallet/hooks/use-marketplace-status'
 
 import { ArrowRow } from '@/ui/atoms'
-import { ArrowList, GalleryItem } from '@/ui/molecules'
+import { ArrowList, GalleryItem, InlineAmountInput } from '@/ui/molecules'
 import { getChainConfig } from '@/lib/blockchain'
 import { useWallet } from '@/features/wallet/hooks/use-wallet'
 import { useCollection } from '@/features/CollectionContext'
 
 const THEMES = ['runtime', 'void']
-
-type AmountActionProps = {
-  label: string
-  open: boolean
-  onOpen: () => void
-  onClose: () => void
-  onSubmit: (amount: string) => void
-}
-
-function AmountAction({ label, open, onOpen, onClose, onSubmit }: AmountActionProps) {
-  const [amount, setAmount] = useState('')
-
-  function confirm() {
-    if (!amount) {
-      onClose()
-      return
-    }
-
-    onSubmit(amount)
-    setAmount('')
-    onClose()
-  }
-
-  return (
-    <div className="flex items-center gap-2">
-      {open && (
-        <input
-          type="text"
-          value={amount}
-          onChange={e => setAmount(e.target.value)}
-          onKeyDown={e => {
-            if (e.key === 'Enter') confirm()
-          }}
-          placeholder="0.0"
-          autoFocus
-          className="w-20 bg-transparent text-sm text-right outline-none border-b border-accent/40"
-        />
-      )}
-      <button
-        onClick={open ? confirm : onOpen}
-        className="cursor-pointer text-sm text-subtle underline underline-offset-2 hover:text-white"
-      >
-        {open ? 'Confirm' : label}
-      </button>
-    </div>
-  )
-}
 
 /*
   displays:
@@ -71,6 +24,9 @@ function AmountAction({ label, open, onOpen, onClose, onSubmit }: AmountActionPr
   - whether marketplace has isApprovedForAll for active collection
     + update option
 */
+
+// TODO: add onerror handler and toast error msg
+// rest is working just that without eth / weth simulation fails but error not handled
 export function SettingsMenu() {
   const { isConnected } = useWallet()
 
@@ -137,11 +93,14 @@ export function SettingsMenu() {
               <span className="text-sm text-subtle">WETH balance</span>
               <div className="flex items-center gap-2">
                 <span className="text-sm">{wethBalance?.toString() ?? '—'}</span>
-                <AmountAction
+                <InlineAmountInput
                   open={activeAction === 'deposit'}
                   onOpen={() => setActiveAction('deposit')}
                   onClose={() => setActiveAction(null)}
-                  onSubmit={amount => deposit(parseEther(amount))}
+                  onSubmit={amount => {
+                    console.log('here')
+                    deposit(parseEther(amount))
+                  }}
                   label="Deposit"
                 />
               </div>
@@ -151,7 +110,7 @@ export function SettingsMenu() {
 
             <div className="flex items-center justify-between">
               <span className="text-sm text-subtle">Marketplace allowance</span>
-              <AmountAction
+              <InlineAmountInput
                 open={activeAction === 'allowance'}
                 onOpen={() => setActiveAction('allowance')}
                 onClose={() => setActiveAction(null)}

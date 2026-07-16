@@ -1,6 +1,7 @@
 export * from './ArrowList'
 export * from './GalleryItem'
 export * from './ImageRow'
+export * from './InlineAmountInput'
 
 export * from './details/DetailFields'
 export * from './details/Details'

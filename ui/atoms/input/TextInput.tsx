@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 
+import { cn } from '@/lib/utils/cn'
+
 type Props = {
   placeholder?: string
   value?: string
@@ -7,12 +9,21 @@ type Props = {
   onSubmit?: (value: string) => void
   ref?: React.Ref<HTMLInputElement>
   numeric?: boolean
+  className?: string
 }
 
 // merketplaceView is a heavy component and shouldnt rerender on every keystroke
 // so internal state is added. then render only happens on submit
 
-export function TextInput({ placeholder, value, onChange, onSubmit, ref, numeric }: Props) {
+export function TextInput({
+  placeholder,
+  value,
+  onChange,
+  onSubmit,
+  ref,
+  numeric,
+  className,
+}: Props) {
   const [internal, setInternal] = useState(value ?? '')
   const [prevValue, setPrevValue] = useState(value)
 
@@ -25,7 +36,10 @@ export function TextInput({ placeholder, value, onChange, onSubmit, ref, numeric
   return (
     <input
       ref={ref}
-      className="px-4 py-2 w-full bg-black/10 text-muted rounded-lg border border-default"
+      className={cn(
+        'px-4 py-2 w-full bg-black/10 text-muted rounded-lg border border-default',
+        className
+      )}
       placeholder={placeholder}
       value={internal}
       {...(numeric && { inputMode: 'decimal', pattern: '[0-9.]*', 'data-numeric': true })}

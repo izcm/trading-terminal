@@ -30,8 +30,6 @@ const configuredChains: ChainExtras[] = activeChains.map(sc => {
   }
 })
 
-console.log(configuredChains)
-
 if (configuredChains.length === 0) throw new Error('no supported chains configured')
 
 const transports = Object.fromEntries(activeChains.map(sc => [sc.chainId, http(sc.url)]))
