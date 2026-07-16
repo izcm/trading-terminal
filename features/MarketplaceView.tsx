@@ -220,56 +220,59 @@ export function MarketplaceView({ collection, initialPages }: Props) {
     setInfoModal({ open: true, type: 'manual' })
   }
 
-  // const modalIsOpen = actionModal !== null || infoModal.open
+  const modalIsOpen = actionModal !== null || infoModal.open
 
-  useKeyboardShortcuts({
-    // tab switch
-    f: () => setTab('feed'),
-    t: () => setTab('trades'),
-    e: () => setTab('explore'),
+  useKeyboardShortcuts(
+    {
+      // tab switch
+      f: () => setTab('feed'),
+      t: () => setTab('trades'),
+      e: () => setTab('explore'),
 
-    // tab switch + reset filters
-    F: () => {
-      resetFiltersAndSelected('feed')
+      // tab switch + reset filters
+      F: () => {
+        resetFiltersAndSelected('feed')
+      },
+      T: () => {
+        resetFiltersAndSelected('trades')
+      },
+      E: () => {
+        resetFiltersAndSelected('explore')
+      },
+
+      // header shortcuts
+      W: () => walletInteraction(),
+      '?': () => openManual('shortcuts'),
+      '1': () => openManual('shortcuts'),
+      '2': () => openManual('filters'),
+      '3': () => openManual('examples'),
+
+      ',': () => setInfoModal({ open: true, type: 'settings' }),
+      '.': () => showTxs(onNavigateToTx), // open provider tx overview
+
+      o: () => {
+        if (!account) return
+        setTab('feed')
+        setFilters(prev => ({ ...prev, feed: { maker: [account], status: ['active'] } }))
+        setResetTick(t => t + 1)
+      },
+
+      // tab internals
+      s: () => searchRef.current?.focus(),
+      a: () => {
+        if (!resolvedMainAction?.run || resolvedMainAction.disabled || resolvedMainAction.loading)
+          return
+        resolvedMainAction.run()
+      },
+      // Enter: () => {
+      //   if (!resolvedMainAction?.run || resolvedMainAction.disabled || resolvedMainAction.loading)
+      //     return
+      //   resolvedMainAction.run()
+      // },
+      l: () => focusGalleryRef.current?.(),
     },
-    T: () => {
-      resetFiltersAndSelected('trades')
-    },
-    E: () => {
-      resetFiltersAndSelected('explore')
-    },
-
-    // header shortcuts
-    W: () => walletInteraction(),
-    '?': () => openManual('shortcuts'),
-    // '1': () => openManual('shortcuts'),
-    // '2': () => openManual('filters'),
-    // '3': () => openManual('examples'),
-
-    ',': () => setInfoModal({ open: true, type: 'settings' }),
-    '.': () => showTxs(onNavigateToTx), // open provider tx overview
-
-    o: () => {
-      if (!account) return
-      setTab('feed')
-      setFilters(prev => ({ ...prev, feed: { maker: [account], status: ['active'] } }))
-      setResetTick(t => t + 1)
-    },
-
-    // tab internals
-    s: () => searchRef.current?.focus(),
-    a: () => {
-      if (!resolvedMainAction?.run || resolvedMainAction.disabled || resolvedMainAction.loading)
-        return
-      resolvedMainAction.run()
-    },
-    // Enter: () => {
-    //   if (!resolvedMainAction?.run || resolvedMainAction.disabled || resolvedMainAction.loading)
-    //     return
-    //   resolvedMainAction.run()
-    // },
-    l: () => focusGalleryRef.current?.(),
-  })
+    { enabled: !modalIsOpen }
+  )
 
   const view = (
     <div className="flex gap-4 h-screen max-w-[960px] px-2 mx-auto overflow-hidden font-mono">

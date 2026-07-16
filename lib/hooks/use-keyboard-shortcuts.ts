@@ -1,7 +1,11 @@
 import { useEffect } from 'react'
 
-export function useKeyboardShortcuts(map: Record<string, () => void>) {
+export function useKeyboardShortcuts(map: Record<string, () => void>, options?: { enabled?: boolean }) {
+  const enabled = options?.enabled ?? true
+
   useEffect(() => {
+    if (!enabled) return
+
     const onKey = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement
 
@@ -22,5 +26,5 @@ export function useKeyboardShortcuts(map: Record<string, () => void>) {
 
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [map])
+  }, [map, enabled])
 }
