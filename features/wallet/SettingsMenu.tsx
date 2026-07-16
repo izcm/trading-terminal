@@ -114,14 +114,17 @@ export function SettingsMenu() {
 
             <div className="flex items-center justify-between">
               <span className="text-sm text-subtle">Marketplace allowance</span>
-              <InlineAmountInput
-                open={activeAction === 'allowance'}
-                onOpen={() => setActiveAction('allowance')}
-                onClose={() => setActiveAction(null)}
-                onSubmit={amount => approveWeth(parseEther(amount))}
-                label="Update"
-                disabled={!hasEth}
-              />
+              <div className="flex items-center gap-2">
+                {/* <span className="text-sm">{allowance?.toString() ?? '—'}</span> */}
+                <InlineAmountInput
+                  open={activeAction === 'allowance'}
+                  onOpen={() => setActiveAction('allowance')}
+                  onClose={() => setActiveAction(null)}
+                  onSubmit={amount => approveWeth(parseEther(amount))}
+                  label="Update"
+                  disabled={!hasEth}
+                />
+              </div>
             </div>
 
             <div className="flex items-center justify-between">

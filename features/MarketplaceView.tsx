@@ -242,9 +242,9 @@ export function MarketplaceView({ collection, initialPages }: Props) {
     // header shortcuts
     W: () => walletInteraction(),
     '?': () => openManual('shortcuts'),
-    '1': () => openManual('shortcuts'),
-    '2': () => openManual('filters'),
-    '3': () => openManual('examples'),
+    // '1': () => openManual('shortcuts'),
+    // '2': () => openManual('filters'),
+    // '3': () => openManual('examples'),
 
     ',': () => setInfoModal({ open: true, type: 'settings' }),
     '.': () => showTxs(onNavigateToTx), // open provider tx overview
