@@ -5,6 +5,7 @@ import { useActionPair } from '@/lib/blockchain/hooks/'
 import { getChainConfig } from '@/lib/blockchain'
 
 import { useCollection } from '../../CollectionContext'
+import { useTx } from '@/app/providers/TxProvider'
 
 const wethAbi = [
   ...erc20Abi,
@@ -19,6 +20,8 @@ const wethAbi = [
 
 // export function useMarketplaceStatus({ weth, marketplace, collection }: Props) {
 export function useMarketplaceStatus() {
+  const { addTx } = useTx()
+
   const account = useAccount()
   const { collection } = useCollection()
 
@@ -28,7 +31,6 @@ export function useMarketplaceStatus() {
   // WETH BALANCE & DEPOSIT
   const {
     data: wethBalance,
-    refetch: fetchWeth,
     write: writeDeposit,
     isError: isErrorDeposit,
     errorMessage: errorDepositMsg,
@@ -44,6 +46,10 @@ export function useMarketplaceStatus() {
       functionName: 'deposit',
       address: chain?.weth,
     },
+    onTxHash: hash =>
+      addTx({
+        hash,
+      }),
   })
 
   function deposit(amount: bigint) {
@@ -68,6 +74,11 @@ export function useMarketplaceStatus() {
       functionName: 'approve',
       address: chain?.weth,
     },
+    onTxHash: hash =>
+      addTx({
+        hash,
+        label: 'whatever',
+      }),
   })
 
   function approveWeth(amount: bigint) {
@@ -92,6 +103,10 @@ export function useMarketplaceStatus() {
       functionName: 'setApprovalForAll',
       address: collection?.address,
     },
+    onTxHash: hash =>
+      addTx({
+        hash,
+      }),
   })
 
   function approveMarketplace(approved: boolean) {

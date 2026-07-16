@@ -23,7 +23,11 @@ export function useActionPair<
   TReadFunc extends ReadFunctionName<TReadAbi>,
   TWriteAbi extends Abi,
   TWriteFunc extends WriteFunctionName<TWriteAbi>,
->({ readAction, writeAction }: ActionPair<TReadAbi, TReadFunc, TWriteAbi, TWriteFunc>) {
+>({
+  readAction,
+  writeAction,
+  onTxHash,
+}: ActionPair<TReadAbi, TReadFunc, TWriteAbi, TWriteFunc> & { onTxHash?: (hash: Hash) => void }) {
   const { simpleWrite } = useSimpleWrite()
 
   // wire read
@@ -53,7 +57,10 @@ export function useActionPair<
       functionName: writeAction.functionName,
       args,
       value,
-      onSuccess: setTxHash,
+      onSuccess: hash => {
+        setTxHash(hash)
+        onTxHash?.(hash)
+      },
       onError: err => setErrorMessage(err.message),
     })
   }

@@ -69,7 +69,7 @@ export function OrderForm({ tokenId, onSubmit, back }: Props) {
       <div className="text-subtle">nft #{tokenId}</div>
 
       <div>
-        <div className="text-subtle mb-2">Price (ETH)</div>
+        <div className="text-subtle mb-2">Price (WETH)</div>
         <TextInput placeholder="0.15" value={price} onChange={setPrice} numeric />
       </div>
 

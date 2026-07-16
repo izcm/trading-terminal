@@ -10,6 +10,7 @@ type InlineAmountInputProps = {
   onClose: () => void
   onSubmit: (amount: string) => void
   disabled?: boolean
+  textPlaceholder?: string
 }
 
 export function InlineAmountInput({
@@ -19,6 +20,7 @@ export function InlineAmountInput({
   onClose,
   onSubmit,
   disabled,
+  textPlaceholder,
 }: InlineAmountInputProps) {
   const [amount, setAmount] = useState('')
 
@@ -46,6 +48,7 @@ export function InlineAmountInput({
           ref={inputRef}
           value={amount}
           onChange={setAmount}
+          placeholder={textPlaceholder}
           onSubmit={confirm}
           numeric
           className="
@@ -58,8 +61,10 @@ export function InlineAmountInput({
       <button
         onClick={open ? confirm : onOpen}
         ref={buttonRef}
+        disabled={disabled}
         className={cn(
-          'cursor-pointer text-sm text-subtle underline underline-offset-2 hover:text-white'
+          'cursor-pointer text-sm text-subtle underline underline-offset-2 hover:text-white',
+          disabled && 'disabled:cursor-not-allowed disabled:opacity-40 disabled:no-underline'
         )}
       >
         {open ? (amount === '' ? 'Cancel' : 'Confirm') : label}

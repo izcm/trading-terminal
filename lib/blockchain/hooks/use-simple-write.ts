@@ -1,4 +1,4 @@
-import { Abi, ContractFunctionName, Hex } from 'viem'
+import { Abi, BaseError, ContractFunctionName, Hex } from 'viem'
 import { useAccount, useChainId, useConfig, useWriteContract } from 'wagmi'
 import { getPublicClient } from 'wagmi/actions'
 
@@ -48,7 +48,13 @@ export function useSimpleWrite() {
         onError,
       })
     } catch (err) {
-      onError?.(err instanceof Error ? err : new Error(String(err)))
+      const message =
+        err instanceof BaseError
+          ? err.shortMessage
+          : err instanceof Error
+            ? err.message
+            : String(err)
+      onError?.(new Error(message))
     }
   }
 

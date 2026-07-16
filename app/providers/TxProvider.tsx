@@ -14,7 +14,7 @@ export type TxLabel = 'order filled' | 'order cancelled' | 'transaction'
 export type Tx = {
   hash: Hex
   status: TxStatus
-  label: TxLabel
+  label: string
   listingId?: string
   onConfirmed?: () => void
   decodeError?: (error: unknown) => string | undefined
@@ -25,7 +25,7 @@ export type Tx = {
 export type AddTxParams = {
   hash: Hex
   listingId?: string
-  label?: TxLabel
+  label?: string
   onConfirmed?: () => void
   decodeError?: (error: unknown) => string | undefined
 }

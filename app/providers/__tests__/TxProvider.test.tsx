@@ -18,7 +18,10 @@ type MockReceipt =
   | { isError: true; isSuccess: false }
 
 function mockTxReceipt(val: MockReceipt, error?: unknown) {
-  vi.mocked(useWaitForTransactionReceipt, { partial: true }).mockReturnValueOnce({ ...val, error })
+  vi.mocked(useWaitForTransactionReceipt, { partial: true }).mockReturnValueOnce({
+    ...val,
+    error: error as any,
+  })
 }
 
 vi.mock('focus-trap-react', () => ({
@@ -67,10 +70,7 @@ function setupForPending(opts?: SetupOpts) {
   return setupForStatus({ isError: false, isSuccess: false }, opts)
 }
 
-function setupForStatus(
-  mockResult: MockReceipt,
-  { showModal = false, tx, error }: SetupOpts = {}
-) {
+function setupForStatus(mockResult: MockReceipt, { showModal = false, tx, error }: SetupOpts = {}) {
   mockTxReceipt(mockResult, error)
 
   const { hook, addTx, showTxs, getTxs, getOnlyTx } = setup()

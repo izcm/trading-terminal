@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { parseEther } from 'viem'
+import { formatEther, parseEther } from 'viem'
 import { useBalance, useChainId } from 'wagmi'
 
 import { useTheme } from '@/lib/hooks/use-theme'
@@ -10,7 +10,6 @@ import { ArrowRow } from '@/ui/atoms'
 import { ArrowList, GalleryItem, InlineAmountInput, toast } from '@/ui/molecules'
 import { getChainConfig } from '@/lib/blockchain'
 import { useWallet } from '@/features/wallet/hooks/use-wallet'
-import { useCollection } from '@/features/CollectionContext'
 
 const THEMES = ['runtime', 'void']
 
@@ -36,8 +35,15 @@ export function SettingsMenu() {
   const { data: ethBalance } = useBalance({ address: account })
   const hasEth = !!ethBalance && ethBalance.value > 0n
 
-  const { approveWeth, wethBalance, isApproved, approveMarketplace, deposit, errorMessage } =
-    useMarketplaceStatus()
+  const {
+    approveWeth,
+    wethBalance,
+    isApproved,
+    approveMarketplace,
+    wethAllowance,
+    deposit,
+    errorMessage,
+  } = useMarketplaceStatus()
 
   const [activeAction, setActiveAction] = useState<'deposit' | 'allowance' | null>(null)
 
@@ -49,7 +55,7 @@ export function SettingsMenu() {
   let error
 
   if (!isConnected) {
-    error = 'Connect wallet to see your ETH / WETH balances and marketplace approvals.'
+    error = 'Connect wallet to see ETH / WETH balances and marketplace approvals.'
   }
 
   if (!chain) {
@@ -106,6 +112,7 @@ export function SettingsMenu() {
                   onSubmit={amount => deposit(parseEther(amount))}
                   label="Deposit"
                   disabled={!hasEth}
+                  textPlaceholder="0.0"
                 />
               </div>
             </div>
@@ -115,7 +122,9 @@ export function SettingsMenu() {
             <div className="flex items-center justify-between">
               <span className="text-sm text-subtle">Marketplace allowance</span>
               <div className="flex items-center gap-2">
-                {/* <span className="text-sm">{allowance?.toString() ?? '—'}</span> */}
+                <span className="text-sm">
+                  {wethAllowance ? formatEther(wethAllowance) + ' WETH' : '—'}
+                </span>
                 <InlineAmountInput
                   open={activeAction === 'allowance'}
                   onOpen={() => setActiveAction('allowance')}
@@ -123,6 +132,7 @@ export function SettingsMenu() {
                   onSubmit={amount => approveWeth(parseEther(amount))}
                   label="Update"
                   disabled={!hasEth}
+                  textPlaceholder="0.0"
                 />
               </div>
             </div>
