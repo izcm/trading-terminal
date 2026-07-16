@@ -26,7 +26,13 @@ export function useMarketplaceStatus() {
   const chain = getChainConfig(chainId)
 
   // WETH BALANCE & DEPOSIT
-  const { data: wethBalance, refetch: fetchWeth, write: writeDeposit } = useActionPair({
+  const {
+    data: wethBalance,
+    refetch: fetchWeth,
+    write: writeDeposit,
+    isError: isErrorDeposit,
+    errorMessage: errorDepositMsg,
+  } = useActionPair({
     readAction: {
       abi: wethAbi,
       functionName: 'balanceOf',
@@ -45,7 +51,12 @@ export function useMarketplaceStatus() {
   }
 
   // WETH ALLOWANCE & APPROVE
-  const { data: wethAllowance, write: writeApproveWeth } = useActionPair({
+  const {
+    data: wethAllowance,
+    write: writeApproveWeth,
+    isError: isErrorWeth,
+    errorMessage: errorWethMsg,
+  } = useActionPair({
     readAction: {
       abi: erc20Abi,
       functionName: 'allowance',
@@ -64,7 +75,12 @@ export function useMarketplaceStatus() {
   }
 
   // MARKETPLACE APPROVAL & APPROVE
-  const { data: isApproved, write: writeApproveMarketplace } = useActionPair({
+  const {
+    data: isApproved,
+    write: writeApproveMarketplace,
+    isError: isErrorApproval,
+    errorMessage: errorApprovalMsg,
+  } = useActionPair({
     readAction: {
       abi: erc721Abi,
       functionName: 'isApprovedForAll',
@@ -82,5 +98,17 @@ export function useMarketplaceStatus() {
     return writeApproveMarketplace([chain?.marketplace!, approved])
   }
 
-  return { approveWeth, wethBalance, wethAllowance, isApproved, approveMarketplace, deposit }
+  const isError = isErrorDeposit || isErrorWeth || isErrorApproval
+  const errorMessage = errorDepositMsg ?? errorWethMsg ?? errorApprovalMsg
+
+  return {
+    approveWeth,
+    wethBalance,
+    wethAllowance,
+    isApproved,
+    approveMarketplace,
+    deposit,
+    isError,
+    errorMessage,
+  }
 }

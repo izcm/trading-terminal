@@ -26,17 +26,39 @@ function getTitleColor(variant?: ToastVariant) {
   }
 }
 
+let visibleCount = 0
+
+export function isToastVisible() {
+  return visibleCount > 0
+}
+
+export function dismissToasts() {
+  sonnerToast.dismiss()
+}
+
 /*  so that you can call it without having to use toast.custom everytime. */
 export function toast(toast: Omit<ToastProps, 'id'>) {
-  return sonnerToast.custom(id => (
-    <Toast
-      id={id}
-      title={toast.title}
-      description={toast.description}
-      variant={toast.variant}
-      toastAction={toast.toastAction}
-    />
-  ))
+  visibleCount++
+
+  return sonnerToast.custom(
+    id => (
+      <Toast
+        id={id}
+        title={toast.title}
+        description={toast.description}
+        variant={toast.variant}
+        toastAction={toast.toastAction}
+      />
+    ),
+    {
+      onDismiss: () => {
+        visibleCount--
+      },
+      onAutoClose: () => {
+        visibleCount--
+      },
+    }
+  )
 }
 export function Toast({ title, description, variant, toastAction }: ToastProps) {
   return (
@@ -57,7 +79,7 @@ export function Toast({ title, description, variant, toastAction }: ToastProps) 
 
       <button
         className="text-xs text-muted hover:text-accent transition-colors"
-        onClick={() => sonnerToast.dismiss()}
+        onClick={() => dismissToasts()}
       >
         ✕
       </button>

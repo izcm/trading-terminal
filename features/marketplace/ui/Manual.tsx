@@ -94,6 +94,7 @@ export function Manual({ initialTab = 'shortcuts' }: { initialTab?: Tab } = {}) 
           <Row label="." value="view session txs" />
           <Row label="," value="open settings" />
           <Row label="esc / x" value="close modal" />
+          <Row label="esc (toast up)" value="dismiss toast" />
           <Row label="esc (in search)" value="clear search input" />
         </Section>
       )}

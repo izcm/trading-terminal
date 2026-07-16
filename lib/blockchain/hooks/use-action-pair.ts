@@ -54,6 +54,7 @@ export function useActionPair<
       args,
       value,
       onSuccess: setTxHash,
+      onError: err => setErrorMessage(err.message),
     })
   }
 

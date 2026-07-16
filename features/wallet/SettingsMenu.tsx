@@ -1,13 +1,13 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { parseEther } from 'viem'
-import { useChainId } from 'wagmi'
+import { useBalance, useChainId } from 'wagmi'
 
 import { useTheme } from '@/lib/hooks/use-theme'
 import { useMarketplaceStatus } from '@/features/wallet/hooks/use-marketplace-status'
 
 import { ArrowRow } from '@/ui/atoms'
-import { ArrowList, GalleryItem, InlineAmountInput } from '@/ui/molecules'
+import { ArrowList, GalleryItem, InlineAmountInput, toast } from '@/ui/molecules'
 import { getChainConfig } from '@/lib/blockchain'
 import { useWallet } from '@/features/wallet/hooks/use-wallet'
 import { useCollection } from '@/features/CollectionContext'
@@ -19,26 +19,32 @@ const THEMES = ['runtime', 'void']
   - Theme picker
   
   chain:
-  - account's ETH / WETH balance
+  - account's ETH / WETH balance 
   - marketplace allowance + update option
   - whether marketplace has isApprovedForAll for active collection
     + update option
 */
 
-// TODO: add onerror handler and toast error msg
-// rest is working just that without eth / weth simulation fails but error not handled
 export function SettingsMenu() {
-  const { isConnected } = useWallet()
+  const { isConnected, account } = useWallet()
 
   const { theme, applyTheme: setTheme } = useTheme()
   const chainId = useChainId()
 
   const chain = getChainConfig(chainId)
 
-  const { approveWeth, wethBalance, isApproved, approveMarketplace, deposit } =
+  const { data: ethBalance } = useBalance({ address: account })
+  const hasEth = !!ethBalance && ethBalance.value > 0n
+
+  const { approveWeth, wethBalance, isApproved, approveMarketplace, deposit, errorMessage } =
     useMarketplaceStatus()
 
   const [activeAction, setActiveAction] = useState<'deposit' | 'allowance' | null>(null)
+
+  useEffect(() => {
+    if (errorMessage)
+      toast({ title: 'Transaction failed', description: errorMessage, variant: 'error' })
+  }, [errorMessage])
 
   let error
 
@@ -87,7 +93,7 @@ export function SettingsMenu() {
           <>
             <div className="flex items-center justify-between">
               <span className="text-sm text-subtle">ETH balance</span>
-              <span className="text-sm">—</span>
+              <span className="text-sm">{hasEth ? ethBalance.formatted : '0 ETH'}</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm text-subtle">WETH balance</span>
@@ -97,11 +103,9 @@ export function SettingsMenu() {
                   open={activeAction === 'deposit'}
                   onOpen={() => setActiveAction('deposit')}
                   onClose={() => setActiveAction(null)}
-                  onSubmit={amount => {
-                    console.log('here')
-                    deposit(parseEther(amount))
-                  }}
+                  onSubmit={amount => deposit(parseEther(amount))}
                   label="Deposit"
+                  disabled={!hasEth}
                 />
               </div>
             </div>
@@ -116,6 +120,7 @@ export function SettingsMenu() {
                 onClose={() => setActiveAction(null)}
                 onSubmit={amount => approveWeth(parseEther(amount))}
                 label="Update"
+                disabled={!hasEth}
               />
             </div>
 
@@ -125,7 +130,8 @@ export function SettingsMenu() {
                 <span className="text-sm">{isApproved ? 'Approved' : 'Not approved'}</span>
                 <button
                   onClick={() => approveMarketplace(!isApproved)}
-                  className="cursor-pointer text-sm text-subtle underline underline-offset-2 hover:text-white"
+                  disabled={!hasEth}
+                  className="cursor-pointer text-sm text-subtle underline underline-offset-2 hover:text-white disabled:cursor-not-allowed disabled:opacity-40 disabled:no-underline"
                 >
                   Update
                 </button>

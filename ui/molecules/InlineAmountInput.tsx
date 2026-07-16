@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 
 import { TextInput } from '@/ui/atoms'
+import { cn } from '@/lib/utils/cn'
 
 type InlineAmountInputProps = {
   label: string
@@ -8,6 +9,7 @@ type InlineAmountInputProps = {
   onOpen: () => void
   onClose: () => void
   onSubmit: (amount: string) => void
+  disabled?: boolean
 }
 
 export function InlineAmountInput({
@@ -16,6 +18,7 @@ export function InlineAmountInput({
   onOpen,
   onClose,
   onSubmit,
+  disabled,
 }: InlineAmountInputProps) {
   const [amount, setAmount] = useState('')
 
@@ -55,9 +58,11 @@ export function InlineAmountInput({
       <button
         onClick={open ? confirm : onOpen}
         ref={buttonRef}
-        className="cursor-pointer text-sm text-subtle underline underline-offset-2 hover:text-white"
+        className={cn(
+          'cursor-pointer text-sm text-subtle underline underline-offset-2 hover:text-white'
+        )}
       >
-        {open ? 'Confirm' : label}
+        {open ? (amount === '' ? 'Cancel' : 'Confirm') : label}
       </button>
     </div>
   )

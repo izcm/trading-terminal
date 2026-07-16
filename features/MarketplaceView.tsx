@@ -18,6 +18,7 @@ import { TabContainer } from './TabContainer'
 
 // feature hooks
 import { useKeyboardShortcuts } from '../lib/hooks/use-keyboard-shortcuts'
+import { useToastEscape } from '../lib/hooks/use-toast-escape'
 import { useWallet } from './wallet/hooks/use-wallet'
 import {
   useSearchFilters,
@@ -52,6 +53,8 @@ type InfoModalType = 'manual' | 'settings' | 'startMsg'
 type InfoModalState = { open: true; type: InfoModalType } | { open: false }
 
 export function MarketplaceView({ collection, initialPages }: Props) {
+  useToastEscape()
+
   // --- collection ---
   const { address: collectionAddress, chainId } = collection
 

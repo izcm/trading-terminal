@@ -84,7 +84,6 @@ export function useMarketplaceData(
 
     if (!currCursor || isLoadingMore) return
 
-    console.log('IM IN USE MARKETPLCEDATA')
     setIsLoadingMore(true)
 
     const res = await pageGetters[tab]({
