@@ -7,12 +7,17 @@
  *
  * Browser fetches can't reach the internal Docker address, only localhost.
  *
- * window undefined → INDEXER_API (internal Docker hostname)
- * window defined  → NEXT_PUBLIC_INDEXER_API (localhost)
+ * window undefined → INDEXER_API_SERVER (internal Docker hostname)
+ * window defined  → NEXT_PUBLIC_INDEXER_API_CLIENT (localhost)
  */
 export function getBaseUrl() {
-  const url = process.env.NEXT_PUBLIC_INDEXER_API
-  if (!url) throw new Error('Missing NEXT_PUBLIC_INDEXER_API')
+  if (typeof window === 'undefined') {
+    const url = process.env.INDEXER_API_SERVER
+    if (!url) throw new Error('Missing INDEXER_API_SERVER')
+    return url
+  }
+  const url = process.env.NEXT_PUBLIC_INDEXER_API_CLIENT
+  if (!url) throw new Error('Missing NEXT_PUBLIC_INDEXER_API_CLIENT')
   return url
 }
 

@@ -27,6 +27,7 @@ export async function fetchJSON<T>(url: string, signal?: AbortSignal): Promise<R
   } catch (err) {
     if (err instanceof DOMException && err.name === 'AbortError')
       return { ok: false, error: 'Fetch aborted' }
+    console.error(`fetchJSON failed for ${url}:`, err)
     return { ok: false, error: `Network Error: ${err}` }
   }
 }

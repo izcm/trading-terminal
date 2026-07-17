@@ -62,8 +62,10 @@ export function SettingsMenu() {
     error = 'The connected chain is not supported.'
   }
 
-  const displayEth = (weth: bigint, decimals: number = 4) =>
-    Number(formatEther(weth)).toFixed(decimals)
+  const displayEth = (weth: bigint, decimals: number = 4) => {
+    const eth = Number(formatEther(weth))
+    return eth > Number.MAX_SAFE_INTEGER ? 'Unlimited' : eth.toFixed(decimals)
+  }
 
   return (
     <div className="flex flex-col gap-2 p-1">

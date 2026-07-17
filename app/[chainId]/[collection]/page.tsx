@@ -27,7 +27,7 @@ export default async function Page({
   if ([nftCall, listingCall, tradeCall, collectionCall].some(r => !r.ok)) {
     return (
       <div className="h-screen flex items-center justify-center font-mono text-sm text-muted">
-        return <div>error loading page</div>
+        <div>error loading page</div>
       </div>
     )
   }
