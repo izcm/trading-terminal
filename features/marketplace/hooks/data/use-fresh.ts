@@ -13,21 +13,16 @@ export function useFresh(activeTab: TabName) {
 
   const add = useCallback(
     (tab: TabName, id: string) => {
-      if (tab === activeTab) {
-        // active → fresh immediately
-        setFresh(prev => {
-          const next = new Set(prev[tab] ?? [])
-          next.add(id)
-          return { ...prev, [tab]: next }
-        })
+      if (tab !== activeTab) return // turned off fresh across tabs here since it was distracting
+      // keeping the hook as is in acase I change my mind
 
-        startTimer(tab)
-      } else {
-        // inactive → pending
-        const nextPending = new Set(pending.current[tab] ?? [])
-        nextPending.add(id)
-        pending.current = { ...pending.current, [tab]: nextPending }
-      }
+      setFresh(prev => {
+        const next = new Set(prev[tab] ?? [])
+        next.add(id)
+        return { ...prev, [tab]: next }
+      })
+
+      startTimer(tab)
     },
     [activeTab]
   )

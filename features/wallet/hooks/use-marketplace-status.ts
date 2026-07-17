@@ -38,7 +38,7 @@ export function useMarketplaceStatus() {
     readAction: {
       abi: wethAbi,
       functionName: 'balanceOf',
-      address: account.address,
+      address: chain?.weth,
       args: [account.address!],
     },
     writeAction: {

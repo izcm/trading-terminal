@@ -62,6 +62,9 @@ export function SettingsMenu() {
     error = 'The connected chain is not supported.'
   }
 
+  const displayEth = (weth: bigint, decimals: number = 4) =>
+    Number(formatEther(weth)).toFixed(decimals)
+
   return (
     <div className="flex flex-col gap-2 p-1">
       {/* THEME PICKER */}
@@ -99,12 +102,16 @@ export function SettingsMenu() {
           <>
             <div className="flex items-center justify-between">
               <span className="text-sm text-subtle">ETH balance</span>
-              <span className="text-sm">{hasEth ? ethBalance.formatted : '0 ETH'}</span>
+              <span className="text-sm">{hasEth ? displayEth(ethBalance.value) : '0 ETH'}</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm text-subtle">WETH balance</span>
               <div className="flex items-center gap-2">
-                <span className="text-sm">{wethBalance?.toString() ?? '—'}</span>
+                {activeAction !== 'deposit' && (
+                  <span className="text-sm">
+                    {wethBalance !== 0n && wethBalance ? displayEth(wethBalance) : '—'}
+                  </span>
+                )}
                 <InlineAmountInput
                   open={activeAction === 'deposit'}
                   onOpen={() => setActiveAction('deposit')}
@@ -122,9 +129,11 @@ export function SettingsMenu() {
             <div className="flex items-center justify-between">
               <span className="text-sm text-subtle">Marketplace allowance</span>
               <div className="flex items-center gap-2">
-                <span className="text-sm">
-                  {wethAllowance ? formatEther(wethAllowance) + ' WETH' : '—'}
-                </span>
+                {activeAction !== 'allowance' && (
+                  <span className="text-sm">
+                    {wethAllowance ? displayEth(wethAllowance) + ' WETH' : '—'}
+                  </span>
+                )}
                 <InlineAmountInput
                   open={activeAction === 'allowance'}
                   onOpen={() => setActiveAction('allowance')}
