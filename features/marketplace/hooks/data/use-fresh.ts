@@ -1,7 +1,15 @@
 import { TabName } from '@/features/tab-config'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-export function useFresh(activeTab: TabName) {
+type UseFreshOptions = {
+  // when true, items added to an inactive tab are discarded instead of
+  // queued as pending / flushed when that tab becomes active
+  onlyForActiveTab?: boolean
+}
+
+export function useFresh(activeTab: TabName, options: UseFreshOptions = {}) {
+  const { onlyForActiveTab = false } = options
+
   const [fresh, setFresh] = useState<Record<string, Set<string>>>({})
   const pending = useRef<Record<string, Set<string>>>({})
 
@@ -13,18 +21,23 @@ export function useFresh(activeTab: TabName) {
 
   const add = useCallback(
     (tab: TabName, id: string) => {
-      if (tab !== activeTab) return // turned off fresh across tabs here since it was distracting
-      // keeping the hook as is in acase I change my mind
+      if (tab === activeTab) {
+        // active → fresh immediately
+        setFresh(prev => {
+          const next = new Set(prev[tab] ?? [])
+          next.add(id)
+          return { ...prev, [tab]: next }
+        })
 
-      setFresh(prev => {
-        const next = new Set(prev[tab] ?? [])
-        next.add(id)
-        return { ...prev, [tab]: next }
-      })
-
-      startTimer(tab)
+        startTimer(tab)
+      } else if (!onlyForActiveTab) {
+        // inactive → pending
+        const nextPending = new Set(pending.current[tab] ?? [])
+        nextPending.add(id)
+        pending.current = { ...pending.current, [tab]: nextPending }
+      }
     },
-    [activeTab]
+    [activeTab, onlyForActiveTab]
   )
 
   // manual flush

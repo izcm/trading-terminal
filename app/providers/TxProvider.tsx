@@ -153,12 +153,11 @@ export function TxProvider({ children, isNavigable }: TxProvider) {
                   isSelected={isSelected}
                   onSelect={() => {
                     onSelect()
-                    if (isNavigable?.(item)) {
+                    if (item.status === 'success' && isNavigable?.(item)) {
                       callbackRef.current(item)
                       setOpen(false)
                     } else if (blockExplorer) {
                       window.open(`${blockExplorer.default.url}/tx/${item.hash}`, '_blank')
-                      setOpen(false)
                     }
                   }}
                   className="transition rounded-lg"

@@ -8,6 +8,15 @@ import { useTx, TxProvider, AddTxParams, Tx } from '../TxProvider'
 
 vi.mock('wagmi', () => ({
   useWaitForTransactionReceipt: vi.fn(() => ({ isError: false, isSuccess: false, error: null })),
+  useConfig: vi.fn(() => ({
+    chains: [
+      {
+        id: 1,
+        blockExplorers: { default: { name: 'Explorer', url: 'https://explorer.test' } },
+      },
+    ],
+  })),
+  useChainId: vi.fn(() => 1),
 }))
 
 vi.mock('@/lib/blockchain/wagmi', () => ({ wagmiConfig: {} }))
@@ -29,7 +38,9 @@ vi.mock('focus-trap-react', () => ({
 }))
 
 const wrapper = ({ children }: { children: React.ReactNode }) => {
-  return <TxProvider>{children}</TxProvider>
+  return (
+    <TxProvider isNavigable={tx => tx.status === 'success'}>{children}</TxProvider>
+  )
 }
 
 function setup() {
@@ -268,7 +279,7 @@ describe('showTxs', () => {
         expect(cb).not.toHaveBeenCalledOnce()
       })
 
-      it.each(cases)('does not close modal for %s tx', (_status, doSetup) => {
+      it.each(cases)('leaves modal open after block explorer redirect for %s tx', (_status, doSetup) => {
         doSetup({ showModal: true })
         fireEvent.click(screen.getByRole('listitem'))
         expect(screen.queryByRole('dialog')).toBeInTheDocument()

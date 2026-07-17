@@ -36,7 +36,7 @@ export function useMarketplaceData(
   initialPages: TabPages = emptyPages
 ) {
   const [state, setState] = useState<TabPages>(initialPages)
-  const { add: addFresh, isFresh: isFresh } = useFresh(tab)
+  const { add: addFresh, isFresh: isFresh } = useFresh(tab, { onlyForActiveTab: true })
   const { mergePage, replacePage, addItemSorted, updateItem } = useTabMutations(setState)
 
   // --- query ---

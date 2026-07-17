@@ -112,4 +112,40 @@ describe('useFresh', () => {
       expect(isFresh(tab, id)).toBe(true)
     })
   })
+
+  describe('onlyForActiveTab', () => {
+    let onlyActiveHook: RenderHookResult<ReturnType<typeof useFresh>, HookProps>
+
+    beforeEach(() => {
+      onlyActiveHook = renderHook((props: HookProps) => useFresh(...props), {
+        initialProps: ['feed' as TabName, { onlyForActiveTab: true }] as HookProps,
+      })
+    })
+
+    const addOnlyActive = (tab: TabName, id: string) => onlyActiveHook.result.current.add(tab, id)
+    const isFreshOnlyActive = (tab: TabName, id: string) =>
+      onlyActiveHook.result.current.isFresh(tab, id)
+    const isPendingOnlyActive = (tab: TabName, id: string) =>
+      onlyActiveHook.result.current.isPending(tab, id)
+
+    it('still marks an item as fresh when added to the active tab', () => {
+      const { tab, id } = base
+      act(() => addOnlyActive(tab, id))
+      expect(isFreshOnlyActive(tab, id)).toBe(true)
+    })
+
+    it.each(otherTabs)('discards items added to inactive tab: %s', tab => {
+      act(() => addOnlyActive(tab, base.id))
+      expect(isPendingOnlyActive(tab, base.id)).toBe(false)
+      expect(isFreshOnlyActive(tab, base.id)).toBe(false)
+    })
+
+    it.each(otherTabs)('does not mark discarded items fresh after switching to that tab: %s', tab => {
+      act(() => addOnlyActive(tab, base.id))
+
+      act(() => onlyActiveHook.rerender([tab, { onlyForActiveTab: true }]))
+
+      expect(isFreshOnlyActive(tab, base.id)).toBe(false)
+    })
+  })
 })
