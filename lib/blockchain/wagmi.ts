@@ -47,3 +47,8 @@ export const wagmiConfig = createConfig({
 export function getChainConfig(chainId: number) {
   return wagmiConfig.chains.find(c => c.id === chainId)
 }
+
+export function getTxExplorerUrl(chainId: number, hash: string) {
+  const baseUrl = getChainConfig(chainId)?.blockExplorers?.default?.url
+  return baseUrl ? `${baseUrl}/tx/${hash}` : undefined
+}

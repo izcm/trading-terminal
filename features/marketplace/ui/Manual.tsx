@@ -87,7 +87,7 @@ export function Manual({ initialTab = 'shortcuts' }: { initialTab?: Tab } = {}) 
           <Row label="shift + f / e / t" value="switch tab + reset filters" />
           <Row label="shift + w" value="connect wallet" />
           <Row label="a / enter" value="run action" />
-          <Row label="s" value="focus search" />
+          <Row label="i" value="focus search" />
           <Row label="l" value="focus list" />
           <Row label="?" value="open manual" />
           <Row label="o" value="my active orders" />

@@ -1,16 +1,24 @@
 import { createContext, ReactNode, useContext, useEffect, useRef, useState } from 'react'
-import { useWaitForTransactionReceipt } from 'wagmi'
 
-import type { Hex } from '@/domain/shared/eth'
+import type { Hex } from 'viem'
+import { useChainId, useConfig, useWaitForTransactionReceipt } from 'wagmi'
+
+import { TxRow } from '@/ui/organisms'
 
 import { toast } from '@/ui/molecules'
 import { ArrowList } from '@/ui/molecules'
-import { TxRow } from '@/ui/organisms'
+
 import { ArrowRow, Modal } from '@/ui/atoms'
 
 export type TxStatus = 'pending' | 'success' | 'failed'
-export type TxLabel = 'order filled' | 'order cancelled' | 'transaction'
 
+export type TxProvider = {
+  // set a condition for which types of txs have custom navigation
+  // if not set / for thos txs who does not pass condition
+  // -> redirect to <blockexplorer>/<txh_hash>
+  isNavigable?: (tx: Tx) => boolean
+  children: ReactNode
+}
 export type Tx = {
   hash: Hex
   status: TxStatus
@@ -38,10 +46,15 @@ type TxContextType = {
 
 const TxContext = createContext<TxContextType | null>(null)
 
-export function TxProvider({ children }: { children: ReactNode }) {
+export function TxProvider({ children, isNavigable }: TxProvider) {
   const [txs, setTxs] = useState<Tx[]>([])
   const [open, setOpen] = useState(false)
   const [selectedHash, setSelectedHash] = useState<string | undefined>()
+
+  const config = useConfig()
+  const chainId = useChainId()
+
+  const blockExplorer = config.chains.find(chain => chain.id === chainId)?.blockExplorers
 
   const callbackRef = useRef<(tx: Tx) => void>(() => {})
 
@@ -139,16 +152,19 @@ export function TxProvider({ children }: { children: ReactNode }) {
                   isSelected={isSelected}
                   onSelect={() => {
                     onSelect()
-                    if (item.status !== 'success') return // tmp: no callback for failed tx
-
-                    callbackRef.current(item)
-                    setOpen(false)
+                    if (isNavigable?.(item)) {
+                      callbackRef.current(item)
+                      setOpen(false)
+                    } else if (blockExplorer) {
+                      window.open(`${blockExplorer.default.url}/tx/${item.hash}`, '_blank')
+                      setOpen(false)
+                    }
                   }}
                   className="transition rounded-lg"
                   dataId={item.hash}
                 >
                   <div className="cursor-pointer">
-                    <TxRow tx={item} />
+                    <TxRow tx={item} disabled={!isNavigable?.(item) && !blockExplorer} />
                   </div>
                 </ArrowRow>
               )}

@@ -17,7 +17,14 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <WalletProvider>
-          <TxProvider>{children}</TxProvider>
+          <TxProvider
+            isNavigable={tx =>
+              tx.status === 'success' &&
+              (tx.label === 'order filled' || tx.label === 'order cancelled')
+            }
+          >
+            {children}
+          </TxProvider>
         </WalletProvider>
       </QueryClientProvider>
     </WagmiProvider>

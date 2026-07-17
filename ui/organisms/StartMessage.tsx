@@ -1,12 +1,14 @@
 export function StartMessage() {
   return (
-    <div className="flex flex-col gap-4 max-w-[380px] p-2 text-sm">
+    <div className="flex flex-col gap-4 max-w-[400px] p-2 text-sm">
       <h2 className="text-base font-semibold text-accent-weak">Before you get started</h2>
 
       <p className="text-subtle">
         For the smoothest experience, connect your wallet and set your transfer/allowance approvals
-        in <span className="text-accent-weak">Settings</span> (gear icon, or press{' '}
-        <span className="text-accent-weak">,</span>).
+        in <span className="text-accent-weak">Settings</span>{' '}
+        <span className="whitespace-nowrap">
+          (gear icon, or press <span className="text-accent-weak">,</span>).
+        </span>
       </p>
 
       <p className="text-subtle">
@@ -16,17 +18,16 @@ export function StartMessage() {
       </p>
 
       <div className="text-subtle">
-        Once connected, Settings will show:
+        From Settings you can:
         <ul className="list-disc pl-5 mt-1 space-y-0.5">
-          <li>WETH balance</li>
-          <li>Current approvals</li>
-          <li>Actions to deposit WETH and update approvals</li>
+          <li>View WETH balance and current approvals</li>
+          <li>Deposit WETH and update approvals</li>
         </ul>
       </div>
 
       <p className="text-subtle">
-        This app is built for keyboard use — press{' '}
-        <span className="text-accent-weak">?</span> anytime to see the full list of shortcuts.
+        This app is built for keyboard use — press <span className="text-accent-weak">?</span>{' '}
+        anytime to see the full list of shortcuts.
       </p>
     </div>
   )

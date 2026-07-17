@@ -39,7 +39,7 @@ import type { TabPages } from './marketplace/hooks/tabs/use-tab-mutations'
 
 // contexts
 import { CollectionProvider } from './CollectionContext'
-import { StartMessage } from '@/ui/organisms/StartMessages'
+import { StartMessage } from '@/ui/organisms/StartMessage'
 
 // --- initial state ---
 type Props = {
@@ -258,7 +258,7 @@ export function MarketplaceView({ collection, initialPages }: Props) {
       },
 
       // tab internals
-      s: () => searchRef.current?.focus(),
+      i: () => searchRef.current?.focus(),
       a: () => {
         if (!resolvedMainAction?.run || resolvedMainAction.disabled || resolvedMainAction.loading)
           return

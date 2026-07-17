@@ -49,6 +49,7 @@ export function useMarketplaceStatus() {
     onTxHash: hash =>
       addTx({
         hash,
+        label: 'deposit',
       }),
   })
 
@@ -77,7 +78,7 @@ export function useMarketplaceStatus() {
     onTxHash: hash =>
       addTx({
         hash,
-        label: 'whatever',
+        label: 'allowance',
       }),
   })
 
@@ -106,6 +107,7 @@ export function useMarketplaceStatus() {
     onTxHash: hash =>
       addTx({
         hash,
+        label: 'collection approval',
       }),
   })
 

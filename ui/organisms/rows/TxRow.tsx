@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import type { Tx, TxLabel } from '@/app/providers/TxProvider'
+import type { Tx } from '@/app/providers/TxProvider'
 import { timeAgo } from '@/lib/utils/time'
 import { Copyable } from '@/ui/atoms'
 
@@ -9,14 +9,15 @@ const ERROR_TRUNCATE = 80
 type Props = {
   tx: Tx
   onClick?: () => void
+  disabled?: boolean // when anvil chain and no block explorer
 }
 
-export const LINK_LABELS: Record<TxLabel, string> = {
+export const LINK_LABELS: Record<string, string> = {
   'order filled': 'view trade',
   'order cancelled': 'view order',
-  transaction: 'view receipt',
 }
-export function TxRow({ tx, onClick }: Props) {
+
+export function TxRow({ tx, onClick, disabled }: Props) {
   const [expanded, setExpanded] = useState(false)
   const shortHash = `${tx.hash.slice(0, 6)}…${tx.hash.slice(-4)}`
   const error = tx.status === 'failed' ? tx.error : undefined
@@ -24,25 +25,26 @@ export function TxRow({ tx, onClick }: Props) {
 
   return (
     <div className="text-start text-sm" onClick={onClick}>
-      <div className="flex gap-6 justify-between p-4">
+      <div className="grid grid-cols-[auto_88px_80px_1fr_110px] items-center gap-6 p-4">
         <StatusIcon status={tx.status} />
 
-        <div className="shrink-0 w-22 whitespace-nowrap">
+        <div className="whitespace-nowrap">
           <Copyable value={tx.hash} className="text-accent">
             {shortHash}
           </Copyable>
         </div>
 
-        <span className="text-muted w-[80px] text-right whitespace-nowrap">
-          {timeAgo(tx.createdAt)}
-        </span>
+        <span className="text-muted text-right whitespace-nowrap">{timeAgo(tx.createdAt)}</span>
 
-        <span className="flex-1 text-subtle">{tx.label}</span>
+        <span className="text-subtle truncate">{tx.label}</span>
 
         <button
-          className={`basis-[110px] flex items-center justify-between gap-2 shrink-0 cursor-pointer ${tx.status !== 'success' ? 'invisible' : ''}`}
+          disabled={disabled}
+          className={`flex items-center justify-between gap-2 ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'} ${tx.status !== 'success' ? 'invisible' : ''}`}
         >
-          <div className="text-accent whitespace-nowrap">{LINK_LABELS[tx.label]}</div>
+          <div className="text-accent whitespace-nowrap">
+            {LINK_LABELS[tx.label] ?? 'block explorer'}
+          </div>
 
           <svg
             className="w-3.5 h-3.5 text-accent"
@@ -68,6 +70,7 @@ export function TxRow({ tx, onClick }: Props) {
                 e.stopPropagation()
                 setExpanded(v => !v)
               }}
+              disabled={disabled}
             >
               {expanded ? 'see less' : 'see more'}
             </button>
