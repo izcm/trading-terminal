@@ -25,7 +25,7 @@ export function TxRow({ tx, onClick, disabled }: Props) {
 
   return (
     <div className="text-start text-sm" onClick={onClick}>
-      <div className="grid grid-cols-[auto_88px_80px_1fr_110px] items-center gap-6 p-4">
+      <div className="grid grid-cols-[auto_88px_80px_1fr_142px] items-center gap-6 p-4">
         <StatusIcon status={tx.status} />
 
         <div className="whitespace-nowrap">

@@ -29,6 +29,7 @@ type MockReceipt =
 function mockTxReceipt(val: MockReceipt, error?: unknown) {
   vi.mocked(useWaitForTransactionReceipt, { partial: true }).mockReturnValueOnce({
     ...val,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     error: error as any,
   })
 }
@@ -38,9 +39,7 @@ vi.mock('focus-trap-react', () => ({
 }))
 
 const wrapper = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <TxProvider isNavigable={tx => tx.status === 'success'}>{children}</TxProvider>
-  )
+  return <TxProvider isNavigable={tx => tx.status === 'success'}>{children}</TxProvider>
 }
 
 function setup() {
@@ -279,11 +278,14 @@ describe('showTxs', () => {
         expect(cb).not.toHaveBeenCalledOnce()
       })
 
-      it.each(cases)('leaves modal open after block explorer redirect for %s tx', (_status, doSetup) => {
-        doSetup({ showModal: true })
-        fireEvent.click(screen.getByRole('listitem'))
-        expect(screen.queryByRole('dialog')).toBeInTheDocument()
-      })
+      it.each(cases)(
+        'leaves modal open after block explorer redirect for %s tx',
+        (_status, doSetup) => {
+          doSetup({ showModal: true })
+          fireEvent.click(screen.getByRole('listitem'))
+          expect(screen.queryByRole('dialog')).toBeInTheDocument()
+        }
+      )
     })
   })
 })

@@ -67,7 +67,7 @@ export function Toast({ title, description, variant, toastAction }: ToastProps) 
 
       <div className="flex-1">
         <p className={`text-sm font-semibold ${getTitleColor(variant)}`}>{title}</p>
-        <p className="mt-1 text-sm text-muted">
+        <p className="mt-1 text-xs text-muted">
           {description}{' '}
           {toastAction && (
             <button onClick={() => toastAction.fn()} className="text-accent underline">

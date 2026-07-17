@@ -32,7 +32,7 @@ export function SettingsMenu() {
 
   const chain = getChainConfig(chainId)
 
-  const { data: ethBalance } = useBalance({ address: account })
+  const { data: ethBalance, refetch: refetchEth } = useBalance({ address: account })
   const hasEth = !!ethBalance && ethBalance.value > 0n
 
   const {
@@ -46,6 +46,10 @@ export function SettingsMenu() {
   } = useMarketplaceStatus()
 
   const [activeAction, setActiveAction] = useState<'deposit' | 'allowance' | null>(null)
+
+  useEffect(() => {
+    refetchEth()
+  }, [wethBalance, refetchEth])
 
   useEffect(() => {
     if (errorMessage)
