@@ -19,6 +19,7 @@ export type TxProvider = {
   isNavigable?: (tx: Tx) => boolean
   children: ReactNode
 }
+
 export type Tx = {
   hash: Hex
   status: TxStatus

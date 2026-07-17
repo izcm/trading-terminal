@@ -84,7 +84,7 @@ export default async function Page() {
 
         <p>
           The linked walkthrough shows an early, simpler version of the simulation. A more recent
-          version, alongside the indexer and frontend, can be run locally; github_repo.
+          version, alongside the indexer and frontend app, can be run locally; github_repo.
         </p>
 
         <div className="flex gap-3">
