@@ -6,7 +6,7 @@
   },
   {
     "chainId": 11155111,
-    "marketplace": "0xB3F657a8Aa21398d9CA6a2B5386B53134E150DD0",
+    "marketplace": "0xA1b083adA5Ff1252aCb6b119813B5054D3eB6AEB",
     "weth": "0x5f207d42F869fd1c71d7f0f81a2A67Fc20FF7323",
     "url": "https://ethereum-sepolia-rpc.publicnode.com"
   }

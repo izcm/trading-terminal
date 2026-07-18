@@ -9,8 +9,8 @@ import supportedChains from '@/chains.json'
 const activeChains =
   process.env.NEXT_PUBLIC_MODE === 'DEMO'
     ? supportedChains.filter(c => c.chainId === 31337)
-    : // : supportedChains.filter(c => c.chainId !== 31337)
-      supportedChains
+    : supportedChains.filter(c => c.chainId !== 31337)
+// supportedChains
 
 type ChainExtras = wagmiChains.Chain & { marketplace: Address; weth: Address }
 
