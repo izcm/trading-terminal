@@ -1,12 +1,13 @@
 // todo: decouple
 import { formatEth2 } from '@/lib/blockchain'
-import { useTokenURI } from '@/lib/blockchain/hooks'
+// import { useTokenURI } from '@/lib/blockchain/hooks'
 import { tsSuperShort } from '@/lib/utils/time'
 
 import { NFT_LOADING_IMAGE } from '@/domain/constants/placeholders'
 
 import type { Activity } from '@/domain/shared/activity'
-import { mapTokenUriToNFT, type NFT } from '@/domain/nft'
+// import { mapTokenUriToNFT } from '@/domain/nft'
+import type { NFT } from '@/domain/nft'
 
 import { listingStatusToClass } from '@/features/marketplace/lib/listing-status-ui'
 import { useCollection } from '@/features/CollectionContext'
@@ -14,7 +15,6 @@ import { ImageRow } from '@/ui/molecules/ImageRow'
 
 type Props = {
   activity: Activity
-  nft?: NFT
 }
 
 function placeholderNFT(activity: Activity): NFT {
@@ -23,7 +23,7 @@ function placeholderNFT(activity: Activity): NFT {
     chainId: 0,
     collection: activity.collection,
     tokenId: BigInt(activity.tokenId),
-    name: 'Loading...',
+    name: "couldn't read NFT",
     description: '',
     image: NFT_LOADING_IMAGE,
     createdAtBlock: 0n,
@@ -32,21 +32,17 @@ function placeholderNFT(activity: Activity): NFT {
   }
 }
 
-export function ActivityItem({ activity }: { activity: Activity }) {
-  const { chainId, collection: colAddr, tokenId } = activity
+export function ActivityRow({ activity }: Props) {
+  // const { chainId, collection: colAddr, tokenId } = activity
 
-  const { data: tokenURI } = useTokenURI({
-    chainId,
-    address: colAddr,
-    tokenId: BigInt(tokenId),
-  })
+  // const { data: tokenURI } = useTokenURI({
+  //   chainId,
+  //   address: colAddr,
+  //   tokenId: BigInt(tokenId),
+  // })
 
-  const nft = tokenURI ? mapTokenUriToNFT(chainId, colAddr, tokenId, tokenURI) : undefined
+  // const nft = tokenURI ? mapTokenUriToNFT(chainId, colAddr, tokenId, tokenURI) : undefined
 
-  return <ActivityRow item={{ activity, nft }} />
-}
-
-function ActivityRow({ item }: { item: Props }) {
   const {
     source,
     type: activityType,
@@ -55,9 +51,9 @@ function ActivityRow({ item }: { item: Props }) {
     tokenId,
     price,
     status,
-  } = item.activity
+  } = activity
 
-  const nft = item.nft ?? placeholderNFT(item.activity)
+  const nft = activity.nft ?? placeholderNFT(activity)
 
   const badgeClasses = 'absolute -bottom-1 -right-1 text-[10px] px-1 rounded text-black'
 

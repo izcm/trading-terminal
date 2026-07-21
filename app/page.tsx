@@ -24,7 +24,7 @@ export default async function Page() {
   if (!collectionCall.ok) {
     return (
       <div className={parentClasses}>
-        <span className="text-failure">Couldn't fetch collection: {collectionCall.error}</span>
+        <span className="text-failure">Could not fetch collection: {collectionCall.error}</span>
       </div>
     )
   }
@@ -75,7 +75,7 @@ export default async function Page() {
     <div className={parentClasses}>
       {dmrktBanner()}
       <div className="flex flex-col items-center gap-4 my-2  text-muted">
-        <p className="text-accent/80">Welcome to IzBlocks' live marketplace simulation.</p>
+        <p className="text-accent/80">Welcome to IzBlocks&apos; live marketplace simulation.</p>
 
         <p>
           Pre-populated orders are created, signed, and executed programmatically. The process is
@@ -84,7 +84,16 @@ export default async function Page() {
 
         <p>
           The linked walkthrough shows an early, simpler version of the simulation. A more recent
-          version, alongside the indexer and frontend app, can be run locally; github_repo.
+          version, alongside the indexer and frontend app, can be run locally;{' '}
+          <a
+            href="https://github.com/izcm/dmrkt-demo"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-accent/90 underline"
+          >
+            clone this repo
+          </a>
+          .
         </p>
 
         <div className="flex gap-3">
@@ -98,7 +107,7 @@ export default async function Page() {
           </a>
           <span className="text-muted">·</span>
           <a
-            href="https://sepolia.etherscan.io/address/0xF0d371989151dd235e5178F5f664a363D7a3A1f3"
+            href="https://sepolia.etherscan.io/address/0xA1b083adA5Ff1252aCb6b119813B5054D3eB6AEB"
             target="_blank"
             rel="noopener noreferrer"
             className="text-accent/90 underline"

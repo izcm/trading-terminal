@@ -92,7 +92,7 @@ export async function getDmrktListings({
   cursor?: string | null
   signal?: AbortSignal
 } = {}): Promise<Result<Page<Listing>>> {
-  const query = buildQuery({ filters, cursor, includes: ['nftCollection'] })
+  const query = buildQuery({ filters, cursor, includes: ['nftCollection', 'nft'] })
   query.append('isCollectionBid', 'false') // added since collectionBid feature is paused
 
   const res = await getDmrktPage<OrderDTO>({
@@ -116,7 +116,7 @@ export async function getDmrktSettlements({
 } = {}) {
   const res = await getDmrktPage<SettlementDTO>({
     params: 'settlements',
-    query: buildQuery({ filters, cursor, includes: ['nftCollection', 'order'] }),
+    query: buildQuery({ filters, cursor, includes: ['nftCollection', 'order', 'nft'] }),
     signal,
   })
 

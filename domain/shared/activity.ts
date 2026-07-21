@@ -1,6 +1,9 @@
 import type { Listing, ListingStatus } from '@/domain/listing'
-import { Trade } from '../trade'
-import { Hex } from './eth'
+
+import type { NFT } from '../nft'
+import type { Trade } from '../trade'
+
+import type { Hex } from './eth'
 
 type ActivityStatus = ListingStatus
 
@@ -15,6 +18,7 @@ export type Activity = {
   status?: ActivityStatus
   isCollectionBid?: boolean
   collectionSymbol?: string
+  nft?: NFT
 }
 
 export const activity = {
@@ -30,6 +34,7 @@ export const activity = {
       isCollectionBid: listing.isCollectionBid,
       collectionSymbol: listing.nftCollection?.symbol ?? 'unknown',
       status: listing.status,
+      nft: listing.nft,
     }
   },
 
@@ -43,6 +48,7 @@ export const activity = {
       price: trade.price,
       timestamp: trade.timestamp,
       collectionSymbol: trade.nftCollection?.symbol ?? 'unknown',
+      nft: trade.nft,
     }
   },
 }

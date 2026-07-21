@@ -13,7 +13,7 @@ import type { NFT } from '@/domain/nft'
 import { activity } from '@/domain/shared/activity'
 
 // shared components
-import { ActivityItem, NFTRow } from '@/ui/organisms'
+import { ActivityRow, NFTRow } from '@/ui/organisms'
 import { Ban, CreditCard, FileText, Gavel, Handshake, Slash, Tag, X } from '@/ui/icons'
 
 // feature components
@@ -86,7 +86,7 @@ const btnContent = (Icon: IconType, label: string): ReactNode => (
 )
 export const tabUIConfig: TabUIConfig = {
   feed: {
-    galleryItem: l => <ActivityItem activity={activity.fromListing(l)} />,
+    galleryItem: l => <ActivityRow activity={activity.fromListing(l)} />,
     details: l => <ListingDetails listing={l} />,
     actionBtnProps: (l, disabled, ctx) => {
       const isCancelAction = ctx?.isMyListing?.(l) && l.status === 'active'
@@ -127,7 +127,7 @@ export const tabUIConfig: TabUIConfig = {
   },
 
   trades: {
-    galleryItem: s => <ActivityItem activity={activity.fromTrade(s)} />,
+    galleryItem: s => <ActivityRow activity={activity.fromTrade(s)} />,
     details: s => <TradeDetails trade={s} />,
     actionBtnProps: () => ({
       className: 'btn btn-secondary',

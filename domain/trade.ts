@@ -2,6 +2,7 @@ import type { NFTCollection } from './nft-collection'
 import type { Listing } from './listing'
 
 import type { Hex } from './shared/eth'
+import { NFT } from './nft'
 
 export const tradeKey = (chainId: number, orderHash: string) => `${chainId}:${orderHash}` as const
 
@@ -33,6 +34,7 @@ export type Trade = {
 
   nftCollection?: NFTCollection
   listing?: Listing
+  nft?: NFT
 
   txContext?: {
     txIndex: number
