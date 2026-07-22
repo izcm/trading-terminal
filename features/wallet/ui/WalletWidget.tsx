@@ -1,6 +1,10 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 
-export function WalletWidget() {
+type WalletWidgetProps = {
+  className?: string
+}
+
+export function WalletWidget({ className }: WalletWidgetProps) {
   return (
     <ConnectButton.Custom>
       {({ account, openConnectModal, openAccountModal, mounted }) => {
@@ -12,7 +16,7 @@ export function WalletWidget() {
         }
 
         return (
-          <button onClick={open} className="btn btn-menu">
+          <button onClick={open} className={`btn btn-menu ${className ?? ''}`}>
             {account ? account.displayName : 'Connect wallet'}
           </button>
         )

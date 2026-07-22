@@ -1,4 +1,6 @@
 // todo: decouple
+import { useState, type ReactNode } from 'react'
+
 import { formatEth2 } from '@/lib/blockchain'
 // import { useTokenURI } from '@/lib/blockchain/hooks'
 import { tsSuperShort } from '@/lib/utils/time'
@@ -15,6 +17,7 @@ import { ImageRow } from '@/ui/molecules/ImageRow'
 
 type Props = {
   activity: Activity
+  mobileDetailsPane?: ReactNode
 }
 
 function placeholderNFT(activity: Activity): NFT {
@@ -32,7 +35,8 @@ function placeholderNFT(activity: Activity): NFT {
   }
 }
 
-export function ActivityRow({ activity }: Props) {
+export function ActivityRow({ activity, mobileDetailsPane }: Props) {
+  const [expanded, setExpanded] = useState(false)
   // const { chainId, collection: colAddr, tokenId } = activity
 
   // const { data: tokenURI } = useTokenURI({
@@ -73,7 +77,7 @@ export function ActivityRow({ activity }: Props) {
 
   const subtitle = (
     <>
-      <span className="text-xs text-muted inline-block w-[75px]">
+      <span className="hidden md:inline-block text-xs text-muted w-[75px]">
         {collection?.symbol ?? 'unknown'} {!isCollectionBid ? `#${paddedTokenId}` : '#any'}
       </span>
       {status && status !== 'active' && (
@@ -98,17 +102,32 @@ export function ActivityRow({ activity }: Props) {
   )
 
   return (
-    <ImageRow
-      image={nft.image}
-      title={
-        source === 'listing' && isCollectionBid
-          ? `${collection?.symbol ?? 'unknown'} collection bid`
-          : nft.name
-      }
-      subtitle={subtitle}
-      imageBadge={badge}
-      endContent={endContent}
-      classNames={{ root: 'min-h-[64px] [&>*:nth-child(2)]:gap-1', title: 'text-md' }}
-    />
+    <div>
+      <ImageRow
+        image={nft.image}
+        title={
+          source === 'listing' && isCollectionBid
+            ? `${collection?.symbol ?? 'unknown'} collection bid`
+            : nft.name
+        }
+        subtitle={subtitle}
+        imageBadge={badge}
+        endContent={endContent}
+        classNames={{ root: 'min-h-[64px] [&>*:nth-child(2)]:gap-1', title: 'text-md' }}
+      />
+
+      {mobileDetailsPane && (
+        <div className="md:hidden px-2 pb-2">
+          <button
+            onClick={() => setExpanded(v => !v)}
+            className="text-xs text-accent/80 underline underline-offset-2"
+          >
+            {expanded ? 'hide details' : 'view more'}
+          </button>
+
+          {expanded && <div className="mt-2 card p-2">{mobileDetailsPane}</div>}
+        </div>
+      )}
+    </div>
   )
 }

@@ -44,12 +44,12 @@ export function Tab<T extends { id: string; chainId: number; collection: Hex; to
   )
 
   return (
-    <div className="min-h-0 flex-1 flex flex-col sm:flex-row sm:gap-4">
+    <div className="flex-1 flex flex-col sm:flex-row sm:gap-4">
       <div className="min-h-0 flex-1 flex flex-col">
         <Gallery<T> {...gallery} />
       </div>
 
-      <div className="hidden sm:flex w-1/4 flex-col gap-3 mb-2 p-1">
+      <div className="hidden md:flex basis-1/4 min-w-[196px] flex-col gap-3 mb-2 p-1">
         <div className="pointer-events-none">
           <NFTPreview
             chainId={selected?.chainId}
@@ -63,7 +63,7 @@ export function Tab<T extends { id: string; chainId: number; collection: Hex; to
           <div className="card h-full">{details(selected)}</div>
         )}
       </div>
-      <div className="sm:hidden fixed bottom-4 inset-x-4 flex [&>button]:w-full [&>button]:shadow-lg [&>button]:shadow-black/40 [&>button]:!py-3">
+      <div className="md:hidden fixed bottom-4 inset-x-4 flex [&>button]:w-full [&>button]:shadow-lg [&>button]:shadow-black/40 [&>button]:!py-3 [&>button]:!rounded-2xl">
         {actionButton}
       </div>
     </div>

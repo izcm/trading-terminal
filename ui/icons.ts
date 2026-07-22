@@ -12,4 +12,5 @@ export {
   Backpack,
   Receipt,
   Settings,
+  Menu,
 } from 'lucide-react'

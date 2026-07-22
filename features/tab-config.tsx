@@ -86,7 +86,9 @@ const btnContent = (Icon: IconType, label: string): ReactNode => (
 )
 export const tabUIConfig: TabUIConfig = {
   feed: {
-    galleryItem: l => <ActivityRow activity={activity.fromListing(l)} />,
+    galleryItem: l => (
+      <ActivityRow activity={activity.fromListing(l)} mobileDetailsPane={<ListingDetails listing={l} />} />
+    ),
     details: l => <ListingDetails listing={l} />,
     actionBtnProps: (l, disabled, ctx) => {
       const isCancelAction = ctx?.isMyListing?.(l) && l.status === 'active'
@@ -127,7 +129,9 @@ export const tabUIConfig: TabUIConfig = {
   },
 
   trades: {
-    galleryItem: s => <ActivityRow activity={activity.fromTrade(s)} />,
+    galleryItem: s => (
+      <ActivityRow activity={activity.fromTrade(s)} mobileDetailsPane={<TradeDetails trade={s} />} />
+    ),
     details: s => <TradeDetails trade={s} />,
     actionBtnProps: () => ({
       className: 'btn btn-secondary',
