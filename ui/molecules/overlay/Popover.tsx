@@ -4,9 +4,11 @@ type PopoverProps = {
   trigger: React.ReactNode
   children: React.ReactNode
   align?: 'left' | 'right'
+  /** Overrides the dropdown's default anchored positioning (e.g. to center it as a wide sheet). */
+  contentClassName?: string
 }
 
-export function Popover({ trigger, children, align = 'right' }: PopoverProps) {
+export function Popover({ trigger, children, align = 'right', contentClassName }: PopoverProps) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
 
@@ -27,7 +29,10 @@ export function Popover({ trigger, children, align = 'right' }: PopoverProps) {
 
       {open && (
         <div
-          className={`absolute top-full mt-1 z-50 whitespace-nowrap p-2 ${align === 'right' ? 'right-0' : 'left-0'}`}
+          className={
+            contentClassName ??
+            `absolute top-full mt-1 z-50 whitespace-nowrap p-2 ${align === 'right' ? 'right-0' : 'left-0'}`
+          }
           style={{
             background: 'var(--bg-surface)',
             border: '1px solid var(--border-soft)',

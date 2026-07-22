@@ -189,13 +189,14 @@ function MobileMenu({ onOpenManual, onOpenSettings, isConnected }: MobileMenuPro
     <div className="lg:hidden col-start-2 w-full">
       <Popover
         align="right"
+        contentClassName="fixed inset-x-4 top-16 z-50 p-3"
         trigger={
           <button className="btn btn-menu px-6 w-full">
             <Menu size={16} />
           </button>
         }
       >
-        <div className="flex flex-col gap-2 min-w-[160px]">
+        <div className="flex flex-col gap-2">
           <div className="flex items-stretch md:hidden">
             <WalletWidget className="w-full" />
           </div>
