@@ -73,6 +73,11 @@ export function Header({
 
   return (
     <>
+      {!isConnected && (
+        <div className="md:hidden -mx-4 mb-1 bg-failure/10 py-1.5 text-center text-failure text-sm">
+          no wallet connected
+        </div>
+      )}
       {isConnected && wrongChainId && !isResolving && (
         <div className="md:hidden -mx-4 mb-1 bg-failure/10 py-1.5 text-center text-failure text-sm">
           wrong chainId - switch to {chainId}
@@ -97,11 +102,7 @@ export function Header({
         </div>
 
         {/* lg and below: manual and settings collapse into this menu (wallet/status join below md too — see MobileMenu). TxTracker always renders separately in StatusSection, at every width. */}
-        <MobileMenu
-          onOpenManual={onOpenManual}
-          onOpenSettings={onOpenSettings}
-          isConnected={isConnected}
-        />
+        <MobileMenu onOpenManual={onOpenManual} onOpenSettings={onOpenSettings} />
 
         {/* settings + wallet status OR inventory + session txs */}
         <div className="flex items-center justify-between gap-4 justify-between">
@@ -181,10 +182,9 @@ function WalletSection({
 type MobileMenuProps = {
   onOpenManual: () => void
   onOpenSettings: () => void
-  isConnected: boolean
 }
 
-function MobileMenu({ onOpenManual, onOpenSettings, isConnected }: MobileMenuProps) {
+function MobileMenu({ onOpenManual, onOpenSettings }: MobileMenuProps) {
   return (
     <div className="lg:hidden col-start-2 w-full">
       <Popover
@@ -209,10 +209,6 @@ function MobileMenu({ onOpenManual, onOpenSettings, isConnected }: MobileMenuPro
             <Settings size={16} />
             <span>settings</span>
           </button>
-
-          <div className="md:hidden">
-            {!isConnected && <span className="text-failure text-sm">no wallet connected</span>}
-          </div>
         </div>
       </Popover>
     </div>
