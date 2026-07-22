@@ -27,13 +27,29 @@ export function Tab<T extends { id: string; chainId: number; collection: Hex; to
   const { selected } = gallery
   const { action, props: actionBtnProps, isLoading: actionIsLoading } = actionBtn
 
+  const actionButton = actionIsLoading ? (
+    <button className="btn btn-ghost pointer-events-none">
+      <Spinner />
+      <span className="px-1">Checking...</span>
+    </button>
+  ) : (
+    <button
+      onClick={() => {
+        if (!selected) return
+        if (action) action()
+      }}
+      {...actionBtnProps}
+      className={actionBtnProps?.className ?? 'btn invisible'}
+    />
+  )
+
   return (
-    <div className="min-h-0 flex-1 flex gap-4">
+    <div className="min-h-0 flex-1 flex flex-col sm:flex-row sm:gap-4">
       <div className="min-h-0 flex-1 flex flex-col">
         <Gallery<T> {...gallery} />
       </div>
 
-      <div className="w-1/4 flex flex-col gap-3 mb-2 p-1">
+      <div className="hidden sm:flex w-1/4 flex-col gap-3 mb-2 p-1">
         <div className="pointer-events-none">
           <NFTPreview
             chainId={selected?.chainId}
@@ -41,25 +57,14 @@ export function Tab<T extends { id: string; chainId: number; collection: Hex; to
             tokenId={selected?.tokenId}
           />
         </div>
-        {actionIsLoading ? (
-          <button className="btn btn-ghost pointer-events-none">
-            <Spinner />
-            <span className="px-1">Checking...</span>
-          </button>
-        ) : (
-          <button
-            onClick={() => {
-              if (!selected) return
-              if (action) action()
-            }}
-            {...actionBtnProps}
-            className={actionBtnProps?.className ?? 'btn invisible'}
-          />
-        )}
+        {actionButton}
 
         {selected !== undefined && details !== undefined && (
           <div className="card h-full">{details(selected)}</div>
         )}
+      </div>
+      <div className="sm:hidden fixed bottom-4 inset-x-4 flex [&>button]:w-full [&>button]:shadow-lg [&>button]:shadow-black/40 [&>button]:!py-3">
+        {actionButton}
       </div>
     </div>
   )

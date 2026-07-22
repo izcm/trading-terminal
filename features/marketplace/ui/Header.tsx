@@ -3,8 +3,6 @@ import dynamic from 'next/dynamic'
 
 import type { Tx } from '@/app/providers/TxProvider'
 
-import { dmrktDomain } from '@/protocol/eip712/domain'
-
 import type { Hex } from '@/domain/shared/eth'
 import { truncateHex } from '@/lib/utils/hex'
 

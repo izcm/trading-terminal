@@ -200,17 +200,17 @@
 .btn-secondary {
   color: var(--text-primary);
   border-color: var(--border-default);
-  background: color-mix(in oklab, var(--accent) 5%, transparent);
+  background: color-mix(in oklab, var(--accent) 5%, var(--bg-primary));
 }
 
 .btn-secondary:hover {
   border-color: color-mix(in oklab, var(--accent) 40%, var(--border-default) 60%);
-  background: color-mix(in oklab, var(--accent) 9%, transparent);
+  background: color-mix(in oklab, var(--accent) 9%, var(--bg-primary));
   box-shadow: 0 0 8px color-mix(in oklab, var(--accent) 8%, transparent);
 }
 
 .btn-secondary:active {
-  background: color-mix(in oklab, var(--accent) 12%, transparent);
+  background: color-mix(in oklab, var(--accent) 12%, var(--bg-primary));
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25);
 }
 

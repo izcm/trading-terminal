@@ -1,15 +1,14 @@
 import { useMemo } from 'react'
 
-import { useSimulateContract } from 'wagmi'
+import { useAccount, useSimulateContract } from 'wagmi'
 
 import { Order, toOrder712 } from '@/protocol/eip712'
 import { orderbookAbi } from '@/protocol/config'
 
 import { ozErc721Errors, getChainConfig } from '@/lib/blockchain'
-import { useWallet } from '@/features/wallet/hooks/use-wallet'
 
 export function useTradeSimulation(order?: Order, tokenIdCb?: bigint) {
-  const { account: user, chainId } = useWallet()
+  const { address: user, chainId } = useAccount()
   const chain = chainId ? getChainConfig(chainId) : undefined
 
   const enabled =
