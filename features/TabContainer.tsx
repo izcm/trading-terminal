@@ -64,7 +64,17 @@ export function TabContainer<K extends TabName>({
           items,
           selected,
           onSelect: item => setSelectedId(item.id),
-          galleryItem: ui.galleryItem,
+          galleryItem: item => {
+            if (ui.galleryItems !== undefined) {
+              return (
+                <div>
+                  <div className="hidden md:block">{ui.galleryItems.row(item)}</div>
+                  <div className="md:hidden">{ui.galleryItems.card(item)}</div>
+                </div>
+              )
+            }
+            return ui.galleryItem(item)
+          },
           isFresh,
           ref: galleryRef,
           onLoadMore,

@@ -49,7 +49,7 @@ export function Tab<T extends { id: string; chainId: number; collection: Hex; to
         <Gallery<T> {...gallery} />
       </div>
 
-      <div className="hidden md:flex basis-1/4 min-w-[196px] flex-col gap-3 mb-2 p-1">
+      <div className="hidden md:flex basis-1/4 min-w-[210px] flex-col gap-3 mb-2 p-1">
         <div className="pointer-events-none">
           <NFTPreview
             chainId={selected?.chainId}

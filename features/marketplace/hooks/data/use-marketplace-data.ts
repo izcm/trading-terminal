@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import type { Hex } from '@/domain/shared/eth'
 
@@ -32,8 +32,8 @@ export function useMarketplaceData(
   isMine: (item: TabResource[TabName]) => boolean,
   buildMineQuery: (filters: Record<string, string[]>) => Record<string, string[]>,
   onPageReplaced?: <K extends TabName>(tab: K, page: Page<TabResource[K]>) => void,
-  isReady = false,
-  initialPages: TabPages = emptyPages
+  initialPages: TabPages = emptyPages,
+  isReady = true
 ) {
   const [state, setState] = useState<TabPages>(initialPages)
   const { add: addFresh, isFresh: isFresh } = useFresh(tab, { onlyForActiveTab: true })
@@ -99,6 +99,8 @@ export function useMarketplaceData(
   }, [state, tab, isLoadingMore, query, mergePage])
 
   // --- page fetch trigger ---
+  // guard again refetch on tab switch when tab already has visible items from a prior fetch
+  const lastFetchedKeyRef = useRef<Partial<Record<TabName, string>>>({})
 
   // buildMineQuery reads ownedIdsRef.current at call time, so calling it inline here
   // (not via query memo) guarantees fresh ids when isReady flips.
@@ -106,12 +108,17 @@ export function useMarketplaceData(
   useEffect(() => {
     if (!isReady) return
 
-    const controller = new AbortController()
     const base = { ...filters[tab], chainId: [chainId.toString()], collection: [collection] }
     const q = mineFlag[tab] ? buildMineQuery(base) : base
+    const key = JSON.stringify(q)
+
+    if (lastFetchedKeyRef.current[tab] === key) return
+
+    const controller = new AbortController()
 
     pageGetters[tab]({ filters: q, cursor: null, signal: controller.signal }).then(res => {
       if (!res.ok) return
+      lastFetchedKeyRef.current[tab] = key
       replacePage(tab, res.data)
       onPageReplaced?.(tab, res.data)
     })

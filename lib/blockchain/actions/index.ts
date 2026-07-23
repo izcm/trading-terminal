@@ -1,5 +1,4 @@
 export * from './block'
-export type * from './chains'
 export * from './contract-reader'
 export * from './erc20/read-contract'
 export * from './erc721/read-contract'

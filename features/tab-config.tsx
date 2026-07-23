@@ -69,8 +69,19 @@ export type ResolvedAction = {
 export type BtnProps = ButtonHTMLAttributes<HTMLButtonElement>
 
 type TabUIConfig = {
-  [K in TabName]: {
-    galleryItem: (item: TabResource[K]) => ReactNode
+  [K in TabName]: (
+    | {
+        galleryItem: (item: TabResource[K]) => ReactNode
+        galleryItems?: undefined
+      }
+    | {
+        galleryItem?: undefined
+        galleryItems: {
+          row: (item: TabResource[K]) => ReactNode
+          card: (item: TabResource[K]) => ReactNode
+        }
+      }
+  ) & {
     details?: (item: TabResource[K]) => ReactNode
     actionBtnProps?: (item: TabResource[K], disabled?: boolean, ctx?: TabCtx) => BtnProps
   }
@@ -86,9 +97,12 @@ const btnContent = (Icon: IconType, label: string): ReactNode => (
 )
 export const tabUIConfig: TabUIConfig = {
   feed: {
-    galleryItem: l => (
-      <ActivityRow activity={activity.fromListing(l)} mobileDetailsPane={<ListingDetails listing={l} />} />
-    ),
+    galleryItems: {
+      row: l => <ActivityRow activity={activity.fromListing(l)} />,
+      card: l => (
+        <ActivityRow activity={activity.fromListing(l)} detailsPane={<ListingDetails listing={l} />} />
+      ),
+    },
     details: l => <ListingDetails listing={l} />,
     actionBtnProps: (l, disabled, ctx) => {
       const isCancelAction = ctx?.isMyListing?.(l) && l.status === 'active'
@@ -129,9 +143,12 @@ export const tabUIConfig: TabUIConfig = {
   },
 
   trades: {
-    galleryItem: s => (
-      <ActivityRow activity={activity.fromTrade(s)} mobileDetailsPane={<TradeDetails trade={s} />} />
-    ),
+    galleryItems: {
+      row: s => <ActivityRow activity={activity.fromTrade(s)} />,
+      card: s => (
+        <ActivityRow activity={activity.fromTrade(s)} detailsPane={<TradeDetails trade={s} />} />
+      ),
+    },
     details: s => <TradeDetails trade={s} />,
     actionBtnProps: () => ({
       className: 'btn btn-secondary',

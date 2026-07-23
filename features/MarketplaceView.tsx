@@ -48,7 +48,7 @@ type Props = {
 }
 
 // --- modal ---
-type InfoModalType = 'manual' | 'settings' | 'startMsg'
+type InfoModalType = 'manual' | 'settings' | 'welcomeMsg'
 
 type InfoModalState = { open: true; type: InfoModalType } | { open: false }
 
@@ -59,14 +59,7 @@ export function MarketplaceView({ collection, initialPages }: Props) {
   const { address: collectionAddress, chainId } = collection
 
   // --- wallet ---
-  const {
-    account,
-    isConnected,
-    isResolving,
-    connect,
-    disconnect,
-    chainId: walletChainId,
-  } = useWallet()
+  const { account, isConnected, connect, disconnect, chainId: walletChainId } = useWallet()
   const { showTxs } = useTx()
   const walletInteraction = () => (isConnected ? disconnect() : connect())
 
@@ -75,17 +68,15 @@ export function MarketplaceView({ collection, initialPages }: Props) {
   const [selectedByTab, setSelectedByTab] = useState<Partial<{ [K in TabName]: string }>>({})
   const [resetTick, setResetTick] = useState(0)
 
-  const [infoModal, setInfoModal] = useState<InfoModalState>({
-    open: false,
+  const [infoModal, setInfoModal] = useState<InfoModalState>(() => {
+    if (typeof window === 'undefined') return { open: false }
+
+    const hasShownWelcome = localStorage.getItem('hashShownWelcome')
+    if (hasShownWelcome) return { open: false }
+
+    localStorage.setItem('hashShownWelcome', 'true')
+    return { open: true, type: 'welcomeMsg' }
   })
-
-  useEffect(() => {
-    const hasShown = localStorage.getItem('hasShownStartMsg')
-    if (hasShown) return
-
-    localStorage.setItem('hasShownStartMsg', 'true')
-    setInfoModal({ open: true, type: 'startMsg' })
-  }, [])
 
   const [manualTab, setManualTab] = useState<'shortcuts' | 'filters' | 'examples'>('shortcuts')
 
@@ -95,7 +86,7 @@ export function MarketplaceView({ collection, initialPages }: Props) {
   > = {
     manual: { content: <Manual initialTab={manualTab} />, managesFocus: false },
     settings: { content: <SettingsMenu />, managesFocus: true },
-    startMsg: { content: <StartMessage />, managesFocus: false },
+    welcomeMsg: { content: <StartMessage />, managesFocus: false },
   }
 
   // --- filters ---
@@ -129,10 +120,12 @@ export function MarketplaceView({ collection, initialPages }: Props) {
     []
   )
 
-  const isReadyRef = useRef(false)
-  if (isResolving) isReadyRef.current = false
-  if (!isResolving && !loadingInventory) isReadyRef.current = true
-  const isReady = isReadyRef.current
+  // isReady was added when i wanted tab default filters to include values that were
+  // in browser scope -> the inital fetch couldnt happen on the server
+  // eg: feed opens with "mine" flag. this depends onowned tokens which cannot be fetched server side
+  // since wallet login is browser only
+  // feature has been removed in favour of fetching initial items server side
+  const isReady = true
 
   const { state, isFresh, isLoadingMore, loadMore } = useMarketplaceData(
     tab,
@@ -143,8 +136,8 @@ export function MarketplaceView({ collection, initialPages }: Props) {
     isMine,
     buildMineQuery,
     handlePageReplaced,
-    isReady,
-    initialPages
+    initialPages,
+    isReady
   )
 
   const selectedItem = useMemo(
@@ -275,31 +268,33 @@ export function MarketplaceView({ collection, initialPages }: Props) {
   )
 
   const view = (
-    <div className="flex gap-4 h-screen max-w-[960px] px-2 mx-auto overflow-hidden font-mono">
+    <div className="flex gap-4 h-dvh max-w-[960px] px-2 mx-auto overflow-hidden font-mono">
       <main className="flex-1 flex flex-col gap-4 mt-4">
         {/* ---- header ---- */}
 
-        <Header
-          chainId={chainId}
-          collection={collectionAddress}
-          inventory={{ count: ownedIds.length, isLoading: loadingInventory }}
-          onOpenManual={() => setInfoModal({ open: true, type: 'manual' })}
-          onOpenSettings={() => setInfoModal({ open: true, type: 'settings' })}
-          onNavigateToTx={onNavigateToTx}
-        />
+        <div className="hidden md:flex flex-col gap-4">
+          <Header
+            chainId={chainId}
+            collection={collectionAddress}
+            inventory={{ count: ownedIds.length, isLoading: loadingInventory }}
+            onOpenManual={() => setInfoModal({ open: true, type: 'manual' })}
+            onOpenSettings={() => setInfoModal({ open: true, type: 'settings' })}
+            onNavigateToTx={onNavigateToTx}
+          />
 
-        {/* ---- tabs ---- */}
+          {/* ---- tabs ---- */}
 
-        <Tabs value={tab} onChange={setTab} items={Object.keys(tabUIConfig) as TabName[]} />
+          <Tabs value={tab} onChange={setTab} items={Object.keys(tabUIConfig) as TabName[]} />
 
-        {/* ---- search ---- */}
+          {/* ---- search ---- */}
 
-        <TextInput
-          key={`${tab}-${resetTick}`}
-          ref={searchRef}
-          value={inputSeed}
-          onSubmit={handleSearch}
-        />
+          <TextInput
+            key={`${tab}-${resetTick}`}
+            ref={searchRef}
+            value={inputSeed}
+            onSubmit={handleSearch}
+          />
+        </div>
 
         {/* ---- tab gallery + sidepanel ---- */}
 

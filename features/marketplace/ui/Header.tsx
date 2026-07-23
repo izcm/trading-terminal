@@ -85,14 +85,16 @@ export function Header({
       )}
 
       <div className="grid grid-cols-[1fr_1fr_1fr] md:grid-cols-[1fr_auto_1fr] items-center mb-1 gap-4">
-        <WalletSection
-          isConnected={isConnected}
-          wrongChainId={wrongChainId}
-          walletChainId={walletChainId}
-          chainId={chainId}
-          collection={collection}
-          chain={chain}
-        />
+        <div className="hidden md:block">
+          <WalletSection
+            isConnected={isConnected}
+            wrongChainId={wrongChainId}
+            walletChainId={walletChainId}
+            chainId={chainId}
+            collection={collection}
+            chain={chain}
+          />
+        </div>
 
         {/* dmrkt manual — visible at lg and above */}
         <div className="hidden lg:flex">
@@ -142,11 +144,11 @@ function WalletSection({
   chain,
 }: WalletSectionProps) {
   return (
-    <div className="hidden md:flex items-center justify-start gap-4 text-sm">
+    <div className="flex items-center justify-start gap-4 text-sm">
       <WalletWidget />
 
       {isConnected && wrongChainId && (
-        <span className="text-accent px-1">[ chainId: {walletChainId} ]</span>
+        <span className="text-accent">[ chainId: {walletChainId} ]</span>
       )}
 
       {isConnected && !wrongChainId && (

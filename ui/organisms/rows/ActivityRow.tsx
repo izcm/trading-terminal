@@ -17,7 +17,7 @@ import { ImageRow } from '@/ui/molecules/ImageRow'
 
 type Props = {
   activity: Activity
-  mobileDetailsPane?: ReactNode
+  detailsPane?: ReactNode
 }
 
 function placeholderNFT(activity: Activity): NFT {
@@ -35,17 +35,8 @@ function placeholderNFT(activity: Activity): NFT {
   }
 }
 
-export function ActivityRow({ activity, mobileDetailsPane }: Props) {
+export function ActivityRow({ activity, detailsPane }: Props) {
   const [expanded, setExpanded] = useState(false)
-  // const { chainId, collection: colAddr, tokenId } = activity
-
-  // const { data: tokenURI } = useTokenURI({
-  //   chainId,
-  //   address: colAddr,
-  //   tokenId: BigInt(tokenId),
-  // })
-
-  // const nft = tokenURI ? mapTokenUriToNFT(chainId, colAddr, tokenId, tokenURI) : undefined
 
   const {
     source,
@@ -103,29 +94,56 @@ export function ActivityRow({ activity, mobileDetailsPane }: Props) {
 
   return (
     <div>
-      <ImageRow
-        image={nft.image}
-        title={
-          source === 'listing' && isCollectionBid
-            ? `${collection?.symbol ?? 'unknown'} collection bid`
-            : nft.name
-        }
-        subtitle={subtitle}
-        imageBadge={badge}
-        endContent={endContent}
-        classNames={{ root: 'min-h-[64px] [&>*:nth-child(2)]:gap-1', title: 'text-md' }}
-      />
+      <div className="md:hidden">
+        <ImageRow
+          image={nft.image}
+          title={
+            source === 'listing' && isCollectionBid
+              ? `${collection?.symbol ?? 'unknown'} collection bid`
+              : nft.name
+          }
+          subtitle={
+            <div className="flex flex-col">
+              <span className="text-base">price WETH</span>
+              <span>#tokenId</span>
+            </div>
+          }
+          imageSize={80}
+          imageBadge={badge}
+          classNames={{ root: '[&>*:nth-child(2)]:gap-0', title: 'text-base' }}
+        />
 
-      {mobileDetailsPane && (
-        <div className="md:hidden px-2 pb-2">
+        {/* <div className="flex flex-col justify-center"> */}
+
+        {/* {endContent} */}
+        {/* <span>hello</span> */}
+      </div>
+
+      <div className="hidden md:block">
+        <ImageRow
+          image={nft.image}
+          title={
+            source === 'listing' && isCollectionBid
+              ? `${collection?.symbol ?? 'unknown'} collection bid`
+              : nft.name
+          }
+          subtitle={subtitle}
+          imageBadge={badge}
+          endContent={endContent}
+          classNames={{ root: 'min-h-[64px] [&>*:nth-child(2)]:gap-1', title: 'text-base' }}
+        />
+      </div>
+
+      {detailsPane && (
+        <div className="px-2 pb-2">
           <button
             onClick={() => setExpanded(v => !v)}
-            className="text-xs text-accent/80 underline underline-offset-2"
+            className="btn py-0 text-xs text-accent/80 underline underline-offset-2"
           >
             {expanded ? 'hide details' : 'view more'}
           </button>
 
-          {expanded && <div className="mt-2 card p-2">{mobileDetailsPane}</div>}
+          {expanded && <div className="mt-2 card p-2">{detailsPane}</div>}
         </div>
       )}
     </div>
