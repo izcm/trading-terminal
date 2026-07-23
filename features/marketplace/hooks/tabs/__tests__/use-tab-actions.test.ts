@@ -34,13 +34,13 @@ describe('useTabActions', () => {
   }
 
   describe('actions', () => {
-    describe('feed', () => {
+    describe('orders', () => {
       it('returns cancel function for my active listing', () => {
         const { actions } = setup()
 
         const listing = fakeListing()
 
-        const action = actions.feed(listing, fakeCtx({ isMyListing: () => true }))
+        const action = actions.orders(listing, fakeCtx({ isMyListing: () => true }))
 
         expect(action).toBeTypeOf('function')
         action?.()
@@ -58,13 +58,13 @@ describe('useTabActions', () => {
       ])('returns undefined when %s', (_, listing, ctx) => {
         const { actions } = setup()
 
-        const action = actions.feed(listing, ctx)
+        const action = actions.orders(listing, ctx)
 
         expect(action).toBeUndefined()
       })
     })
 
-    describe('explore', () => {
+    describe('nfts', () => {
       it.each([
         ['ASK', () => true, OrderSide.ASK],
         ['BID', () => false, OrderSide.BID],
@@ -74,7 +74,7 @@ describe('useTabActions', () => {
         const fakeNft = () => ({ collection: '0xabc123', tokenId: 1n }) as unknown as NFT
         const { collection, tokenId } = fakeNft()
 
-        act(() => actions.explore(fakeNft(), { isMine })?.())
+        act(() => actions.nfts(fakeNft(), { isMine })?.())
 
         expect(getModal()).toEqual({
           type: 'createOrder',

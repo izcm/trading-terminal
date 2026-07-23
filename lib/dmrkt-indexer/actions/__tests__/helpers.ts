@@ -42,9 +42,8 @@ export function testErrorHandling(
       const data = await action(() =>
         Promise.resolve({
           ok: false,
-          json: async () => ({
-            message: 'json error',
-          }),
+          json: async () => ({ message: 'json error' }),
+          text: async () => JSON.stringify({ message: 'json error' }),
         } as Response)
       )
 

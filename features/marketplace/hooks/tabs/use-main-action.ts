@@ -17,7 +17,7 @@ type OwnedActions = {
  *
  * Handles two special cases before falling back to the tab's default action:
  * 1. No selection or missing account → action disabled
- * 2. Feed tab + active listing + viewer is not the maker → fill-order action
+ * 2. Orders tab + active listing + viewer is not the maker → fill-order action
  *
  * @param tab - Active tab name (drives which resource type `selected` is)
  * @param selected - The item currently in view, or `undefined` if none
@@ -34,8 +34,8 @@ export function useMainAction<K extends TabName>(
   actions: TabActions,
   owned: OwnedActions
 ): ResolvedAction {
-  const isFeed = tab === 'feed'
-  const listing = isFeed ? (selected as TabResource['feed']) : undefined
+  const isOrders = tab === 'orders'
+  const listing = isOrders ? (selected as TabResource['orders']) : undefined
 
   const fillOrder = useFillOrder(listing?.rawOrder, listing?.id, owned?.refetch)
 
@@ -44,7 +44,7 @@ export function useMainAction<K extends TabName>(
   }
 
   // if listing is inactive => disable and do nothing
-  if (isFeed && (!fillOrder.hasAccount || (listing && listing.status !== 'active'))) {
+  if (isOrders && (!fillOrder.hasAccount || (listing && listing.status !== 'active'))) {
     return {
       run: undefined,
       disabled: true,
@@ -52,8 +52,8 @@ export function useMainAction<K extends TabName>(
     }
   }
 
-  // if tab is feed + a listing is selected + user is not maker of selected listing
-  if (isFeed && listing && !ctx?.isMyListing?.(listing)) {
+  // if tab is orders + a listing is selected + user is not maker of selected listing
+  if (isOrders && listing && !ctx?.isMyListing?.(listing)) {
     return {
       run: fillOrder.fill,
       disabled: !fillOrder.isFillable || listing.status !== 'active',

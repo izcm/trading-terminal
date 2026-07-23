@@ -11,14 +11,14 @@ describe('useFresh', () => {
 
   let hook: RenderHookResult<ReturnType<typeof useFresh>, HookProps>
 
-  const defaultTab = 'feed'
-  const otherTabs: TabName[] = ['trades', 'explore']
+  const defaultTab = 'orders'
+  const otherTabs: TabName[] = ['trades', 'nfts']
 
   beforeEach(() => {
     vi.useFakeTimers()
 
     hook = renderHook((props: HookProps) => useFresh(...props), {
-      initialProps: ['feed' as TabName],
+      initialProps: ['orders' as TabName],
     })
   })
 
@@ -118,7 +118,7 @@ describe('useFresh', () => {
 
     beforeEach(() => {
       onlyActiveHook = renderHook((props: HookProps) => useFresh(...props), {
-        initialProps: ['feed' as TabName, { onlyForActiveTab: true }] as HookProps,
+        initialProps: ['orders' as TabName, { onlyForActiveTab: true }] as HookProps,
       })
     })
 

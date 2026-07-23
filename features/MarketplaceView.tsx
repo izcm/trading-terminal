@@ -64,7 +64,7 @@ export function MarketplaceView({ collection, initialPages }: Props) {
   const walletInteraction = () => (isConnected ? disconnect() : connect())
 
   // --- state ---
-  const [tab, setTab] = useState<TabName>('feed')
+  const [tab, setTab] = useState<TabName>('orders')
   const [selectedByTab, setSelectedByTab] = useState<Partial<{ [K in TabName]: string }>>({})
   const [resetTick, setResetTick] = useState(0)
 
@@ -122,7 +122,7 @@ export function MarketplaceView({ collection, initialPages }: Props) {
 
   // isReady was added when i wanted tab default filters to include values that were
   // in browser scope -> the inital fetch couldnt happen on the server
-  // eg: feed opens with "mine" flag. this depends onowned tokens which cannot be fetched server side
+  // eg: orders opens with "mine" flag. this depends onowned tokens which cannot be fetched server side
   // since wallet login is browser only
   // feature has been removed in favour of fetching initial items server side
   const isReady = true
@@ -168,7 +168,7 @@ export function MarketplaceView({ collection, initialPages }: Props) {
 
   // when user clicks a tx in txTracker => navigate to trade receipt / order row
   function onNavigateToTx(tx: Tx) {
-    const tab = tx.label === 'order filled' ? 'trades' : 'feed'
+    const tab = tx.label === 'order filled' ? 'trades' : 'orders'
 
     setTab(tab)
     resetMineFlag(tab)
@@ -217,24 +217,24 @@ export function MarketplaceView({ collection, initialPages }: Props) {
 
   useKeyboardShortcuts(
     {
-      // tab switch
-      f: () => setTab('feed'),
-      t: () => setTab('trades'),
-      e: () => setTab('explore'),
+      // tab switch (wasd-style: a = orders, w = nfts, d = trades)
+      a: () => setTab('orders'),
+      w: () => setTab('nfts'),
+      d: () => setTab('trades'),
 
       // tab switch + reset filters
-      F: () => {
-        resetFiltersAndSelected('feed')
+      A: () => {
+        resetFiltersAndSelected('orders')
       },
-      T: () => {
+      W: () => {
+        resetFiltersAndSelected('nfts')
+      },
+      D: () => {
         resetFiltersAndSelected('trades')
-      },
-      E: () => {
-        resetFiltersAndSelected('explore')
       },
 
       // header shortcuts
-      W: () => walletInteraction(),
+      C: () => walletInteraction(),
       '?': () => openManual('shortcuts'),
       '1': () => openManual('shortcuts'),
       '2': () => openManual('filters'),
@@ -245,23 +245,18 @@ export function MarketplaceView({ collection, initialPages }: Props) {
 
       o: () => {
         if (!account) return
-        setTab('feed')
-        setFilters(prev => ({ ...prev, feed: { maker: [account], status: ['active'] } }))
+        setTab('orders')
+        setFilters(prev => ({ ...prev, orders: { maker: [account], status: ['active'] } }))
         setResetTick(t => t + 1)
       },
 
       // tab internals
       i: () => searchRef.current?.focus(),
-      a: () => {
+      Enter: () => {
         if (!resolvedMainAction?.run || resolvedMainAction.disabled || resolvedMainAction.loading)
           return
         resolvedMainAction.run()
       },
-      // Enter: () => {
-      //   if (!resolvedMainAction?.run || resolvedMainAction.disabled || resolvedMainAction.loading)
-      //     return
-      //   resolvedMainAction.run()
-      // },
       l: () => focusGalleryRef.current?.(),
     },
     { enabled: !modalIsOpen }
@@ -335,9 +330,9 @@ export function MarketplaceView({ collection, initialPages }: Props) {
             side={actionModal.data.side}
             onOrderCreated={closeActionModal}
             onOrderNavigate={(id: string) => {
-              resetFiltersAndSelected('feed')
+              resetFiltersAndSelected('orders')
               // order id is on fmt {chainId}:{orderHash}
-              setFilters(prev => ({ ...prev, ['feed']: { orderHash: [id.split(':')[1]] } }))
+              setFilters(prev => ({ ...prev, ['orders']: { orderHash: [id.split(':')[1]] } }))
             }}
           />
         </Modal>

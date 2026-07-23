@@ -27,9 +27,9 @@ export function useMine(tab: TabName, account: Hex | undefined, ids: bigint[]) {
   const isMine = useCallback(
     (item: TabResource[TabName]) => {
       switch (tab) {
-        case 'feed':
+        case 'orders':
           return (item as Listing).actor === account || ownedIdsRef.current.includes(item.tokenId)
-        case 'explore':
+        case 'nfts':
           return ownedIdsRef.current.includes(item.tokenId)
         case 'trades':
           return (item as Trade).seller === account || (item as Trade).buyer === account
@@ -47,9 +47,9 @@ export function useMine(tab: TabName, account: Hex | undefined, ids: bigint[]) {
       const ownedIds = ownedIdsRef.current.map(id => id.toString())
 
       const mineFilters: Record<TabName, Record<string, string[]>> = {
-        feed: { 'or.tokenId': ownedIds, ['or.side']: ['0'] }, // is of type ask or owned by user
+        orders: { 'or.tokenId': ownedIds, ['or.side']: ['0'] }, // is of type ask or owned by user
         trades: { 'or.buyer': [account], ['or.seller']: [account] }, // is buyer or seller
-        explore: { tokenId: ownedIds.length ? ownedIds : ['__none__'] }, // is owned by user; __none__ matches nothing when inventory is empty
+        nfts: { tokenId: ownedIds.length ? ownedIds : ['__none__'] }, // is owned by user; __none__ matches nothing when inventory is empty
       }
 
       return {

@@ -8,8 +8,8 @@ import { DEFAULT_FILTERS, useSearchFilters } from '../use-search-filters'
 describe('useSearchFilters', () => {
   let result: RenderHookResult<ReturnType<typeof useSearchFilters>, unknown>['result']
 
-  const defaultTab = 'feed'
-  const otherTabs: TabName[] = ['trades', 'explore']
+  const defaultTab = 'orders'
+  const otherTabs: TabName[] = ['trades', 'nfts']
 
   beforeEach(() => {
     const hook = renderHook(() => useSearchFilters(defaultTab))
@@ -98,7 +98,7 @@ describe('useSearchFilters', () => {
       act(() => result.current.handleSearch('status=cancelled'))
       act(() => result.current.resetFilters(defaultTab))
 
-      expect(result.current.filters.feed).toEqual(DEFAULT_FILTERS[defaultTab])
+      expect(result.current.filters.orders).toEqual(DEFAULT_FILTERS[defaultTab])
     })
 
     it('does not affect other tabs', () => {
@@ -106,25 +106,25 @@ describe('useSearchFilters', () => {
         result.current.setFilters(prev => ({
           ...prev,
           trades: { status: ['expired'] },
-          explore: { tokenId: ['2'] },
+          nfts: { tokenId: ['2'] },
         }))
       )
 
       act(() => result.current.resetFilters(defaultTab))
 
       expect(result.current.filters.trades).toEqual({ status: ['expired'] })
-      expect(result.current.filters.explore).toEqual({ tokenId: ['2'] })
+      expect(result.current.filters.nfts).toEqual({ tokenId: ['2'] })
     })
   })
 
   describe('resetMineFlag', () => {
     it('clears the mine flag for the target tab', () => {
-      const { result } = renderHook(() => useSearchFilters('feed'))
+      const { result } = renderHook(() => useSearchFilters('orders'))
 
       act(() => result.current.handleSearch('mine'))
-      act(() => result.current.resetMineFlag('feed'))
+      act(() => result.current.resetMineFlag('orders'))
 
-      expect(result.current.mineFlag.feed).toBe(false)
+      expect(result.current.mineFlag.orders).toBe(false)
     })
   })
 })

@@ -25,10 +25,10 @@ type UseTabActionsReturn = {
  * Provides the default action for each tab and the modal state it may trigger.
  *
  * Tab action logic:
- * - `feed`    — cancels an active listing the user owns; returns `undefined` otherwise
- *               (the buy/fill-order path is the special case handled in `useMainAction`)
- * - `explore` — opens the create-order modal (ASK if user owns the NFT, BID otherwise)
- * - `trades`   — opens the trade receipt modal
+ * - `orders` — cancels an active listing the user owns; returns `undefined` otherwise
+ *              (the buy/fill-order path is the special case handled in `useMainAction`)
+ * - `nfts`   — opens the create-order modal (ASK if user owns the NFT, BID otherwise)
+ * - `trades` — opens the trade receipt modal
  *
  * @returns `actions` map, current `modal` state, and `closeModal` callback
  */
@@ -49,13 +49,13 @@ export function useTabActions(): UseTabActionsReturn {
 
   return {
     actions: {
-      feed: (l: Listing, ctx?: TabCtx) => {
+      orders: (l: Listing, ctx?: TabCtx) => {
         if (ctx?.isMyListing?.(l) && l.status === 'active')
           return () => cancelOrder(BigInt(l.rawOrder.nonce), l.id)
 
         return undefined // special case
       },
-      explore: (n: NFT, ctx?: TabCtx) => () => {
+      nfts: (n: NFT, ctx?: TabCtx) => () => {
         const owned = ctx?.isMine?.(n)
 
         openCreateOrderModal(n.collection, n.tokenId, owned ?? false)

@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { on } from '@/lib/realtime/ws'
 import { getDmrktListing } from '@/lib/dmrkt-indexer/actions/dmrkt.get'
 
-import { useWsFeed } from '../use-ws-feed'
+import { useWsOrders } from '../use-ws-orders'
 import { makeHelpers, testAddItemOnEvent } from './helpers'
 
 vi.mock('@/lib/realtime/ws', () => ({ on: vi.fn() }))
@@ -16,8 +16,8 @@ vi.mock(import('@/lib/dmrkt-indexer/actions/dmrkt.get'), async importOriginal =>
   }
 })
 
-describe('useWsFeed', () => {
-  const helpers = makeHelpers('feed', useWsFeed, vi.mocked(on))
+describe('useWsOrders', () => {
+  const helpers = makeHelpers('orders', useWsOrders, vi.mocked(on))
   const { setup, getHandler, makeFetchSuccess, makeFetchFailure, somePayload } = helpers
 
   describe('order.created', () => {

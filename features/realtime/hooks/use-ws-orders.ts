@@ -12,7 +12,7 @@ const statusMap = {
   'settlement.created': 'filled',
 }
 
-export function useWsFeed({ addItem, updateItem }: WsSubProps) {
+export function useWsOrders({ addItem, updateItem }: WsSubProps) {
   useWsSub(
     { addItem, updateItem },
     useCallback(
@@ -23,7 +23,7 @@ export function useWsFeed({ addItem, updateItem }: WsSubProps) {
           const res = await getDmrktListing(chainId, orderHash)
           if (!res.ok) return
 
-          addItem('feed', res.data)
+          addItem('orders', res.data)
         }),
 
         ...Object.entries(statusMap).map(([event, status]) =>
@@ -31,7 +31,7 @@ export function useWsFeed({ addItem, updateItem }: WsSubProps) {
             const { chainId, orderHash } = p as { chainId: number; orderHash: string }
             const id = `${chainId}:${orderHash}`
 
-            updateItem('feed', id, item => ({
+            updateItem('orders', id, item => ({
               ...item,
               status: status as ListingStatus,
             }))
@@ -40,7 +40,7 @@ export function useWsFeed({ addItem, updateItem }: WsSubProps) {
             if (!res.ok) return
 
             const { txHash } = res.data
-            if (txHash) updateItem('feed', id, item => ({ ...item, txHash }))
+            if (txHash) updateItem('orders', id, item => ({ ...item, txHash }))
           })
         ),
       ],

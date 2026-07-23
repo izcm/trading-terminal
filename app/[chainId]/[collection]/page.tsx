@@ -36,8 +36,8 @@ export default async function Page({
     <MarketplaceView
       collection={unwrap(collectionCall)}
       initialPages={{
-        feed: unwrap(listingCall),
-        explore: unwrap(nftCall),
+        orders: unwrap(listingCall),
+        nfts: unwrap(nftCall),
         trades: unwrap(tradeCall),
       }}
     />

@@ -15,13 +15,13 @@ vi.mock('@/features/trade/hooks/use-fill-order', () => ({ useFillOrder }))
 
 describe('useMainAction', () => {
   const stubActions: TabActions = {
-    feed: () => undefined,
+    orders: () => undefined,
     trades: () => undefined,
-    explore: () => undefined,
+    nfts: () => undefined,
   }
 
   const renderHookWith = ({
-    tab = 'feed' as TabName,
+    tab = 'orders' as TabName,
     selected = undefined,
     ctx = undefined,
     actions = stubActions,
@@ -75,7 +75,7 @@ describe('useMainAction', () => {
         ctx: fakeCtx(), // isMyListing = false
       })
 
-    it('uses fillOrder when on feed and listing is not mine', () => {
+    it('uses fillOrder when on orders and listing is not mine', () => {
       const action = fillOrderSetup()
 
       expect(action).toEqual({
@@ -106,7 +106,7 @@ describe('useMainAction', () => {
     expect(useFillOrder).toHaveBeenCalledWith(listing.rawOrder, listing.id, refetch)
   })
 
-  it.each(['trades', 'explore'])('returns default tab action for %s tab', tab => {
+  it.each(['trades', 'nfts'])('returns default tab action for %s tab', tab => {
     const mockRun = () => undefined
 
     const action = renderHookWith({
@@ -119,13 +119,13 @@ describe('useMainAction', () => {
     expect(action).toEqual({ run: mockRun, disabled: false, loading: false })
   })
 
-  it('returns default tab action for feed and owned item', () => {
+  it('returns default tab action for orders and owned item', () => {
     const mockRun = () => undefined
 
     const action = renderHookWith({
       selected: fakeListing(),
       ctx: fakeCtx({ isMyListing: () => true }),
-      actions: { ...stubActions, feed: () => mockRun },
+      actions: { ...stubActions, orders: () => mockRun },
     })
 
     expect(action).toEqual({ run: mockRun, disabled: false, loading: false })

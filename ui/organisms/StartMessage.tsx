@@ -13,7 +13,7 @@ export function StartMessage() {
 
       <p className="text-subtle">
         The marketplace only supports <span className="text-accent-weak">WETH</span>. If you
-        don&apos;t hold any, orders in the feed will show as{' '}
+        don&apos;t hold any, listings will show as{' '}
         <span className="text-failure">Not fillable</span>.
       </p>
 

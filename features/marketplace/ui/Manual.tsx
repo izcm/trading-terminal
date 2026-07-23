@@ -83,10 +83,10 @@ export function Manual({ initialTab = 'shortcuts' }: { initialTab?: Tab } = {}) 
       {tab === 'shortcuts' && (
         <Section title="keyboard">
           <Row label="1 / 2 / 3" value="shortcuts / filters / examples" />
-          <Row label="f / e / t" value="switch tab" />
-          <Row label="shift + f / e / t" value="switch tab + reset filters" />
-          <Row label="shift + w" value="connect wallet" />
-          <Row label="a" value="run main action" />
+          <Row label="a / w / d" value="switch tab" />
+          <Row label="shift + a / w / d" value="switch tab + reset filters" />
+          <Row label="shift + c" value="connect wallet" />
+          <Row label="enter" value="run main action" />
           <Row label="i" value="focus search" />
           <Row label="l" value="focus list" />
           <Row label="?" value="open manual" />
@@ -107,8 +107,8 @@ export function Manual({ initialTab = 'shortcuts' }: { initialTab?: Tab } = {}) 
                 type <span className="text-accent font-mono">mine</span> to toggle per tab
               </span>
             </div>
-            <Row label="feed *" value="items actionable by you – Buy, Sell, Cancel" />
-            <Row label="explore" value="owner = you" />
+            <Row label="orders *" value="items actionable by you – Buy, Sell, Cancel" />
+            <Row label="nfts" value="owner = you" />
             <Row label="trades" value="buyer = you || seller = you" />
           </Section>
 
@@ -124,7 +124,11 @@ export function Manual({ initialTab = 'shortcuts' }: { initialTab?: Tab } = {}) 
           </Section>
 
           <Section title="special syntax">
-            <Row label="trait.type=sword" value="explore only" copy="trait.type=" />
+            <Row
+              label="trait.type=sword"
+              value="nft attribute trait.key=value"
+              copy="trait.type="
+            />
             <Row
               label="sortField=price sortDir=asc"
               value="sort (default desc)"
@@ -136,7 +140,7 @@ export function Manual({ initialTab = 'shortcuts' }: { initialTab?: Tab } = {}) 
 
       {tab === 'examples' && (
         <>
-          <Section title="feed">
+          <Section title="orders">
             <ExRow
               query="status=active trait.type=sword sortField=price"
               desc="active sword orders by highest price"
@@ -145,7 +149,7 @@ export function Manual({ initialTab = 'shortcuts' }: { initialTab?: Tab } = {}) 
             <ExRow query="mine side=bid status=active" desc="active bids on your tokens" />
           </Section>
 
-          <Section title="explore">
+          <Section title="nfts">
             <ExRow
               query="mine trait.type=elixir trait.rarity=epic,legendary"
               desc="your elixirs, epic or legendary"

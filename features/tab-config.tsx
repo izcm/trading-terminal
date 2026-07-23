@@ -24,8 +24,8 @@ import { capitalize } from '@/lib/utils/string'
 // === BASE INFO ===
 
 export type TabResource = {
-  feed: Listing
-  explore: NFT
+  orders: Listing
+  nfts: NFT
   trades: Trade
 }
 
@@ -40,9 +40,9 @@ type PageGetters<K extends TabName> = (args: {
 }) => Promise<Result<Page<TabResource[K]>>>
 
 export const pageGetters: { [K in TabName]: PageGetters<K> } = {
-  feed: getDmrktListings,
+  orders: getDmrktListings,
   trades: getDmrktSettlements,
-  explore: getDmrktNFTs,
+  nfts: getDmrktNFTs,
 }
 
 // === CTX ===
@@ -96,7 +96,7 @@ const btnContent = (Icon: IconType, label: string): ReactNode => (
   </div>
 )
 export const tabUIConfig: TabUIConfig = {
-  feed: {
+  orders: {
     galleryItems: {
       row: l => <ActivityRow activity={activity.fromListing(l)} />,
       card: l => (
@@ -125,7 +125,7 @@ export const tabUIConfig: TabUIConfig = {
     },
   },
 
-  explore: {
+  nfts: {
     galleryItem: nft => <NFTRow nft={nft} />,
     actionBtnProps: (nft, disabled, ctx) => {
       const isMyToken = ctx?.isMine?.(nft)

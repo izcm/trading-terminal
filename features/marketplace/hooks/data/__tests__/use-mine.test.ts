@@ -14,7 +14,7 @@ describe('useMine', () => {
   const DIFFERENT_ACCOUNT = '0xbbbb'
   const TOKEN_IDS = [1n, 2n, 3n]
 
-  const anyTab: TabName = 'feed' // for tests where tab is irrelevant
+  const anyTab: TabName = 'orders' // for tests where tab is irrelevant
 
   describe('buildMineQuery', () => {
     const buildMineQuery = (filters: Record<string, string[]>, hook: FreshHook) =>
@@ -33,8 +33,8 @@ describe('useMine', () => {
     })
 
     it.each([
-      ['feed', { 'or.tokenId': TOKEN_IDS.map(String), 'or.side': ['0'] }],
-      ['explore', { tokenId: TOKEN_IDS.map(String) }],
+      ['orders', { 'or.tokenId': TOKEN_IDS.map(String), 'or.side': ['0'] }],
+      ['nfts', { tokenId: TOKEN_IDS.map(String) }],
       ['trades', { 'or.buyer': [ACCOUNT], 'or.seller': [ACCOUNT] }],
     ] as [TabName, Record<string, string[]>][])(
       'returns correct mineFilters for %s along with base filters',
@@ -57,18 +57,18 @@ describe('useMine', () => {
     const notMineTokenId = BigInt(Math.max(...TOKEN_IDS.map(tid => Number(tid))) + 1)
 
     const mineVariants: { [K in TabName]: Array<Partial<TabResource[K]>> } = {
-      feed: [
+      orders: [
         { actor: ACCOUNT, tokenId: notMineTokenId }, // actor clause
         { actor: DIFFERENT_ACCOUNT, tokenId: TOKEN_IDS[0] }, // owned-id clause
       ],
-      explore: [{ tokenId: TOKEN_IDS[0] }],
+      nfts: [{ tokenId: TOKEN_IDS[0] }],
       trades: [
         { seller: ACCOUNT, buyer: DIFFERENT_ACCOUNT }, // seller clause
         { seller: DIFFERENT_ACCOUNT, buyer: ACCOUNT }, // buyer clause
       ],
     }
 
-    it.each(['feed', 'explore', 'trades'] as TabName[])(
+    it.each(['orders', 'nfts', 'trades'] as TabName[])(
       'returns true for all %s `mine` variants',
       tab => {
         const hook = renderHook(() => useMine(tab, ACCOUNT, TOKEN_IDS))
@@ -79,8 +79,8 @@ describe('useMine', () => {
     )
 
     it.each([
-      ['feed', { actor: DIFFERENT_ACCOUNT, tokenId: notMineTokenId }],
-      ['explore', { tokenId: notMineTokenId }],
+      ['orders', { actor: DIFFERENT_ACCOUNT, tokenId: notMineTokenId }],
+      ['nfts', { tokenId: notMineTokenId }],
       ['trades', { buyer: DIFFERENT_ACCOUNT, seller: DIFFERENT_ACCOUNT }],
     ] as [TabName, Partial<TabResource[TabName]>][])(
       'returns false when item is not a %s `mine` variant',
