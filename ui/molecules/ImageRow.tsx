@@ -24,7 +24,7 @@ export function ImageRow({
   return (
     <div
       className={cn(
-        'grid grid-cols-[auto_1fr_auto] cursor-pointer gap-4 items-center py-1 px-2',
+        'grid grid-cols-[auto_1fr_auto] cursor-pointer items-center gap-4 items- py-1 px-2',
         className
       )}
     >
@@ -44,7 +44,7 @@ export function ImageRow({
         <span data-slot="title" className="text-sm font-semibold truncate">
           {title}
         </span>
-        <span data-slot="subtitle" className="text-xs text-muted inline-block truncate">
+        <span data-slot="subtitle" className="text-xs text-muted inline-block">
           {subtitle}
         </span>
       </div>

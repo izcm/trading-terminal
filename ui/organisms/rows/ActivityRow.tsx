@@ -14,7 +14,7 @@ import type { NFT } from '@/domain/nft'
 import { listingStatusToClass } from '@/features/marketplace/lib/listing-status-ui'
 import { useCollection } from '@/features/CollectionContext'
 import { ImageRow } from '@/ui/molecules/ImageRow'
-import { DotList } from '@/ui/atoms'
+import { NFTAttributes } from './NFTAttributes'
 
 type Props = {
   activity: Activity
@@ -70,7 +70,7 @@ export function ActivityRow({ activity, detailsPane }: Props) {
 
   const subtitle = (
     <>
-      <span className="hidden md:inline-block text-xs text-muted w-[75px]">
+      <span className="text-xs text-muted w-[75px]">
         {collection?.symbol ?? 'unknown'} {!isCollectionBid ? `#${paddedTokenId}` : '#any'}
       </span>
       {status && status !== 'active' && (
@@ -85,7 +85,7 @@ export function ActivityRow({ activity, detailsPane }: Props) {
   )
 
   const endContent = (
-    <div className="flex flex-col px-1 flex-1 md:text-right">
+    <div className="flex flex-col px-1 text-right">
       <span className="font-semibold text-base">{formatEth2(price)} WETH</span>
       <span className="text-xs text-muted">
         {source === 'listing' ? 'exp ' : ''}
@@ -95,11 +95,11 @@ export function ActivityRow({ activity, detailsPane }: Props) {
   )
 
   return (
-    <div>
+    <div className="flex flex-col gap-1">
       <ImageRow
         image={nft.image}
         title={
-          <span className="flex items-center justify-between gap-2 w-full">
+          <div className="flex items-center justify-between gap-2 w-full">
             <span className="truncate">
               <span className="sm:hidden">#{paddedTokenId}</span>
               <span className="hidden sm:inline">
@@ -108,36 +108,16 @@ export function ActivityRow({ activity, detailsPane }: Props) {
                   : nft.name}
               </span>
             </span>
-            {status && status !== 'active' && (
-              <span
-                className={`md:hidden shrink-0 ${statusClasses} ${listingStatusToClass[status]}`}
-              >
-                {status.toUpperCase()}
-              </span>
-            )}
-          </span>
+          </div>
         }
-        subtitle={
-          <>
-            <span className="hidden md:inline-flex md:items-center md:gap-1">{subtitle}</span>
-            <span className="md:hidden text-subtle">{endContent}</span>
-          </>
-        }
-        imageSize={80}
+        subtitle={<span className="inline-flex items-center gap-1">{subtitle}</span>}
+        imageSize={75}
         imageBadge={badge}
-        endContent={<span className="hidden md:block">{endContent}</span>}
-        className="md:min-h-[64px] [&>*:nth-child(2)]:gap-1 [&_[data-slot=title]]:text-base md:[&_[data-slot=image]]:!w-[50px] md:[&_[data-slot=image]]:!h-[50px]"
+        endContent={endContent}
+        className="md:min-h-[64px] [&_[data-slot=title]]:text-base md:[&_[data-slot=image]]:!w-[50px] md:[&_[data-slot=image]]:!h-[50px]"
       />
 
-      {nft.attributes.length > 0 && (
-        <div className="md:hidden px-2 pb-1">
-          <DotList
-            items={nft.attributes}
-            getValue={a => `${a.trait_type}: ${a.value}`}
-            className="text-xs font-medium text-accent"
-          />
-        </div>
-      )}
+      <NFTAttributes attributes={nft.attributes} />
 
       {detailsPane && (
         <div className="px-2 pb-2">
