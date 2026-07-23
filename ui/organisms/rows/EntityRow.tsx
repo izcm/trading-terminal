@@ -52,7 +52,7 @@ export function EntityRow({
         imageSize={75}
         imageBadge={imageBadge}
         endContent={endContent}
-        className="md:min-h-[64px] [&_[data-slot=title]]:text-base md:[&_[data-slot=image]]:!w-[50px] md:[&_[data-slot=image]]:!h-[50px]"
+        classNames="md:min-h-[64px] [&_[data-slot=title]]:text-base md:[&_[data-slot=image]]:!w-[50px] md:[&_[data-slot=image]]:!h-[50px]"
       />
 
       <NFTAttributes attributes={nft.attributes} />
