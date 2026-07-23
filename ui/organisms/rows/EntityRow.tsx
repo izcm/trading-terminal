@@ -44,7 +44,7 @@ export function EntityRow({
           <span className="inline-flex items-center gap-1">
             <span className="text-xs text-muted w-[75px]">
               {collection?.symbol ?? 'unknown'}{' '}
-              <span className="hidden md:inline">{tokenIdLabel ?? `#${paddedTokenId}`}</span>
+              <span className="hidden sm:inline">{tokenIdLabel ?? `#${paddedTokenId}`}</span>
             </span>
             {subtitleExtra}
           </span>

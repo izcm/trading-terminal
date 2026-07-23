@@ -272,16 +272,16 @@ export function MarketplaceView({ collection, initialPages }: Props) {
       <main className="flex-1 flex flex-col gap-4 mt-4">
         {/* ---- header ---- */}
 
-        <div className="hidden md:flex flex-col gap-4">
-          <Header
-            chainId={chainId}
-            collection={collectionAddress}
-            inventory={{ count: ownedIds.length, isLoading: loadingInventory }}
-            onOpenManual={() => setInfoModal({ open: true, type: 'manual' })}
-            onOpenSettings={() => setInfoModal({ open: true, type: 'settings' })}
-            onNavigateToTx={onNavigateToTx}
-          />
+        <Header
+          chainId={chainId}
+          collection={collectionAddress}
+          inventory={{ count: ownedIds.length, isLoading: loadingInventory }}
+          onOpenManual={() => setInfoModal({ open: true, type: 'manual' })}
+          onOpenSettings={() => setInfoModal({ open: true, type: 'settings' })}
+          onNavigateToTx={onNavigateToTx}
+        />
 
+        <div className="hidden md:flex flex-col gap-4">
           {/* ---- tabs ---- */}
 
           <Tabs value={tab} onChange={setTab} items={Object.keys(tabUIConfig) as TabName[]} />

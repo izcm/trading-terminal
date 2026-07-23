@@ -57,6 +57,36 @@ type HeaderProps = {
  *     Wrong chain   → "wrong chainId" error.
  *     Happy path    → inventory count + tx tracker.
  */
+type HeaderMobileStatusProps = {
+  chainId: number
+  isConnected: boolean
+  wrongChainId: boolean
+  isResolving: boolean
+}
+
+/** Wallet-status banner for below `md`, where the rest of <Header> is hidden. */
+export function HeaderMobileStatus({
+  chainId,
+  isConnected,
+  wrongChainId,
+  isResolving,
+}: HeaderMobileStatusProps) {
+  return (
+    <>
+      {!isConnected && (
+        <div className="md:hidden -mx-4 mb-1 bg-failure/10 py-1.5 text-center text-failure text-sm">
+          no wallet connected
+        </div>
+      )}
+      {isConnected && wrongChainId && !isResolving && (
+        <div className="md:hidden -mx-4 mb-1 bg-failure/10 py-1.5 text-center text-failure text-sm">
+          wrong chainId - switch to {chainId}
+        </div>
+      )}
+    </>
+  )
+}
+
 export function Header({
   inventory,
   collection,
@@ -73,18 +103,14 @@ export function Header({
 
   return (
     <>
-      {!isConnected && (
-        <div className="md:hidden -mx-4 mb-1 bg-failure/10 py-1.5 text-center text-failure text-sm">
-          no wallet connected
-        </div>
-      )}
-      {isConnected && wrongChainId && !isResolving && (
-        <div className="md:hidden -mx-4 mb-1 bg-failure/10 py-1.5 text-center text-failure text-sm">
-          wrong chainId - switch to {chainId}
-        </div>
-      )}
+      <HeaderMobileStatus
+        chainId={chainId}
+        isConnected={isConnected}
+        wrongChainId={wrongChainId}
+        isResolving={isResolving}
+      />
 
-      <div className="grid grid-cols-[1fr_1fr_1fr] md:grid-cols-[1fr_auto_1fr] items-center mb-1 gap-4">
+      <div className="hidden md:grid grid-cols-[1fr_1fr_1fr] md:grid-cols-[1fr_auto_1fr] items-center mb-1 gap-4">
         <div className="hidden md:block">
           <WalletSection
             isConnected={isConnected}
@@ -236,14 +262,14 @@ function StatusSection({
 }: StatusSectionProps) {
   return (
     <div className="flex flex-1 items-center justify-end gap-4">
-      <div className="hidden md:flex justify-end">
+      <div className="flex justify-end">
         {!isConnected ? (
           <span className="text-failure text-sm">no wallet connected</span>
         ) : wrongChainId && !isResolving ? (
           <span className="text-failure text-sm">wrong chainId - switch to {chainId}</span>
         ) : (
           // hide inventory for md screens and below
-          <div className="hidden md:flex items-center justify-center gap-2 text-accent text-sm">
+          <div className="flex items-center justify-center gap-2 text-accent text-sm">
             {inventory.isLoading ? (
               <>
                 <Spinner size={16} />

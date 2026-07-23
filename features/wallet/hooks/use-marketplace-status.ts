@@ -83,7 +83,8 @@ export function useMarketplaceStatus() {
   })
 
   function approveWeth(amount: bigint) {
-    return writeApproveWeth([chain?.marketplace!, amount])
+    if (!chain?.marketplace) return
+    return writeApproveWeth([chain.marketplace, amount])
   }
 
   // MARKETPLACE APPROVAL & APPROVE
@@ -112,7 +113,8 @@ export function useMarketplaceStatus() {
   })
 
   function approveMarketplace(approved: boolean) {
-    return writeApproveMarketplace([chain?.marketplace!, approved])
+    if (!chain?.marketplace) return
+    return writeApproveMarketplace([chain.marketplace, approved])
   }
 
   const isError = isErrorDeposit || isErrorWeth || isErrorApproval
