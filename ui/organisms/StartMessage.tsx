@@ -29,6 +29,8 @@ export function StartMessage() {
         This app is built for keyboard use — press <span className="text-accent-weak">?</span>{' '}
         anytime to see the full list of shortcuts.
       </p>
+
+      <p className="text-muted text-xs">nb: works on mobile, made for desktop.</p>
     </div>
   )
 }

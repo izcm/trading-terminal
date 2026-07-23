@@ -1,20 +1,17 @@
 // todo: decouple
-import { useState, type ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
 import { formatEth2 } from '@/lib/blockchain'
-// import { useTokenURI } from '@/lib/blockchain/hooks'
 import { tsSuperShort } from '@/lib/utils/time'
 
 import { NFT_LOADING_IMAGE } from '@/domain/constants/placeholders'
 
 import type { Activity } from '@/domain/shared/activity'
-// import { mapTokenUriToNFT } from '@/domain/nft'
 import type { NFT } from '@/domain/nft'
 
 import { listingStatusToClass } from '@/features/marketplace/lib/listing-status-ui'
 import { useCollection } from '@/features/CollectionContext'
-import { ImageRow } from '@/ui/molecules/ImageRow'
-import { NFTAttributes } from './NFTAttributes'
+import { EntityRow } from './EntityRow'
 
 type Props = {
   activity: Activity
@@ -37,25 +34,14 @@ function placeholderNFT(activity: Activity): NFT {
 }
 
 export function ActivityRow({ activity, detailsPane }: Props) {
-  const [expanded, setExpanded] = useState(false)
-
-  const {
-    source,
-    type: activityType,
-    isCollectionBid,
-    timestamp,
-    tokenId,
-    price,
-    status,
-  } = activity
+  const { source, type: activityType, isCollectionBid, timestamp, price, status } = activity
 
   const nft = activity.nft ?? placeholderNFT(activity)
 
   const badgeClasses = 'absolute -bottom-1 -right-1 text-[10px] px-1 rounded text-black'
   const statusClasses = 'text-[11px] tracking-wide px-1'
 
-  const { padTokenId, collection } = useCollection()
-  const paddedTokenId = padTokenId(tokenId)
+  const { collection } = useCollection()
 
   const badge =
     source === 'trade' ? (
@@ -68,11 +54,8 @@ export function ActivityRow({ activity, detailsPane }: Props) {
       </span>
     )
 
-  const subtitle = (
+  const subtitleExtra = (
     <>
-      <span className="text-xs text-muted w-[75px]">
-        {collection?.symbol ?? 'unknown'} {!isCollectionBid ? `#${paddedTokenId}` : '#any'}
-      </span>
       {status && status !== 'active' && (
         <span className={`${statusClasses} ${listingStatusToClass[status]}`}>
           {status.toUpperCase()}
@@ -95,42 +78,18 @@ export function ActivityRow({ activity, detailsPane }: Props) {
   )
 
   return (
-    <div className="flex flex-col gap-1">
-      <ImageRow
-        image={nft.image}
-        title={
-          <div className="flex items-center justify-between gap-2 w-full">
-            <span className="truncate">
-              <span className="sm:hidden">#{paddedTokenId}</span>
-              <span className="hidden sm:inline">
-                {source === 'listing' && isCollectionBid
-                  ? `${collection?.symbol ?? 'unknown'} collection bid`
-                  : nft.name}
-              </span>
-            </span>
-          </div>
-        }
-        subtitle={<span className="inline-flex items-center gap-1">{subtitle}</span>}
-        imageSize={75}
-        imageBadge={badge}
-        endContent={endContent}
-        className="md:min-h-[64px] [&_[data-slot=title]]:text-base md:[&_[data-slot=image]]:!w-[50px] md:[&_[data-slot=image]]:!h-[50px]"
-      />
-
-      <NFTAttributes attributes={nft.attributes} />
-
-      {detailsPane && (
-        <div className="px-2 pb-2">
-          <button
-            onClick={() => setExpanded(v => !v)}
-            className="btn py-0 text-xs text-accent/80 underline underline-offset-2"
-          >
-            {expanded ? 'hide details' : 'view more'}
-          </button>
-
-          {expanded && <div className="mt-2 card p-2">{detailsPane}</div>}
-        </div>
-      )}
-    </div>
+    <EntityRow
+      nft={nft}
+      name={
+        source === 'listing' && isCollectionBid
+          ? `${collection?.symbol ?? 'unknown'} collection bid`
+          : undefined
+      }
+      tokenIdLabel={isCollectionBid ? '#any' : undefined}
+      imageBadge={badge}
+      endContent={endContent}
+      subtitleExtra={subtitleExtra}
+      detailsPane={detailsPane}
+    />
   )
 }
