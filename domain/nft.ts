@@ -63,7 +63,7 @@ export function parseTokenURI(tokenUri: string): NFTMetadata {
 
     const name = typeof data.name === 'string' ? data.name : 'Unknown NFT'
     const description = typeof data.description === 'string' ? data.description : ''
-    const image = typeof data.image === 'string' ? data.image : NFT_PLACEHOLDER_IMAGE
+    const image = typeof data.image === 'string' && data.image ? data.image : NFT_PLACEHOLDER_IMAGE
 
     const attributes: NFTAttribute[] = Array.isArray(data.attributes)
       ? data.attributes

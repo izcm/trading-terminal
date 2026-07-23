@@ -26,9 +26,9 @@ export type NFTDTO = {
 export function toNFT(dto: NFTDTO): NFT {
   return {
     ...dto,
-    image: dto.image ?? NFT_PLACEHOLDER_IMAGE,
-    name: dto.name ?? `#${dto.tokenId}`,
-    description: dto.description ?? 'On-Chain NFT',
+    image: dto.image || NFT_PLACEHOLDER_IMAGE,
+    name: dto.name || `#${dto.tokenId}`,
+    description: dto.description || 'On-Chain NFT',
     attributes: dto.attributes ?? [],
     tokenId: BigInt(dto.tokenId),
     createdAtBlock: BigInt(dto.createdAtBlock),
