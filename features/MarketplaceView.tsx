@@ -33,14 +33,14 @@ import { useMarketplaceData } from './marketplace/hooks/data/use-marketplace-dat
 import { CreateOrderFlow } from './orders/ui/CreateOrderFlow'
 import { Header, MobileMenu } from './marketplace/ui/Header'
 import { Manual } from './marketplace/ui/Manual'
-import { Tabs } from './marketplace/ui/Tabs'
+import { TabBtn, Tabs } from './marketplace/ui/Tabs'
 import { buildSearchDefault } from './marketplace/lib/logic/build-search-default'
 import type { TabPages } from './marketplace/hooks/tabs/use-tab-mutations'
 
 // contexts
 import { CollectionProvider } from './CollectionContext'
 import { StartMessage } from '@/ui/organisms/StartMessage'
-import { Search } from '@/ui/icons'
+import { ChevronDown, Menu, Search } from '@/ui/icons'
 
 // --- initial state ---
 type Props = {
@@ -263,6 +263,13 @@ export function MarketplaceView({ collection, initialPages }: Props) {
     { enabled: !modalIsOpen }
   )
 
+  // used for mobile search
+  const [showMobileSearch, setShowMobileSearch] = useState(false)
+  const [showMobileTabs, setShowMobileTabs] = useState(false)
+
+  const toggleMobileSearch = () => setShowMobileSearch(!showMobileSearch)
+  const toggleMobileTabs = () => setShowMobileTabs(!showMobileTabs)
+
   const view = (
     <div className="flex gap-4 h-dvh max-w-[960px] px-2 mx-auto overflow-hidden font-mono">
       <main className="flex-1 flex flex-col gap-2 1 md:gap-4 mt-4">
@@ -280,7 +287,9 @@ export function MarketplaceView({ collection, initialPages }: Props) {
         <div className="hidden md:flex flex-col gap-4">
           {/* ---- tabs ---- */}
 
-          <Tabs value={tab} onChange={setTab} items={Object.keys(tabUIConfig) as TabName[]} />
+          <div className="flex w-full border-b border-soft">
+            <Tabs value={tab} onSelect={setTab} items={Object.keys(tabUIConfig) as TabName[]} />
+          </div>
 
           {/* ---- search ---- */}
 
@@ -292,19 +301,57 @@ export function MarketplaceView({ collection, initialPages }: Props) {
           />
         </div>
 
-        {/* mobile searc + hamburger */}
+        {/* mobile tabs + search + hamnurger menu */}
 
-        <div className="md:hidden flex items-center gap-2">
-          <MobileMenu
-            onOpenManual={() => setInfoModal({ open: true, type: 'manual' })}
-            onOpenSettings={() => setInfoModal({ open: true, type: 'settings' })}
-          />
+        <div className="md:hidden flex flex-col gap-2">
+          <div className="flex gap-2 items-stretch">
+            <div className="flex flex-col w-full border-b border-soft">
+              <TabBtn active item={tab} onSelect={toggleMobileTabs}>
+                <>
+                  <div className="flex flex-1 justify-start">
+                    <div className="ml-2">
+                      <ChevronDown />
+                    </div>
+                  </div>
+                  <div>{tab}</div>
+                  <div className="flex-1" />
+                </>
+              </TabBtn>
+              {showMobileTabs && (
+                <Tabs
+                  value={tab}
+                  onSelect={setTab}
+                  items={(Object.keys(tabUIConfig) as TabName[]).filter(item => item !== tab)}
+                />
+              )}
+            </div>
 
-          <button className="btn btn-menu h-full">
-            <Search size={20} />
-          </button>
+            <MobileMenu
+              onOpenManual={() => setInfoModal({ open: true, type: 'manual' })}
+              onOpenSettings={() => setInfoModal({ open: true, type: 'settings' })}
+              triggerBtn={
+                <button className="btn btn-menu h-full">
+                  <Menu size={20} />
+                </button>
+              }
+            />
 
-          <TextInput />
+            <button className="btn btn-menu h-full" onClick={toggleMobileSearch}>
+              <Search size={20} />
+            </button>
+          </div>
+
+          {showMobileSearch && (
+            <TextInput
+              key={`${tab}-${resetTick}`}
+              ref={searchRef}
+              value={inputSeed}
+              onSubmit={value => {
+                handleSearch(value)
+                // toggleMobileSearch() // should this be toggled on submit? its kind of annoying
+              }}
+            />
+          )}
         </div>
 
         {/* ---- tab gallery + sidepanel ---- */}

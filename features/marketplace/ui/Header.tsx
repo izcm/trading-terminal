@@ -1,4 +1,5 @@
 'use client'
+import { ReactNode } from 'react'
 import dynamic from 'next/dynamic'
 
 import type { Tx } from '@/app/providers/TxProvider'
@@ -15,6 +16,7 @@ import { Spinner, Copyable } from '@/ui/atoms'
 import { Popover } from '@/ui/molecules'
 
 import { TxTracker } from '../../realtime/ui/TxTracker'
+import { cn } from '@/lib/utils/cn'
 
 const WalletWidget = dynamic(
   () => import('../../wallet/ui/WalletWidget').then(m => m.WalletWidget),
@@ -111,7 +113,7 @@ export function Header({
         isResolving={isResolving}
       />
 
-      <div className="hidden md:grid grid-cols-[1fr_1fr_1fr] md:grid-cols-[1fr_auto_1fr] items-center mb-1 gap-4">
+      <div className="hidden md:grid grid-cols-[1fr_1fr_1fr] md:grid-cols-[1fr_auto_1fr] items-center mb-1 gap-4 sm:[&>*>button.btn-menu]:h-6">
         <div className="hidden md:block">
           <WalletSection
             isConnected={isConnected}
@@ -132,7 +134,16 @@ export function Header({
 
         {/* lg and below: manual and settings collapse into this menu (wallet/status join below md too — see MobileMenu). TxTracker always renders separately in StatusSection, at every width. */}
         <div className="lg:hidden col-start-2 w-full">
-          <MobileMenu onOpenManual={onOpenManual} onOpenSettings={onOpenSettings} />
+          <MobileMenu
+            onOpenManual={onOpenManual}
+            onOpenSettings={onOpenSettings}
+            contentClassNames="[&>*>button.btn-menu]:h-8"
+            triggerBtn={
+              <button className="btn btn-menu px-6 h-6">
+                <Menu size={16} />
+              </button>
+            }
+          />
         </div>
 
         {/* settings + wallet status OR inventory + session txs */}
@@ -174,7 +185,7 @@ function WalletSection({
 }: WalletSectionProps) {
   return (
     <div className="flex items-center justify-start gap-4 text-sm">
-      <WalletWidget />
+      <WalletWidget className="h-6" />
 
       {isConnected && wrongChainId && (
         <span className="text-accent">[ chainId: {walletChainId} ]</span>
@@ -213,28 +224,31 @@ function WalletSection({
 type MobileMenuProps = {
   onOpenManual: () => void
   onOpenSettings: () => void
+  contentClassNames?: string
+  triggerBtn: ReactNode
 }
 
-export function MobileMenu({ onOpenManual, onOpenSettings }: MobileMenuProps) {
+export function MobileMenu({
+  onOpenManual,
+  onOpenSettings,
+  triggerBtn,
+  contentClassNames,
+}: MobileMenuProps) {
   return (
     <Popover
-      contentClassName="fixed inset-x-4 top-16 rounded-lg z-50 p-4"
-      trigger={
-        <button className="btn btn-menu px-6">
-          <Menu size={16} />
-        </button>
-      }
+      contentClassName={cn('fixed inset-x-4 top-16 rounded-lg z-50 p-4', contentClassNames)}
+      trigger={triggerBtn}
     >
-      <div className="flex flex-col gap-2 [&>button]:py-4 [&>button]:py-4 [&>button]:text-base">
-        <WalletWidget className="w-full md:hidden" />
+      <div className="flex flex-col gap-2 [&>button]:text-base">
+        <WalletWidget className="md:hidden" />
 
-        <button onClick={onOpenManual} className="btn btn-menu w-full">
-          dmrkt manual
+        <button onClick={onOpenManual} className="btn btn-menu">
+          Manual
         </button>
 
-        <button className="btn btn-menu w-full flex items-center gap-2" onClick={onOpenSettings}>
+        <button className="btn btn-menu flex items-center gap-2" onClick={onOpenSettings}>
           <Settings size={16} />
-          <span>settings</span>
+          <span>Settings</span>
         </button>
       </div>
     </Popover>

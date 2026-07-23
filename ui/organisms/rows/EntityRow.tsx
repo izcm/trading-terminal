@@ -2,8 +2,9 @@ import { ReactNode, useState } from 'react'
 
 import type { NFT } from '@/domain/nft'
 import { useCollection } from '@/features/CollectionContext'
+
 import { ImageRow } from '@/ui/molecules/ImageRow'
-import { NFTAttributes } from './NFTAttributes'
+import { DotList } from '@/ui/atoms'
 
 type Props = {
   nft: NFT
@@ -29,7 +30,7 @@ export function EntityRow({
   const paddedTokenId = padTokenId(nft.tokenId)
 
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-1 md:pb-0 pb-1">
       <ImageRow
         image={nft.image}
         title={
@@ -55,10 +56,16 @@ export function EntityRow({
         classNames="md:min-h-[64px] [&_[data-slot=title]]:text-base md:[&_[data-slot=image]]:!w-[50px] md:[&_[data-slot=image]]:!h-[50px]"
       />
 
-      <NFTAttributes attributes={nft.attributes} />
+      <div className="md:hidden px-2">
+        <DotList
+          items={nft.attributes}
+          getValue={a => `${a.trait_type}: ${a.value}`}
+          className="text-xs font-medium text-subtle"
+        />
+      </div>
 
       {detailsPane && (
-        <div className="px-2 pb-2">
+        <>
           <button
             onClick={() => setExpanded(v => !v)}
             className="btn py-0 text-xs text-accent/80 underline underline-offset-2"
@@ -67,7 +74,7 @@ export function EntityRow({
           </button>
 
           {expanded && <div className="mt-2 card p-2">{detailsPane}</div>}
-        </div>
+        </>
       )}
     </div>
   )
