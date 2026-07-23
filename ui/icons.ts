@@ -13,4 +13,5 @@ export {
   Receipt,
   Settings,
   Menu,
+  Search,
 } from 'lucide-react'

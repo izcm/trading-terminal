@@ -50,15 +50,29 @@ export function TabContainer<K extends TabName>({
   }, [items, selectedId, setSelectedId])
 
   const galleryRef = useRef<HTMLUListElement>(null)
+  const fadeRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     focusGalleryRef.current = () => galleryRef.current?.focus()
   }, [focusGalleryRef])
 
+  useEffect(() => {
+    const scrollEl = galleryRef.current
+    const fadeEl = fadeRef.current
+    if (!scrollEl || !fadeEl) return
+
+    const handleScroll = () => fadeEl.classList.toggle('scrolled', scrollEl.scrollTop > 0)
+    scrollEl.addEventListener('scroll', handleScroll)
+    return () => scrollEl.removeEventListener('scroll', handleScroll)
+  }, [])
+
   const btnProps = selected ? ui.actionBtnProps?.(selected, tabAction.disabled, ctx) : undefined
 
   return (
-    <div className="flex-1 flex min-h-0 fade-in">
+    <div
+      ref={fadeRef}
+      className="flex-1 flex min-h-0 fade-in [&.scrolled]:[mask-image:linear-gradient(to_bottom,transparent,black_24px)] [&.scrolled]:[-webkit-mask-image:linear-gradient(to_bottom,transparent,black_24px)] md:[&.scrolled]:[mask-image:none] md:[&.scrolled]:[-webkit-mask-image:none]"
+    >
       <Tab
         gallery={{
           items,

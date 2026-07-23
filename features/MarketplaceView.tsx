@@ -31,7 +31,7 @@ import { useMarketplaceData } from './marketplace/hooks/data/use-marketplace-dat
 
 // feature UI
 import { CreateOrderFlow } from './orders/ui/CreateOrderFlow'
-import { Header } from './marketplace/ui/Header'
+import { Header, MobileMenu } from './marketplace/ui/Header'
 import { Manual } from './marketplace/ui/Manual'
 import { Tabs } from './marketplace/ui/Tabs'
 import { buildSearchDefault } from './marketplace/lib/logic/build-search-default'
@@ -40,6 +40,7 @@ import type { TabPages } from './marketplace/hooks/tabs/use-tab-mutations'
 // contexts
 import { CollectionProvider } from './CollectionContext'
 import { StartMessage } from '@/ui/organisms/StartMessage'
+import { Search } from '@/ui/icons'
 
 // --- initial state ---
 type Props = {
@@ -264,7 +265,7 @@ export function MarketplaceView({ collection, initialPages }: Props) {
 
   const view = (
     <div className="flex gap-4 h-dvh max-w-[960px] px-2 mx-auto overflow-hidden font-mono">
-      <main className="flex-1 flex flex-col gap-4 mt-4">
+      <main className="flex-1 flex flex-col gap-2 1 md:gap-4 mt-4">
         {/* ---- header ---- */}
 
         <Header
@@ -289,6 +290,21 @@ export function MarketplaceView({ collection, initialPages }: Props) {
             value={inputSeed}
             onSubmit={handleSearch}
           />
+        </div>
+
+        {/* mobile searc + hamburger */}
+
+        <div className="md:hidden flex items-center gap-2">
+          <MobileMenu
+            onOpenManual={() => setInfoModal({ open: true, type: 'manual' })}
+            onOpenSettings={() => setInfoModal({ open: true, type: 'settings' })}
+          />
+
+          <button className="btn btn-menu h-full">
+            <Search size={20} />
+          </button>
+
+          <TextInput />
         </div>
 
         {/* ---- tab gallery + sidepanel ---- */}

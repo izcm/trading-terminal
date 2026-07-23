@@ -47,7 +47,7 @@ export function Gallery<T extends { id: string }>({
     const handleScroll = () => {
       const distance = el.scrollHeight - (el.scrollTop + el.clientHeight)
 
-      if (distance < 100 && !isLoading && hasMore) {
+      if (distance < 200 && !isLoading && hasMore) {
         onLoadMore()
       }
     }

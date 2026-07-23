@@ -4,7 +4,9 @@ import dynamic from 'next/dynamic'
 import type { Tx } from '@/app/providers/TxProvider'
 
 import type { Hex } from '@/domain/shared/eth'
+
 import { truncateHex } from '@/lib/utils/hex'
+import { getChainConfig } from '@/lib/blockchain'
 
 import { useWallet } from '@/features/wallet/hooks/use-wallet'
 
@@ -13,7 +15,6 @@ import { Spinner, Copyable } from '@/ui/atoms'
 import { Popover } from '@/ui/molecules'
 
 import { TxTracker } from '../../realtime/ui/TxTracker'
-import { getChainConfig } from '@/lib/blockchain'
 
 const WalletWidget = dynamic(
   () => import('../../wallet/ui/WalletWidget').then(m => m.WalletWidget),
@@ -130,7 +131,9 @@ export function Header({
         </div>
 
         {/* lg and below: manual and settings collapse into this menu (wallet/status join below md too — see MobileMenu). TxTracker always renders separately in StatusSection, at every width. */}
-        <MobileMenu onOpenManual={onOpenManual} onOpenSettings={onOpenSettings} />
+        <div className="lg:hidden col-start-2 w-full">
+          <MobileMenu onOpenManual={onOpenManual} onOpenSettings={onOpenSettings} />
+        </div>
 
         {/* settings + wallet status OR inventory + session txs */}
         <div className="flex items-center justify-between gap-4 justify-between">
@@ -212,34 +215,29 @@ type MobileMenuProps = {
   onOpenSettings: () => void
 }
 
-function MobileMenu({ onOpenManual, onOpenSettings }: MobileMenuProps) {
+export function MobileMenu({ onOpenManual, onOpenSettings }: MobileMenuProps) {
   return (
-    <div className="lg:hidden col-start-2 w-full">
-      <Popover
-        align="right"
-        contentClassName="fixed inset-x-4 top-16 z-50 p-3"
-        trigger={
-          <button className="btn btn-menu px-6 w-full">
-            <Menu size={16} />
-          </button>
-        }
-      >
-        <div className="flex flex-col gap-2">
-          <div className="flex items-stretch md:hidden">
-            <WalletWidget className="w-full" />
-          </div>
+    <Popover
+      contentClassName="fixed inset-x-4 top-16 rounded-lg z-50 p-4"
+      trigger={
+        <button className="btn btn-menu px-6">
+          <Menu size={16} />
+        </button>
+      }
+    >
+      <div className="flex flex-col gap-2 [&>button]:py-4 [&>button]:py-4 [&>button]:text-base">
+        <WalletWidget className="w-full md:hidden" />
 
-          <button onClick={onOpenManual} className="btn btn-menu w-full">
-            dmrkt manual
-          </button>
+        <button onClick={onOpenManual} className="btn btn-menu w-full">
+          dmrkt manual
+        </button>
 
-          <button className="btn btn-menu w-full flex items-center gap-2" onClick={onOpenSettings}>
-            <Settings size={16} />
-            <span>settings</span>
-          </button>
-        </div>
-      </Popover>
-    </div>
+        <button className="btn btn-menu w-full flex items-center gap-2" onClick={onOpenSettings}>
+          <Settings size={16} />
+          <span>settings</span>
+        </button>
+      </div>
+    </Popover>
   )
 }
 

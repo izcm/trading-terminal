@@ -67,7 +67,7 @@
   --text-muted: rgba(165, 175, 185, 0.6);
 
   --border-default: rgba(120, 255, 180, 0.35);
-  --border-soft: rgba(120, 255, 180, 0.15);
+  --border-soft: rgba(120, 255, 180, 0.25);
 
   --accent-strong: #66ffb2; /* rare, special */
   --accent: #49ca8a; /* normal primary */
@@ -105,7 +105,7 @@
   --text-muted: rgba(170, 180, 220, 0.65);
 
   --border-default: rgba(120, 140, 255, 0.45);
-  --border-soft: rgba(120, 140, 255, 0.22);
+  --border-soft: rgba(120, 140, 255, 0.32);
 
   --accent: #7c84ff;
   --accent-weak: rgba(124, 132, 255, 0.7);

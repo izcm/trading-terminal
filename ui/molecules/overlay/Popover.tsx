@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 
+import { cn } from '@/lib/utils/cn'
+
 type PopoverProps = {
   trigger: React.ReactNode
   children: React.ReactNode
@@ -29,14 +31,11 @@ export function Popover({ trigger, children, align = 'right', contentClassName }
 
       {open && (
         <div
-          className={
-            contentClassName ??
-            `absolute top-full mt-1 z-50 whitespace-nowrap p-2 ${align === 'right' ? 'right-0' : 'left-0'}`
-          }
-          style={{
-            background: 'var(--bg-surface)',
-            border: '1px solid var(--border-soft)',
-          }}
+          className={cn(
+            'absolute top-full mt-1 z-50 whitespace-nowrap p-2 bg-surface border border-default',
+            align === 'right' ? 'right-0' : 'left-0',
+            contentClassName
+          )}
         >
           {children}
         </div>
