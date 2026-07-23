@@ -14,6 +14,7 @@ import type { NFT } from '@/domain/nft'
 import { listingStatusToClass } from '@/features/marketplace/lib/listing-status-ui'
 import { useCollection } from '@/features/CollectionContext'
 import { ImageRow } from '@/ui/molecules/ImageRow'
+import { DotList } from '@/ui/atoms'
 
 type Props = {
   activity: Activity
@@ -51,6 +52,7 @@ export function ActivityRow({ activity, detailsPane }: Props) {
   const nft = activity.nft ?? placeholderNFT(activity)
 
   const badgeClasses = 'absolute -bottom-1 -right-1 text-[10px] px-1 rounded text-black'
+  const statusClasses = 'text-[11px] tracking-wide px-1'
 
   const { padTokenId, collection } = useCollection()
   const paddedTokenId = padTokenId(tokenId)
@@ -72,7 +74,7 @@ export function ActivityRow({ activity, detailsPane }: Props) {
         {collection?.symbol ?? 'unknown'} {!isCollectionBid ? `#${paddedTokenId}` : '#any'}
       </span>
       {status && status !== 'active' && (
-        <span className={`text-[11px] tracking-wide px-1 ${listingStatusToClass[status]}`}>
+        <span className={`${statusClasses} ${listingStatusToClass[status]}`}>
           {status.toUpperCase()}
         </span>
       )}
@@ -83,8 +85,8 @@ export function ActivityRow({ activity, detailsPane }: Props) {
   )
 
   const endContent = (
-    <div className="flex flex-col px-1 flex-1 text-right ">
-      <span className="font-semibold">{formatEth2(price)} WETH</span>
+    <div className="flex flex-col px-1 flex-1 md:text-right">
+      <span className="font-semibold text-base">{formatEth2(price)} WETH</span>
       <span className="text-xs text-muted">
         {source === 'listing' ? 'exp ' : ''}
         {tsSuperShort(timestamp)}
@@ -94,45 +96,48 @@ export function ActivityRow({ activity, detailsPane }: Props) {
 
   return (
     <div>
-      <div className="md:hidden">
-        <ImageRow
-          image={nft.image}
-          title={
-            source === 'listing' && isCollectionBid
-              ? `${collection?.symbol ?? 'unknown'} collection bid`
-              : nft.name
-          }
-          subtitle={
-            <div className="flex flex-col">
-              <span className="text-base">price WETH</span>
-              <span>#tokenId</span>
-            </div>
-          }
-          imageSize={80}
-          imageBadge={badge}
-          classNames={{ root: '[&>*:nth-child(2)]:gap-0', title: 'text-base' }}
-        />
+      <ImageRow
+        image={nft.image}
+        title={
+          <span className="flex items-center justify-between gap-2 w-full">
+            <span className="truncate">
+              <span className="sm:hidden">#{paddedTokenId}</span>
+              <span className="hidden sm:inline">
+                {source === 'listing' && isCollectionBid
+                  ? `${collection?.symbol ?? 'unknown'} collection bid`
+                  : nft.name}
+              </span>
+            </span>
+            {status && status !== 'active' && (
+              <span
+                className={`md:hidden shrink-0 ${statusClasses} ${listingStatusToClass[status]}`}
+              >
+                {status.toUpperCase()}
+              </span>
+            )}
+          </span>
+        }
+        subtitle={
+          <>
+            <span className="hidden md:inline-flex md:items-center md:gap-1">{subtitle}</span>
+            <span className="md:hidden text-subtle">{endContent}</span>
+          </>
+        }
+        imageSize={80}
+        imageBadge={badge}
+        endContent={<span className="hidden md:block">{endContent}</span>}
+        className="md:min-h-[64px] [&>*:nth-child(2)]:gap-1 [&_[data-slot=title]]:text-base md:[&_[data-slot=image]]:!w-[50px] md:[&_[data-slot=image]]:!h-[50px]"
+      />
 
-        {/* <div className="flex flex-col justify-center"> */}
-
-        {/* {endContent} */}
-        {/* <span>hello</span> */}
-      </div>
-
-      <div className="hidden md:block">
-        <ImageRow
-          image={nft.image}
-          title={
-            source === 'listing' && isCollectionBid
-              ? `${collection?.symbol ?? 'unknown'} collection bid`
-              : nft.name
-          }
-          subtitle={subtitle}
-          imageBadge={badge}
-          endContent={endContent}
-          classNames={{ root: 'min-h-[64px] [&>*:nth-child(2)]:gap-1', title: 'text-base' }}
-        />
-      </div>
+      {nft.attributes.length > 0 && (
+        <div className="md:hidden px-2 pb-1">
+          <DotList
+            items={nft.attributes}
+            getValue={a => `${a.trait_type}: ${a.value}`}
+            className="text-xs font-medium text-accent"
+          />
+        </div>
+      )}
 
       {detailsPane && (
         <div className="px-2 pb-2">

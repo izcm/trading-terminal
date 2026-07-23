@@ -16,7 +16,7 @@ export function NFTRow({ nft }: { nft: NFT }) {
       image={image}
       title={nft.name}
       subtitle={`#${padTokenId(nft.tokenId)}`}
-      classNames={{ root: 'min-h-[64px] [&>*:nth-child(2)]:gap-1', title: 'text-base' }}
+      className="min-h-[64px] [&>*:nth-child(2)]:gap-1 [&_[data-slot=title]]:text-base"
     />
   )
 }

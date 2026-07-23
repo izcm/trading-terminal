@@ -9,12 +9,7 @@ type Props = {
   endContent?: ReactNode
   imageBadge?: ReactNode
   imageSize?: number
-  classNames?: {
-    title?: string
-    subtitle?: ReactNode
-    image?: string
-    root?: string
-  }
+  className?: string
 }
 
 export function ImageRow({
@@ -24,30 +19,32 @@ export function ImageRow({
   endContent,
   imageBadge,
   imageSize = 50,
-  classNames,
+  className,
 }: Props) {
   return (
     <div
       className={cn(
         'grid grid-cols-[auto_1fr_auto] cursor-pointer gap-4 items-center py-1 px-2',
-        classNames?.root
+        className
       )}
     >
-      <div className="relative shrink-0">
+      <div data-slot="image-wrap" className="relative shrink-0">
         <Image
+          data-slot="image"
           src={image}
           alt={image}
           width={imageSize}
           height={imageSize}
-          className={cn('rounded object-cover', classNames?.image)}
+          className="rounded object-cover"
         />
         {imageBadge}
       </div>
 
-      {/* <div className="flex flex-col justify-center"> */}
-      <div className={cn('flex flex-col justify-center text-start min-w-0')}>
-        <span className={cn('text-sm font-semibold truncate', classNames?.title)}>{title}</span>
-        <span className={cn('text-xs text-muted inline-block truncate', classNames?.subtitle)}>
+      <div className="flex flex-col justify-center text-start min-w-0">
+        <span data-slot="title" className="text-sm font-semibold truncate">
+          {title}
+        </span>
+        <span data-slot="subtitle" className="text-xs text-muted inline-block truncate">
           {subtitle}
         </span>
       </div>
