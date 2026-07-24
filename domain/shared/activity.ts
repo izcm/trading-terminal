@@ -19,6 +19,7 @@ export type Activity = {
   isCollectionBid?: boolean
   collectionSymbol?: string
   nft?: NFT
+  txHash?: Hex
 }
 
 export const activity = {
@@ -35,6 +36,7 @@ export const activity = {
       collectionSymbol: listing.nftCollection?.symbol ?? 'unknown',
       status: listing.status,
       nft: listing.nft,
+      txHash: listing.txHash,
     }
   },
 
@@ -49,6 +51,7 @@ export const activity = {
       timestamp: trade.timestamp,
       collectionSymbol: trade.nftCollection?.symbol ?? 'unknown',
       nft: trade.nft,
+      txHash: trade.txHash,
     }
   },
 }

@@ -15,4 +15,5 @@ export {
   Menu,
   Search,
   ChevronDown,
+  ExternalLink,
 } from 'lucide-react'

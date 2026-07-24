@@ -11,6 +11,7 @@ import type { Listing } from '@/domain/listing'
 import type { Trade } from '@/domain/trade'
 import type { NFT } from '@/domain/nft'
 import { activity } from '@/domain/shared/activity'
+import { getChainConfig } from '@/lib/blockchain/wagmi'
 
 // shared components
 import { ActivityRow, NFTRow } from '@/ui/organisms'
@@ -98,9 +99,18 @@ const btnContent = (Icon: IconType, label: string): ReactNode => (
 export const tabUIConfig: TabUIConfig = {
   orders: {
     galleryItems: {
-      row: l => <ActivityRow activity={activity.fromListing(l)} />,
+      row: l => (
+        <ActivityRow
+          activity={activity.fromListing(l)}
+          blockExplorerUrl={getChainConfig(l.chainId)?.blockExplorers?.default?.url}
+        />
+      ),
       card: l => (
-        <ActivityRow activity={activity.fromListing(l)} detailsPane={<ListingDetails listing={l} />} />
+        <ActivityRow
+          activity={activity.fromListing(l)}
+          detailsPane={<ListingDetails listing={l} />}
+          blockExplorerUrl={getChainConfig(l.chainId)?.blockExplorers?.default?.url}
+        />
       ),
     },
     details: l => <ListingDetails listing={l} />,
@@ -144,9 +154,18 @@ export const tabUIConfig: TabUIConfig = {
 
   trades: {
     galleryItems: {
-      row: s => <ActivityRow activity={activity.fromTrade(s)} />,
+      row: s => (
+        <ActivityRow
+          activity={activity.fromTrade(s)}
+          blockExplorerUrl={getChainConfig(s.chainId)?.blockExplorers?.default?.url}
+        />
+      ),
       card: s => (
-        <ActivityRow activity={activity.fromTrade(s)} detailsPane={<TradeDetails trade={s} />} />
+        <ActivityRow
+          activity={activity.fromTrade(s)}
+          detailsPane={<TradeDetails trade={s} />}
+          blockExplorerUrl={getChainConfig(s.chainId)?.blockExplorers?.default?.url}
+        />
       ),
     },
     details: s => <TradeDetails trade={s} />,

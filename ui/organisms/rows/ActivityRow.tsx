@@ -4,6 +4,9 @@ import type { ReactNode } from 'react'
 import { formatEth2 } from '@/lib/blockchain'
 import { useTokenURI } from '@/lib/blockchain/hooks'
 import { tsSuperShort } from '@/lib/utils/time'
+import { truncateHex } from '@/lib/utils/hex'
+
+import { ExternalLink } from '@/ui/icons'
 
 import { NFT_LOADING_IMAGE } from '@/domain/constants/placeholders'
 
@@ -17,6 +20,7 @@ import { EntityRow } from './EntityRow'
 type Props = {
   activity: Activity
   detailsPane?: ReactNode
+  blockExplorerUrl?: string
 }
 
 function loadingPlaceholderNFT(activity: Activity): NFT {
@@ -34,8 +38,8 @@ function loadingPlaceholderNFT(activity: Activity): NFT {
   }
 }
 
-export function ActivityRow({ activity, detailsPane }: Props) {
-  const { source, type: activityType, isCollectionBid, timestamp, price, status } = activity
+export function ActivityRow({ activity, detailsPane, blockExplorerUrl }: Props) {
+  const { source, type: activityType, isCollectionBid, timestamp, price, status, txHash } = activity
 
   // activity.nft is missing (eg. indexer hasn't backfilled metadata yet) -> read tokenURI directly
   const { data: tokenURI } = useTokenURI(
@@ -75,6 +79,19 @@ export function ActivityRow({ activity, detailsPane }: Props) {
       )}
       {isCollectionBid && (
         <span className="text-xs text-accent/70 block">any NFT in collection</span>
+      )}
+      {blockExplorerUrl && txHash && (
+        <a
+          href={`${blockExplorerUrl}/tx/${txHash}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={e => e.stopPropagation()}
+          className="inline-flex items-center gap-0.5 text-xs text-accent/70 hover:text-accent"
+        >
+          etherscan
+          <ExternalLink size={10} />
+          <span className="hidden md:inline">{truncateHex(txHash)}</span>
+        </a>
       )}
     </>
   )
