@@ -19,7 +19,7 @@ export default async function Page() {
   })
 
   const parentClasses =
-    'min-h-screen flex flex-col gap-4 max-w-4xl items-center justify-center mx-auto fade-in'
+    'min-h-screen flex flex-col gap-4 max-w-4xl items-center justify-center mx-auto px-4 fade-in'
 
   if (!collectionCall.ok) {
     return (
@@ -31,8 +31,8 @@ export default async function Page() {
 
   const dmrktBanner = () => (
     <h1
-      className="text-accent glow"
-      style={{ fontSize: '4rem', letterSpacing: '-0.03em', fontWeight: 800 }}
+      className="text-accent glow text-[2.5rem] sm:text-[3rem] md:text-[4rem]"
+      style={{ letterSpacing: '-0.03em', fontWeight: 800 }}
     >
       d | mrkt
     </h1>
@@ -74,7 +74,8 @@ export default async function Page() {
   return (
     <div className={parentClasses}>
       {dmrktBanner()}
-      <div className="flex flex-col items-center gap-4 my-2  text-muted">
+
+      <div className="flex flex-col items-center gap-4 my-2 text-muted">
         <p className="text-accent/80">Welcome to IzBlocks&apos; live marketplace simulation.</p>
 
         <p>
@@ -82,7 +83,7 @@ export default async function Page() {
           deterministic, making every run fully reproducible.
         </p>
 
-        <p>
+        <p className="hidden md:block">
           The linked walkthrough shows an early, simpler version of the simulation. A more recent
           version, alongside the indexer and frontend app, can be run locally;{' '}
           <a
@@ -101,11 +102,11 @@ export default async function Page() {
             href="https://www.youtube.com/watch?v=YXtO_S2THTg"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-accent/90 underline"
+            className="hidden md:inline text-accent/90 underline"
           >
             walkthrough
           </a>
-          <span className="text-muted">·</span>
+          <span className="hidden md:inline text-muted">·</span>
           <a
             href="https://sepolia.etherscan.io/address/0xA1b083adA5Ff1252aCb6b119813B5054D3eB6AEB"
             target="_blank"
@@ -115,6 +116,10 @@ export default async function Page() {
             marketplace
           </a>
         </div>
+
+        <p className="md:hidden text-sm text-muted text-center">
+          NB: works on mobile, made for desktop.
+        </p>
       </div>
 
       <SimulationState

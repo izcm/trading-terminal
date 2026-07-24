@@ -25,16 +25,27 @@ type InitialState = {
   collectionStats: Record<Hex, Counts>
 }
 
-const SimulationStats = ({ address, counts }: { address: Hex; counts: Counts }) => (
-  <div className="flex gap-4 px-1">
-    <div className="px-2">
-      <LabeledValue label="sepolia" value={<Copyable value={addrShort(address)} />} />
-    </div>
-    <div className="flex gap-4">
-      <LabeledValue label="unique wallets" value={counts.traders} />
-      <LabeledValue label="active orders" value={counts.activeOrders} />
-      <LabeledValue label="executed trades" value={counts.trades} />
-    </div>
+const ResponsiveLabel = ({ full, short }: { full: string; short: string }) => (
+  <>
+    <span className="hidden min-[425px]:inline">{full}</span>
+    <span className="min-[425px]:hidden">{short}</span>
+  </>
+)
+
+const CollectionStats = ({ counts }: { counts: Counts }) => (
+  <div className="flex flex-wrap gap-2 sm:gap-4 px-4">
+    <LabeledValue
+      label={<ResponsiveLabel full="unique wallets" short="wallets" />}
+      value={counts.traders}
+    />
+    <LabeledValue
+      label={<ResponsiveLabel full="active orders" short="orders" />}
+      value={counts.activeOrders}
+    />
+    <LabeledValue
+      label={<ResponsiveLabel full="executed trades" short="trades" />}
+      value={counts.trades}
+    />
   </div>
 )
 
@@ -43,23 +54,25 @@ export function SimulationState({ chainId, collections, collectionStats }: Initi
   const router = useRouter()
 
   return (
-    <div className="flex flex-col gap-4">
-      <Gallery<NFTCollection>
-        items={collections}
-        galleryItem={c => (
+    <Gallery<NFTCollection>
+      items={collections}
+      galleryItem={c => (
+        <div className="flex flex-col md:flex-row md:items-center p-1 md:p-0">
           <ImageRow
             image={`/collection_banners/${c.symbol}.svg`}
             title={c.name}
             subtitle={c.symbol}
-            endContent={<SimulationStats address={c.address} counts={collectionStats[c.address]} />}
-            classNames={'max-w-[640px]'}
+            endContent={
+              <LabeledValue label="sepolia" value={<Copyable value={addrShort(c.address)} />} />
+            }
           />
-        )}
-        selected={selected}
-        onSelect={c => setSelected(c)}
-        onEnter={c => router.push(`/${c.chainId}/${c.address}`)}
-        arrowClasses={{ selected: 'bg-accent/8 border-accent/80', default: 'bg-secondary/20 ' }}
-      />
-    </div>
+          <CollectionStats counts={collectionStats[c.address]} />
+        </div>
+      )}
+      selected={selected}
+      onSelect={c => setSelected(c)}
+      onEnter={c => router.push(`/${c.chainId}/${c.address}`)}
+      arrowClasses={{ selected: 'bg-accent/8 border-accent/80', default: 'bg-secondary/20 ' }}
+    />
   )
 }

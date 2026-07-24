@@ -24,7 +24,7 @@ export function ImageRow({
   return (
     <div
       className={cn(
-        'grid grid-cols-[auto_1fr_auto] cursor-pointer items-center gap-4 items- py-1 px-2',
+        'grid grid-cols-[auto_1fr_auto] cursor-pointer items-center gap-4 py-1 px-2',
         classNames
       )}
     >
