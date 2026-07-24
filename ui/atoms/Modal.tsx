@@ -70,6 +70,7 @@ export function Modal({
         <div
           className="
             flex flex-col gap-2
+            max-h-[90vh] overflow-y-auto
             bg-primary/60 backdrop-blur-lg
             border border-default
             rounded-lg
