@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <rect
+    x="1.5"
+    y="1.5"
+    width="21"
+    height="21"
+    rx="5"
+    fill="#49ca8a"
+    fill-opacity="0.12"
+  />
+  <text
+    x="12"
+    y="17"
+    text-anchor="middle"
+    font-family="Inter, Arial, Helvetica, sans-serif"
+    font-size="16"
+    font-weight="700"
+    fill="#49ca8a"
+  >d</text>
+</svg>
