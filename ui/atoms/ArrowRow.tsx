@@ -44,14 +44,12 @@ export function ArrowRow({
       data-id={dataId}
       data-testid={dataTestId}
       tabIndex={isSelected ? 0 : -1}
-      onClick={() => {
-        onSelect()
-        onEnter?.()
-      }}
+      onClick={onEnter ?? onSelect}
       onKeyDown={e => {
-        if (e.key === 'Enter' || e.key === ' ') {
+        if (!onEnter) return
+        if (e.key === 'Enter') {
           e.preventDefault()
-          ;(onEnter ?? onSelect)()
+          onEnter()
         }
       }}
       className={appliedClasses}
