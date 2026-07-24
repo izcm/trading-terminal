@@ -13,7 +13,7 @@ export type GalleryProps<T> = {
   onEnter?: (item: T) => void
 
   // render
-  galleryItem: (item: T) => ReactNode
+  galleryItem: (item: T, isSelected: boolean) => ReactNode
   isFresh?: (item: T) => boolean
   galleryView?: 'list' | 'card'
   arrowClasses?: { selected?: string; default?: string }
@@ -131,7 +131,7 @@ export function Gallery<T extends { id: string }>({
                 isSelected && cn('bg-accent/30', arrowClasses?.selected)
               )}
             >
-              {galleryItem(item)}
+              {galleryItem(item, isSelected)}
             </ArrowRow>
           )}
         </ArrowList>

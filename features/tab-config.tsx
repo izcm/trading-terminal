@@ -72,14 +72,14 @@ export type BtnProps = ButtonHTMLAttributes<HTMLButtonElement>
 type TabUIConfig = {
   [K in TabName]: (
     | {
-        galleryItem: (item: TabResource[K]) => ReactNode
+        galleryItem: (item: TabResource[K], isSelected: boolean) => ReactNode
         galleryItems?: undefined
       }
     | {
         galleryItem?: undefined
         galleryItems: {
-          row: (item: TabResource[K]) => ReactNode
-          card: (item: TabResource[K]) => ReactNode
+          row: (item: TabResource[K], isSelected: boolean) => ReactNode
+          card: (item: TabResource[K], isSelected: boolean) => ReactNode
         }
       }
   ) & {
@@ -99,17 +99,19 @@ const btnContent = (Icon: IconType, label: string): ReactNode => (
 export const tabUIConfig: TabUIConfig = {
   orders: {
     galleryItems: {
-      row: l => (
+      row: (l, isSelected) => (
         <ActivityRow
           activity={activity.fromListing(l)}
           blockExplorerUrl={getChainConfig(l.chainId)?.blockExplorers?.default?.url}
+          isSelected={isSelected}
         />
       ),
-      card: l => (
+      card: (l, isSelected) => (
         <ActivityRow
           activity={activity.fromListing(l)}
           detailsPane={<ListingDetails listing={l} />}
           blockExplorerUrl={getChainConfig(l.chainId)?.blockExplorers?.default?.url}
+          isSelected={isSelected}
         />
       ),
     },
@@ -154,17 +156,19 @@ export const tabUIConfig: TabUIConfig = {
 
   trades: {
     galleryItems: {
-      row: s => (
+      row: (s, isSelected) => (
         <ActivityRow
           activity={activity.fromTrade(s)}
           blockExplorerUrl={getChainConfig(s.chainId)?.blockExplorers?.default?.url}
+          isSelected={isSelected}
         />
       ),
-      card: s => (
+      card: (s, isSelected) => (
         <ActivityRow
           activity={activity.fromTrade(s)}
           detailsPane={<TradeDetails trade={s} />}
           blockExplorerUrl={getChainConfig(s.chainId)?.blockExplorers?.default?.url}
+          isSelected={isSelected}
         />
       ),
     },

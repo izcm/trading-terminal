@@ -21,6 +21,7 @@ type Props = {
   activity: Activity
   detailsPane?: ReactNode
   blockExplorerUrl?: string
+  isSelected?: boolean
 }
 
 function loadingPlaceholderNFT(activity: Activity): NFT {
@@ -38,7 +39,7 @@ function loadingPlaceholderNFT(activity: Activity): NFT {
   }
 }
 
-export function ActivityRow({ activity, detailsPane, blockExplorerUrl }: Props) {
+export function ActivityRow({ activity, detailsPane, blockExplorerUrl, isSelected }: Props) {
   const { source, type: activityType, isCollectionBid, timestamp, price, status, txHash } = activity
 
   // activity.nft is missing (eg. indexer hasn't backfilled metadata yet) -> read tokenURI directly
@@ -83,6 +84,7 @@ export function ActivityRow({ activity, detailsPane, blockExplorerUrl }: Props) 
       {blockExplorerUrl && txHash && (
         <a
           href={`${blockExplorerUrl}/tx/${txHash}`}
+          tabIndex={isSelected ? 0 : -1}
           target="_blank"
           rel="noopener noreferrer"
           onClick={e => e.stopPropagation()}
