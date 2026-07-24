@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { cn } from '@/lib/utils/cn'
 
@@ -8,10 +8,31 @@ type PopoverProps = {
   align?: 'left' | 'right'
   /** Overrides the dropdown's default anchored positioning (e.g. to center it as a wide sheet). */
   contentClassName?: string
+  /** Controlled open state — omit to let Popover manage it internally. */
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
 }
 
-export function Popover({ trigger, children, align = 'right', contentClassName }: PopoverProps) {
-  const [open, setOpen] = useState(false)
+export function Popover({
+  trigger,
+  children,
+  align = 'right',
+  contentClassName,
+  open: openProp,
+  onOpenChange,
+}: PopoverProps) {
+  const [internalOpen, setInternalOpen] = useState(false)
+  const open = openProp ?? internalOpen
+
+  const setOpen = useCallback(
+    (value: boolean | ((v: boolean) => boolean)) => {
+      const next = typeof value === 'function' ? value(open) : value
+      if (openProp === undefined) setInternalOpen(next)
+      onOpenChange?.(next)
+    },
+    [open, openProp, onOpenChange]
+  )
+
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -21,7 +42,7 @@ export function Popover({ trigger, children, align = 'right', contentClassName }
     }
     document.addEventListener('mousedown', handleClick)
     return () => document.removeEventListener('mousedown', handleClick)
-  }, [open])
+  }, [open, setOpen])
 
   return (
     <div ref={ref} className="relative">

@@ -15,7 +15,7 @@ type TabsProps<T extends string> = {
 type TabBtnProps<T extends string> = {
   item: T
   active: boolean
-  onSelect: (v: T) => void
+  onSelect?: (v: T) => void
   className?: string
   children?: ReactNode
 }
@@ -29,9 +29,9 @@ export function TabBtn<T extends string>({
 }: TabBtnProps<T>) {
   return (
     <button
-      onClick={() => onSelect(item)}
+      onClick={() => onSelect?.(item)}
       className={cn(
-        'flex-1 py-2 flex items-center justify-center gap-1 border-b-2 transition-colors duration-200 cursor-pointer',
+        'flex-1 py-2 w-full flex items-center justify-center gap-1 border-b-2 transition-colors duration-200 cursor-pointer',
         active
           ? 'border-accent/60 text-accent-weak'
           : 'border-transparent text-subtle hover:border-accent/30',

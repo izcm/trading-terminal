@@ -1,7 +1,13 @@
 import { Address } from 'viem'
-import { createConfig, http } from 'wagmi'
+import { createConfig, http, injected } from 'wagmi'
 import * as wagmiChains from 'wagmi/chains'
-import { injected } from 'wagmi/connectors'
+import { connectorsForWallets } from '@rainbow-me/rainbowkit'
+import {
+  injectedWallet,
+  metaMaskWallet,
+  base,
+  walletConnectWallet,
+} from '@rainbow-me/rainbowkit/wallets'
 
 import supportedChains from '@/chains.json'
 
@@ -34,10 +40,28 @@ if (configuredChains.length === 0) throw new Error('no supported chains configur
 
 const transports = Object.fromEntries(activeChains.map(sc => [sc.chainId, http(sc.url)]))
 
+const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID
+
+const connectors = projectId
+  ? connectorsForWallets(
+      [
+        {
+          groupName: 'Popular',
+          wallets: [injectedWallet, metaMaskWallet, base, walletConnectWallet],
+        },
+      ],
+      {
+        appName: 'dmrkt',
+        projectId,
+      }
+    )
+  : [injected()]
+
+console.log(connectors)
 export const wagmiConfig = createConfig({
   chains: configuredChains as unknown as [ChainExtras, ...ChainExtras[]],
 
-  connectors: [injected()],
+  connectors,
   transports: transports as Record<
     (typeof configuredChains)[number]['id'],
     ReturnType<typeof http>

@@ -31,16 +31,16 @@ import { useMarketplaceData } from './marketplace/hooks/data/use-marketplace-dat
 
 // feature UI
 import { CreateOrderFlow } from './orders/ui/CreateOrderFlow'
-import { Header, MobileMenu } from './marketplace/ui/Header'
+import { Header } from './marketplace/ui/Header'
 import { Manual } from './marketplace/ui/Manual'
-import { TabBtn, Tabs } from './marketplace/ui/Tabs'
+import { MobileNavBar } from './marketplace/ui/MobileNavBar'
+import { Tabs } from './marketplace/ui/Tabs'
 import { buildSearchDefault } from './marketplace/lib/logic/build-search-default'
 import type { TabPages } from './marketplace/hooks/tabs/use-tab-mutations'
 
 // contexts
 import { CollectionProvider } from './CollectionContext'
 import { StartMessage } from '@/ui/organisms/StartMessage'
-import { ChevronDown, Menu, Search } from '@/ui/icons'
 
 // --- initial state ---
 type Props = {
@@ -253,7 +253,7 @@ export function MarketplaceView({ collection, initialPages }: Props) {
 
       // tab internals
       i: () => searchRef.current?.focus(),
-      Enter: () => {
+      s: () => {
         if (!resolvedMainAction?.run || resolvedMainAction.disabled || resolvedMainAction.loading)
           return
         resolvedMainAction.run()
@@ -262,13 +262,6 @@ export function MarketplaceView({ collection, initialPages }: Props) {
     },
     { enabled: !modalIsOpen }
   )
-
-  // used for mobile search
-  const [showMobileSearch, setShowMobileSearch] = useState(false)
-  const [showMobileTabs, setShowMobileTabs] = useState(false)
-
-  const toggleMobileSearch = () => setShowMobileSearch(!showMobileSearch)
-  const toggleMobileTabs = () => setShowMobileTabs(!showMobileTabs)
 
   const view = (
     <div className="flex gap-4 h-dvh max-w-[960px] px-2 mx-auto overflow-hidden font-mono">
@@ -303,56 +296,16 @@ export function MarketplaceView({ collection, initialPages }: Props) {
 
         {/* mobile tabs + search + hamnurger menu */}
 
-        <div className="md:hidden flex flex-col gap-2">
-          <div className="flex gap-2 items-stretch">
-            <div className="flex flex-col w-full border-b border-soft">
-              <TabBtn active item={tab} onSelect={toggleMobileTabs}>
-                <>
-                  <div className="flex flex-1 justify-start">
-                    <div className="ml-2">
-                      <ChevronDown />
-                    </div>
-                  </div>
-                  <div>{tab}</div>
-                  <div className="flex-1" />
-                </>
-              </TabBtn>
-              {showMobileTabs && (
-                <Tabs
-                  value={tab}
-                  onSelect={setTab}
-                  items={(Object.keys(tabUIConfig) as TabName[]).filter(item => item !== tab)}
-                />
-              )}
-            </div>
-
-            <MobileMenu
-              onOpenManual={() => setInfoModal({ open: true, type: 'manual' })}
-              onOpenSettings={() => setInfoModal({ open: true, type: 'settings' })}
-              triggerBtn={
-                <button className="btn btn-menu h-full">
-                  <Menu size={20} />
-                </button>
-              }
-            />
-
-            <button className="btn btn-menu h-full" onClick={toggleMobileSearch}>
-              <Search size={20} />
-            </button>
-          </div>
-
-          {showMobileSearch && (
-            <TextInput
-              key={`${tab}-${resetTick}`}
-              ref={searchRef}
-              value={inputSeed}
-              onSubmit={value => {
-                handleSearch(value)
-                // toggleMobileSearch() // should this be toggled on submit? its kind of annoying
-              }}
-            />
-          )}
-        </div>
+        <MobileNavBar
+          tab={tab}
+          setTab={setTab}
+          onOpenManual={() => setInfoModal({ open: true, type: 'manual' })}
+          onOpenSettings={() => setInfoModal({ open: true, type: 'settings' })}
+          searchRef={searchRef}
+          inputSeed={inputSeed}
+          resetTick={resetTick}
+          handleSearch={handleSearch}
+        />
 
         {/* ---- tab gallery + sidepanel ---- */}
 

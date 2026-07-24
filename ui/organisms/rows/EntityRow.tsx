@@ -50,7 +50,7 @@ export function EntityRow({
             {subtitleExtra}
           </span>
         }
-        imageSize={75}
+        imageSize={64}
         imageBadge={imageBadge}
         endContent={endContent}
         classNames="md:min-h-[64px] [&_[data-slot=title]]:text-base md:[&_[data-slot=image]]:!w-[50px] md:[&_[data-slot=image]]:!h-[50px]"
@@ -65,7 +65,7 @@ export function EntityRow({
       </div>
 
       {detailsPane && (
-        <>
+        <div>
           <button
             onClick={() => setExpanded(v => !v)}
             className="btn py-0 text-xs text-accent/80 underline underline-offset-2"
@@ -73,8 +73,8 @@ export function EntityRow({
             {expanded ? 'hide details' : 'view more'}
           </button>
 
-          {expanded && <div className="mt-2 card p-2">{detailsPane}</div>}
-        </>
+          {expanded && <div className="card mx-1 mt-1">{detailsPane}</div>}
+        </div>
       )}
     </div>
   )
