@@ -47,7 +47,7 @@ export function TxRow({ tx, onClick, disabled }: Props) {
           className={`flex items-center justify-between gap-2 ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'} ${tx.status !== 'success' ? 'invisible' : ''}`}
         >
           <div className="text-accent whitespace-nowrap">
-            {LINK_LABELS[tx.label] ?? 'block explorer'}
+            {LINK_LABELS[tx.label] ?? 'etherscan'}
           </div>
 
           <svg

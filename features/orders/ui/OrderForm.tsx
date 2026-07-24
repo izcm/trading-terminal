@@ -65,7 +65,7 @@ export function OrderForm({ tokenId, onSubmit, back }: Props) {
   }
 
   return (
-    <form ref={formRef} onSubmit={submit} className="flex flex-col w-[400px] gap-4">
+    <form ref={formRef} onSubmit={submit} className="flex flex-col w-[400px] max-w-full gap-4">
       <div className="text-subtle">nft #{tokenId}</div>
 
       <div>
