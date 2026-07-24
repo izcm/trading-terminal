@@ -33,7 +33,7 @@ const ResponsiveLabel = ({ full, short }: { full: string; short: string }) => (
 )
 
 const CollectionStats = ({ counts }: { counts: Counts }) => (
-  <div className="flex flex-wrap gap-2 sm:gap-4 px-4">
+  <div className="flex flex-wrap gap-2 sm:gap-4 px-4 justify-around">
     <LabeledValue
       label={<ResponsiveLabel full="unique wallets" short="wallets" />}
       value={counts.traders}
@@ -57,7 +57,7 @@ export function SimulationState({ chainId, collections, collectionStats }: Initi
     <Gallery<NFTCollection>
       items={collections}
       galleryItem={c => (
-        <div className="flex flex-col md:flex-row md:items-center p-1 md:p-0">
+        <div className="flex flex-col md:flex-row md:items-center p-1 md:p-0 cursor-pointer">
           <ImageRow
             image={`/collection_banners/${c.symbol}.svg`}
             title={c.name}
@@ -66,7 +66,9 @@ export function SimulationState({ chainId, collections, collectionStats }: Initi
               <LabeledValue label="sepolia" value={<Copyable value={addrShort(c.address)} />} />
             }
           />
-          <CollectionStats counts={collectionStats[c.address]} />
+          <div className="cursor-pointer">
+            <CollectionStats counts={collectionStats[c.address]} />
+          </div>
         </div>
       )}
       selected={selected}

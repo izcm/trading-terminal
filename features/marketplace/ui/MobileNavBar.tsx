@@ -42,8 +42,8 @@ export function MobileNavBar({
   const toggleMobileTabs = () => setShowMobileTabs(!showMobileTabs)
 
   return (
-    <div className="md:hidden flex flex-col gap-2">
-      <div className="flex gap-2 items-stretch">
+    <div className="flex flex-col gap-2">
+      <div className="flex gap-2 items-center">
         <div className="flex flex-col w-full border-b border-soft">
           <Popover
             align="left"
@@ -71,7 +71,7 @@ export function MobileNavBar({
                 setShowMobileTabs(false)
               }}
               items={(Object.keys(tabUIConfig) as TabName[]).filter(item => item !== tab)}
-              className="justify-start ml-2"
+              className="justify-start p-1"
             />
           </Popover>
         </div>
@@ -80,7 +80,7 @@ export function MobileNavBar({
           onOpenManual={onOpenManual}
           onOpenSettings={onOpenSettings}
           triggerBtn={
-            <button className="btn btn-menu h-full">
+            <button className="btn btn-menu h-10">
               <Menu size={20} />
             </button>
           }
@@ -92,7 +92,7 @@ export function MobileNavBar({
           />
         </MobileMenu>
 
-        <button className="btn btn-menu h-full" onClick={toggleMobileSearch}>
+        <button className="btn btn-menu h-10" onClick={toggleMobileSearch}>
           <Search size={20} />
         </button>
       </div>

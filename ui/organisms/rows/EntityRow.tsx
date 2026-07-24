@@ -30,7 +30,7 @@ export function EntityRow({
   const paddedTokenId = padTokenId(nft.tokenId)
 
   return (
-    <div className="flex flex-col gap-1 md:pb-0 pb-1">
+    <div className="flex flex-col gap-1 md:pb-0 pb-1 cursor-pointer">
       <ImageRow
         image={nft.image}
         title={

@@ -241,7 +241,7 @@ export function MobileMenu({
       contentClassName={cn('fixed inset-x-4 top-16 rounded-lg z-50 p-4', contentClassNames)}
       trigger={triggerBtn}
     >
-      <div className="flex flex-col gap-2 [&>button]:text-base">
+      <div className="flex flex-col gap-2 [&>button]:text-sm">
         <WalletWidget className="md:hidden" />
 
         <button onClick={onOpenManual} className="btn btn-menu">

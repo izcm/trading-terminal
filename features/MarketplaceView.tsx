@@ -296,17 +296,19 @@ export function MarketplaceView({ collection, initialPages }: Props) {
 
         {/* mobile tabs + search + hamnurger menu */}
 
-        <MobileNavBar
-          tab={tab}
-          setTab={setTab}
-          onOpenManual={() => setInfoModal({ open: true, type: 'manual' })}
-          onOpenSettings={() => setInfoModal({ open: true, type: 'settings' })}
-          onNavigateToTx={onNavigateToTx}
-          searchRef={searchRef}
-          inputSeed={inputSeed}
-          resetTick={resetTick}
-          handleSearch={handleSearch}
-        />
+        <div className="md:hidden">
+          <MobileNavBar
+            tab={tab}
+            setTab={setTab}
+            onOpenManual={() => setInfoModal({ open: true, type: 'manual' })}
+            onOpenSettings={() => setInfoModal({ open: true, type: 'settings' })}
+            onNavigateToTx={onNavigateToTx}
+            searchRef={searchRef}
+            inputSeed={inputSeed}
+            resetTick={resetTick}
+            handleSearch={handleSearch}
+          />
+        </div>
 
         {/* ---- tab gallery + sidepanel ---- */}
 
