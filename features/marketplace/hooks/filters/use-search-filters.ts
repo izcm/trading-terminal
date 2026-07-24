@@ -44,7 +44,10 @@ export function useSearchFilters(tab: TabName, user?: Hex) {
     return { hasFlag, rest }
   }
 
-  function handleSearch(value: string) {
+  function handleSearch(rawValue: string) {
+    // mobile keyboards often auto-capitalize the first letter; filter keys are lowercase
+    const value = rawValue.charAt(0).toLowerCase() + rawValue.slice(1)
+
     const { hasFlag, rest } = extractMineFlag(value)
 
     // parse raw string into key: [values]

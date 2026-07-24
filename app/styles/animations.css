@@ -53,11 +53,11 @@
   }
 }
 
-.border-highlight {
-  animation: borderHighlight 1.2s ease-in-out forwards 2;
+.highlight-pulse {
+  animation: highlightPulse 1.2s ease-in-out forwards 2;
 }
 
-@keyframes borderHighlight {
+@keyframes highlightPulse {
   0% {
     outline: 2.5px solid transparent;
     outline-offset: -1px;

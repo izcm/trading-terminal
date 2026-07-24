@@ -25,16 +25,20 @@ export function TxRow({ tx, onClick, disabled }: Props) {
 
   return (
     <div className="text-start text-sm" onClick={onClick}>
-      <div className="grid grid-cols-[auto_88px_80px_1fr_142px] items-center gap-6 p-4">
-        <StatusIcon status={tx.status} />
+      <div className="flex flex-col gap-2 sm:grid sm:grid-cols-[auto_88px_80px_1fr_142px] sm:items-center sm:gap-6 p-4">
+        <div className="flex items-center gap-2 sm:contents">
+          <StatusIcon status={tx.status} />
 
-        <div className="whitespace-nowrap">
-          <Copyable value={tx.hash} className="text-accent">
-            {shortHash}
-          </Copyable>
+          <div className="whitespace-nowrap">
+            <Copyable value={tx.hash} className="text-accent">
+              {shortHash}
+            </Copyable>
+          </div>
+
+          <span className="text-muted whitespace-nowrap ml-auto sm:ml-0 sm:text-right">
+            {timeAgo(tx.createdAt)}
+          </span>
         </div>
-
-        <span className="text-muted text-right whitespace-nowrap">{timeAgo(tx.createdAt)}</span>
 
         <span className="text-subtle truncate">{tx.label}</span>
 

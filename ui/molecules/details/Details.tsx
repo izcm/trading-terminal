@@ -44,7 +44,10 @@ export type DetailsProps<T> = {
 
 export function Details<T>({ item, title, detailsFields, bottomFields }: DetailsProps<T>) {
   return (
-    <div className={`h-full flex flex-col p-4 gap-2 text-sm`} tabIndex={-1}>
+    <div
+      className={`h-full flex flex-col p-4 gap-2 text-sm justify-between max-h-[280px]`}
+      tabIndex={-1}
+    >
       {title && (
         <div className="flex justify-between text-start">
           <div className="flex flex-col">

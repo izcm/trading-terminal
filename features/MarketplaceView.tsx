@@ -301,6 +301,7 @@ export function MarketplaceView({ collection, initialPages }: Props) {
           setTab={setTab}
           onOpenManual={() => setInfoModal({ open: true, type: 'manual' })}
           onOpenSettings={() => setInfoModal({ open: true, type: 'settings' })}
+          onNavigateToTx={onNavigateToTx}
           searchRef={searchRef}
           inputSeed={inputSeed}
           resetTick={resetTick}

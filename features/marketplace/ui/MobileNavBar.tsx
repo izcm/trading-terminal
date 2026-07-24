@@ -1,5 +1,7 @@
 import { RefObject, useState } from 'react'
 
+import type { Tx } from '@/app/providers/TxProvider'
+
 import { TextInput } from '@/ui/atoms'
 import { Popover } from '@/ui/molecules'
 
@@ -8,12 +10,14 @@ import { ChevronDown, Menu, Search } from '@/ui/icons'
 import { tabUIConfig, type TabName } from '@/features/tab-config'
 import { MobileMenu } from './Header'
 import { TabBtn, Tabs } from './Tabs'
+import { TxTracker } from '@/features/realtime/ui/TxTracker'
 
 type MobileNavBarProps = {
   tab: TabName
   setTab: (tab: TabName) => void
   onOpenManual: () => void
   onOpenSettings: () => void
+  onNavigateToTx: (tx: Tx) => void
   searchRef: RefObject<HTMLInputElement | null>
   inputSeed: string
   resetTick: number
@@ -29,6 +33,7 @@ export function MobileNavBar({
   inputSeed,
   resetTick,
   handleSearch,
+  onNavigateToTx,
 }: MobileNavBarProps) {
   const [showMobileSearch, setShowMobileSearch] = useState(false)
   const [showMobileTabs, setShowMobileTabs] = useState(false)
@@ -79,7 +84,13 @@ export function MobileNavBar({
               <Menu size={20} />
             </button>
           }
-        />
+        >
+          <TxTracker
+            onNavigateToTx={onNavigateToTx}
+            className="py-2 justify-center bg-black/8 border-soft"
+            highlightOnFirstTx={false}
+          />
+        </MobileMenu>
 
         <button className="btn btn-menu h-full" onClick={toggleMobileSearch}>
           <Search size={20} />

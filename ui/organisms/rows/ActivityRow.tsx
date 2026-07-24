@@ -2,12 +2,13 @@
 import type { ReactNode } from 'react'
 
 import { formatEth2 } from '@/lib/blockchain'
+import { useTokenURI } from '@/lib/blockchain/hooks'
 import { tsSuperShort } from '@/lib/utils/time'
 
 import { NFT_LOADING_IMAGE } from '@/domain/constants/placeholders'
 
 import type { Activity } from '@/domain/shared/activity'
-import type { NFT } from '@/domain/nft'
+import { mapTokenUriToNFT, type NFT } from '@/domain/nft'
 
 import { listingStatusToClass } from '@/features/marketplace/lib/listing-status-ui'
 import { useCollection } from '@/features/CollectionContext'
@@ -18,13 +19,13 @@ type Props = {
   detailsPane?: ReactNode
 }
 
-function placeholderNFT(activity: Activity): NFT {
+function loadingPlaceholderNFT(activity: Activity): NFT {
   return {
     id: `placeholder:${activity.collection}:${activity.tokenId}`,
-    chainId: 0,
+    chainId: activity.chainId,
     collection: activity.collection,
-    tokenId: BigInt(activity.tokenId),
-    name: "couldn't read NFT",
+    tokenId: activity.tokenId,
+    name: 'loading...',
     description: '',
     image: NFT_LOADING_IMAGE,
     createdAtBlock: 0n,
@@ -36,7 +37,18 @@ function placeholderNFT(activity: Activity): NFT {
 export function ActivityRow({ activity, detailsPane }: Props) {
   const { source, type: activityType, isCollectionBid, timestamp, price, status } = activity
 
-  const nft = activity.nft ?? placeholderNFT(activity)
+  // activity.nft is missing (eg. indexer hasn't backfilled metadata yet) -> read tokenURI directly
+  const { data: tokenURI } = useTokenURI(
+    activity.nft === undefined
+      ? { chainId: activity.chainId, address: activity.collection, tokenId: activity.tokenId }
+      : undefined
+  )
+
+  const nft =
+    activity.nft ??
+    (tokenURI
+      ? mapTokenUriToNFT(activity.chainId, activity.collection, activity.tokenId, tokenURI)
+      : loadingPlaceholderNFT(activity))
 
   const badgeClasses = 'absolute -bottom-1 -right-1 text-[10px] px-1 rounded text-black'
   const statusClasses = 'text-[11px] tracking-wide px-1'

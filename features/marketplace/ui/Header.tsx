@@ -226,6 +226,7 @@ type MobileMenuProps = {
   onOpenSettings: () => void
   contentClassNames?: string
   triggerBtn: ReactNode
+  children?: ReactNode
 }
 
 export function MobileMenu({
@@ -233,6 +234,7 @@ export function MobileMenu({
   onOpenSettings,
   triggerBtn,
   contentClassNames,
+  children,
 }: MobileMenuProps) {
   return (
     <Popover
@@ -250,6 +252,7 @@ export function MobileMenu({
           <Settings size={16} />
           <span>Settings</span>
         </button>
+        {children}
       </div>
     </Popover>
   )
