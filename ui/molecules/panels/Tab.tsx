@@ -63,7 +63,7 @@ export function Tab<T extends { id: string; chainId: number; collection: Hex; to
           <div className="card h-full">{details(selected)}</div>
         )}
       </div>
-      <div className="md:hidden fixed bottom-4 inset-x-4 flex [&>button]:w-full [&>button]:shadow-lg [&>button]:shadow-black/40 [&>button]:!py-3 [&>button]:!rounded-2xl">
+      <div className="md:hidden btn-extra-disabled fixed bottom-4 inset-x-4 flex [&>button]:w-full [&>button]:shadow-lg [&>button]:shadow-black/40 [&>button]:!py-3 [&>button]:!rounded-2xl">
         {actionButton}
       </div>
     </div>

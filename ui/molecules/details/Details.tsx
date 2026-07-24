@@ -44,7 +44,7 @@ export type DetailsProps<T> = {
 
 export function Details<T>({ item, title, detailsFields, bottomFields }: DetailsProps<T>) {
   return (
-    <div className={`h-full flex flex-col p-4 gap-2 text-sm justify-between`} tabIndex={-1}>
+    <div className={`h-full flex flex-col p-4 gap-2 text-sm`} tabIndex={-1}>
       {title && (
         <div className="flex justify-between text-start">
           <div className="flex flex-col">
@@ -65,7 +65,9 @@ export function Details<T>({ item, title, detailsFields, bottomFields }: Details
         <>
           <div className="h-px bg-white/5" />
 
-          <DetailFields data={item} fields={bottomFields} />
+          <div className="flex flex-col gap-2">
+            <DetailFields data={item} fields={bottomFields} />
+          </div>
         </>
       )}
     </div>

@@ -6,13 +6,13 @@ function Row({ label, value, copy }: { label: string; value: React.ReactNode; co
   return (
     <div
       className={`
-        flex justify-between items-center py-1 gap-4
+        flex flex-col md:flex-row md:justify-between md:items-center py-1.5 md:py-1 gap-0.5 md:gap-4
         ${copy ? ' hover:text-accent-string transition' : ''}
       `}
       onClick={() => copy && navigator.clipboard.writeText(copy)}
     >
       <span className="text-sm font-mono text-accent">{label}</span>
-      <span className="text-sm text-subtle text-right">{value}</span>
+      <span className="text-sm text-subtle md:text-right">{value}</span>
     </div>
   )
 }
@@ -20,7 +20,7 @@ function Row({ label, value, copy }: { label: string; value: React.ReactNode; co
 function ExRow({ query, desc }: { query: string; desc: string }) {
   return (
     <div
-      className="flex flex-col py-1 gap-0.5 hover:text-accent-string transition cursor-pointer"
+      className="flex flex-col py-2 md:py-1 gap-0.5 hover:text-accent-string transition cursor-pointer"
       onClick={() => navigator.clipboard.writeText(query)}
     >
       <span className="text-sm font-mono text-accent/80">{query}</span>
@@ -49,44 +49,60 @@ const TABS: { key: Tab; label: string; shortcut: string }[] = [
 export function Manual({ initialTab = 'shortcuts' }: { initialTab?: Tab } = {}) {
   const [tab, setTab] = useState<Tab>(initialTab)
 
+  // shortcuts are keyboard-only and don't apply below md
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)')
+    const update = () => setIsMobile(mq.matches)
+    update()
+    mq.addEventListener('change', update)
+    return () => mq.removeEventListener('change', update)
+  }, [])
+
+  // shortcuts tab isn't available on mobile — fall back without an extra render pass
+  const activeTab = isMobile && tab === 'shortcuts' ? 'filters' : tab
+
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return
-      if (e.key === '1') setTab('shortcuts')
+      if (e.key === '1' && !isMobile) setTab('shortcuts')
       if (e.key === '2') setTab('filters')
       if (e.key === '3') setTab('examples')
     }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [])
+  }, [isMobile])
+
+  const visibleTabs = isMobile ? TABS.filter(t => t.key !== 'shortcuts') : TABS
 
   return (
     <div className="p-5 cursor-pointer w-full max-w-[550px] space-y-4 rounded-border">
       {/* header / tabs */}
       <div className="flex justify-between items-center">
         <div className="flex gap-3">
-          {TABS.map(({ key, label, shortcut }) => (
+          {visibleTabs.map(({ key, label, shortcut }) => (
             <button
               key={key}
               onClick={() => setTab(key)}
               className={`text-sm cursor-pointer font-semibold transition outline-none ${
-                tab === key ? 'text-accent' : 'text-subtle hover:text-accent-strong'
+                activeTab === key ? 'text-accent' : 'text-subtle hover:text-accent-strong'
               }`}
             >
-              <span className="text-subtle font-mono">{shortcut}.</span> {label}
+              <span className="hidden md:inline text-subtle font-mono">{shortcut}.</span> {label}
             </button>
           ))}
         </div>
         <span className="text-xs text-muted">dmrkt</span>
       </div>
 
-      {tab === 'shortcuts' && (
+      {activeTab === 'shortcuts' && (
         <Section title="keyboard">
           <Row label="1 / 2 / 3" value="shortcuts / filters / examples" />
           <Row label="a / w / d" value="switch tab" />
           <Row label="shift + a / w / d" value="switch tab + reset filters" />
           <Row label="shift + c" value="connect wallet" />
-          <Row label="enter" value="run main action" />
+          <Row label="s" value="run main action" />
           <Row label="i" value="focus search" />
           <Row label="l" value="focus list" />
           <Row label="?" value="open manual" />
@@ -99,7 +115,7 @@ export function Manual({ initialTab = 'shortcuts' }: { initialTab?: Tab } = {}) 
         </Section>
       )}
 
-      {tab === 'filters' && (
+      {activeTab === 'filters' && (
         <>
           <Section title="mine flag">
             <div className="flex flex-col gap-1 text-sm text-muted pb-1">
@@ -138,7 +154,7 @@ export function Manual({ initialTab = 'shortcuts' }: { initialTab?: Tab } = {}) 
         </>
       )}
 
-      {tab === 'examples' && (
+      {activeTab === 'examples' && (
         <>
           <Section title="orders">
             <ExRow
